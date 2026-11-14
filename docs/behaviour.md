@@ -153,6 +153,8 @@ _Screenshots from demo data._
   journey of small steps.") and how ("You keep using your normal tasks;
   QuestArc shows what grows from them."). Shown while QuestArc has no
   record at all; nothing is written here.
+- When records arrive while only the welcome is open (an imported
+  backup, a sync from another device), the view goes to the home.
 - Link: "How QuestArc motivates you" (screen 11).
 - Main action: **Choose a journey**.
 

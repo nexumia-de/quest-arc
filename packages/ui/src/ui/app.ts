@@ -216,8 +216,16 @@ export const createApp = (root: HTMLElement, client: Client, host: ViewHost) => 
     // A message's Show (flow A) opens the journey on top of the home.
     const toJourney = next.openJourney === true && next.view.active !== undefined;
     if (toJourney) stack = [entry({ name: 'home' }), entry({ name: 'journey' })];
+    // Records that arrive while only the welcome is open (an imported
+    // backup, a sync) lead home: the welcome is for a user without any.
+    const arrived =
+      stack.length === 1 &&
+      stack[0]?.route.name === 'welcome' &&
+      Object.keys(next.records).length > 0;
+    if (arrived) stack = [entry({ name: 'home' })];
     const changed =
       first ||
+      arrived ||
       toSettings ||
       toJourney ||
       next.revision !== state?.revision ||

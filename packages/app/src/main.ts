@@ -24,6 +24,7 @@ import { BackupError, parseBackup, toBackup } from './store/backup';
 import { freshDataset, type Dataset } from './store/dataset';
 import { setDone, todaysTasks } from './store/habits';
 import { indexedDbPersistence } from './store/idb';
+import { keepDataOnce } from './store/persist';
 import { createInstances } from './store/instances';
 import { openStore } from './store/store';
 import { at } from './texts';
@@ -126,7 +127,9 @@ const start = async (root: HTMLElement): Promise<void> => {
     });
   };
 
+  const keepData = keepDataOnce();
   const draw = async (): Promise<void> => {
+    keepData(store.data.taskRepeatCfg.ids.length > 0);
     renderToday(shell.views.today, {
       today: today(),
       tasks: todaysTasks(store.data, today()),

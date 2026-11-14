@@ -1,5 +1,7 @@
 import type { HostRepeatCfg, HostTask } from '@questarc/engine';
 
+import { defaultGlobalConfig } from './global-config';
+
 /**
  * The app's data: Super Productivity's dataset (`AppDataComplete`,
  * `crossModelVersion` 4.5) with only the slices the app needs, so a file
@@ -61,8 +63,14 @@ export interface Dataset {
   readonly tag?: Entities<StoredProject>;
   readonly taskRepeatCfg: Entities<StoredRepeatCfg>;
   readonly pluginUserData: readonly { readonly id: string; readonly data: string }[];
+  /**
+   * Super Productivity's configuration. A fresh dataset has all of it
+   * (store/global-config.ts); one stored by an older app version or
+   * imported may have only `misc`, or none.
+   */
   readonly globalConfig?: {
     readonly misc?: { readonly startOfNextDay?: number; readonly startOfNextDayTime?: string };
+    readonly [section: string]: unknown;
   };
   readonly archiveYoung?: { readonly task?: Entities<StoredTask> };
   readonly archiveOld?: { readonly task?: Entities<StoredTask> };
@@ -140,8 +148,8 @@ const TODAY: StoredProject = {
 
 /**
  * What the app starts with: no tasks, the Inbox, the Today tag, no
- * habits, no records. Super Productivity fills every other slice with
- * its default at import.
+ * habits, no records, Super Productivity's default configuration.
+ * Super Productivity fills every other slice with its default at import.
  */
 export const freshDataset = (): Dataset => ({
   task: {
@@ -156,6 +164,7 @@ export const freshDataset = (): Dataset => ({
   tag: { ids: [TODAY_ID], entities: { [TODAY_ID]: TODAY } },
   taskRepeatCfg: { ids: [], entities: {} },
   pluginUserData: [],
+  globalConfig: defaultGlobalConfig(),
 });
 
 export const archivedTasks = (data: Dataset): StoredTask[] => [

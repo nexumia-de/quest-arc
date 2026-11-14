@@ -4,7 +4,12 @@
 // it is (no validation failure, no repair, no dialog), and the QuestArc
 // plugin there shows the journey as the app did.
 //
-//   node e2e/sp-import.mjs [backup.json]
+//   node e2e/sp-import.mjs [backup-<name>.json]
+//
+// What to expect comes from expect-<name>.json next to the backup (its
+// `clock` is the date Super Productivity runs on; the walk's last day
+// if it has none). At the end Super Productivity's own "Export Data" is
+// saved as sp-export-<name>.json for sp-roundtrip.mjs.
 //
 // Run `npm run build` and `npm run e2e -w @questarc/app` first: the
 // backup and what to expect come from the walk (dist/walk/), the plugin
@@ -13,14 +18,17 @@
 // Productivity are theirs (packages/plugin/e2e/sp.mjs). The clock is set
 // to the walk's last day, so both show the same day.
 import { readFileSync, writeFileSync } from 'node:fs';
-import { resolve } from 'node:path';
+import { basename, dirname, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { launch } from './serve.mjs';
 
 const walk = resolve('dist', 'walk');
 const file = resolve(process.argv[2] ?? resolve(walk, 'backup-360.json'));
-const expected = JSON.parse(readFileSync(resolve(walk, 'expect-360.json'), 'utf8'));
-const log = resolve(walk, 'sp-import.log');
+const name = basename(file)
+  .replace(/^backup-/, '')
+  .replace(/\.json$/, '');
+const expected = JSON.parse(readFileSync(resolve(dirname(file), `expect-${name}.json`), 'utf8'));
+const log = resolve(walk, `sp-import-${name}.log`);
 // sp.mjs finds the plugin ZIP from the plugin's folder.
 process.chdir(fileURLToPath(new URL('../../plugin/', import.meta.url)));
 const { BASE, expect, install } = await import('../../plugin/e2e/sp.mjs');
@@ -32,7 +40,7 @@ const REPAIR = /validation failed|attempting repair|auto-?fix|repair|orphan|inva
 
 const browser = await launch({ proxy: !local });
 const page = await browser.newPage({ viewport: { width: 1200, height: 800 } });
-await page.clock.install({ time: new Date('2026-03-12T08:30:00') });
+await page.clock.install({ time: new Date(expected.clock ?? '2026-03-12T08:30:00') });
 const lines = [];
 const dialogs = [];
 page.on('console', (message) => lines.push(message.text().replace(/\s+/g, ' ').slice(0, 300)));
@@ -73,7 +81,7 @@ try {
     (await page.locator('task').filter({ hasText: 'drink a glass of water' }).count()) > 0,
     'Today shows the habit’s task',
   );
-  await page.screenshot({ path: resolve(walk, 'sp-1-imported.png') });
+  await page.screenshot({ path: resolve(walk, `sp-1-imported-${name}.png`) });
 
   // The plugin on the imported data.
   await install(page);
@@ -89,9 +97,25 @@ try {
     card.includes(expected.card) && card.includes(expected.why),
     `the plugin shows the same state (${expected.card})`,
   );
-  await page.screenshot({ path: resolve(walk, 'sp-2-plugin.png') });
+  await page.screenshot({ path: resolve(walk, `sp-2-plugin-${name}.png`) });
+
+  // Super Productivity's own export of what it now holds.
+  await page.goto(`${BASE}#/config`, { waitUntil: 'networkidle' });
+  await page.locator('[role=tab]').filter({ hasText: 'cloud_sync' }).click({ timeout: 30_000 });
+  await page.getByText('Import/Export', { exact: true }).click();
+  const [download] = await Promise.all([
+    page.waitForEvent('download'),
+    page
+      .locator('button')
+      .filter({ hasText: /Export Data/ })
+      .click(),
+  ]);
+  const exported = resolve(walk, `sp-export-${name}.json`);
+  await download.saveAs(exported);
+  const keys = Object.keys(JSON.parse(readFileSync(exported, 'utf8')));
+  console.log(`Super Productivity exported ${exported} (top-level keys: ${keys.join(', ')})`);
 } catch (error) {
-  await page.screenshot({ path: resolve(walk, 'sp-failed.png') }).catch(() => undefined);
+  await page.screenshot({ path: resolve(walk, `sp-failed-${name}.png`) }).catch(() => undefined);
   throw error;
 } finally {
   await browser.close();

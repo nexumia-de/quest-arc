@@ -1,6 +1,7 @@
 import { localDay } from '@questarc/ui/adapter/day';
 
 import type { Dataset } from './store/dataset';
+import { completeGlobalConfig } from './store/global-config';
 
 /**
  * The logical day from the dataset's own setting, the one Super
@@ -32,14 +33,22 @@ export const dayContext = (
   return { todayStr: localDay(new Date(now.getTime() - offset)), startOfNextDayDiffMs: offset };
 };
 
-/** Sets the day start (`HH:MM`); the other settings stay as they are. */
+/**
+ * Sets the day start (`HH:MM`) in both fields Super Productivity keeps
+ * (`startOfNextDayTime`, and `startOfNextDay` in whole hours). A dataset
+ * from an older app version or an imported minimal file first gets the
+ * top-level sections of the default configuration it lacks, because
+ * Super Productivity does not accept a partial one; nothing present is
+ * overwritten except these two fields.
+ */
 export const withDayStart = (data: Dataset, time: string): Dataset => {
   const [h = 0] = time.split(':').map(Number);
+  const config = completeGlobalConfig(data.globalConfig);
   return {
     ...data,
     globalConfig: {
-      ...data.globalConfig,
-      misc: { ...data.globalConfig?.misc, startOfNextDay: h, startOfNextDayTime: time },
+      ...config,
+      misc: { ...(config.misc as object), startOfNextDay: h, startOfNextDayTime: time },
     },
   };
 };

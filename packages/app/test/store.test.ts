@@ -2,7 +2,8 @@ import { describe, expect, it } from 'vitest';
 
 import { dayContext, dayStartTime, withDayStart } from '../src/day';
 import { BackupError, parseBackup, toBackup } from '../src/store/backup';
-import { freshDataset, INBOX_ID, TODAY_ID } from '../src/store/dataset';
+import { freshDataset, INBOX_ID, TODAY_ID, type Dataset } from '../src/store/dataset';
+import defaults from '../src/store/sp-default-config.json';
 import { createHabit, setDone, todaysTasks } from '../src/store/habits';
 import { createInstances, localNoon } from '../src/store/instances';
 
@@ -124,6 +125,25 @@ describe('backup files', () => {
     expect(parseBackup(JSON.stringify(data))).toEqual(data);
   });
 
+  it('keeps slices and task fields it does not know through a read and a write', () => {
+    const data = habit({ type: 'daily' });
+    const id = data.task.ids[0] ?? '';
+    const odd = {
+      ...data,
+      note: { ids: ['n'], entities: { n: { id: 'n', content: 'x' } }, todayOrder: ['n'] },
+      metric: { ids: [], entities: {} },
+      task: {
+        ...data.task,
+        entities: {
+          [id]: { ...data.task.entities[id], issueId: 'GH-1', futureField: { a: [1] } },
+        },
+      },
+    };
+    const read = parseBackup(JSON.stringify(toBackup(odd as typeof data, 7)));
+    expect(read).toEqual(odd);
+    expect(toBackup(read, 7).data).toEqual(odd);
+  });
+
   it('refuses what is not a backup and other data versions', () => {
     const problem = (text: string) => {
       try {
@@ -154,5 +174,93 @@ describe('the logical day', () => {
     });
     // Super Productivity's older setting in hours
     expect(dayStartTime({ ...data, globalConfig: { misc: { startOfNextDay: 2 } } })).toBe('02:00');
+  });
+});
+
+/** A dataset as an older version of the app stored it: no configuration. */
+const withoutConfig = (): Dataset => {
+  const { globalConfig, ...rest } = freshDataset();
+  void globalConfig;
+  return rest;
+};
+
+const SECTIONS = [
+  'appFeatures',
+  'localization',
+  'tasks',
+  'misc',
+  'shortSyntax',
+  'evaluation',
+  'idle',
+  'takeABreak',
+  'dominaMode',
+  'focusMode',
+  'flowtime',
+  'clipboardImages',
+  'pomodoro',
+  'localBackup',
+  'sound',
+  'timeTracking',
+  'reminder',
+  'schedule',
+  'sync',
+  'keyboard',
+];
+
+describe('the default configuration', () => {
+  it('has the sections of Pensum’s transcription of Super Productivity 19.3.1', () => {
+    expect(Object.keys(defaults)).toEqual(SECTIONS);
+  });
+
+  it('is in a fresh dataset, as its own copy', () => {
+    const config = freshDataset().globalConfig;
+    expect(Object.keys(config ?? {})).toEqual(SECTIONS);
+    expect(config).toEqual(defaults);
+    expect(config).not.toBe(defaults);
+    expect(dayStartTime(freshDataset())).toBe('00:00');
+  });
+
+  it('is completed by the day start without a configuration or with only misc', () => {
+    const bare = withoutConfig();
+    for (const data of [
+      freshDataset(),
+      bare,
+      { ...bare, globalConfig: { misc: { startOfNextDay: 2 } } },
+    ]) {
+      const late = withDayStart(data, '04:30');
+      expect(Object.keys(late.globalConfig ?? {}).sort()).toEqual([...SECTIONS].sort());
+      expect(late.globalConfig?.misc).toMatchObject({
+        startOfNextDay: 4,
+        startOfNextDayTime: '04:30',
+      });
+      expect(dayStartTime(late)).toBe('04:30');
+    }
+  });
+
+  it('keeps what the user changed in another section', () => {
+    const base = freshDataset();
+    const changed = {
+      ...base,
+      globalConfig: {
+        ...base.globalConfig,
+        pomodoro: { ...(base.globalConfig?.pomodoro as object), duration: 1 },
+        misc: { ...base.globalConfig?.misc, isMinimizeToTray: true },
+      },
+    };
+    const late = withDayStart(changed, '03:00');
+    expect(late.globalConfig?.pomodoro).toEqual(changed.globalConfig.pomodoro);
+    expect(late.globalConfig?.misc).toMatchObject({
+      isMinimizeToTray: true,
+      startOfNextDayTime: '03:00',
+    });
+    expect(withDayStart(withDayStart(late, '05:00'), '03:00')).toEqual(late);
+  });
+
+  it('is not needed to read the day start of an old dataset', () => {
+    const old = withoutConfig();
+    expect(dayStartTime(old)).toBe('00:00');
+    expect(dayStartTime({ ...old, globalConfig: { misc: { startOfNextDayTime: '03:15' } } })).toBe(
+      '03:15',
+    );
   });
 });
