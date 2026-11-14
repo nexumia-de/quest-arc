@@ -105,10 +105,8 @@ try {
   await page.getByText('Import/Export', { exact: true }).click();
   const [download] = await Promise.all([
     page.waitForEvent('download'),
-    page
-      .locator('button')
-      .filter({ hasText: /Export Data/ })
-      .click(),
+    // exact: a second button exports the data with the texts made unreadable
+    page.getByRole('button', { name: 'Export Data', exact: true }).click(),
   ]);
   const exported = resolve(walk, `sp-export-${name}.json`);
   await download.saveAs(exported);
