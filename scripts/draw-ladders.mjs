@@ -531,12 +531,20 @@ const bucket = (cx, top, w = 10, h = 10) => {
 /** Falling water: a band from (x, top) down to `bottom`. */
 const fall = (x, top, bottom, w = 3) => rect('tint-strong', x, top, w, bottom - top);
 /** The round well seen from the front: stone wall with joints, its rim an ellipse round the water. */
-const wellWall = (x, w) => [
-  ...boxO(x + 2, 52, w - 4, 22, T, 3),
-  ...[60, 66.5].map((y) => rect('fg', x + 2, y, w - 4, 1.6)),
-  ...[0.25, 0.5, 0.75].map((t, i) => rect('fg', x + w * t - 0.8 + (i === 1 ? 6 : 0), 61.5, 1.6, 5)),
-  ellipse('fg', 60, 52, w / 2, 5.5),
-  ellipse('tint-strong', 60, 52, w / 2 - 3, 3),
+const wellWall = (x, w, top = 52) => [
+  ...boxO(x + 2, top, w - 4, 74 - top, T, 3),
+  ...[0.36, 0.66].map((t) => rect('fg', x + 2, top + (74 - top) * t, w - 4, 1.6)),
+  ...[0.25, 0.5, 0.75].map((t, i) =>
+    rect(
+      'fg',
+      x + w * t - 0.8 + (i === 1 ? 6 : 0),
+      top + (74 - top) * 0.43,
+      1.6,
+      (74 - top) * 0.23,
+    ),
+  ),
+  ellipse('fg', 60, top, w / 2, 5.5),
+  ellipse('tint-strong', 60, top, w / 2 - 3, 3),
 ];
 /** Two posts with a winch between them, the crank on the right, the bucket on its rope. */
 const winch = (x, w, top) => [
@@ -608,9 +616,17 @@ build('well-4', 'A well under a roof', [
   ...wellWall(22, 76),
 ]);
 
-// The well house: the well with its bucket under a wide stone arch, between
-// two stone piers and under a wide roof, so the well stays the subject.
+// The well house: the well stands inside, under a tall arch: the shade
+// inside the arch, a smaller well set back on its floor, then the front
+// wall with the arch cut out over it, so the wall's edges cover the well's.
 const ARCH = [[26, 74], ...dome(60, 60, 34, 28), [94, 74]];
+const ring = (list) => `M${list.map(([x, y]) => `${n(x)} ${n(y)}`).join('L')}Z`;
+const FRONT = [
+  [8, 28],
+  [112, 28],
+  [112, 74],
+  [8, 74],
+];
 build('well-5', 'A well house', [
   yard(),
   ...polyO(
@@ -622,13 +638,19 @@ build('well-5', 'A well house', [
     T,
   ),
   rect('fg', 32, 18, 56, 1.6),
-  ...boxO(8, 28, 104, 46, T),
+  poly('tint', ARCH),
+  rect('fg', 26, 66, 68, 1.6),
+  rect('fg', 59.2, 33, 1.6, 15),
+  ...bucket(60, 46, 10, 8),
+  ...wellWall(38, 44, 58),
+  path('fg', ring(FRONT) + ring(ARCH), true),
+  path(
+    'bg',
+    ring(inset(FRONT, T)) + ring(inset(ARCH, -T).map(([x, y]) => [x, Math.min(y, 74 - T)])),
+    true,
+  ),
   ...[42, 56].flatMap((y) => [rect('fg', 8, y, 16, 1.6), rect('fg', 96, y, 16, 1.6)]),
   ...[16, 104].map((x) => rect('fg', x - 0.8, 43.6, 1.6, 12.4)),
-  ...polyO(ARCH, T),
-  rect('fg', 59.2, 33, 1.6, 9),
-  ...bucket(60, 41, 11, 9),
-  ...wellWall(28, 64),
 ]);
 
 // ---- markers: drawn once for every ladder (32 × 32) ---------------------

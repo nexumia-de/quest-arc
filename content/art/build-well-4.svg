@@ -20,11 +20,11 @@
   <rect class="fg" x="34" y="20" width="52" height="1.6"/>
   <rect class="fg" x="24" y="52" width="72" height="22" rx="3"/>
   <rect class="bg" x="26" y="54" width="68" height="18" rx="1"/>
-  <rect class="fg" x="24" y="60" width="72" height="1.6"/>
+  <rect class="fg" x="24" y="59.9" width="72" height="1.6"/>
   <rect class="fg" x="24" y="66.5" width="72" height="1.6"/>
-  <rect class="fg" x="40.2" y="61.5" width="1.6" height="5"/>
-  <rect class="fg" x="65.2" y="61.5" width="1.6" height="5"/>
-  <rect class="fg" x="78.2" y="61.5" width="1.6" height="5"/>
+  <rect class="fg" x="40.2" y="61.5" width="1.6" height="5.1"/>
+  <rect class="fg" x="65.2" y="61.5" width="1.6" height="5.1"/>
+  <rect class="fg" x="78.2" y="61.5" width="1.6" height="5.1"/>
   <ellipse class="fg" cx="60" cy="52" rx="38" ry="5.5"/>
   <ellipse class="tint-strong" cx="60" cy="52" rx="35" ry="3"/>
 </svg>

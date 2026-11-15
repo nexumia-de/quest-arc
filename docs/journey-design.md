@@ -168,7 +168,7 @@ journey):
    and trees, an orchard of five fruit trees around the greenhouse. Well
    is a spring from a rock into a basin of stones, a trough under a pump,
    a round well with a winch, the well under a roof, a stone well
-   house with the well under its arch (owner: a fountain is another use,
+   house with the well inside, under its arch (owner: a fountain is another use,
    not a well).
 8. **Look.** Outlined in `fg` with a `bg` fill, one `accent` detail (the
    flame, a glowing door or window, the keystone, a rail cap, the
