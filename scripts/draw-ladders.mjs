@@ -459,12 +459,13 @@ build('garden-2', 'A garden in rows', [
   ...bed(68, 36, 66),
 ]);
 
+// From version 3 on, the trees grow from the middle, where the sunflower
+// stood: one, then three, then five; what stands keeps its place.
+const ORCHARD = [14, 37, 60, 83, 106];
 build('garden-3', 'A garden with a fruit tree', [
   yard(),
+  ...fruitTree(60, 24, 14, 'solid'),
   ...hedge(6, 108, 42, 60),
-  ...fruitTree(92, 28, 16),
-  ...[28, 40, 52].flatMap((x) => plant(x, 58, 7)),
-  ...bed(20, 46, 58),
   ...[19, 30, 41, 79, 90, 101].flatMap((x) => plant(x, 66, 5.5)),
   ...bed(12, 40, 66),
   ...bed(68, 40, 66),
@@ -472,7 +473,7 @@ build('garden-3', 'A garden with a fruit tree', [
 
 build('garden-4', 'An orchard', [
   yard(),
-  ...[16, 38, 60, 82, 104].flatMap((x) => fruitTree(x, 26, 11, 'solid', FRUIT.slice(0, 2))),
+  ...ORCHARD.slice(1, 4).flatMap((x) => fruitTree(x, 24, 12, 'solid', FRUIT.slice(0, 2))),
   ...hedge(5, 110, 42, 60),
   ...[24, 38, 82, 96].flatMap((x) => plant(x, 66, 6)),
   ...bed(14, 38, 66),
@@ -491,7 +492,7 @@ const WALL = [
 ];
 build('garden-5', 'A walled garden', [
   yard(),
-  ...[14, 37, 60, 83, 106].flatMap((x) => fruitTree(x, 20, 12, 'solid', FRUIT.slice(0, 2))),
+  ...ORCHARD.flatMap((x) => fruitTree(x, 20, 12, 'solid', FRUIT.slice(0, 2))),
   ...[48.5, 71.5].flatMap((x) => plant(x, 48, 6.5)),
   poly('tint', GATE),
   shapeIn('fg', minus([WALL], [GATE])),
