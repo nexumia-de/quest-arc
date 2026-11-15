@@ -166,13 +166,25 @@ journey):
    storeys. Garden is one raised bed with a sunflower, two rows of beds,
    the rows before a hedge with a fruit tree, a greenhouse between hedges
    and trees, an orchard of five fruit trees around the greenhouse. Well
-   follows how water is drawn: a water hole dug down to the water (its
-   earth heaped behind with the spade in it), a well sweep (a beam on a
-   forked post with a stone and the bucket on a pole) over a low stone
-   curb, a round well with a winch, the well under a roof, a stone well
-   house with the well inside, under its arch (owner: a spring and a pump
-   break the line, a fountain is another use).
-8. **Look.** Outlined in `fg` with a `bg` fill, one `accent` detail (the
+   follows how water is drawn from a dug well: a water hole dug down to
+   the water (its earth heaped behind with the spade in it), a well sweep
+   (a beam on a forked post with a stone and the bucket on a pole) over a
+   low stone curb, a round well with a winch, the well under a roof, a
+   stone well house with the well inside, under its arch, and a hand pump
+   with its trough in front (owner: a spring and an early pump break the
+   line, a fountain is another use).
+8. **History, step by step** (owner, 2026-11-15). A ladder follows one
+   real line of development for one use; each version is what people
+   actually built next. A version may be the next technique instead of a
+   larger copy, if it joins what stands and the whole reads as more at
+   60 × 40: nothing earned disappears ([design rules](psychology.md),
+   rule 16). The world stays before electricity (no motors, pipes or
+   towers of water), so the look stays calm. A ladder has five versions;
+   a journey with more stages uses the rule of game rules §7 (the last
+   version gains fixed additions). Several things at one place stay
+   parked ([#114](https://github.com/nexumia-de/quest-arc/issues/114),
+   decision 13).
+9. **Look.** Outlined in `fg` with a `bg` fill, one `accent` detail (the
    flame, a glowing door or window, the keystone, a rail cap, the
    sunflower, the fruit, the bucket), water and
    the yard in `tint-strong` of the region's hue. The setting is quiet:
