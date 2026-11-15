@@ -259,7 +259,7 @@ const buildProblems = (journey: Journey): Problem[] => {
     problems.push(
       warning(
         'build.ladder',
-        `${journey.stages.length} stages need ${versions} versions, "${build.ladder}" has ${ladder.versions}; the last one gains fixed additions`,
+        `${journey.stages.length} stages need ${versions} versions, "${build.ladder}" has ${ladder.versions}; the thing stays at the last one`,
       ),
     );
   return problems;

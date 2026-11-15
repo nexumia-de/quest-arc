@@ -184,8 +184,8 @@ every stage ([game rules](game-rules.md) §7). Name a ladder from
 what hangs on its marker (`lanterns`, `bunting`, or `flowers` where the
 ladder's setting has no water) and give the versions names in your own
 words (`names`, text keys, at most 40 characters). A journey with more
-stages than the ladder has versions minus one gets a warning: its last
-version then gains small fixed additions. The user may choose another
+stages than the ladder has versions minus one gets a warning: the thing
+then stays at the ladder's last version for the stages beyond it. The user may choose another
 ladder when starting.
 
 ### Conditions

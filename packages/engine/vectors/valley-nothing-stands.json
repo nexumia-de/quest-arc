@@ -1,5 +1,5 @@
 {
-  "name": "An anchor where nothing stands is plain land: no thing, no sign, no surroundings. A time anchor is named by its time, a named anchor by its name; a run before anchors stands in no place",
+  "name": "An anchor where nothing stands is plain land: no thing, no sign. A time anchor is named by its time, a named anchor by its name; a run before anchors stands in no place",
   "rule": "game rules \u00a78, the Valley; issue #126",
   "kind": "evaluate",
   "input": {
@@ -37,15 +37,13 @@
         "anchorId": "t1",
         "name": "21:00",
         "thing": null,
-        "sign": null,
-        "surroundings": 0
+        "sign": null
       },
       {
         "anchorId": "t2",
         "name": "Noon",
         "thing": null,
         "sign": null,
-        "surroundings": 0,
         "growing": false
       }
     ],

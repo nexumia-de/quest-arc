@@ -64,6 +64,16 @@ falls to zero; the run text ("Run 4 · best 6") stays next to the marks.
 
 ## Builds and ladders (the Valley, #42)
 
+**One moment, one thing, one growing ladder** (owner, 2026-11-15, #148).
+A further journey from the same moment does not build surroundings: it
+continues the same thing with the next versions, so the picture keeps one
+meaning, the routine. Every finished station of every journey there adds
+one version, in the order they were finished; when the ladder has no
+further version the thing stays at its last. A ladder is therefore not
+fixed at five versions: more versions come later, drawn by the same rules
+(history step by step; nothing moves, shrinks or disappears), and the
+engine reads their number from the ladder file.
+
 Decided by the owner on 2026-11-12[^42]: a journey builds **one thing**,
 whole at every stage, and every stage makes it a larger version. A
 **ladder** is that thing drawn once in five versions and used by every
@@ -202,8 +212,9 @@ journey):
    real line of development for one use; each version is what people
    actually built next, within a world before electricity, so the row
    reads as a story without words and no version is a step back. A
-   ladder has five versions; a journey with more stages uses the rule of
-   game rules §7 (the last version gains fixed additions). Parked: a
+   ladder has five versions for now, more come later (the engine reads
+   the number from the file, game rules §8); a journey or a further
+   journey beyond the last version leaves the thing at it. Parked: a
    version that is a different technique joining what stands (a hand
    pump at the well house, a greenhouse in the garden), and several
    things at one place
@@ -451,7 +462,7 @@ The same scenes drawn at 720 wide in a 1280 wide window:
 
 Issue #100, for every journey since #110. The
 engine's `build` view ([game rules](game-rules.md) §7) gives the ladder,
-the version, the versions the journey uses, the marker kind, the hue,
+the version, where the journey started from and the versions it added, the marker kind, the hue,
 the marker progress and whether the stage is ready; the screen draws it
 with the ladder's scene of "Builds and ladders" above.
 

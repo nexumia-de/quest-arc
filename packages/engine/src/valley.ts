@@ -5,13 +5,10 @@ import type { AnchorView, RunView, ValleyPlace, ValleyThing } from './types/view
 
 /**
  * The Valley (docs/game-rules.md §8, issue #114): the user's anchors as
- * places along the path of a day, each with the one thing its first
- * journey builds. Derived every time from what the engine has computed
+ * places along the path of a day, each with the one thing that every
+ * journey there builds on. Derived every time from what the engine has computed
  * and the `place` records; nothing is counted or stored here.
  */
-
-/** Steps of the surroundings that are drawn (fence, tree, bench, gate). */
-export const SURROUNDINGS_STEPS = 4;
 
 const NO_RUN = '9999-99-99';
 
@@ -106,19 +103,28 @@ export const valleyView = (
       }
     }
 
-    const [first, ...further] = candidate.runs;
+    // The journey that stands here now: the growing one, else the latest
+    // started that waits, else the latest started. Every journey here carries
+    // the place's ladder and version (`placeBuilds`), only its marker is its own.
+    const stands = [...candidate.runs].reverse();
+    const current =
+      stands.find((c) => c.state === 'growing') ??
+      stands.find((c) => c.state === 'paused') ??
+      stands[0];
     const habits = anchor.steps.map((step) => step.state);
-    const thing: ValleyThing | undefined = first && {
-      runId: first.run.runId,
-      journeyId: first.run.journeyId,
-      state: first.state,
-      ladder: first.run.build.ladder,
-      version: first.run.build.version,
-      skipped: first.run.build.skipped,
-      versions: first.run.build.versions,
-      marker: first.run.build.marker,
-      markerProgress: first.run.build.markerProgress,
-      ready: first.run.build.ready,
+    const thing: ValleyThing | undefined = current && {
+      runId: current.run.runId,
+      journeyId: current.run.journeyId,
+      state: current.state,
+      ladder: current.run.build.ladder,
+      version: current.run.build.version,
+      skipped: current.run.build.skipped,
+      from: current.run.build.from,
+      added: current.run.build.added,
+      versions: current.run.build.versions,
+      marker: current.run.build.marker,
+      markerProgress: current.run.build.markerProgress,
+      ready: current.run.build.ready,
     };
     const name = anchor.name ?? anchor.words ?? anchor.time ?? '';
     places.push({
@@ -132,12 +138,6 @@ export const valleyView = (
         : habits.includes('graduated')
           ? { sign: 'lantern' as const }
           : {}),
-      // A further journey adds the steps it has finished or skipped; they stay
-      // whether it waits or was ended early.
-      surroundings: Math.min(
-        SURROUNDINGS_STEPS,
-        further.reduce((sum, { run }) => sum + run.build.version - 1, 0),
-      ),
       growing: anchor.state === 'growing',
       chosen: {
         ...(picked.position !== undefined ? { position: picked.position } : {}),

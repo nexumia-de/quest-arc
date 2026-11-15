@@ -1,0 +1,104 @@
+{
+  "name": "A further journey that skips its first stage ('already yours') adds that version without a station's work; skipped versions are named; the journey ended early leaves its version standing",
+  "rule": "game rules \u00a78, the Valley; issue #148",
+  "kind": "evaluate",
+  "input": {
+    "day": {
+      "todayStr": "2026-11-11",
+      "startOfNextDayDiffMs": 0,
+      "timeZone": "Europe/Berlin"
+    },
+    "tasks": [],
+    "repeatCfgs": [],
+    "choices": {
+      "anchor:m1": {
+        "kind": "routine",
+        "words": "getting up"
+      },
+      "run:r1": {
+        "journeyId": "test-daily",
+        "journeyVersion": 1,
+        "startDay": "2026-08-01"
+      },
+      "run-anchor:r1": {
+        "anchorId": "m1"
+      },
+      "stage:r1:a": {
+        "acceptedDay": "2026-08-01"
+      },
+      "stage-done:r1:a": {
+        "day": "2026-08-15",
+        "dataFormat": 2
+      },
+      "stage:r1:b": {
+        "acceptedDay": "2026-08-15"
+      },
+      "run-end:r1": {
+        "day": "2026-08-20",
+        "reason": "ended"
+      },
+      "run:r2": {
+        "journeyId": "test-build",
+        "journeyVersion": 1,
+        "startDay": "2026-09-02"
+      },
+      "run-anchor:r2": {
+        "anchorId": "m1"
+      },
+      "stage:r2:a": {
+        "acceptedDay": "2026-09-02"
+      },
+      "skip:r2:a": {
+        "day": "2026-09-02",
+        "dataFormat": 3
+      },
+      "stage:r2:b": {
+        "acceptedDay": "2026-09-02"
+      },
+      "stage-done:r2:b": {
+        "day": "2026-09-12",
+        "dataFormat": 2
+      },
+      "stage:r2:c": {
+        "acceptedDay": "2026-09-12"
+      }
+    },
+    "journeys": ["$test-daily", "$test-build", "$test-morning", "$test-night"]
+  },
+  "expect": {
+    "valley": [
+      {
+        "anchorId": "m1",
+        "thing": {
+          "runId": "r2",
+          "state": "growing",
+          "ladder": "home",
+          "version": 4,
+          "from": 2,
+          "added": [3, 4],
+          "skipped": [3],
+          "versions": 5
+        }
+      }
+    ],
+    "active": {
+      "build": {
+        "version": 4,
+        "skipped": [3],
+        "added": [3, 4]
+      }
+    },
+    "finished": [
+      {
+        "runId": "r1",
+        "build": {
+          "version": 4,
+          "from": 1,
+          "added": [2],
+          "skipped": []
+        }
+      }
+    ],
+    "problems": []
+  }
+}

@@ -104,8 +104,6 @@ export interface ValleyPlace {
   readonly thing?: ValleyThing;
   /** `plants`: a step here is still followed; `lantern`: a step runs by itself. */
   readonly sign?: 'plants' | 'lantern';
-  /** Steps of the surroundings (fence, tree, bench, gate): 0 to SURROUNDINGS_STEPS. */
-  readonly surroundings: number;
   /** The active journey grows here (the anchor's `state` is `growing`). */
   readonly growing: boolean;
   /** What the user picked; a field that is absent is by rule. */
@@ -116,7 +114,11 @@ export interface ValleyPlace {
   };
 }
 
-/** The first journey started from a place: its build, and where its journey is. */
+/**
+ * The one thing of a place: the ladder of the first journey started there
+ * and the version that every journey there has built (game rules §8); the
+ * run is the journey that stands at the place now, which the marker belongs to.
+ */
 export interface ValleyThing extends Omit<BuildView, 'hue'> {
   readonly runId: string;
   readonly journeyId: string;
@@ -313,11 +315,19 @@ export interface ContinueOffer {
 export interface BuildView {
   /** A ladder in content/art/ (<name>.ladder.json). */
   readonly ladder: string;
-  /** The version standing: 1 + the finished and skipped stages; a step back does not lower it. */
+  /**
+   * The version of the place's thing standing: 1 + the finished and skipped
+   * stages of every journey at the place, at most the ladder's last version;
+   * a step back does not lower it. Without a place it is this journey's own.
+   */
   readonly version: number;
-  /** The standing versions that came from a skipped stage ("already yours"). */
+  /** The standing versions that this journey's skipped stages gave ("already yours"). */
   readonly skipped: readonly number[];
-  /** The versions this journey uses: its stages + 1. */
+  /** The version this journey started from (1 for the first journey at a place). */
+  readonly from: number;
+  /** The versions this journey added (finished or skipped stages), within the ladder. */
+  readonly added: readonly number[];
+  /** The last version this journey can reach: `from` + its stages, at most the ladder's last. */
   readonly versions: number;
   /** What hangs on the marker: lanterns, bunting or flowers (content/art/markers.json). */
   readonly marker: string;

@@ -2,6 +2,8 @@ import { anchorViews, runAnchorOf } from './anchors';
 import { parseChoices, type RunRecord } from './choices';
 import { makeLogicalDay } from './days';
 import { buildRun } from './run';
+import { resolveMarker } from './ladders';
+import { placeBuilds } from './place-build';
 import { valleyView } from './valley';
 import type { Journey } from './types/journey';
 import type { Snapshot } from './types/snapshot';
@@ -94,6 +96,21 @@ export const evaluate = (snapshot: Snapshot): GameView => {
     if (!choices.runs.some((run) => run.runId === runId)) {
       problems.push(`run ${runId}: written by a newer QuestArc (data format ${format})`);
     }
+  }
+
+  // One moment, one thing (game rules §8): every journey at an anchor shows
+  // the place's thing, built by the stations of all of them.
+  const placed = placeBuilds([...open, ...finished], (run, ladder) => {
+    const journey = journeys.get(run.journeyId);
+    return journey
+      ? resolveMarker(journey, choices.builds.get(run.runId), ladder)
+      : run.build.marker;
+  });
+  for (const list of [open, finished]) {
+    list.forEach((run, i) => {
+      const build = placed.get(run.runId);
+      if (build) list[i] = { ...run, build };
+    });
   }
 
   const waiting = (run: RunView): RunView => {

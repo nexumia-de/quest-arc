@@ -97,7 +97,6 @@ export { journeyProblems, languageProblems, TEXT_LIMITS } from './content-check'
 export type { Problem } from './content-check';
 export { isScheduled, isSupported } from './schedule';
 export { LADDERS, markerFits, resolveBuild } from './ladders';
-export { SURROUNDINGS_STEPS } from './valley';
 export { DAYPARTS } from './types/journey';
 export type { Daypart } from './types/journey';
 export type { BuildChoice, Ladder, LadderList } from './ladders';

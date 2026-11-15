@@ -26,7 +26,7 @@ links. Change history is in [log.md](log.md).
 - [Journey: A few pages before sleep](journey-pages-before-sleep.md) - Built-in journey for reading: after getting into bed, from one page to 20 minutes of reading in four stages.
 - [Story format 3](story-format.md) - Journeys as one self-contained JSON file: stages with plan, schedule, condition, story texts and nugget; own texts and author; the journey checker; versions.
 - [Writing a journey](authoring-journeys.md) - Guide for people and their agents: the rules in short, the file, a template, the check, publishing by pull request, the CC BY-SA licence.
-- [Game rules](game-rules.md) - Exact rules and numbers: what counts, due days, never miss twice, stage conditions, welcome back, graduation, the build of a journey (ladder, version, marker progress, ready), the Valley (places in the order of the day, one thing per place, signs, surroundings), with worked examples.
+- [Game rules](game-rules.md) - Exact rules and numbers: what counts, due days, never miss twice, stage conditions, welcome back, graduation, the build of a journey (ladder, version, marker progress, ready), the Valley (places in the order of the day, one thing per place that every journey there grows, signs), with worked examples.
 
 - [Habit app psychology evidence](research.md) - Evidence review with strength ratings: what to use, add or avoid; quotes and learning nuggets; focused work; changes to the design rules; open gaps.
 - [Design rules from habit psychology](psychology.md) - 28 binding rules for the habit, progress, missed days, game layer, learning nuggets, reminders, graduation and privacy, each backed by the evidence review.

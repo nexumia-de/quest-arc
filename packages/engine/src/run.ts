@@ -215,6 +215,8 @@ export const buildRun = (run: RunRecord, journey: Journey, ctx: RunContext): Run
     ...resolveBuild(journey, choices.builds.get(run.runId)),
     version: 1 + passed.length,
     skipped: passed.flatMap((s, i) => (s.state === 'skipped' ? [i + 2] : [])),
+    from: 1,
+    added: passed.map((_, i) => i + 2),
     versions: journey.stages.length + 1,
     markerProgress: ended ? 0 : markerProgress,
     ready: !ended && current?.state === 'met',

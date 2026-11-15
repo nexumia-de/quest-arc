@@ -165,7 +165,7 @@ private journeys (#40) runs the same function.
 | warning | the second stage asks for more than 5 minutes (its `time_spent` condition or "n minutes" in its English action)      | 1          |
 | warning | stages that name different anchors (English text); a journey without the `anchor` hint                               | 2          |
 | error   | `build`: a ladder or marker not in `content/art/`; a land-only marker (`flowers`) on water; more names than versions | 42         |
-| warning | no `build`; more stages than the ladder has versions minus one (its last version gains fixed additions)              | 42         |
+| warning | no `build`; more stages than the ladder has versions minus one (the thing stays at the ladder's last version)        | 42         |
 
 The test also checks that each file is named after its id and that ids
 are unique.
