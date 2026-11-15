@@ -17,6 +17,8 @@ const BOX = { left: 0, top: 4, right: 120, base: 74, water: 80 };
 /** Ladders measured but not held to the checks: Crossing is retired by #128. */
 export const RETIRING = new Set(['crossing']);
 const EPS = 0.05;
+/** The picture checker's limit (ART_MAX_BYTES in packages/engine/src/art-check.ts). */
+const MAX_BYTES = 4096;
 /** Roles that are the thing itself; `tint` and `tint-strong` are ground and water. */
 const THING = new Set(['fg', 'bg', 'accent', 'dim']);
 
@@ -117,6 +119,8 @@ export const ladderGeometryProblems = (name, ladder, pictures) => {
       problems.push(`${name}: no picture ${art}`);
       return;
     }
+    const bytes = new TextEncoder().encode(source).length;
+    if (bytes > MAX_BYTES) problems.push(`${art}: ${bytes} bytes, more than ${MAX_BYTES}`);
     const shapes = shapesOf(source);
     const thing = silhouette(shapes, stone);
     const [x0, y0, x1, y1] = bounds(thing) ?? [0, 0, 0, 0];

@@ -144,7 +144,7 @@ journey):
    on both banks, as thick as the surface. A build the way leads to (a
    home or a garden) has one: the threshold stone (x = 53–67,
    y = 74–77.5) in front of the fire, the tent's opening and each door,
-   of the garden's bed and the greenhouse door, or of the water hole and
+   of the garden's bed and the walled garden's gate, or of the water hole and
    each well, where the path ends.
    `ways` lists them; the checker requires a corner of every version and
    of the setting's path at each way point.
@@ -170,8 +170,9 @@ journey):
    is a fire in a ring of single stones, a tent, a hut under a round
    thatch, a cottage with a pitched roof and chimney, a house of two
    storeys. Garden is one raised bed with a sunflower, two rows of beds,
-   the rows before a hedge with a fruit tree, a greenhouse between hedges
-   and trees, an orchard of five fruit trees around the greenhouse. Well
+   the rows before a hedge with a fruit tree, an orchard of five fruit
+   trees behind the hedge, the orchard and beds inside a wall of stones
+   at shoulder height with its gate on the threshold (#135). Well
    follows how water is drawn: a water hole dug down to the water (its
    earth heaped behind with the spade in it), a well sweep (a beam on a
    forked post with a stone and the bucket on a pole) over a low stone
@@ -184,8 +185,9 @@ journey):
    reads as a story without words and no version is a step back. A
    ladder has five versions; a journey with more stages uses the rule of
    game rules §7 (the last version gains fixed additions). Parked: a
-   version that is a new technique joining what stands (a hand pump at
-   the well house), and several things at one place
+   version that is a different technique joining what stands (a hand
+   pump at the well house, a greenhouse in the garden), and several
+   things at one place
    ([#114](https://github.com/nexumia-de/quest-arc/issues/114),
    decision 13).
 9. **Look.** Outlined in `fg` with a `bg` fill, one `accent` detail (the

@@ -1,5 +1,5 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 80">
-  <title>An orchard around a greenhouse</title>
+  <title>A walled garden</title>
   <ellipse class="tint-strong" cx="60" cy="75" rx="54" ry="4.6"/>
   <rect class="fg" x="53" y="74" width="14" height="3.5" rx="1"/>
   <rect class="bg" x="54.4" y="75.4" width="11.2" height="0.7"/>
@@ -7,58 +7,38 @@
   <ellipse class="bg" cx="60" cy="18" rx="13" ry="11.8"/>
   <ellipse class="accent" cx="53.3" cy="17.3" rx="2.8" ry="2.8"/>
   <ellipse class="accent" cx="66" cy="12.8" rx="2.8" ry="2.8"/>
-  <ellipse class="fg" cx="34" cy="19" rx="16" ry="14.7"/>
-  <ellipse class="bg" cx="34" cy="19" rx="14" ry="12.7"/>
-  <ellipse class="accent" cx="26.8" cy="18.2" rx="2.8" ry="2.8"/>
-  <ellipse class="accent" cx="40.4" cy="13.4" rx="2.8" ry="2.8"/>
-  <ellipse class="accent" cx="36.4" cy="25.4" rx="2.8" ry="2.8"/>
-  <ellipse class="fg" cx="86" cy="19" rx="16" ry="14.7"/>
-  <ellipse class="bg" cx="86" cy="19" rx="14" ry="12.7"/>
-  <ellipse class="accent" cx="78.8" cy="18.2" rx="2.8" ry="2.8"/>
-  <ellipse class="accent" cx="92.4" cy="13.4" rx="2.8" ry="2.8"/>
-  <ellipse class="accent" cx="88.4" cy="25.4" rx="2.8" ry="2.8"/>
-  <ellipse class="fg" cx="13" cy="30" rx="13" ry="12"/>
-  <ellipse class="bg" cx="13" cy="30" rx="11" ry="10"/>
-  <ellipse class="accent" cx="7.2" cy="29.4" rx="2.8" ry="2.8"/>
-  <ellipse class="accent" cx="18.2" cy="25.5" rx="2.8" ry="2.8"/>
-  <ellipse class="accent" cx="15" cy="35.2" rx="2.8" ry="2.8"/>
-  <ellipse class="fg" cx="107" cy="30" rx="13" ry="12"/>
-  <ellipse class="bg" cx="107" cy="30" rx="11" ry="10"/>
-  <ellipse class="accent" cx="101.2" cy="29.4" rx="2.8" ry="2.8"/>
-  <ellipse class="accent" cx="112.2" cy="25.5" rx="2.8" ry="2.8"/>
-  <ellipse class="accent" cx="109" cy="35.2" rx="2.8" ry="2.8"/>
-  <ellipse class="fg" cx="9.4" cy="48.7" rx="9.4" ry="6.7"/>
-  <ellipse class="fg" cx="26.3" cy="48.7" rx="9.4" ry="6.7"/>
-  <ellipse class="fg" cx="43.1" cy="48.7" rx="9.4" ry="6.7"/>
-  <ellipse class="fg" cx="60" cy="48.7" rx="9.4" ry="6.7"/>
-  <ellipse class="fg" cx="76.9" cy="48.7" rx="9.4" ry="6.7"/>
-  <ellipse class="fg" cx="93.7" cy="48.7" rx="9.4" ry="6.7"/>
-  <ellipse class="fg" cx="110.6" cy="48.7" rx="9.4" ry="6.7"/>
-  <rect class="fg" x="1" y="48.7" width="118" height="13.3" rx="2"/>
-  <ellipse class="bg" cx="9.4" cy="48.7" rx="7.4" ry="4.7"/>
-  <ellipse class="bg" cx="26.3" cy="48.7" rx="7.4" ry="4.7"/>
-  <ellipse class="bg" cx="43.1" cy="48.7" rx="7.4" ry="4.7"/>
-  <ellipse class="bg" cx="60" cy="48.7" rx="7.4" ry="4.7"/>
-  <ellipse class="bg" cx="76.9" cy="48.7" rx="7.4" ry="4.7"/>
-  <ellipse class="bg" cx="93.7" cy="48.7" rx="7.4" ry="4.7"/>
-  <ellipse class="bg" cx="110.6" cy="48.7" rx="7.4" ry="4.7"/>
-  <rect class="bg" x="3" y="48.7" width="114" height="11.3"/>
-  <polygon class="fg" points="32,74 32,46 60,22 88,46 88,74"/>
-  <polygon class="bg" points="86,46.9 86,72 34,72 34,46.9 60,24.6"/>
-  <rect class="fg" x="32" y="45" width="56" height="2"/>
-  <rect class="fg" x="43.2" y="46" width="1.6" height="20"/>
-  <rect class="fg" x="75.2" y="46" width="1.6" height="20"/>
-  <polygon class="fg" points="45,46 47,46 61,24.5 59,24.5"/>
-  <polygon class="fg" points="73,46 75,46 61,24.5 59,24.5"/>
-  <ellipse class="fg" cx="39" cy="64" rx="5" ry="4.5"/>
-  <ellipse class="bg" cx="39" cy="64" rx="3.4" ry="2.9"/>
-  <rect class="fg" x="38.2" y="60.5" width="1.6" height="5.5"/>
-  <ellipse class="fg" cx="81" cy="64" rx="5" ry="4.5"/>
-  <ellipse class="bg" cx="81" cy="64" rx="3.4" ry="2.9"/>
-  <rect class="fg" x="80.2" y="60.5" width="1.6" height="5.5"/>
-  <rect class="fg" x="32" y="65" width="56" height="9"/>
-  <rect class="bg" x="34" y="67" width="52" height="5"/>
-  <rect class="fg" x="52" y="50" width="16" height="24" rx="1"/>
-  <rect class="bg" x="54" y="52" width="12" height="20"/>
-  <rect class="fg" x="59.2" y="50" width="1.6" height="24"/>
+  <ellipse class="fg" cx="33" cy="22" rx="15" ry="13.8"/>
+  <ellipse class="bg" cx="33" cy="22" rx="13" ry="11.8"/>
+  <ellipse class="accent" cx="26.3" cy="21.3" rx="2.8" ry="2.8"/>
+  <ellipse class="accent" cx="39" cy="16.8" rx="2.8" ry="2.8"/>
+  <ellipse class="fg" cx="87" cy="22" rx="15" ry="13.8"/>
+  <ellipse class="bg" cx="87" cy="22" rx="13" ry="11.8"/>
+  <ellipse class="accent" cx="80.3" cy="21.3" rx="2.8" ry="2.8"/>
+  <ellipse class="accent" cx="93" cy="16.8" rx="2.8" ry="2.8"/>
+  <ellipse class="fg" cx="12" cy="32" rx="11" ry="10.1"/>
+  <ellipse class="bg" cx="12" cy="32" rx="9" ry="8.1"/>
+  <ellipse class="accent" cx="7.1" cy="31.5" rx="2.8" ry="2.8"/>
+  <ellipse class="accent" cx="16.4" cy="28.2" rx="2.8" ry="2.8"/>
+  <ellipse class="fg" cx="108" cy="32" rx="11" ry="10.1"/>
+  <ellipse class="bg" cx="108" cy="32" rx="9" ry="8.1"/>
+  <ellipse class="accent" cx="103.1" cy="31.5" rx="2.8" ry="2.8"/>
+  <ellipse class="accent" cx="112.4" cy="28.2" rx="2.8" ry="2.8"/>
+  <ellipse class="fg" cx="22" cy="45.2" rx="7" ry="6.3"/>
+  <ellipse class="bg" cx="22" cy="45.2" rx="5.4" ry="4.7"/>
+  <rect class="fg" x="21.2" y="40.3" width="1.6" height="7.7"/>
+  <ellipse class="fg" cx="36" cy="45.2" rx="7" ry="6.3"/>
+  <ellipse class="bg" cx="36" cy="45.2" rx="5.4" ry="4.7"/>
+  <rect class="fg" x="35.2" y="40.3" width="1.6" height="7.7"/>
+  <ellipse class="fg" cx="84" cy="45.2" rx="7" ry="6.3"/>
+  <ellipse class="bg" cx="84" cy="45.2" rx="5.4" ry="4.7"/>
+  <rect class="fg" x="83.2" y="40.3" width="1.6" height="7.7"/>
+  <ellipse class="fg" cx="98" cy="45.2" rx="7" ry="6.3"/>
+  <ellipse class="bg" cx="98" cy="45.2" rx="5.4" ry="4.7"/>
+  <rect class="fg" x="97.2" y="40.3" width="1.6" height="7.7"/>
+  <polygon class="tint" points="47,74 47,58 49.2,54.5 51.3,51.5 53.5,49 55.7,47 57.8,45.6 60,45 62.2,45.6 64.3,47 66.5,49 68.7,51.5 70.8,54.5 73,58 73,74"/>
+  <path class="fg" d="M53.5 49L51.3 51.5L49.2 54.5L47 58L47 74L3 74L3 48L54.6 48ZM117 74L73 74L73 58L70.8 54.5L68.7 51.5L66.5 49L65.4 48L117 48Z" fill-rule="evenodd"/>
+  <path class="bg" d="M49.8 50.3L47.5 53.4L45 57.4L45 72L5 72L5 50L50 50ZM115 72L75 72L75 57.4L72.5 53.4L70.2 50.3L70 50L115 50Z" fill-rule="evenodd"/>
+  <path class="fg" d="M85.8 57.2L100.2 57.2L100.2 51L101.8 51L101.8 57.2L115 57.2L115 58.8L109.8 58.8L109.8 64.2L115 64.2L115 65.8L101.8 65.8L101.8 71.2L115 71.2L115 72.8L109.8 72.8L109.8 73L108.2 73L108.2 72.8L93.8 72.8L93.8 73L92.2 73L92.2 72.8L77.8 72.8L77.8 73L76.2 73L76.2 72.8L75.5 72.8L75.5 71.2L84.2 71.2L84.2 65.8L75.5 65.8L75.5 64.2L76.2 64.2L76.2 58.8L75.5 58.8L75.5 57.3L75.4 57.2L84.2 57.2L84.2 51L85.8 51ZM21.8 57.2L36.2 57.2L36.2 51L37.8 51L37.8 57.2L44.6 57.2L44.5 57.3L44.5 65.8L37.8 65.8L37.8 71.2L44.5 71.2L44.5 73L44.2 73L44.2 72.8L29.8 72.8L29.8 73L28.2 73L28.2 72.8L13.8 72.8L13.8 73L12.2 73L12.2 72.8L5 72.8L5 71.2L20.2 71.2L20.2 65.8L5 65.8L5 64.2L12.2 64.2L12.2 58.8L5 58.8L5 57.2L20.2 57.2L20.2 51L21.8 51ZM21.8 65.8L21.8 71.2L36.2 71.2L36.2 65.8ZM85.8 65.8L85.8 71.2L100.2 71.2L100.2 65.8ZM13.8 58.8L13.8 64.2L28.2 64.2L28.2 58.8ZM29.8 58.8L29.8 64.2L44.2 64.2L44.2 58.8ZM77.8 58.8L77.8 64.2L92.2 64.2L92.2 58.8ZM93.8 58.8L93.8 64.2L108.2 64.2L108.2 58.8Z"/>
+  <rect class="fg" x="1" y="45" width="118" height="5" rx="2"/>
+  <rect class="bg" x="3" y="47" width="114" height="1"/>
 </svg>

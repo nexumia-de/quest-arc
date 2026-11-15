@@ -50,6 +50,29 @@ const shapeIn = (role, shape) =>
 /** The polygon outlined: `fg` with the polygon `t` smaller in `fill` (ladder-geometry.mjs). */
 const polyO = (list, t, fill = 'bg') => [poly('fg', list), shapeIn(fill, grow([list], -t))];
 
+/**
+ * Masonry: courses of stones over a wall (a shape), each course `h` high,
+ * the joints of every second course shifted by half a stone `w`, clipped
+ * to the wall, so they stop at its edges and at any opening cut out of it
+ * (ladder-geometry.mjs). One path, so a wall of many stones stays small.
+ */
+const masonry = (wall, h, w) => {
+  const [x0, y0, x1, y1] = [
+    Math.min(...wall.flat().map(([x]) => x)),
+    Math.min(...wall.flat().map(([, y]) => y)),
+    Math.max(...wall.flat().map(([x]) => x)),
+    Math.max(...wall.flat().map(([, y]) => y)),
+  ];
+  const joints = [];
+  for (let k = 0, y = y0; y < y1 - 0.5; k += 1, y += h) {
+    const bottom = Math.min(y + h, y1);
+    if (k > 0) joints.push(...box(x0, y - 0.8, x1 - x0, 1.6));
+    for (let x = x0 + w * (k % 2 ? 0.5 : 1); x < x1 - 2; x += w)
+      joints.push(...box(x - 0.8, y, 1.6, bottom - y));
+  }
+  return path('fg', rings(within(joints, wall)));
+};
+
 const svg = (viewBox, title, shapes) =>
   `<svg xmlns="http://www.w3.org/2000/svg" viewBox="${viewBox}">\n  <title>${title}</title>\n${shapes
     .flat()
@@ -363,9 +386,10 @@ build('home-5', 'A house of two storeys', [
 
 // Garden: everything grows from one bed in front of the threshold stone at
 // x = 53–67, the same stone and way as Home's. Size and form both grow:
-// one raised bed, rows of beds, rows behind a hedge with a fruit tree, a
-// greenhouse, an orchard around it. The accent is the sunflower, then the
-// fruit.
+// one raised bed, rows of beds, rows behind a hedge with a fruit tree, an
+// orchard behind the hedge, the orchard and beds inside a stone wall with
+// its gate on the threshold (history rule: the greenhouse, a different
+// technique, is parked). The accent is the sunflower, then the fruit.
 const GARDEN_WAYS = HOME_WAYS;
 /** A raised bed of boards from x to x + w, its top at y. */
 const bed = (x, w, y = 64) => [
@@ -410,37 +434,6 @@ const fruitTree = (cx, cy, r, trunk = true, fruits = FRUIT) => [
   ...ellipseO(cx, cy, r, r * 0.92, T),
   ...fruits.map(([dx, dy]) => ellipse('accent', cx + dx * r, cy + dy * r, 2.8, 2.8)),
 ];
-/** The greenhouse: glass walls and roof in panes on a low wall, its door on the threshold. */
-const GLASS = [
-  [32, 74],
-  [32, 46],
-  [60, 22],
-  [88, 46],
-  [88, 74],
-];
-const greenhouse = () => [
-  ...polyO(GLASS, T),
-  rect('fg', 32, 45, 56, 2),
-  ...[44, 76].map((x) => rect('fg', x - 0.8, 46, 1.6, 20)),
-  poly('fg', [
-    [45, 46],
-    [47, 46],
-    [61, 24.5],
-    [59, 24.5],
-  ]),
-  poly('fg', [
-    [73, 46],
-    [75, 46],
-    [61, 24.5],
-    [59, 24.5],
-  ]),
-  ...plant(39, 66, 5),
-  ...plant(81, 66, 5),
-  ...boxO(32, 65, 56, 9, T),
-  ...boxO(52, 50, 16, 24, T, 1),
-  rect('fg', 59.2, 50, 1.6, 24),
-];
-
 build('garden-1', 'A garden bed', [
   yard(),
   ...sunflower(60, 62, 36),
@@ -470,26 +463,42 @@ build('garden-3', 'A garden with a fruit tree', [
   ...bed(68, 40, 66),
 ]);
 
-build('garden-4', 'A garden with a greenhouse', [
+build('garden-4', 'An orchard', [
   yard(),
-  ...fruitTree(102, 27, 15, false),
-  ...fruitTree(18, 27, 15, false),
-  ...hedge(4, 112, 40, 60),
-  ...greenhouse(),
-  ...[12, 22, 98, 108].flatMap((x) => plant(x, 66, 5)),
-  ...bed(6, 24, 66),
-  ...bed(90, 24, 66),
+  ...fruitTree(60, 22, 14, false),
+  ...fruitTree(37, 27, 13, false, FRUIT.slice(0, 2)),
+  ...fruitTree(83, 27, 13, false, FRUIT.slice(0, 2)),
+  ...fruitTree(16, 32, 11, false, FRUIT.slice(0, 2)),
+  ...fruitTree(104, 32, 11, false, FRUIT.slice(0, 2)),
+  ...hedge(5, 110, 42, 60),
+  ...[24, 38, 82, 96].flatMap((x) => plant(x, 66, 6)),
+  ...bed(14, 38, 66),
+  ...bed(68, 38, 66),
 ]);
 
-build('garden-5', 'An orchard around a greenhouse', [
+// The walled garden: the orchard and beds inside a wall of stones at
+// shoulder height; the trees and the beds' plants rise over it, and its
+// gate opens on the threshold stone.
+const GATE = [[47, 74], ...dome(60, 58, 13, 13, 12), [73, 74]];
+const WALL = [
+  [3, 48],
+  [117, 48],
+  [117, 74],
+  [3, 74],
+];
+build('garden-5', 'A walled garden', [
   yard(),
   ...fruitTree(60, 18, 15, false, FRUIT.slice(0, 2)),
-  ...fruitTree(34, 19, 16, false),
-  ...fruitTree(86, 19, 16, false),
-  ...fruitTree(13, 30, 13, false),
-  ...fruitTree(107, 30, 13, false),
-  ...hedge(1, 118, 42, 62),
-  ...greenhouse(),
+  ...fruitTree(33, 22, 15, false, FRUIT.slice(0, 2)),
+  ...fruitTree(87, 22, 15, false, FRUIT.slice(0, 2)),
+  ...fruitTree(12, 32, 11, false, FRUIT.slice(0, 2)),
+  ...fruitTree(108, 32, 11, false, FRUIT.slice(0, 2)),
+  ...[22, 36, 84, 98].flatMap((x) => plant(x, 48, 7)),
+  poly('tint', GATE),
+  shapeIn('fg', minus([WALL], [GATE])),
+  shapeIn('bg', minus(grow([WALL], -T), grow([GATE], T))),
+  masonry(minus(box(5, 51, 110, 22), grow([GATE], T + 0.5)), 7, 16),
+  ...boxO(1, 45, 118, 5, T, 2),
 ]);
 
 // Well: a hole dug for water that grows into a well house, in front of the
@@ -512,28 +521,6 @@ const bucket = (cx, top, w = 10, h = 10) => {
     shapeIn('accent', grow([shape], -1.6)),
     rect('fg', cx - w / 2, top + h * 0.35, w, 1.4),
   ];
-};
-/**
- * Masonry: courses of stones over a wall (a shape), each course `h` high,
- * the joints of every second course shifted by half a stone `w`, clipped
- * to the wall, so they stop at its edges and at any opening cut out of it
- * (ladder-geometry.mjs). One path, so a wall of many stones stays small.
- */
-const masonry = (wall, h, w) => {
-  const [x0, y0, x1, y1] = [
-    Math.min(...wall.flat().map(([x]) => x)),
-    Math.min(...wall.flat().map(([, y]) => y)),
-    Math.max(...wall.flat().map(([x]) => x)),
-    Math.max(...wall.flat().map(([, y]) => y)),
-  ];
-  const joints = [];
-  for (let k = 0, y = y0; y < y1 - 0.5; k += 1, y += h) {
-    const bottom = Math.min(y + h, y1);
-    if (k > 0) joints.push(...box(x0, y - 0.8, x1 - x0, 1.6));
-    for (let x = x0 + w * (k % 2 ? 0.5 : 1); x < x1 - 2; x += w)
-      joints.push(...box(x - 0.8, y, 1.6, bottom - y));
-  }
-  return path('fg', rings(within(joints, wall)));
 };
 /** The round well seen from the front: a wall of stones, its rim an ellipse round the water. */
 const wellWall = (x, w, top = 52) => [
@@ -1113,8 +1100,8 @@ ladder(
       { art: 'build-garden-1', title: 'A garden bed' },
       { art: 'build-garden-2', title: 'A garden in rows' },
       { art: 'build-garden-3', title: 'A garden with a fruit tree' },
-      { art: 'build-garden-4', title: 'A greenhouse' },
-      { art: 'build-garden-5', title: 'An orchard' },
+      { art: 'build-garden-4', title: 'An orchard' },
+      { art: 'build-garden-5', title: 'A walled garden' },
     ],
   },
   groundOf('field'),

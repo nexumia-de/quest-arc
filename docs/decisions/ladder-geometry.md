@@ -43,7 +43,9 @@ of the threshold stone was only ever checked by eye.
   - it covers at least 5 % more area than the version before (a tall,
     thin version such as a well sweep grows less in area than it looks,
     so the bar is low; it catches a version that is not larger);
-  - no shape but the threshold stone covers the threshold stone.
+  - no shape but the threshold stone covers the threshold stone;
+  - no picture is larger than the picture checker's 4 KB (added with
+    #135, after a redraw went over it unnoticed).
 - `packages/engine/test/art-geometry.test.ts` measures the committed
   pictures the same way, so `npm run journeys` and CI catch a picture
   changed by other means.
@@ -74,7 +76,7 @@ of the threshold stone was only ever checked by eye.
     base line.
 - Curves become points inside the geometry library, so a shape built
   there is written as a polygon or a path of straight lines; the 4 KB
-  limit still applies (largest build 4,042 bytes, Garden 4).
+  limit still applies, and the generator refuses a picture above it (largest build 3,915 bytes, Garden 3, after #135).
 - Not measured: the thinnest line at 60 × 40 (joints and ropes are
   meant to be thin) and whether a version reads as what it is; that stays
   the owner's review.
