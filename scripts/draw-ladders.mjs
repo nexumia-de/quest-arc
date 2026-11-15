@@ -535,13 +535,27 @@ const fall = (x, top, bottom, w = 3) => rect('tint-strong', x, top, w, bottom - 
  * high, the joints of every second course shifted by half a stone `w`;
  * one path, so a wall of many stones stays a small file.
  */
-const masonry = (x0, y0, x1, y1, h, w) => {
+const masonry = (x0, y0, x1, y1, h, w, hole = () => null) => {
   let d = '';
   const joint = (x, y, jw, jh) => `M${n(x)} ${n(y)}h${n(jw)}v${n(jh)}h${n(-jw)}Z`;
+  /** A joint across from a to b, split around the hole at height y. */
+  const across = (a, b, y) => {
+    const gap = hole(y);
+    if (!gap) return joint(a, y - 0.8, b - a, 1.6);
+    return [
+      [a, gap[0]],
+      [gap[1], b],
+    ]
+      .filter(([l, r]) => r - l > 1)
+      .map(([l, r]) => joint(l, y - 0.8, r - l, 1.6))
+      .join('');
+  };
   for (let k = 0, y = y0; y < y1 - 0.5; k += 1, y += h) {
-    if (k > 0) d += joint(x0, y - 0.8, x1 - x0, 1.6);
+    const bottom = Math.min(y + h, y1);
+    if (k > 0) d += across(x0, x1, y);
+    const gaps = [hole(y), hole(bottom)].filter(Boolean);
     for (let x = x0 + w * (k % 2 ? 0.5 : 1); x < x1 - 2; x += w)
-      d += joint(x - 0.8, y, 1.6, Math.min(h, y1 - y));
+      if (!gaps.some(([l, r]) => x > l - 1 && x < r + 1)) d += joint(x - 0.8, y, 1.6, bottom - y);
   }
   return path('fg', d);
 };
@@ -626,6 +640,13 @@ build('well-4', 'A well under a roof', [
 // inside the arch, a smaller well set back on its floor, then the front
 // wall with the arch cut out over it, so the wall's edges cover the well's.
 const ARCH = [[26, 74], ...dome(60, 60, 34, 28), [94, 74]];
+/** Where the arch and its outline cut a course at height y: [left, right], or none above it. */
+const archAt = (y) => {
+  const [base, rx, ry] = [60, 34, 28];
+  if (y < base - ry - T) return null;
+  const t = y >= base ? 1 : Math.max(0, 1 - (base - y + T) / ry) ** (1 / 1.7);
+  return [60 - rx * t - T - 0.5, 60 + rx * t + T + 0.5];
+};
 const ring = (list) => `M${list.map(([x, y]) => `${n(x)} ${n(y)}`).join('L')}Z`;
 const FRONT = [
   [8, 28],
@@ -655,8 +676,7 @@ build('well-5', 'A well house', [
     ring(inset(FRONT, T)) + ring(inset(ARCH, -T).map(([x, y]) => [x, Math.min(y, 74 - T)])),
     true,
   ),
-  masonry(10, 30, 25, 73, 7, 8),
-  masonry(95, 30, 110, 73, 7, 8),
+  masonry(10, 30, 110, 73, 7, 9, archAt),
 ]);
 
 // ---- markers: drawn once for every ladder (32 × 32) ---------------------
