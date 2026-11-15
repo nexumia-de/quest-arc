@@ -5,6 +5,15 @@ Changes that users notice, newest first. Versions follow the plugin's
 [GitHub release](https://github.com/nexumia-de/quest-arc/releases) with the
 plugin ZIP.
 
+## 4.1.0
+
+- **Three new things to build:** a Garden, a Well and a Lookout, each
+  growing in five versions that keep what stands and add to it.
+- **Journeys build new things:** _A walk after lunch_ builds a Lookout,
+  _Evening wind-down_ and _Tidy a little_ a Garden, _First Things First_
+  and _A gentle morning_ a Well; _A few pages before sleep_ keeps its
+  Home. The Crossing over the river is retired.
+
 ## 4.0.0
 
 - **Start from the moments in your day.** You name a moment in your own
