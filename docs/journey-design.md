@@ -171,7 +171,8 @@ journey):
    thatch, a cottage with a pitched roof and chimney, a house of two
    storeys. Garden is one raised bed with a sunflower, two rows of beds,
    the rows before a hedge with a fruit tree, an orchard of five fruit
-   trees behind the hedge, the orchard and beds inside a wall of stones
+   trees in a row behind the hedge, the orchard and beds inside a wall of
+   stones
    at shoulder height with its gate on the threshold (#135). Well
    follows how water is drawn: a water hole dug down to the water (its
    earth heaped behind with the spade in it), a well sweep (a beam on a

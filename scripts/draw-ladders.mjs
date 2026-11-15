@@ -423,14 +423,21 @@ const hedge = (x, w, top, base = 66) => {
     rect('bg', x + T, cy, w - 2 * T, base - cy - T),
   ];
 };
-/** A fruit tree: trunk (unless hidden), round crown, fruits in the accent. */
+/**
+ * A fruit tree: trunk (outlined to the ground; `'solid'`, ending behind a
+ * hedge or wall at y = 58; or none), round crown, fruits in the accent.
+ */
 const FRUIT = [
   [-0.45, -0.05],
   [0.4, -0.35],
   [0.15, 0.4],
 ];
 const fruitTree = (cx, cy, r, trunk = true, fruits = FRUIT) => [
-  ...(trunk ? boxO(cx - 3.5, cy, 7, 74 - cy, T) : []),
+  ...(trunk === 'solid'
+    ? [rect('fg', cx - 2.2, cy, 4.4, 58 - cy)]
+    : trunk
+      ? boxO(cx - 3.5, cy, 7, 74 - cy, T)
+      : []),
   ...ellipseO(cx, cy, r, r * 0.92, T),
   ...fruits.map(([dx, dy]) => ellipse('accent', cx + dx * r, cy + dy * r, 2.8, 2.8)),
 ];
@@ -465,11 +472,7 @@ build('garden-3', 'A garden with a fruit tree', [
 
 build('garden-4', 'An orchard', [
   yard(),
-  ...fruitTree(60, 22, 14, false),
-  ...fruitTree(37, 27, 13, false, FRUIT.slice(0, 2)),
-  ...fruitTree(83, 27, 13, false, FRUIT.slice(0, 2)),
-  ...fruitTree(16, 32, 11, false, FRUIT.slice(0, 2)),
-  ...fruitTree(104, 32, 11, false, FRUIT.slice(0, 2)),
+  ...[16, 38, 60, 82, 104].flatMap((x) => fruitTree(x, 26, 11, 'solid', FRUIT.slice(0, 2))),
   ...hedge(5, 110, 42, 60),
   ...[24, 38, 82, 96].flatMap((x) => plant(x, 66, 6)),
   ...bed(14, 38, 66),
@@ -488,12 +491,8 @@ const WALL = [
 ];
 build('garden-5', 'A walled garden', [
   yard(),
-  ...fruitTree(60, 18, 15, false, FRUIT.slice(0, 2)),
-  ...fruitTree(33, 22, 15, false, FRUIT.slice(0, 2)),
-  ...fruitTree(87, 22, 15, false, FRUIT.slice(0, 2)),
-  ...fruitTree(12, 32, 11, false, FRUIT.slice(0, 2)),
-  ...fruitTree(108, 32, 11, false, FRUIT.slice(0, 2)),
-  ...[22, 36, 84, 98].flatMap((x) => plant(x, 48, 7)),
+  ...[14, 37, 60, 83, 106].flatMap((x) => fruitTree(x, 20, 12, 'solid', FRUIT.slice(0, 2))),
+  ...[48.5, 71.5].flatMap((x) => plant(x, 48, 6.5)),
   poly('tint', GATE),
   shapeIn('fg', minus([WALL], [GATE])),
   shapeIn('bg', minus(grow([WALL], -T), grow([GATE], T))),
