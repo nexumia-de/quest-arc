@@ -72,9 +72,14 @@ journey checker ([story format](story-format.md#the-journey-checker)).
   `new Function`, so it must not contain `import`.
 - `index.html` with the view's script and `start.css` inlined: iframe
   plugins get no other files from the ZIP. Both are built without
-  whitespace (`minifyWhitespace`; names stay readable), because
+  whitespace, with shorter syntax and with shortened names
+  (`minifyWhitespace`, `minifySyntax`, `minifyIdentifiers`), because
   Super Productivity 19.3 installs an `index.html` of at most 100 KB; the
-  build fails above it. `plugin.js` stays as it is (limit 5 MB).
+  build fails above it. `plugin.js` stays as it is (limit 5 MB). Names in
+  the view are not readable any more: to debug, build without the name
+  shortening (`QUESTARC_READABLE=1 npm run build`, the size limit still
+  applies, so a failing size message is expected there) or read the
+  sources, which the screens' class names (`qa-…`) and texts map to.
 - What is data and not code is not in `index.html`: the UI texts
   (`content/i18n/en.json`), the screens' style (`src/ui/style.css`) and
   the ladders' pictures are in `plugin.js` and reach the view once by

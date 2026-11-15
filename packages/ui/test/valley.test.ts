@@ -159,6 +159,75 @@ describe('a new version appears, the first draw animates nothing', () => {
   });
 });
 
+describe('the place piece draws the first thing, or the one of the journey whose page it is (#130)', () => {
+  const two = [place('a', { things: [thing(3), { ...thing(1), runId: 'second' }] })];
+  it('draws the first thing, and the one of a given run', () => {
+    expect(valleyModel(two, [], journeys, pack).places[0]?.thing?.runId).toBe('run-home');
+    const own = valleyModel(two, [], journeys, pack, { runId: 'second' }).places[0];
+    expect(own?.thing?.runId).toBe('second');
+    expect(own?.art).toBe(home.versions[0]?.art);
+  });
+
+  it('draws the first thing for a run that builds none', () => {
+    const model = valleyModel(two, [], journeys, pack, { runId: 'unbuilt' });
+    expect(model.places[0]?.thing?.runId).toBe('run-home');
+  });
+});
+
+describe('the place piece drawn large (#130)', () => {
+  const growing = (progress: number, ready = false) =>
+    valleyModel(
+      [place('a', { growing: true, things: [{ ...thing(2), markerProgress: progress, ready }] })],
+      [],
+      journeys,
+      pack,
+      { height: 300, own: true, marker: true },
+    ).places[0];
+
+  it('is as high as asked, one place filling it', () => {
+    const model = valleyModel([place('a')], [], journeys, pack, { height: 300, own: true });
+    expect(model.geometry.height).toBe(300);
+  });
+
+  it('draws the marker only where asked and only while its journey grows', () => {
+    const plain = valleyModel([place('a', { things: [thing(2)] })], [], journeys, pack);
+    expect(plain.places[0]?.marker).toBeUndefined();
+    const resting = valleyModel(
+      [place('a', { things: [{ ...thing(2), state: 'finished' }] })],
+      [],
+      journeys,
+      pack,
+      { marker: true },
+    );
+    expect(resting.places[0]?.marker).toBeUndefined();
+    expect(growing(0.5)?.marker?.length).toBeGreaterThan(0);
+  });
+
+  it('stands the marker in front of the thing, inside its slot and never across the path', () => {
+    const piece = growing(1, true);
+    const slot = piece?.piece.slot;
+    expect(slot).toBeDefined();
+    for (const m of piece?.marker ?? []) {
+      if (m.art.includes('cord')) continue;
+      expect(m.x).toBeGreaterThanOrEqual((slot?.x ?? 0) - 0.01);
+      expect(m.x + m.width).toBeLessThanOrEqual((slot?.x ?? 0) + (slot?.width ?? 0) + 0.01);
+      expect(m.y + m.height).toBeLessThanOrEqual((slot?.y ?? 0) + (slot?.height ?? 0) + 0.01);
+    }
+  });
+
+  it('shows more elements as the stage progresses and none beyond its order', () => {
+    const few = growing(0.2)?.marker ?? [];
+    const all = growing(1)?.marker ?? [];
+    expect(all.length).toBeGreaterThan(few.length);
+    expect(Math.max(...few.map((m) => m.order))).toBeLessThan(Math.max(...all.map((m) => m.order)));
+  });
+
+  it('passes the layout checks alone at the place page height, from either side', () => {
+    for (const side of ['left', 'right'] as const)
+      expect(valleyProblems(valleyLayout({ sides: [side], height: 230 }))).toEqual([]);
+  });
+});
+
 describe('the scene is about two thirds of the window high', () => {
   it('is 480 units on a 360 × 720 phone, so the growing card starts on the first screen', () => {
     expect(sceneHeight(720, 360)).toBe(480);
@@ -185,8 +254,8 @@ describe('the scene is about two thirds of the window high', () => {
       place(`p${i}`, { side: i % 2 ? 'left' : 'right' }),
     );
     const eight = [...six, place('p6'), place('p7', { side: 'left' })];
-    expect(valleyModel(six, [], journeys, pack, 480).geometry.height).toBe(480);
-    expect(valleyModel(eight, [], journeys, pack, 480).geometry.height).toBe(640);
-    expect(valleyModel(six, [], journeys, pack, 300).geometry.height).toBe(480);
+    expect(valleyModel(six, [], journeys, pack, { height: 480 }).geometry.height).toBe(480);
+    expect(valleyModel(eight, [], journeys, pack, { height: 480 }).geometry.height).toBe(640);
+    expect(valleyModel(six, [], journeys, pack, { height: 300 }).geometry.height).toBe(480);
   });
 });

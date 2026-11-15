@@ -7,9 +7,10 @@ import {
 
 import { t } from '../../shared/texts';
 import type { ArtPack } from '../../shared/protocol';
+import type { Placed } from '../art';
 import { buildState, hueOf } from '../journey/build';
 import { anchorTitle } from '../journey/moment';
-import { versionName, type Ladder } from '../ladder';
+import { ladderScene, versionName, type Ladder } from '../ladder';
 
 /**
  * The Valley as data (docs/behaviour.md screen 0, docs/journey-design.md
@@ -19,12 +20,16 @@ import { versionName, type Ladder } from '../ladder';
  * Node's tests.
  */
 
+type ThingView = PlaceView['things'][number];
+
 /** One piece of the engine's layout (the type is the layout's, not the view's). */
 type Piece = ReturnType<typeof valleyLayout>['places'][number];
 export type Geometry = ReturnType<typeof valleyLayout>;
 
 export interface PlaceModel {
   readonly view: PlaceView;
+  /** The thing drawn: the first of the place, or the one of `options.runId`. */
+  readonly thing?: ThingView;
   readonly piece: Piece;
   /** The name shown: the user's name for the moment, else "After …" or "At …". */
   readonly title: string;
@@ -33,6 +38,8 @@ export interface PlaceModel {
   readonly ladder?: Ladder;
   /** The place in words for screen readers: name, thing, version, sign. */
   readonly label: string;
+  /** The marker's pictures in front of the thing, in scene units, while its journey grows. */
+  readonly marker?: readonly (Placed & { readonly order: number })[];
   /** The tap area: the row of the place, from edge to edge, at least 44 high. */
   readonly hit: { x: number; y: number; width: number; height: number };
 }
@@ -50,16 +57,13 @@ export const versionArt = (ladder: Ladder, version: number): string | undefined 
 const wording = (
   place: PlaceView,
   title: string,
+  thing: ThingView | undefined,
   ladder: Ladder | undefined,
   journey: Journey | undefined,
 ): string => {
-  // One thing is drawn: the first (a place holds up to three, game rules §8).
-  const thing = place.things[0];
   const parts: string[] = [];
   if (thing && ladder) {
-    const state = journey
-      ? buildState({ ...thing, hue: '' }, journey)
-      : { versions: thing.versions };
+    const state = buildState({ ...thing, hue: '' }, journey);
     parts.push(
       t('ui.valley.place', {
         name: title,
@@ -88,21 +92,69 @@ export const MIN_SCENE_HEIGHT = 480;
 export const sceneHeight = (windowHeight: number, pixels: number): number =>
   Math.max(MIN_SCENE_HEIGHT, Math.round(((2 / 3) * windowHeight * 360) / Math.max(pixels, 1)));
 
+/**
+ * The marker's pictures (posts, cords, beads) of a growing thing, mapped
+ * from the ladder's setting onto the thing's slot: the posts' span fills
+ * the slot's width, the feet stand on its lower edge, so the marker stands
+ * in front of the thing and never beyond the slot.
+ */
+const markerPieces = (
+  ladder: Ladder,
+  slot: Piece['slot'],
+  thing: ThingView,
+  journey: Journey | undefined,
+): (Placed & { order: number })[] => {
+  const loose = ladder.pictures.filter((p) => p.slot === 'marker' && p.part !== 'cord');
+  const left = Math.min(...loose.map((p) => p.x));
+  const right = Math.max(...loose.map((p) => p.x + p.width));
+  const base = Math.max(...loose.map((p) => p.y + p.height));
+  const scale = slot.width / (right - left);
+  const state = buildState({ ...thing, hue: '' }, journey);
+  return ladderScene(ladder, thing.version, state).pictures.flatMap((p) => {
+    const order = (p as { order?: number }).order;
+    if ((p as { slot?: string }).slot !== 'marker' || order === undefined) return [];
+    return {
+      ...p,
+      order,
+      x: slot.x + (p.x - left) * scale,
+      y: slot.y + slot.height + (p.y - base) * scale,
+      width: p.width * scale,
+      height: p.height * scale,
+    };
+  });
+};
+
+export interface ModelOptions {
+  /** The height of the scene (the layout's units, 360 wide); the layout's own where absent. */
+  readonly height?: number;
+  /**
+   * One place's own page: the height is used as given, below the Valley's
+   * minimum (which keeps the layout's checks for six places and beyond).
+   */
+  readonly own?: boolean;
+  /** The journey whose page it is: its thing is drawn instead of the first. */
+  readonly runId?: string;
+  /** Draw the marker of a growing thing (the place's pages, not the Valley). */
+  readonly marker?: boolean;
+}
+
 export const valleyModel = (
   places: readonly PlaceView[],
   anchors: readonly AnchorView[],
   journeys: readonly Journey[],
   pack: Pick<ArtPack, 'ladders'>,
-  height?: number,
+  options: ModelOptions = {},
 ): ValleyModel => {
   // Where nothing stands yet, plain land with the path, short enough to leave the words in view.
+  const height =
+    places.length === 0
+      ? EMPTY_HEIGHT
+      : options.height === undefined || options.own
+        ? options.height
+        : Math.max(options.height, MIN_SCENE_HEIGHT);
   const geometry = valleyLayout({
     sides: places.map((p) => p.side),
-    ...(places.length === 0
-      ? { height: EMPTY_HEIGHT }
-      : height === undefined
-        ? {}
-        : { height: Math.max(height, MIN_SCENE_HEIGHT) }),
+    ...(height === undefined ? {} : { height }),
   });
   return {
     geometry,
@@ -111,26 +163,31 @@ export const valleyModel = (
       if (!piece) return [];
       const anchor = anchors.find((a) => a.id === view.anchorId);
       const title = anchor ? anchorTitle(anchor, journeys) : view.name;
-      const thing = view.things[0];
+      // One thing is drawn (a place holds up to three, game rules §8): the one of the
+      // journey whose page it is, else the first.
+      const thing = view.things.find((each) => each.runId === options.runId) ?? view.things[0];
       const ladder = thing ? pack.ladders[thing.ladder] : undefined;
       const journey = thing && journeys.find((j) => j.id === thing.journeyId);
       const art = ladder && thing ? versionArt(ladder, thing.version) : undefined;
       // The thing's row: slot and name side by side, from edge to edge.
       const top = Math.min(piece.slot.y, piece.name.y);
       const bottom = Math.max(piece.slot.y + piece.slot.height, piece.name.y + piece.name.height);
-      const height = Math.max(44, bottom - top);
+      const span = Math.max(44, bottom - top);
+      const growing = options.marker && ladder && thing?.state === 'growing';
       return {
         view,
         piece,
         title,
         ...(art ? { art } : {}),
+        ...(thing ? { thing } : {}),
+        ...(growing && thing ? { marker: markerPieces(ladder, piece.slot, thing, journey) } : {}),
         ...(ladder ? { ladder } : {}),
-        label: wording(view, title, ladder, journey),
+        label: wording(view, title, thing, ladder, journey),
         hit: {
           x: 0,
-          y: Math.min(top, geometry.height - height),
+          y: Math.min(top, geometry.height - span),
           width: geometry.width,
-          height,
+          height: span,
         },
       };
     }),

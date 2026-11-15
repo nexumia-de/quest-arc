@@ -16,9 +16,11 @@ import { wasSeen } from './seen';
  * graduate is a choice (it comes back after four weeks), the others
  * are put aside on this device. The shelf keeps the quiet way to all.
  */
-export const habitBanners = (ctx: Context): HTMLElement[] => {
+export const habitBanners = (ctx: Context, anchorId?: string): HTMLElement[] => {
   const week = isoWeek(ctx.state.view.todayStr);
   return habitsOf(ctx.state).flatMap(({ run, stage, habit }) => {
+    // On a place's page only the habits that stand at that place.
+    if (anchorId !== undefined && run.anchor?.id !== anchorId) return [];
     const id = `${run.runId}:${stage.id}`;
     const name = habitName(stage, run.anchor);
     const banner = (

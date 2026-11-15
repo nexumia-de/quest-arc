@@ -48,11 +48,11 @@ const small = (source: string | undefined, hue = art().palette['meadow'], viewBo
   return svg;
 };
 
-const option = (
+export const option = (
   group: string,
   value: string,
   checked: boolean,
-  art: Node,
+  art: Node | null,
   label: string,
   note: string | undefined,
   onPick: (value: string) => void,
@@ -96,6 +96,7 @@ export const buildChooser = (
       'fieldset',
       { class: 'qa-fieldset' },
       h('legend', { class: 'qa-section-title' }, t('ui.build.thing')),
+      h('p', { class: 'qa-muted qa-small' }, t('ui.build.one-thing')),
       ...ladderNames().map((name) => {
         const ladder = art().ladders[name];
         return option(
@@ -134,34 +135,6 @@ export const buildChooser = (
           );
         }),
     ),
-    h(
-      'fieldset',
-      { class: 'qa-fieldset' },
-      h('legend', { class: 'qa-section-title' }, t('ui.build.colour')),
-      h(
-        'div',
-        { class: 'qa-swatches' },
-        ...LADDERS.hues
-          .filter((name) => art().palette[name] !== undefined)
-          .map((name) => {
-            const swatch = h('span', { class: 'qa-swatch', 'aria-hidden': 'true' });
-            const each = art().palette[name];
-            if (each) {
-              swatch.style.setProperty('--qa-hue-light', each.light);
-              swatch.style.setProperty('--qa-hue-dark', each.dark);
-            }
-            return option(
-              'qa-hue',
-              name,
-              name === shown.hue,
-              swatch,
-              each?.title ?? name,
-              undefined,
-              pick('hue'),
-            );
-          }),
-      ),
-    ),
   );
 };
 
@@ -169,11 +142,7 @@ export const buildChooser = (
 export const buildSummary = (journey: Journey, choice: BuildChoice): string => {
   const shown = resolveBuild(journey, choice);
   const title = art().ladders[shown.ladder]?.title ?? shown.ladder;
-  return [
-    title,
-    inLine(markerTitle(shown.marker)),
-    inLine(art().palette[shown.hue]?.title ?? shown.hue),
-  ].join(' · ');
+  return [title, inLine(markerTitle(shown.marker))].join(' · ');
 };
 
 /** The first version, which stands from the start, as a small picture. */

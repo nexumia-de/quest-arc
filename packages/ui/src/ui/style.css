@@ -756,7 +756,7 @@
   .qa-build {
     grid-row: 1;
     align-self: start;
-    max-width: 560px;
+    max-width: 440px;
     margin: var(--s2, 16px) 0 0 var(--s2, 16px);
   }
 
@@ -934,6 +934,69 @@
 
 @media (min-width: 720px) {
   .qa-home {
+    display: grid;
+    grid-template-columns: minmax(0, 440px) minmax(0, 1fr);
+    align-items: start;
+    gap: var(--s3, 24px);
+  }
+}
+
+.qa-btn:disabled {
+  opacity: 0.5;
+  cursor: default;
+}
+
+/* The place (screens 4 and the place at rest): the piece large, a pencil on it. */
+.qa-place-piece {
+  position: relative;
+}
+
+.qa-place-edit {
+  position: absolute;
+  top: var(--s-half, 4px);
+  inset-inline-end: var(--s-half, 4px);
+  background: color-mix(in srgb, var(--bg-lighter, #fff) 80%, transparent);
+}
+
+.qa-place {
+  display: flex;
+  flex-direction: column;
+  gap: var(--s2, 16px);
+}
+
+.qa-place > .qa-build {
+  margin: 0;
+}
+
+.qa-place-side {
+  min-width: 0;
+}
+
+.qa-routine {
+  display: flex;
+  flex-direction: column;
+  margin: 0;
+}
+
+.qa-day {
+  display: flex;
+  flex-direction: column;
+  gap: var(--s-half, 4px);
+  margin: 0;
+  padding-inline-start: var(--s3, 24px);
+}
+
+.qa-day-here {
+  font-weight: var(--font-weight-bold, 700);
+}
+
+.qa-day-here > span {
+  margin-inline-start: var(--s, 8px);
+  font-weight: normal;
+}
+
+@media (min-width: 720px) {
+  .qa-place {
     display: grid;
     grid-template-columns: minmax(0, 440px) minmax(0, 1fr);
     align-items: start;
