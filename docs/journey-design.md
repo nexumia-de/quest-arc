@@ -166,7 +166,7 @@ journey):
    storeys. Garden is one raised bed with a sunflower, two rows of beds,
    the rows before a hedge with a fruit tree, a greenhouse between hedges
    and trees, an orchard of five fruit trees around the greenhouse. Well
-   is a spring from a rock into a basin of stones, a trough under a pump,
+   is a spring from a rock into a basin of stones, a trough fed by the spring through a wooden channel,
    a round well with a winch, the well under a roof, a stone well
    house with the well inside, under its arch (owner: a fountain is another use,
    not a well).

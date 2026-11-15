@@ -509,7 +509,7 @@ build('garden-5', 'An orchard around a greenhouse', [
 
 // Well: a spring that grows into a well house, in front of the same
 // threshold stone as Home's. Size and form both grow: a basin of stones
-// under a spring, a trough under a pump, a round well with a winch, the
+// under a spring, a trough fed by the spring, a round well with a winch, the
 // well under a roof, a stone well house over it. Water is `tint-strong`; the
 // accent is the bucket.
 const WELL_WAYS = HOME_WAYS;
@@ -598,25 +598,68 @@ build('well-1', 'A spring in a basin of stones', [
   ...bucket(93, 63),
 ]);
 
-build('well-2', 'A trough under a pump', [
+// The trough is fed from the spring, not pumped: the spring's rock behind,
+// a wooden channel on a forked post, the water falling into a plank
+// trough. Simpler than the dug well that follows.
+build('well-2', 'A trough fed by a spring', [
   yard(),
-  ...boxO(48, 30, 9, 30, T),
-  ...boxO(46, 27, 13, 5, T, 1.5),
-  ...boxO(55, 38, 12, 5, T),
-  rect('fg', 44, 34, 6, 2),
-  fall(62, 43, 58),
   ...polyO(
     [
-      [30, 56],
-      [90, 56],
-      [87, 74],
-      [33, 74],
+      [10, 74],
+      [11, 61],
+      [17, 53],
+      [24, 51],
+      [30, 42],
+      [39, 45],
+      [45, 52],
+      [47, 74],
     ],
     T,
   ),
-  rect('tint-strong', 32, 58, 56, 3.5),
-  ...[48, 72].map((x) => rect('fg', x - 0.8, 61, 1.6, 13)),
-  ...bucket(98, 64),
+  rect('fg', 22, 60, 9, 1.6),
+  rect('fg', 33, 51, 1.6, 7),
+  rect('fg', 55.2, 41, 1.8, 15),
+  poly('fg', [
+    [51, 37],
+    [52.8, 37],
+    [57, 43],
+    [55.2, 43],
+  ]),
+  poly('fg', [
+    [61, 37],
+    [59.2, 37],
+    [55, 43],
+    [56.8, 43],
+  ]),
+  ...polyO(
+    [
+      [36, 36],
+      [70, 40],
+      [70, 45],
+      [36, 41],
+    ],
+    1.8,
+  ),
+  poly('tint-strong', [
+    [38, 38.1],
+    [68.2, 41.6],
+    [68.2, 42.6],
+    [38, 39.1],
+  ]),
+  fall(65, 45, 58, 3.5),
+  ...polyO(
+    [
+      [32, 56],
+      [92, 56],
+      [89, 74],
+      [35, 74],
+    ],
+    T,
+  ),
+  rect('tint-strong', 34, 58, 56, 3.5),
+  rect('fg', 34, 65.2, 56, 1.6),
+  ...[50, 74].map((x) => rect('fg', x - 0.8, 61, 1.6, 13)),
+  ...bucket(100, 64),
 ]);
 
 build('well-3', 'A well with a winch', [yard(), ...winch(30, 60, 22), ...wellWall(26, 68)]);
