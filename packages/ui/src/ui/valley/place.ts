@@ -29,24 +29,13 @@ export const placeOfRun = (ctx: Context, run: RunView): ValleyPlace => {
     valley.find((p) => p.thing?.runId === run.runId) ??
     valley.find((p) => p.anchorId === run.anchor?.id);
   if (found) return found;
-  const { ladder, version, skipped, versions, marker, markerProgress, ready } = run.build;
+  const { build } = run;
   return {
     anchorId: run.anchor?.id ?? '',
     name: '',
     side: 'right',
-    hue: art().ladders[ladder]?.hue ?? '',
-    thing: {
-      runId: run.runId,
-      journeyId: run.journeyId,
-      state: 'growing',
-      ladder,
-      version,
-      skipped,
-      versions,
-      marker,
-      markerProgress,
-      ready,
-    },
+    hue: art().ladders[build.ladder]?.hue ?? '',
+    thing: { ...build, runId: run.runId, journeyId: run.journeyId, state: 'growing' },
     surroundings: 0,
     growing: true,
     chosen: {},

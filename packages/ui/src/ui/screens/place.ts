@@ -44,6 +44,18 @@ export const routineCard = (ctx: Context, anchor: AnchorView): HTMLElement => {
   ) as HTMLElement;
 };
 
+/** **Extend This Moment**: screen 2 for the moment (on the place and on screen 0a). */
+export const extendButton = (ctx: Context, anchorId: string) =>
+  h(
+    'button',
+    {
+      class: 'qa-btn qa-btn-secondary',
+      type: 'button',
+      onclick: () => ctx.go({ name: 'choose', anchorId }),
+    },
+    t('ui.anchor.extend'),
+  );
+
 /**
  * The place at rest (docs/behaviour.md): the place piece with its thing
  * and sign, the versions that stand, the routine in words, the questions
@@ -70,17 +82,7 @@ export const placeScreen = (ctx: Context, anchorId: string): Screen => {
         { class: 'qa-place-side qa-stack' },
         routineCard(ctx, anchor),
         ...habitBanners(ctx, anchorId),
-        place.growing
-          ? null
-          : h(
-              'button',
-              {
-                class: 'qa-btn qa-btn-secondary',
-                type: 'button',
-                onclick: () => ctx.go({ name: 'choose', anchorId }),
-              },
-              t('ui.anchor.extend'),
-            ),
+        place.growing ? null : extendButton(ctx, anchorId),
       ),
     ),
   };

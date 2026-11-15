@@ -189,19 +189,15 @@ export const valleyScene = (
   shown = new Map();
   model.places.forEach(({ marker, view }, i) => {
     const slot = layers.get('marker')?.[i];
-    if (!marker || !slot || !view.thing) return;
-    const key = view.thing.runId;
+    const key = view.thing?.runId ?? '';
+    if (!marker || !slot) return;
     shown.set(key, Math.max(0, ...marker.map((m) => m.order)));
-    const was = before.get(key);
-    for (const picture of marker) {
-      const source = art().pictures[picture.art];
+    for (const m of marker) {
+      const source = art().pictures[m.art];
       if (!source) continue;
-      const el = part(source, picture, placeHue(view));
-      if (was !== undefined && picture.order > was) {
-        const g = svgEl('g', { class: 'qa-grow' });
-        g.append(el);
-        slot.append(g);
-      } else slot.append(el);
+      const g = svgEl('g', m.order > (before.get(key) ?? Infinity) ? { class: 'qa-grow' } : {});
+      g.append(part(source, m, placeHue(view)));
+      slot.append(g);
     }
   });
 

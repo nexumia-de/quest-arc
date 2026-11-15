@@ -6,6 +6,7 @@ import { h } from '../dom';
 import { momentFields, momentOf, suggestedWords, type MomentDraft } from '../journey/moment';
 import type { Context, Screen } from '../screen';
 import { placeChoices } from '../valley/choices';
+import { extendButton } from './place';
 
 /**
  * Screen 0a, a moment (docs/behaviour.md, #96): its words or its time and
@@ -77,17 +78,7 @@ export const momentScreen = (ctx: Context, anchorId: string, journeyId?: string)
       place ? placeChoices(ctx, place) : null,
       h('p', { class: 'qa-muted' }, t('ui.moment.tasks')),
       // The home has no button for it any more: a moment where no journey grows can be extended here.
-      !journeyId && !(anchor.growing && view.active)
-        ? h(
-            'button',
-            {
-              class: 'qa-btn qa-btn-secondary',
-              type: 'button',
-              onclick: () => ctx.go({ name: 'choose', anchorId }),
-            },
-            t('ui.anchor.extend'),
-          )
-        : null,
+      !journeyId && !(anchor.growing && view.active) ? extendButton(ctx, anchorId) : null,
       Object.keys(removal).length > 0
         ? h(
             'div',

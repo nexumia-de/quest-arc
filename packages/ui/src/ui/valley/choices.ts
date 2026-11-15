@@ -11,8 +11,8 @@ import { t } from '../../shared/texts';
 import { art } from '../art-store';
 import { h } from '../dom';
 import { option } from '../journey/build-choice';
-import { anchorTitle } from '../journey/moment';
 import type { Context } from '../screen';
+import { valleyModel } from './model';
 
 /**
  * What the user places at a moment (docs/behaviour.md screen 0a, #114
@@ -36,10 +36,6 @@ export const placeChoices = (ctx: Context, place: ValleyPlace): HTMLElement => {
       },
       label,
     );
-  const named = (anchorId: string, fallback: string) => {
-    const anchor = view.anchors.find((a) => a.id === anchorId);
-    return anchor ? anchorTitle(anchor, journeys) : fallback;
-  };
   return h(
     'div',
     { class: 'qa-stack' },
@@ -50,15 +46,16 @@ export const placeChoices = (ctx: Context, place: ValleyPlace): HTMLElement => {
       h(
         'ol',
         { class: 'qa-day' },
-        ...view.valley.map((p) =>
-          h(
-            'li',
-            p.anchorId === id ? { class: 'qa-day-here', 'aria-current': 'true' } : {},
-            named(p.anchorId, p.name),
-            p.anchorId === id
-              ? h('span', { class: 'qa-muted qa-small' }, t('ui.place.here'))
-              : null,
-          ),
+        ...valleyModel(view.valley, view.anchors, journeys, art()).places.map(
+          ({ view: p, title }) =>
+            h(
+              'li',
+              p.anchorId === id ? { class: 'qa-day-here', 'aria-current': 'true' } : {},
+              title,
+              p.anchorId === id
+                ? h('span', { class: 'qa-muted qa-small' }, t('ui.place.here'))
+                : null,
+            ),
         ),
       ),
       move('earlier', t('ui.place.earlier'), at > 0),
@@ -87,25 +84,23 @@ export const placeChoices = (ctx: Context, place: ValleyPlace): HTMLElement => {
       h(
         'div',
         { class: 'qa-swatches' },
-        ...LADDERS.hues
-          .filter((name) => art().palette[name] !== undefined)
-          .map((name) => {
-            const each = art().palette[name];
-            const swatch = h('span', { class: 'qa-swatch', 'aria-hidden': 'true' });
-            if (each) {
-              swatch.style.setProperty('--qa-hue-light', each.light);
-              swatch.style.setProperty('--qa-hue-dark', each.dark);
-            }
-            return option(
-              'qa-hue',
-              name,
-              name === place.hue,
-              swatch,
-              each?.title ?? name,
-              undefined,
-              () => write(choosePlaceHue(view, id, name)),
-            );
-          }),
+        ...LADDERS.hues.map((name) => {
+          const each = art().palette[name];
+          const swatch = h('span', { class: 'qa-swatch', 'aria-hidden': 'true' });
+          if (each) {
+            swatch.style.setProperty('--qa-hue-light', each.light);
+            swatch.style.setProperty('--qa-hue-dark', each.dark);
+          }
+          return option(
+            'qa-hue',
+            name,
+            name === place.hue,
+            swatch,
+            each?.title ?? name,
+            undefined,
+            () => write(choosePlaceHue(view, id, name)),
+          );
+        }),
       ),
     ),
     Object.keys(place.chosen).length > 0

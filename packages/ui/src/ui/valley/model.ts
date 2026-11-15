@@ -100,8 +100,7 @@ const markerPieces = (
   thing: NonNullable<PlaceView['thing']>,
   journey: Journey | undefined,
 ): (Placed & { order: number })[] => {
-  const all = ladder.pictures.filter((p) => p.slot === 'marker');
-  const loose = all.filter((p) => p.slot === 'marker' && p.part !== 'cord');
+  const loose = ladder.pictures.filter((p) => p.slot === 'marker' && p.part !== 'cord');
   const left = Math.min(...loose.map((p) => p.x));
   const right = Math.max(...loose.map((p) => p.x + p.width));
   const base = Math.max(...loose.map((p) => p.y + p.height));
