@@ -18,7 +18,8 @@
   },
   "anchor": {
     "moment": "walk-after-lunch.moment",
-    "example": "walk-after-lunch.anchor"
+    "example": "walk-after-lunch.anchor",
+    "daypart": "midday"
   },
   "stages": [
     {

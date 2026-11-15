@@ -52,7 +52,7 @@ export const RUN_KINDS: ReadonlySet<string> = new Set([
  * Kinds that belong to no run and change nothing an older engine
  * computes: an anchor is the user's words for a moment in their day (#96).
  */
-export const GLOBAL_KINDS: ReadonlySet<string> = new Set(['anchor']);
+export const GLOBAL_KINDS: ReadonlySet<string> = new Set(['anchor', 'place']);
 
 /** A fixed time of day, "HH:MM" in 24 hours. */
 export const isTime = (value: unknown): value is string =>
@@ -61,6 +61,16 @@ export const isTime = (value: unknown): value is string =>
 /** An anchor record: the user's words, and the name they gave its place. */
 export interface AnchorRecord extends AnchorWords {
   readonly name?: string;
+}
+
+/**
+ * A place record: only what the user picked for an anchor's place in the
+ * Valley (game rules §8). `position` is a place in the order of the day.
+ */
+export interface PlaceRecord {
+  readonly position?: number;
+  readonly side?: 'left' | 'right';
+  readonly hue?: string;
 }
 
 /** Kinds every engine reads, also for a run in a newer format: they place the run among the others. */
@@ -140,6 +150,8 @@ export interface Choices {
   readonly anchors: ReadonlyMap<string, AnchorRecord>;
   /** runId → the anchor the run starts from, and the run of the step it follows */
   readonly runAnchors: ReadonlyMap<string, { anchorId: string; after?: string }>;
+  /** anchor id → what the user picked for the anchor's place (game rules §8) */
+  readonly places: ReadonlyMap<string, PlaceRecord>;
   /** runId → the user's build choices (names are checked when used) */
   readonly builds: ReadonlyMap<string, BuildChoice>;
   readonly userJourneys: readonly unknown[];
@@ -196,6 +208,7 @@ export const parseChoices = (records: Readonly<Record<string, unknown>>): Choice
   const reminders = new Map<string, ReminderSeen>();
   const anchors = new Map<string, AnchorRecord>();
   const runAnchors = new Map<string, { anchorId: string; after?: string }>();
+  const places = new Map<string, PlaceRecord>();
   const builds = new Map<string, BuildChoice>();
   const userJourneys: unknown[] = [];
   const problems: string[] = [];
@@ -315,6 +328,18 @@ export const parseChoices = (records: Readonly<Record<string, unknown>>): Choice
       else if (value.kind === 'routine' && words)
         anchors.set(parts[1], { kind: 'routine', words, ...naming });
       else bad();
+    } else if (kind === 'place' && parts.length === 2 && parts[1]) {
+      // Fields that are not understood are left out; what is left is kept.
+      const { position, side } = value;
+      const hue = str(value.hue);
+      const picked: PlaceRecord = {
+        ...(typeof position === 'number' && Number.isInteger(position) && position >= 0
+          ? { position }
+          : {}),
+        ...(side === 'left' || side === 'right' ? { side } : {}),
+        ...(hue ? { hue } : {}),
+      };
+      if (Object.keys(picked).length > 0) places.set(parts[1], picked);
     } else if (kind === 'run-anchor' && parts.length === 2 && parts[1]) {
       const anchorId = str(value.anchorId);
       const after = str(value.after);
@@ -365,6 +390,7 @@ export const parseChoices = (records: Readonly<Record<string, unknown>>): Choice
     reminders,
     anchors,
     runAnchors,
+    places,
     builds,
     userJourneys,
     newer,

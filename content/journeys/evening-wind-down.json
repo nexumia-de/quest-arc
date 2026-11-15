@@ -18,7 +18,8 @@
   },
   "anchor": {
     "moment": "evening-wind-down.moment",
-    "example": "evening-wind-down.anchor"
+    "example": "evening-wind-down.anchor",
+    "daypart": "night"
   },
   "stages": [
     {

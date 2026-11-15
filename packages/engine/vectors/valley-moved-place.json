@@ -1,0 +1,89 @@
+{
+  "name": "A moved place: the user's positions are the order; the default no longer applies to places they placed, and places they did not place follow",
+  "rule": "game rules \u00a78, the Valley; issue #126",
+  "kind": "evaluate",
+  "input": {
+    "day": {
+      "todayStr": "2026-11-11",
+      "startOfNextDayDiffMs": 0,
+      "timeZone": "Europe/Berlin"
+    },
+    "tasks": [],
+    "repeatCfgs": [],
+    "choices": {
+      "anchor:a1": {
+        "kind": "routine",
+        "words": "getting up"
+      },
+      "run:r1": {
+        "journeyId": "test-morning",
+        "journeyVersion": 1,
+        "startDay": "2026-10-01"
+      },
+      "run-anchor:r1": {
+        "anchorId": "a1"
+      },
+      "stage:r1:a": {
+        "acceptedDay": "2026-10-01"
+      },
+      "anchor:a2": {
+        "kind": "routine",
+        "words": "lunch"
+      },
+      "run:r2": {
+        "journeyId": "test-daily",
+        "journeyVersion": 1,
+        "startDay": "2026-10-02"
+      },
+      "run-anchor:r2": {
+        "anchorId": "a2"
+      },
+      "stage:r2:a": {
+        "acceptedDay": "2026-10-02"
+      },
+      "anchor:a3": {
+        "kind": "routine",
+        "words": "brushing my teeth"
+      },
+      "run:r3": {
+        "journeyId": "test-night",
+        "journeyVersion": 1,
+        "startDay": "2026-10-03"
+      },
+      "run-anchor:r3": {
+        "anchorId": "a3"
+      },
+      "stage:r3:a": {
+        "acceptedDay": "2026-10-03"
+      },
+      "place:a1": {
+        "position": 1
+      },
+      "place:a2": {
+        "position": 0
+      }
+    },
+    "journeys": ["$test-daily", "$test-build", "$test-morning", "$test-night"]
+  },
+  "expect": {
+    "valley": [
+      {
+        "anchorId": "a2",
+        "chosen": {
+          "position": 0
+        }
+      },
+      {
+        "anchorId": "a1",
+        "chosen": {
+          "position": 1
+        }
+      },
+      {
+        "anchorId": "a3",
+        "chosen": {}
+      }
+    ],
+    "problems": []
+  }
+}

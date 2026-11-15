@@ -11,7 +11,8 @@
   },
   "anchor": {
     "moment": "first-things-first.moment",
-    "example": "first-things-first.anchor"
+    "example": "first-things-first.anchor",
+    "daypart": "morning"
   },
   "stages": [
     {

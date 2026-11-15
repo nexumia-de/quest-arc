@@ -2,6 +2,7 @@ import { anchorViews, runAnchorOf } from './anchors';
 import { parseChoices, type RunRecord } from './choices';
 import { makeLogicalDay } from './days';
 import { buildRun } from './run';
+import { valleyView } from './valley';
 import type { Journey } from './types/journey';
 import type { Snapshot } from './types/snapshot';
 import type { GameView, ReadOnlyRun, RunView } from './types/view';
@@ -105,16 +106,15 @@ export const evaluate = (snapshot: Snapshot): GameView => {
 
   // A waiting journey gets no card for a long break.
   const resting = paused.map((run) => waiting(run));
+  const standing = { ...(active ? { active } : {}), paused: resting, finished };
+  const anchors = anchorViews(choices, journeys, standing);
   return {
     todayStr: today,
     ...(active ? { active } : {}),
     paused: resting,
     finished,
-    anchors: anchorViews(choices, journeys, {
-      ...(active ? { active } : {}),
-      paused: resting,
-      finished,
-    }),
+    anchors,
+    valley: valleyView(choices, journeys, anchors, standing),
     readOnly: readOnly.map(({ ended, ...run }) => ({
       ...run,
       state: ended ? 'finished' : run.runId === activeReadOnly ? 'active' : 'paused',

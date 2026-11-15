@@ -1,0 +1,116 @@
+{
+  "name": "The default order of the day: by the kind of moment of the anchor's first journey (morning to night); anchors whose journey names none, then those where nothing stands, follow by first start day, then id. Sides alternate from the right",
+  "rule": "game rules \u00a78, the Valley; issue #126",
+  "kind": "evaluate",
+  "input": {
+    "day": {
+      "todayStr": "2026-11-11",
+      "startOfNextDayDiffMs": 0,
+      "timeZone": "Europe/Berlin"
+    },
+    "tasks": [],
+    "repeatCfgs": [],
+    "choices": {
+      "anchor:a1": {
+        "kind": "routine",
+        "words": "brushing my teeth"
+      },
+      "run:r1": {
+        "journeyId": "test-night",
+        "journeyVersion": 1,
+        "startDay": "2026-10-01"
+      },
+      "run-anchor:r1": {
+        "anchorId": "a1"
+      },
+      "stage:r1:a": {
+        "acceptedDay": "2026-10-01"
+      },
+      "anchor:a2": {
+        "kind": "routine",
+        "words": "getting up"
+      },
+      "run:r2": {
+        "journeyId": "test-morning",
+        "journeyVersion": 1,
+        "startDay": "2026-10-20"
+      },
+      "run-anchor:r2": {
+        "anchorId": "a2"
+      },
+      "stage:r2:a": {
+        "acceptedDay": "2026-10-20"
+      },
+      "anchor:a3": {
+        "kind": "routine",
+        "words": "lunch"
+      },
+      "run:r3": {
+        "journeyId": "test-daily",
+        "journeyVersion": 1,
+        "startDay": "2026-09-01"
+      },
+      "run-anchor:r3": {
+        "anchorId": "a3"
+      },
+      "stage:r3:a": {
+        "acceptedDay": "2026-09-01"
+      },
+      "anchor:a4": {
+        "kind": "routine",
+        "words": "a free anchor"
+      },
+      "anchor:a0": {
+        "kind": "routine",
+        "words": "another free anchor"
+      },
+      "anchor:a5": {
+        "kind": "routine",
+        "words": "my own moment"
+      },
+      "run:r5": {
+        "journeyId": "test-build",
+        "journeyVersion": 1,
+        "startDay": "2026-08-01"
+      },
+      "run-anchor:r5": {
+        "anchorId": "a5"
+      },
+      "stage:r5:a": {
+        "acceptedDay": "2026-08-01"
+      }
+    },
+    "journeys": ["$test-daily", "$test-build", "$test-morning", "$test-night"]
+  },
+  "expect": {
+    "valley": [
+      {
+        "anchorId": "a2",
+        "name": "getting up",
+        "side": "right"
+      },
+      {
+        "anchorId": "a1",
+        "name": "brushing my teeth",
+        "side": "left"
+      },
+      {
+        "anchorId": "a5",
+        "side": "right"
+      },
+      {
+        "anchorId": "a3",
+        "side": "left"
+      },
+      {
+        "anchorId": "a0",
+        "side": "right"
+      },
+      {
+        "anchorId": "a4",
+        "side": "left"
+      }
+    ],
+    "problems": []
+  }
+}

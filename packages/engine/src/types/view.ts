@@ -12,6 +12,12 @@ export interface GameView {
    * first; runs from before anchors come last, grouped by journey.
    */
   readonly anchors: readonly AnchorView[];
+  /**
+   * The Valley (game rules §8): the user's places in the order of the
+   * day, each with its one thing. Journeys from before anchors stand in
+   * no place until the user confirms their anchor.
+   */
+  readonly valley: readonly ValleyPlace[];
   /** Journeys and records the engine could not use, with the reason. */
   readonly problems: readonly string[];
 }
@@ -80,6 +86,42 @@ export interface AnchorView extends AnchorWords {
   readonly steps: readonly AnchorHabit[];
   /** The questions that are due here: the weekly one and the one after graduation. */
   readonly due: readonly AnchorDue[];
+}
+
+/**
+ * One place in the Valley (game rules §8): an anchor, where its first
+ * journey builds one thing. Everything but `chosen` is derived every
+ * time; `chosen` is what the user picked (`place:<anchorId>`).
+ */
+export interface ValleyPlace {
+  readonly anchorId: string;
+  /** The name the user gave the place, else the anchor's words, else its time. */
+  readonly name: string;
+  readonly side: 'left' | 'right';
+  /** A hue name from content/art/palette.json. */
+  readonly hue: string;
+  /** The one thing; absent where no journey stands yet (plain land). */
+  readonly thing?: ValleyThing;
+  /** `plants`: a step here is still followed; `lantern`: a step runs by itself. */
+  readonly sign?: 'plants' | 'lantern';
+  /** Steps of the surroundings (fence, tree, bench, gate): 0 to SURROUNDINGS_STEPS. */
+  readonly surroundings: number;
+  /** The active journey grows here (the anchor's `state` is `growing`). */
+  readonly growing: boolean;
+  /** What the user picked; a field that is absent is by rule. */
+  readonly chosen: {
+    readonly position?: number;
+    readonly side?: 'left' | 'right';
+    readonly hue?: string;
+  };
+}
+
+/** The first journey started from a place: its build, and where its journey is. */
+export interface ValleyThing extends Omit<BuildView, 'hue'> {
+  readonly runId: string;
+  readonly journeyId: string;
+  /** `growing`: the active journey; `paused`; `finished`; `ended`: ended early. */
+  readonly state: 'growing' | 'paused' | 'finished' | 'ended';
 }
 
 export interface AnchorStep {

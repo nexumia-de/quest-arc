@@ -1,0 +1,87 @@
+{
+  "name": "Sides alternate by position starting on the right; the user's side wins and does not change the others",
+  "rule": "game rules \u00a78, the Valley; issue #126",
+  "kind": "evaluate",
+  "input": {
+    "day": {
+      "todayStr": "2026-11-11",
+      "startOfNextDayDiffMs": 0,
+      "timeZone": "Europe/Berlin"
+    },
+    "tasks": [],
+    "repeatCfgs": [],
+    "choices": {
+      "anchor:a1": {
+        "kind": "routine",
+        "words": "getting up"
+      },
+      "run:r1": {
+        "journeyId": "test-morning",
+        "journeyVersion": 1,
+        "startDay": "2026-10-01"
+      },
+      "run-anchor:r1": {
+        "anchorId": "a1"
+      },
+      "stage:r1:a": {
+        "acceptedDay": "2026-10-01"
+      },
+      "anchor:a2": {
+        "kind": "routine",
+        "words": "lunch"
+      },
+      "run:r2": {
+        "journeyId": "test-daily",
+        "journeyVersion": 1,
+        "startDay": "2026-10-02"
+      },
+      "run-anchor:r2": {
+        "anchorId": "a2"
+      },
+      "stage:r2:a": {
+        "acceptedDay": "2026-10-02"
+      },
+      "anchor:a3": {
+        "kind": "routine",
+        "words": "brushing my teeth"
+      },
+      "run:r3": {
+        "journeyId": "test-night",
+        "journeyVersion": 1,
+        "startDay": "2026-10-03"
+      },
+      "run-anchor:r3": {
+        "anchorId": "a3"
+      },
+      "stage:r3:a": {
+        "acceptedDay": "2026-10-03"
+      },
+      "place:a2": {
+        "side": "left"
+      }
+    },
+    "journeys": ["$test-daily", "$test-build", "$test-morning", "$test-night"]
+  },
+  "expect": {
+    "valley": [
+      {
+        "anchorId": "a1",
+        "side": "right",
+        "chosen": {}
+      },
+      {
+        "anchorId": "a3",
+        "side": "left",
+        "chosen": {}
+      },
+      {
+        "anchorId": "a2",
+        "side": "left",
+        "chosen": {
+          "side": "left"
+        }
+      }
+    ],
+    "problems": []
+  }
+}
