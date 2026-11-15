@@ -6,7 +6,7 @@ import { h } from '../dom';
 import { habitBanners } from '../habit-banners';
 import type { Context, Screen } from '../screen';
 import { confirmCard, growingStep } from '../valley/growing';
-import { valleyModel } from '../valley/model';
+import { sceneHeight, valleyModel } from '../valley/model';
 import { valleyScene } from '../valley/scene';
 import { readOnlyScreen } from './read-only';
 
@@ -24,7 +24,11 @@ export const homeScreen = (ctx: Context): Screen => {
   const readOnly = view.readOnly.find((r) => r.state === 'active');
   if (readOnly) return readOnlyScreen(ctx, readOnly);
   const ended = ctx.draft.ended as { runId: string; title: string } | undefined;
-  const model = valleyModel(view.valley, view.anchors, journeys, art());
+  // The scene is as wide as the page up to 440 px (style.css) and two thirds of the window high.
+  const pixels = Math.min(440, Math.max(document.documentElement.clientWidth - 32, 1));
+  const model = valleyModel(view.valley, view.anchors, journeys, art(), {
+    height: sceneHeight(window.innerHeight, pixels),
+  });
   const scene = valleyScene(
     model,
     ({ view: place }) =>

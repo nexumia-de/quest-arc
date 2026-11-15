@@ -58,6 +58,7 @@ export const placePiece = (ctx: Context, place: ValleyPlace, label?: string): HT
   const { anchors } = ctx.state.view;
   const model = valleyModel([place], anchors, ctx.state.journeys, art(), {
     height: HEIGHT,
+    own: true,
     marker: true,
   });
   const only: PlaceModel | undefined = model.places[0];

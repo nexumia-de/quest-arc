@@ -78,6 +78,17 @@ const wording = (
 const EMPTY_HEIGHT = 240;
 
 /**
+ * The scene's height in layout units (360 wide) for a window: about two
+ * thirds of its height, so the growing card starts on the first screen
+ * (#145), never below 480, the height at which the layout's checks hold
+ * for six places and beyond (`valleyProblems`). The page is `pixels`
+ * wide and the scene stands as wide as it, so units are scaled to it.
+ */
+export const MIN_SCENE_HEIGHT = 480;
+export const sceneHeight = (windowHeight: number, pixels: number): number =>
+  Math.max(MIN_SCENE_HEIGHT, Math.round(((2 / 3) * windowHeight * 360) / Math.max(pixels, 1)));
+
+/**
  * The marker's pictures (posts, cords, beads) of a growing thing, mapped
  * from the ladder's setting onto the thing's slot: the posts' span fills
  * the slot's width, the feet stand on its lower edge, so the marker stands
@@ -111,8 +122,13 @@ const markerPieces = (
 };
 
 export interface ModelOptions {
-  /** The height of the scene (one place fills it); the Valley's own where absent. */
+  /** The height of the scene (the layout's units, 360 wide); the layout's own where absent. */
   readonly height?: number;
+  /**
+   * One place's own page: the height is used as given, below the Valley's
+   * minimum (which keeps the layout's checks for six places and beyond).
+   */
+  readonly own?: boolean;
   /** Draw the marker of a growing thing (the place's pages, not the Valley). */
   readonly marker?: boolean;
 }
@@ -125,10 +141,15 @@ export const valleyModel = (
   options: ModelOptions = {},
 ): ValleyModel => {
   // Where nothing stands yet, plain land with the path, short enough to leave the words in view.
-  const height = options.height ?? (places.length === 0 ? EMPTY_HEIGHT : undefined);
+  const height =
+    places.length === 0
+      ? EMPTY_HEIGHT
+      : options.height === undefined || options.own
+        ? options.height
+        : Math.max(options.height, MIN_SCENE_HEIGHT);
   const geometry = valleyLayout({
     sides: places.map((p) => p.side),
-    ...(height ? { height } : {}),
+    ...(height === undefined ? {} : { height }),
   });
   return {
     geometry,

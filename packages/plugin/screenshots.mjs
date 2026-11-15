@@ -62,17 +62,11 @@ for (const demo of shots) {
   // page, the journey mock at phone size; `@<hue>` picks a palette hue.
   const [, part = ''] = demo.split(':');
   const ladderPage = /^(sequence-|palette)/.test(part);
-  // The Valley (#129) is taller than a window and scrolls with the page: the windows are tall enough for the whole home.
   const sizesHere = ladderPage
     ? [['wide', 1400, 900]]
     : part.startsWith('journey-')
       ? sizes.slice(0, 1)
-      : demo.startsWith('valley-') && (!demo.includes(':') || demo.endsWith('Change this moment'))
-        ? [
-            ['phone', 360, 1180],
-            ['desktop', 1000, 1100],
-          ]
-        : sizes;
+      : sizes;
   for (const theme of ['light', 'dark']) {
     for (const [name, width, height] of sizesHere) {
       const tab = await browser.newPage({ viewport: { width, height }, deviceScaleFactor: scale });

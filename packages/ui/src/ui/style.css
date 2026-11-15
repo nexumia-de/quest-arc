@@ -891,6 +891,7 @@
   stroke: var(--bg-lighter, #fff);
 }
 
+/* The scene sets path and bay inline: the host's background, tinted in the dark theme (scene.ts, WAY). */
 .qa-valley-bay {
   fill: var(--bg-lighter, #fff);
 }

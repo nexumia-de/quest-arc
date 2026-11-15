@@ -88,8 +88,8 @@ piece"); the screen places nothing by hand.
 With [one](screenshots/valley-home-1-phone-light.png) and
 [six](screenshots/valley-home-6-phone-light.png) places, and
 [dark](screenshots/valley-home-6-desktop-dark.png) on the desktop.
-_Screenshots from demo data; the signs and the surroundings follow with
-#131._
+_Screenshots from demo data at 360 × 720 and 1000 × 700; the signs and the
+surroundings follow with #131._
 
 - **The scene** is the page's picture. Per place, from the layout: the
   ground in the place's hue, blending into the next place's; the path and
@@ -116,11 +116,20 @@ _Screenshots from demo data; the signs and the surroundings follow with
   Growing here. The lantern is lit: the routine runs by itself." (name,
   thing and version, the growing step, the sign). The drawing itself is
   hidden from them.
-- **Size.** The scene is 360 units wide and, with up to six places, 720
-  high; with more it is longer and scrolls with the page. It is as wide as
-  the page up to 440 px, so there is no horizontal scrolling at 360 or
-  narrower; the names' text size follows its width. At 720 px and wider the
-  scene stands on the left and the card on the right.
+- **Size.** The scene is 360 units wide and about **two thirds of the
+  window high** (480 units in a 720-high window, never less: the
+  layout's checks hold from 480 for any number of places), so the growing
+  card starts on the first screen; `valleyLayout` takes the height, the
+  screen draws nothing of its own. With more than six places the scene is
+  longer and scrolls with the page. It is as wide as the page up to 440
+  px, so there is no horizontal scrolling at 360 or narrower; the names'
+  text size follows its width. At 720 px and wider the scene stands on the
+  left and the card on the right.
+- **Path and bays** are one colour, so a bay reads as the path widening:
+  the host's background in the light theme; in the dark theme the place's
+  `tint-strong` (the hue's 40 %, along the path as the places' hues follow
+  each other), lighter than the ground's 16 % tint, so the path is not a
+  hole in it.
 - **Below the scene, within thumb reach:**
   - **The growing step** (at most one, on the moment the active journey
     starts from) is a card that opens the journey (screen 4): "Growing

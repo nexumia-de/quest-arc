@@ -415,7 +415,9 @@ the day, and the scene's width and height, and returns:
   setting of the place screen.
 
 Colours (decision 9): outlines, fills and names `fg`/`bg`; path and bay
-the host's background; the ground each place's `tint` (16 % of its hue),
+the host's background in the light theme and, in the dark theme, the
+place's `tint-strong` (so a bay reads as the path widening, not as a hole
+in the lighter ground; #129); the ground each place's `tint` (16 % of its hue),
 passing into the next place's around the joint; the thing's one `accent`
 in the place's hue. No decoration without a job: no flags, no stones
 without a use, no water, no bridge; nothing crosses the path.
