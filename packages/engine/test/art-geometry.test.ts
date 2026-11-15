@@ -30,10 +30,10 @@ describe('the versions of each ladder, measured', () => {
   });
 });
 
-// The place's signs and surroundings (#131, docs/journey-design.md, "Signs
-// and surroundings of a place"): in the frame, never in front of the
-// doorstep, the lantern clear of the threshold stone and every marker, and
-// in the Valley inside the scene, off the path and clear of every other
+// The signs of a place (#131, docs/journey-design.md, "The signs of a
+// place"): in the frame, never in front of the doorstep or over any version
+// of any thing, the lantern clear of the threshold stone and every marker,
+// and in the Valley inside the scene, off the path and clear of every other
 // place, for every number of places and choice of sides.
 describe('the place, measured', () => {
   it('fits every thing and every layout', { timeout: 60_000 }, () => {

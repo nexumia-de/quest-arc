@@ -12,7 +12,7 @@
 // It writes docs/screenshots/valley-<n>.png (360 × 720, light and dark side
 // by side) and valley-desktop-<n>.png (the same scene drawn at 720 wide in
 // a 1280 wide window) for one, three and six places, with signs and
-// surroundings at some (#131); valley-place-<thing>.png (one place in each
+// flowers or the lit lantern at some (#131); valley-place-<thing>.png (one place in each
 // state at 360 × 720, light above, dark below) and valley-place-row.png
 // (every ladder's first and fifth version in every state, the build's box at
 // 60 × 40). Nothing here is drawn by hand: change the rule's numbers in
@@ -46,7 +46,6 @@ const DAYS = {
       hue: 'sand',
       build: 'home-4',
       sign: 'lantern',
-      surroundings: 2,
     },
     { name: 'When I sit down at my desk', hue: 'meadow', build: 'garden-3', sign: 'flowers' },
     { name: 'After brushing my teeth at night', hue: 'heather', build: 'well-3' },
@@ -57,12 +56,11 @@ const DAYS = {
       hue: 'sand',
       build: 'home-5',
       sign: 'lantern',
-      surroundings: 4,
     },
     { name: 'When I sit down at my desk', hue: 'meadow', build: 'garden-3', sign: 'flowers' },
     { name: 'After lunch', hue: 'water', build: 'lookout-2' },
-    { name: 'When I get home', hue: 'moss', build: 'well-5', sign: 'lantern', surroundings: 1 },
-    { name: 'After dinner', hue: 'rust', build: 'garden-5', sign: 'flowers', surroundings: 3 },
+    { name: 'When I get home', hue: 'moss', build: 'well-5', sign: 'lantern' },
+    { name: 'After dinner', hue: 'rust', build: 'garden-5', sign: 'flowers' },
     { name: 'After brushing my teeth at night', hue: 'heather', build: 'home-2' },
   ],
 };
@@ -103,7 +101,7 @@ const scene = (places, theme) => {
     );
   });
   const layers = layout.places.map((place, i) =>
-    placeLayers(placeArt, place.slot, { surroundings: 0, ...places[i], side: place.side }),
+    placeLayers(placeArt, place.slot, { ...places[i], side: place.side }),
   );
   const things = layout.places.map((place, i) => {
     const { x, y, width: w, height: h } = place.slot;
@@ -207,13 +205,12 @@ for (const count of [1, 3, 6]) {
   );
 }
 
-// A place in each state (#131): plain, plants, the lantern lit, then the
-// surroundings step by step; one place at 360 × 720, light above, dark below.
+// A place in each state (#131): plain, flowers, the lantern lit; one place at
+// 360 × 720, light above, dark below.
 const STATES = [
   { label: 'plain' },
   { label: 'flowers', sign: 'flowers' },
   { label: 'lantern', sign: 'lantern' },
-  ...[1, 2, 3, 4].map((s) => ({ label: `surroundings ${s}`, sign: 'lantern', surroundings: s })),
 ];
 const NAME = 'After I pour my morning coffee';
 for (const [build, hue, side] of [
@@ -235,17 +232,13 @@ for (const [build, hue, side] of [
 }
 
 // The same states for every thing small: the build's box at 60 × 40 with
-// the room of its plot beside it (7 towards the path, 16 beyond) and 6 below,
-// light left, dark right.
+// the room of its plot towards the path (7) and 6 below, light left, dark
+// right.
 const thumb = (build, state, theme) => {
   const hue = palette.meadow[theme];
   const slot = { x: 7, y: 0, scale: 0.5 };
-  const { back, front } = placeLayers(placeArt, slot, {
-    surroundings: 0,
-    ...state,
-    side: 'right',
-  });
-  return `<svg width="83" height="46" viewBox="0 0 83 46" style="margin:4px;background:color-mix(in srgb, ${hue} 16%, var(--bg))">${back.map((l) => layerSvg(l, hue)).join('')}<svg class="thing" style="--hue:${hue}" x="7" y="0" width="60" height="40" viewBox="0 0 120 80">${buildShapes(build)}</svg>${front.map((l) => layerSvg(l, hue)).join('')}</svg>`;
+  const { back, front } = placeLayers(placeArt, slot, { ...state, side: 'right' });
+  return `<svg width="67" height="46" viewBox="0 0 67 46" style="margin:4px;background:color-mix(in srgb, ${hue} 16%, var(--bg))">${back.map((l) => layerSvg(l, hue)).join('')}<svg class="thing" style="--hue:${hue}" x="7" y="0" width="60" height="40" viewBox="0 0 120 80">${buildShapes(build)}</svg>${front.map((l) => layerSvg(l, hue)).join('')}</svg>`;
 };
 const THINGS = ['home', 'garden', 'well', 'lookout'].flatMap((l) => [`${l}-1`, `${l}-5`]);
 const sheet = ['light', 'dark']
@@ -259,7 +252,7 @@ const sheet = ['light', 'dark']
   .join('');
 await shoot(
   page(`<div style="display:flex">${sheet}</div>`, 'light'),
-  2 * (STATES.length * 91 + 16),
+  2 * (STATES.length * 75 + 16),
   THINGS.length * 54 + 16,
   'valley-place-row.png',
 );

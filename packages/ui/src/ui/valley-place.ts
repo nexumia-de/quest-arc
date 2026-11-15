@@ -1,20 +1,17 @@
 /**
- * What a place in the Valley gains around its thing (#114 decision 5,
- * #131; docs/journey-design.md, "Signs and surroundings of a place"):
- * flowers at its foot while a step there is still followed, the lit lantern
- * when it runs by itself (the flowers stay), and the surroundings in fixed
- * steps (a low hedge, a bench, a tree, a butterfly) from a further
- * journey's finished stations. The pictures are drawn once in the frame of
- * content/art/place.json (the build's units over the place's plot, for a
- * thing on the right of the path) and fit every thing; for a thing on the
- * left the frame is mirrored about the thing's centre, so the surroundings
- * always stand on the far side and the lantern towards the path.
+ * The signs of a place in the Valley (#114 decision 5, #131;
+ * docs/journey-design.md, "The signs of a place"): flowers at the thing's
+ * foot while a step there is still followed, and the lit lantern when it
+ * runs by itself (the flowers stay). The pictures are drawn once in the
+ * frame of content/art/place.json (the build's units over the place's plot,
+ * for a thing on the right of the path) and fit every thing; for a thing on
+ * the left the frame is mirrored about the thing's centre, so the lantern
+ * always stands towards the path.
  *
  * Pure: it only places pictures from the engine's `valley` view and the
  * place piece's slot (`valleyLayout`). Layers, back to front: ground,
- * path and bay, `back` (the surroundings in their drawing order, then the
- * flowers), the thing, the marker, `front` (the lantern), the name.
- * Nothing is shown before it is earned. No imports, so
+ * path and bay, `back` (the flowers), the thing, the marker, `front` (the
+ * lantern), the name. Nothing is shown before it is earned. No imports, so
  * scripts/draw-valley.mjs loads it as it is.
  */
 
@@ -33,15 +30,6 @@ export interface PlaceArt {
     readonly width: number;
     readonly height: number;
   };
-  /**
-   * One picture per step, in the order they are earned; `z` is the order
-   * they are drawn in (lowest first).
-   */
-  readonly surroundings: readonly {
-    readonly art: string;
-    readonly title: string;
-    readonly z: number;
-  }[];
 }
 
 /** The slot of a place piece: the build's box in scene units. */
@@ -55,7 +43,6 @@ export interface PlaceSlot {
 export interface PlaceSigns {
   readonly side: 'left' | 'right';
   readonly sign?: 'flowers' | 'lantern';
-  readonly surroundings: number;
 }
 
 /** A picture in scene units; `viewBox` is its own, `mirror` flips it within its box. */
@@ -70,7 +57,7 @@ export interface PlaceLayer {
 }
 
 export interface PlaceLayers {
-  /** Behind the thing: the surroundings in their drawing order, then the flowers. */
+  /** Behind the thing: the flowers. */
   readonly back: readonly PlaceLayer[];
   /** In front of the thing and its marker: the lit lantern. */
   readonly front: readonly PlaceLayer[];
@@ -95,11 +82,7 @@ export const placeLayers = (art: PlaceArt, slot: PlaceSlot, place: PlaceSigns): 
     viewBox: art.viewBox.join(' '),
     mirror,
   });
-  const steps = Math.max(0, Math.min(place.surroundings, art.surroundings.length));
-  const back = art.surroundings
-    .slice(0, steps)
-    .sort((a, b) => a.z - b.z)
-    .map((step) => frame(step.art));
+  const back: PlaceLayer[] = [];
   // the flowers stay when the lantern is lit: graduation follows the time
   // the routine was still followed
   if (place.sign !== undefined) back.push(frame(art.flowers));

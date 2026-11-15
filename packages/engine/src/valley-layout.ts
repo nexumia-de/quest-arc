@@ -64,8 +64,8 @@ export interface ValleyPiece {
   slot: Box & { scale: number };
   /**
    * The thing's ground: the slot with room beside it, `plotNear` build units
-   * on the path's side (the lit lantern) and `plotFar` on the far side (the
-   * surroundings), as high as the slot.
+   * on the path's side (the lit lantern) and `plotFar` on the far side, as
+   * high as the slot.
    */
   plot: Box;
   /** The path widening on the thing's side: from the centre line to the slot's far side. */
@@ -108,11 +108,11 @@ export const VALLEY = {
   edge: 8,
   /**
    * Room beside the slot, in build units: on the path's side for the lit
-   * lantern, on the far side for the surroundings (#131, owner
-   * 2026-11-15: they stand in free ground beside the thing, at its scale).
+   * lantern, which stands apart from the thing (#131, owner 2026-11-15);
+   * none on the far side.
    */
   plotNear: 14,
-  plotFar: 32,
+  plotFar: 0,
   /** The largest slot, in scene units per build unit (as the setting's slot). */
   maxScale: 1.75,
   /** The bay's half height and the base line's drop below the bend, in build units. */

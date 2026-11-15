@@ -1,5 +1,5 @@
 {
-  "viewBox": [-14, 0, 166, 92],
+  "viewBox": [-14, 0, 134, 92],
   "far": "right",
   "flowers": "place-flowers",
   "lantern": {
@@ -8,27 +8,5 @@
     "y": 59.25,
     "width": 20,
     "height": 20
-  },
-  "surroundings": [
-    {
-      "art": "place-hedge",
-      "title": "A low hedge",
-      "z": 2
-    },
-    {
-      "art": "place-bench",
-      "title": "A bench",
-      "z": 3
-    },
-    {
-      "art": "place-tree",
-      "title": "A tree",
-      "z": 1
-    },
-    {
-      "art": "place-butterfly",
-      "title": "A butterfly",
-      "z": 4
-    }
-  ]
+  }
 }

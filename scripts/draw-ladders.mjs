@@ -1112,23 +1112,19 @@ ladder(
   ],
 );
 
-// ---- the place: signs and surroundings ------------------------------------
+// ---- the place: its two signs -----------------------------------------------
 // What a place gains after its thing (#114 decision 5, #131; owner,
 // 2026-11-15): flowers at the thing's foot while the routine is still
-// followed, the lit lantern when it runs by itself (the flowers stay), and
-// the surroundings in fixed steps when a further journey at the same moment
-// finishes stations: a low hedge, a bench, a tree, a butterfly. Everything
-// is drawn at the thing's scale and line weight in the build's units,
-// standing on its ground line, in the place's plot (valley-layout.ts): the
-// slot with 14 units of room on the path's side for the lantern and 32 on
-// the far side for the surroundings. The frame is drawn for a thing on the
-// right of the path (the far side is x > 120); a host mirrors it about the
-// thing's centre (x = 60) for a thing on the left. Layers, back to front:
-// the surroundings (tree, hedge, bench, butterfly), the flowers, the thing,
-// the marker, the lantern. Nothing overlaps the thing, the doorstep or the
-// path: measured by placeProblems (ladder-checks.mjs) for every thing and
-// every layout.
-const PLACE_VIEW_BOX = '-14 0 166 92';
+// followed, and the lit lantern when it runs by itself (the flowers stay).
+// Both are drawn at the thing's scale and line weight in the build's units,
+// in the place's plot (valley-layout.ts): the slot with 14 units of room on
+// the path's side, where the lantern stands apart from the thing. The frame
+// is drawn for a thing on the right of the path (the path's side is x < 0);
+// a host mirrors it about the thing's centre (x = 60) for a thing on the
+// left. Layers, back to front: the flowers, the thing, the marker, the
+// lantern. Nothing overlaps the thing, the doorstep or the path: measured
+// by placeProblems (ladder-checks.mjs) for every thing and every layout.
+const PLACE_VIEW_BOX = '-14 0 134 92';
 const place = (name, title, shapes) => write(`${name}.svg`, svg(PLACE_VIEW_BOX, title, shapes));
 
 // Flowers at the thing's foot: clumps of leaves along the front of the
@@ -1157,68 +1153,6 @@ const FLOWERS = [
   ...clump(111, 6.6),
 ];
 place('place-flowers', 'Flowers at its foot', FLOWERS);
-
-// The surroundings beside the thing: the hedge a little behind its ground
-// line with the tree behind it, the bench a little in front.
-const HEDGE_FEET = 70;
-/** A low hedge: three round shrubs grown into one, outlined, in tint-strong. */
-const HEDGE = (() => {
-  const parts = [
-    [127.4, 63, 5.6, 5],
-    [137, 60.6, 7, 7],
-    [145.6, 63.4, 4.4, 4.4],
-  ];
-  return [
-    ...parts.map(([cx, cy, rx, ry]) => ellipse('fg', cx, cy, rx + 1.6, ry + 1.6)),
-    rect('fg', 121, 63, 30.6, HEDGE_FEET - 63, 2),
-    ...parts.map(([cx, cy, rx, ry]) => ellipse('tint-strong', cx, cy, rx, ry)),
-    rect('tint-strong', 122.6, 63, 27.4, HEDGE_FEET - 63 - 1.6),
-  ];
-})();
-/** A bench in front of the hedge: the back plank on two posts, the seat, splayed legs. */
-const BENCH_FEET = 85;
-const BENCH = [
-  rect('fg', 125.6, 71.6, 2.4, 9),
-  rect('fg', 138.4, 71.6, 2.4, 9),
-  poly('fg', [
-    [125.4, 80],
-    [128, 80],
-    [126.4, BENCH_FEET],
-    [123.6, BENCH_FEET],
-  ]),
-  poly('fg', [
-    [138.4, 80],
-    [141, 80],
-    [142.8, BENCH_FEET],
-    [140, BENCH_FEET],
-  ]),
-  ...boxO(123.6, 70.6, 19.2, 3.8, 1.6),
-  ...boxO(122.2, 76.4, 22, 3.8, 1.6),
-];
-/** A tree behind the hedge, outlined like the thing, its crown in tint-strong. */
-const TREE = [
-  ...boxO(134, 38, 7.4, HEDGE_FEET - 38, T),
-  ...ellipseO(128.6, 37, 7, 6.2, T),
-  ...ellipseO(144.6, 35, 6.6, 6, T),
-  ...ellipseO(137.6, 27, 12.4, 12, T),
-].map((e, i) => (i % 2 === 1 && i > 1 ? e.replace('class="bg"', 'class="tint-strong"') : e));
-/** A butterfly in the air beside the tree, above the hedge: two pairs of wings. */
-const BUTTERFLY = [
-  ...ellipseO(124.4, 48.2, 3.2, 2.5, 1.3),
-  ...ellipseO(131.2, 48.2, 3.2, 2.5, 1.3),
-  ...ellipseO(125.4, 52.4, 2.3, 1.9, 1.3),
-  ...ellipseO(130.2, 52.4, 2.3, 1.9, 1.3),
-  rect('fg', 127, 46.4, 1.6, 8, 0.8),
-];
-// One picture per step, in the order they are earned; `z` is the order a
-// host draws them in (the tree behind the hedge, the bench in front of it).
-const SURROUNDINGS = [
-  { art: 'place-hedge', title: 'A low hedge', z: 2, shapes: HEDGE },
-  { art: 'place-bench', title: 'A bench', z: 3, shapes: BENCH },
-  { art: 'place-tree', title: 'A tree', z: 1, shapes: TREE },
-  { art: 'place-butterfly', title: 'A butterfly', z: 4, shapes: BUTTERFLY },
-];
-for (const { art, title, shapes } of SURROUNDINGS) place(art, title, shapes);
 
 // The lit lantern (graduation): a lantern on a post, its glass filled with
 // the flame, a halo behind it and rays around it. The unlit lantern (the
@@ -1252,7 +1186,6 @@ write(
       far: 'right',
       flowers: 'place-flowers',
       lantern: LANTERN_AT,
-      surroundings: SURROUNDINGS.map(({ art, title, z }) => ({ art, title, z })),
     },
     null,
     2,

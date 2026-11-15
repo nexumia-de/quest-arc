@@ -665,8 +665,7 @@ picked. Nothing here changes what is counted (§1 to §7).
 - **Surroundings.** A further journey from the same anchor builds no
   thing. Its finished stations (stages with a checkpoint, and skipped
   ones, like the version of §7) each add one step to the place's
-  surroundings (a low hedge, a bench, a tree, a butterfly; owner
-  2026-11-15, #131), at most `SURROUNDINGS_STEPS`
+  surroundings (fence, tree, bench, gate), at most `SURROUNDINGS_STEPS`
   = 4 in all. What a waiting or an early ended journey finished stays
   counted; nothing is taken away. The first journey's own stations are
   the thing's versions and add nothing.

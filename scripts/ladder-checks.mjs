@@ -184,7 +184,7 @@ export const ladderGeometryProblems = (name, ladder, pictures) => {
   return problems;
 };
 
-// ---- the place: signs and surroundings (#131) ------------------------------
+// ---- the place: its signs, flowers and the lit lantern (#131) ---------------
 
 /** Every layout the Valley's check measures (art-valley-check.ts): 1–6 places on every choice of sides, 7–12 alternating. */
 const LAYOUT_SIDES = (() => {
@@ -199,15 +199,12 @@ const LAYOUT_SIDES = (() => {
 })();
 /** The doorstep's zone in the frame: nothing in front of it. */
 const DOORSTEP = box(50, 74, 20, 26);
-/** The thing's box; the surroundings stand beside it. */
-const BUILD_BOX = box(0, 0, 120, 80);
 /** The threshold stone, which the lantern leaves free. */
 const STONE = box(53, 74, 14, 3.5);
 /** Room kept between a place's pictures and the edge of the path. */
 const PATH_GAP = 2;
 const ROLES = {
   flowers: new Set(['fg', 'bg', 'tint-strong', 'accent']),
-  surroundings: new Set(['fg', 'bg', 'tint-strong']),
 };
 
 /** A shape moved into the scene: frame units → scene, mirrored for a thing on the left. */
@@ -243,14 +240,7 @@ export const placeProblems = (place, pictures, ladders, valleyLayout) => {
     ...s,
     shape: s.shape.map((ring) => ring.map(([x, y]) => [lx + (x * lw) / 32, ly + (y * lh) / 32])),
   }));
-  const layers = [
-    { name: place.flowers, kind: 'flowers', shapes: shapesNamed(place.flowers) },
-    ...place.surroundings.map(({ art }) => ({
-      name: art,
-      kind: 'surroundings',
-      shapes: shapesNamed(art),
-    })),
-  ];
+  const layers = [{ name: place.flowers, kind: 'flowers', shapes: shapesNamed(place.flowers) }];
   const lanternShape = union(...lantern.map((s) => s.shape));
   if (area(minus(lanternShape, frame)) > EPS) problems.push('lantern: outside the frame');
   if (area(within(lanternShape, STONE)) > EPS) problems.push('lantern: covers the threshold stone');
@@ -279,8 +269,6 @@ export const placeProblems = (place, pictures, ladders, valleyLayout) => {
       problems.push(`${name}: outside the frame ${fx} ${fy} ${fw} ${fh}`);
     if (area(within(all, DOORSTEP)) > EPS) problems.push(`${name}: in front of the doorstep`);
     clearOfThings(name, all);
-    if (kind === 'surroundings' && area(within(all, BUILD_BOX)) > EPS)
-      problems.push(`${name}: not beside the thing's box`);
   }
   // nothing hides the marker: the lantern, drawn over it, leaves every
   // marker place of every ladder free (setting units → build units)
