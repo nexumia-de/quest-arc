@@ -183,3 +183,53 @@ export const ladderGeometryProblems = (name, ladder, pictures) => {
   });
   return problems;
 };
+
+/** The doorstep's column: nothing of the marker stands in front of the threshold stone. */
+const DOORSTEP = { left: 51, right: 69 };
+
+/**
+ * Problems of the marker's flowers (#152), as messages: `flowers` lists
+ * each flower's feet ([x, y] in build units) in the order they grow,
+ * `yard` the thing's ground ([cx, cy, rx, ry]); a flower's pictures are
+ * `marker-flower-<k>` (in bud) and `marker-flower-<k>-open`. Each stands
+ * with its feet on the yard, inside the build's box (so beside the path,
+ * never on it), clear of the doorstep's column, apart from every other
+ * flower in both forms, and within the picture checker's size; they grow
+ * from the doorstep outwards.
+ */
+export const flowerProblems = (flowers, yard, pictures) => {
+  const problems = [];
+  const [cx, cy, rx, ry] = yard;
+  const shapes = flowers.map((_, i) =>
+    ['', '-open'].map((form) => {
+      const art = `marker-flower-${i + 1}${form}`;
+      const source = pictures[art];
+      if (source === undefined) {
+        problems.push(`no picture ${art}`);
+        return [];
+      }
+      const bytes = new TextEncoder().encode(source).length;
+      if (bytes > MAX_BYTES) problems.push(`${art}: ${bytes} bytes, more than ${MAX_BYTES}`);
+      const shape = union(...shapesOf(source).map((s) => s.shape));
+      const [x0, y0, x1, y1] = bounds(shape) ?? [0, 0, 0, 0];
+      if (x0 < BOX.left - EPS || x1 > BOX.right + EPS || y0 < BOX.top - EPS || y1 > 80 + EPS)
+        problems.push(`${art}: outside the build's box`);
+      if (area(within(shape, box(DOORSTEP.left, 0, DOORSTEP.right - DOORSTEP.left, 80))) > EPS)
+        problems.push(`${art}: stands in front of the doorstep`);
+      return shape;
+    }),
+  );
+  flowers.forEach(([x, y], i) => {
+    if (((x - cx) / rx) ** 2 + ((y - cy) / ry) ** 2 > 1)
+      problems.push(`marker-flower-${i + 1}: its feet (${x}, ${y}) are not on the yard`);
+    const before = flowers[i - 1];
+    if (before && Math.abs(x - cx) < Math.abs(before[0] - cx))
+      problems.push(`marker-flower-${i + 1}: grows nearer the doorstep than the one before`);
+    for (let j = 0; j < i; j += 1)
+      for (const a of shapes[i])
+        for (const b of shapes[j])
+          if (a.length && b.length && area(within(a, b)) > EPS)
+            problems.push(`marker-flower-${i + 1} overlaps marker-flower-${j + 1}`);
+  });
+  return problems;
+};

@@ -85,13 +85,12 @@ the format stays 3.
 
 What the journey builds ([game rules](game-rules.md) §7,
 issue #42). The names come from the built-in list
-the ladders in `content/art/` (`<name>.ladder.json`, `markers.json`); pictures are found by these names in the hosts.
+the ladders in `content/art/` (`<name>.ladder.json`); pictures are found by these names in the hosts. The marker is always flowers (#152): there is no `marker` field.
 
-| Field    | Required | Meaning                                                                                        |
-| -------- | -------- | ---------------------------------------------------------------------------------------------- |
-| `ladder` | yes      | A ladder from the list (`home`, `garden`, `well`, `lookout`)                                   |
-| `marker` | no       | What hangs on the marker: `lanterns`, `bunting` or `flowers`; the ladder's default if left out |
-| `names`  | no       | Text keys naming the versions in the journey's own words, version 1 first (at most 40 chars)   |
+| Field    | Required | Meaning                                                                                      |
+| -------- | -------- | -------------------------------------------------------------------------------------------- |
+| `ladder` | yes      | A ladder from the list (`home`, `garden`, `well`, `lookout`)                                 |
+| `names`  | no       | Text keys naming the versions in the journey's own words, version 1 first (at most 40 chars) |
 
 ```json
 "build": { "ladder": "well", "names": ["first-things-first.build.v1"] }
@@ -150,22 +149,22 @@ what can be checked without a person; `npm run journeys` runs it on
 every file, and `npm run check` (CI) includes it. A future import of
 private journeys (#40) runs the same function.
 
-| Level   | Check                                                                                                                | Rule       |
-| ------- | -------------------------------------------------------------------------------------------------------------------- | ---------- |
-| error   | structure (`journeyErrors`); English texts present; keys start with the id; other languages' keys exist              | —          |
-| error   | a built-in journey without a text in a language of `content/i18n/`; a German action without its `.plan` form         | —          |
-| error   | text lengths above                                                                                                   | —          |
-| error   | a number of days ("21 days")                                                                                         | 4          |
-| error   | quotes with an author                                                                                                | 5          |
-| error   | controlling words (must, have to, you should, no excuses; German: müssen, du solltest, nicht vergessen)              | 15         |
-| error   | blame (fail…, lazy, guilt, break the chain; German: verpasst, versäumt, Fehler, Rückfall, zurückstufen) and streaks  | 11, 12, 15 |
-| error   | the same nugget twice                                                                                                | 22         |
-| warning | a `days` condition without room for one miss, or looking back more than 14 days                                      | 1, 11      |
-| warning | a stage without a nugget, a journey without `why`; English texts no key uses                                         | 5, 22      |
-| warning | the second stage asks for more than 5 minutes (its `time_spent` condition or "n minutes" in its English action)      | 1          |
-| warning | stages that name different anchors (English text); a journey without the `anchor` hint                               | 2          |
-| error   | `build`: a ladder or marker not in `content/art/`; a land-only marker (`flowers`) on water; more names than versions | 42         |
-| warning | no `build`; more stages than the ladder has versions minus one (its last version gains fixed additions)              | 42         |
+| Level   | Check                                                                                                               | Rule       |
+| ------- | ------------------------------------------------------------------------------------------------------------------- | ---------- |
+| error   | structure (`journeyErrors`); English texts present; keys start with the id; other languages' keys exist             | —          |
+| error   | a built-in journey without a text in a language of `content/i18n/`; a German action without its `.plan` form        | —          |
+| error   | text lengths above                                                                                                  | —          |
+| error   | a number of days ("21 days")                                                                                        | 4          |
+| error   | quotes with an author                                                                                               | 5          |
+| error   | controlling words (must, have to, you should, no excuses; German: müssen, du solltest, nicht vergessen)             | 15         |
+| error   | blame (fail…, lazy, guilt, break the chain; German: verpasst, versäumt, Fehler, Rückfall, zurückstufen) and streaks | 11, 12, 15 |
+| error   | the same nugget twice                                                                                               | 22         |
+| warning | a `days` condition without room for one miss, or looking back more than 14 days                                     | 1, 11      |
+| warning | a stage without a nugget, a journey without `why`; English texts no key uses                                        | 5, 22      |
+| warning | the second stage asks for more than 5 minutes (its `time_spent` condition or "n minutes" in its English action)     | 1          |
+| warning | stages that name different anchors (English text); a journey without the `anchor` hint                              | 2          |
+| error   | `build`: a ladder not in `content/art/`; more names than versions                                                   | 42         |
+| warning | no `build`; more stages than the ladder has versions minus one (its last version gains fixed additions)             | 42         |
 
 The test also checks that each file is named after its id and that ids
 are unique.

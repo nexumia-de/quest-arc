@@ -1,4 +1,4 @@
-import { LADDERS, markerFits } from './ladders';
+import { LADDERS } from './ladders';
 import { FALLBACK_LANGUAGE, PLAN_FORM } from './texts';
 import type { Journey, Stage } from './types/journey';
 import { journeyErrors } from './validate';
@@ -243,16 +243,6 @@ const buildProblems = (journey: Journey): Problem[] => {
   }
   const problems: Problem[] = [];
   const versions = journey.stages.length + 1;
-  if (build.marker !== undefined && !markerFits(build.marker, build.ladder)) {
-    problems.push(
-      error(
-        'build.marker',
-        Object.prototype.hasOwnProperty.call(LADDERS.markers, build.marker)
-          ? `"${build.marker}" does not grow in the setting of "${build.ladder}" (water)`
-          : `"${build.marker}" is not a marker in content/art/`,
-      ),
-    );
-  }
   if ((build.names?.length ?? 0) > versions)
     problems.push(error('build.names', `more names than the journey's ${versions} versions`));
   if (versions > ladder.versions)

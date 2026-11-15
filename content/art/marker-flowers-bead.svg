@@ -1,7 +1,0 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">
-  <title>A vine in bud on a line</title>
-  <path class="tint-strong" d="M14.8 2H17.2V12H14.8ZM9.9 7L5.3 4.4L10.5 3.4L15 6ZM17 9L21.5 6.4L26.8 7.4L22.1 10Z"/>
-  <ellipse class="fg" cx="16" cy="16.5" rx="5" ry="6.7"/>
-  <ellipse class="bg" cx="16" cy="16.5" rx="2.9" ry="4.6"/>
-  <ellipse class="accent" cx="16" cy="19.4" rx="1.9" ry="1.5"/>
-</svg>

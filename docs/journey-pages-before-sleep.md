@@ -42,7 +42,7 @@ every day, the book can wait there, and it is the one moment for which
 a trial of reading exists[^finucane].
 
 The journey builds a **Home** ([game rules](game-rules.md) §7) with
-bunting on the marker (the ladder's default): reading in bed is
+flowers growing as its marker (as for every thing, #152): reading in bed is
 something one comes home to. Four stages use all five versions, so the
 checker has no warning. The versions have the journey's own names
 (`build.names`):

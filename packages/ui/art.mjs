@@ -1,5 +1,5 @@
 // The module `virtual:questarc-art`: every picture (`<name>.svg`) and ladder
-// (`<name>.ladder.json`), the markers and the palette in content/art/ as
+// (`<name>.ladder.json`) and the palette in content/art/ as
 // text and data
 // (docs/decisions/shared-pictures.md). Used by esbuild in preview.mjs;
 // typed in src/virtual-art.d.ts. The plugin itself bundles only what the
@@ -26,24 +26,24 @@ const read = () => {
       ]),
   );
   const palette = JSON.parse(readFileSync(join(dir, 'palette.json'), 'utf8'));
-  const markers = JSON.parse(readFileSync(join(dir, 'markers.json'), 'utf8'));
-  return { pictures, ladders, palette, markers };
+  return { pictures, ladders, palette };
 };
 
 /** The names of the pictures the journey screen and the build page draw. */
-export const ladderArt = ({ ladders, markers }) => {
+export const ladderArt = ({ ladders }) => {
   const names = new Set(['lantern']);
   for (const ladder of Object.values(ladders)) {
     for (const version of ladder.versions) names.add(version.art);
     for (const place of ladder.pictures) if (place.art) names.add(place.art);
+    // a flower's open form, shown while the stage is ready
+    for (const place of ladder.pictures)
+      if (place.slot === 'marker') names.add(`${place.art}-open`);
   }
-  for (const kind of Object.keys(markers))
-    for (const part of ['post', 'bead', 'bead-lit']) names.add(`marker-${kind}-${part}`);
   return names;
 };
 
 const source = (only) => {
-  const { pictures, ladders, palette, markers } = read();
+  const { pictures, ladders, palette } = read();
   const kept = only ? ladderArt(read()) : undefined;
   return [
     `export const pictures = ${JSON.stringify(
@@ -53,7 +53,6 @@ const source = (only) => {
     )};`,
     `export const ladders = ${JSON.stringify(ladders)};`,
     `export const palette = ${JSON.stringify(palette)};`,
-    `export const markers = ${JSON.stringify(markers)};`,
   ].join('\n');
 };
 

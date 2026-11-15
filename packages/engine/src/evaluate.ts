@@ -2,7 +2,6 @@ import { anchorViews, runAnchorOf } from './anchors';
 import { parseChoices, type RunRecord } from './choices';
 import { makeLogicalDay } from './days';
 import { buildRun } from './run';
-import { resolveMarker } from './ladders';
 import { placeBuilds } from './place-build';
 import { valleyView } from './valley';
 import type { Journey } from './types/journey';
@@ -100,12 +99,7 @@ export const evaluate = (snapshot: Snapshot): GameView => {
 
   // One moment, one thing (game rules §8): every journey at an anchor shows
   // the place's thing, built by the stations of all of them.
-  const placed = placeBuilds([...open, ...finished], (run, ladder) => {
-    const journey = journeys.get(run.journeyId);
-    return journey
-      ? resolveMarker(journey, choices.builds.get(run.runId), ladder)
-      : run.build.marker;
-  });
+  const placed = placeBuilds([...open, ...finished]);
   for (const list of [open, finished]) {
     list.forEach((run, i) => {
       const build = placed.get(run.runId);

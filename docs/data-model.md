@@ -111,8 +111,12 @@ overwrite each other. Most records are written once and never changed.
 | `anchor:<anchorId>`                        | `{ kind: "routine", words, name? }` or `{ kind: "time", time, name? }`                      | the user names a moment in their day, changes its words or time, or gives it a name                  |
 | `run-anchor:<runId>`                       | `{ anchorId, after? }`; `after` is the run of the step it follows                           | a journey is started from an anchor, or the user confirms the anchor of an earlier journey           |
 | `place:<anchorId>`                         | `{ position?, side?, hue? }`: an integer from 0, `left` or `right`, a hue of `palette.json` | the user moves a place earlier or later, chooses its side of the path or its hue                     |
-| `build:<runId>`                            | `{ ladder?, marker?, hue? }`: names of the ladders in `content/art/`                        | the user chooses what the run builds, what hangs on its marker or its hue (when starting or later)   |
+| `build:<runId>`                            | `{ ladder?, hue? }`: names of the ladders in `content/art/`                                 | the user chooses what the run builds or its hue (when starting or later)                             |
 
+- **No marker choice** (#152): the marker is always flowers, so the
+  hosts no longer write `marker` in `build:<runId>`. A `marker` in an
+  older record is ignored and kept as read; there are no users yet, so
+  nothing is migrated.
 - **No settings record.** QuestArc before 3.3 wrote `settings`
   (`{ mode: "calm" | "rpg" }`); the mode is gone (#110), the engine
   reads nothing from the record and never writes it. It can still be
@@ -455,9 +459,8 @@ interface BuildView {
   version: number; // 1 + finished and skipped stages
   skipped: number[]; // standing versions that came from a skipped stage
   versions: number; // stages + 1
-  marker: string; // what hangs: lanterns, bunting, flowers (markers.json)
   hue: string; // the ladder's default; `build:<runId>.hue` is no longer read (game rules §8)
-  markerProgress: number; // 0..1, the stage's highest condition progress so far
+  markerProgress: number; // 0..1, the stage's highest condition progress so far; the marker is always flowers (#152)
   ready: boolean; // the current stage is met now
 }
 

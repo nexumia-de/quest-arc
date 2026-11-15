@@ -1,44 +1,28 @@
 import { describe, expect, it } from 'vitest';
-import { ladderProblems, markerProblems } from '../src/art-ladder-check';
+import { ladderProblems } from '../src/art-ladder-check';
 
 // The ladder checker on a ladder that passes, and on broken copies
 // (docs/journey-design.md, "Builds and ladders"). A synthetic ladder on
-// water with a `span` marker, so the water and `span` rules stay tested
-// though no ladder of the Valley has water (#128).
+// water, so a build on water stays tested though no ladder of the Valley
+// has water (#128).
 const names = [
   'setting-river',
   'build-x-1',
   'build-x-2',
   'build-x-3',
-  'setting-river-cord-1',
   'tree',
   'tuft',
-  ...['lanterns', 'flowers'].flatMap((k) =>
-    ['post', 'bead', 'bead-lit'].map((p) => `marker-${k}-${p}`),
-  ),
+  ...[1, 2].flatMap((k) => [`marker-flower-${k}`, `marker-flower-${k}-open`]),
 ];
-const markers = {
-  lanterns: { title: 'Lanterns', landOnly: false },
-  flowers: { title: 'Flowers', landOnly: true },
-};
 const hues = ['water', 'meadow'];
 const whole = { x: 0, y: 0, width: 320, height: 180 };
+const slot = { band: 'middle', x: 55, y: 10.5, width: 210, height: 140 };
 const ladder = {
   title: 'Bridge',
   hue: 'water',
   width: 320,
   height: 180,
   water: true,
-  // the river, where no post may stand
-  waterAreas: [
-    [
-      [100, 60],
-      [200, 60],
-      [200, 180],
-      [100, 180],
-    ],
-  ],
-  marker: 'lanterns',
   // the walking surface meets the path at x = 14 and x = 106, y 57–64
   ways: [
     [
@@ -49,12 +33,6 @@ const ladder = {
       [106, 57],
       [106, 64],
     ],
-  ],
-  // the marker: one line over two posts in the near band
-  layout: 'span',
-  posts: [
-    [30, 170],
-    [90, 170],
   ],
   versions: [
     { art: 'build-x-1', title: 'Stones' },
@@ -69,31 +47,9 @@ const ladder = {
     // a build stands on y = 74 of 80: 10.5 + 140 × 74/80 = 140
     { slot: 'build', band: 'middle', x: 55, y: 10.5, width: 210, height: 140 },
     { art: 'tree', band: 'middle', x: 40, y: 117.5, width: 24, height: 24 },
-    // the marker: posts of 34 on the post points (feet 138.125 + 31.875 = 170),
-    // the line, two hanging elements, in the order they appear
-    {
-      slot: 'marker',
-      part: 'post',
-      order: 1,
-      band: 'near',
-      x: 13,
-      y: 138.125,
-      width: 34,
-      height: 34,
-    },
-    {
-      slot: 'marker',
-      part: 'post',
-      order: 2,
-      band: 'near',
-      x: 73,
-      y: 138.125,
-      width: 34,
-      height: 34,
-    },
-    { slot: 'marker', part: 'cord', order: 2, art: 'setting-river-cord-1', ...whole },
-    { slot: 'marker', part: 'bead', order: 3, band: 'near', x: 40, y: 150, width: 20, height: 20 },
-    { slot: 'marker', part: 'bead', order: 4, band: 'near', x: 60, y: 150, width: 20, height: 20 },
+    // the marker: two flowers in the build's slot, in the order they grow
+    { slot: 'marker', order: 1, art: 'marker-flower-1', ...slot },
+    { slot: 'marker', order: 2, art: 'marker-flower-2', ...slot },
     { art: 'tuft', band: 'near', x: 290, y: 152, width: 20, height: 20 },
   ],
 };
@@ -111,30 +67,15 @@ const sources = {
   ),
 };
 const at = (value: unknown, withSources = false) =>
-  ladderProblems(value, names, hues, markers, withSources ? sources : undefined).map((p) => p.at);
+  ladderProblems(value, names, hues, withSources ? sources : undefined).map((p) => p.at);
 const withPicture = (index: number, change: Record<string, unknown>) => ({
   ...ladder,
   pictures: ladder.pictures.map((p, i) => (i === index ? { ...p, ...change } : p)),
 });
 
-describe('markerProblems', () => {
-  it('wants a title, landOnly and the three pictures of every kind', () => {
-    expect(markerProblems(markers, names)).toEqual([]);
-    expect(markerProblems({}, names).map((p) => p.at)).toEqual(['markers']);
-    const broken = { bunting: { title: '', landOnly: 'no' } };
-    expect(markerProblems(broken, names).map((p) => p.at)).toEqual([
-      'bunting',
-      'bunting',
-      'bunting',
-      'bunting',
-      'bunting',
-    ]);
-  });
-});
-
 describe('ladderProblems', () => {
   it('passes a ladder whose versions stand in one slot of one setting', () => {
-    expect(ladderProblems(ladder, names, hues, markers, sources)).toEqual([]);
+    expect(ladderProblems(ladder, names, hues, sources)).toEqual([]);
   });
 
   it('fails a missing title, an unknown hue and another size', () => {
@@ -177,142 +118,37 @@ describe('ladderProblems', () => {
     expect(at({ ...ladder, row: 'middle' })).toEqual(['row']);
   });
 
-  it('wants a known marker, and flowers only on land', () => {
-    expect(at({ ...ladder, marker: 'scaffold' })).toEqual(['marker']);
-    expect(at({ ...ladder, marker: 'flowers' })).toEqual(['marker']);
-    expect(at({ ...ladder, marker: 'flowers', water: false })).toEqual([]);
+  it('wants water said, true or false', () => {
+    expect(at({ ...ladder, water: false })).toEqual([]);
     expect(at({ ...ladder, water: undefined })).toEqual(['water']);
   });
 
-  it('wants the marker element by element: posts, lines, hanging elements', () => {
-    expect(at(withPicture(5, { order: 2 }))).toEqual(['pictures[5]']);
-    expect(at(withPicture(7, { order: 1 }))).toEqual(['pictures[7]']);
-    expect(at(withPicture(9, { order: 6 }))).toEqual(['pictures[9]']);
-    const without = (part: string) => ({
-      ...ladder,
-      pictures: ladder.pictures.filter((p) => p.part !== part),
-    });
-    expect(at(without('bead'))).toEqual(['marker']);
-    expect(at(without('post'))).toEqual(['marker']);
-    expect(at(without('cord'))).toEqual(['marker']);
-    expect(at(withPicture(7, { art: 'tree' }))).toEqual(['pictures[7]']);
-    expect(at(withPicture(8, { width: 30, height: 30 }))).toEqual(['pictures[8]']);
-    expect(at(withPicture(5, { art: 'lantern' }))).toEqual(['pictures[5]']);
-  });
-
-  it('wants a layout and post points in the near band, left to right', () => {
-    expect(at({ ...ladder, layout: 'ring' })).toContain('layout');
-    expect(at({ ...ladder, layout: 'sides' })).toContain('posts');
-    expect(at({ ...ladder, posts: [ladder.posts[1], ladder.posts[0]] })).toContain('posts');
+  it('wants the marker as flowers in the build slot, in the order they grow', () => {
+    expect(at(withPicture(5, { order: 2 }))).toEqual(['pictures[5]', 'pictures[5]']);
+    expect(at(withPicture(6, { art: 'tree' }))).toEqual(['pictures[6]']);
+    expect(at(withPicture(6, { x: 60 }))).toEqual(['pictures[6]']);
+    expect(at(withPicture(6, { band: 'near' }))).toEqual(['pictures[6]']);
+    // an open form is needed too
     expect(
-      at({
-        ...ladder,
-        posts: [
-          [30, 120],
-          [90, 120],
-        ],
-      }),
-    ).toContain('posts');
-    expect(at(withPicture(6, { x: 80 }))).toEqual(['pictures[6]']);
-  });
-
-  it('wants no post in water: a setting with water marks it', () => {
-    const river = [
-      [
-        [100, 60],
-        [200, 60],
-        [200, 180],
-        [100, 180],
-      ],
-    ];
-    expect(at({ ...ladder, waterAreas: river })).toEqual([]);
-    expect(at({ ...ladder, waterAreas: undefined })).toEqual(['waterAreas']);
-    expect(at({ ...ladder, water: false, waterAreas: undefined })).toEqual([]);
-    expect(at({ ...ladder, waterAreas: [[[1, 2]]] })).toEqual(['waterAreas']);
-    const wet = [
-      [
-        [20, 160],
-        [40, 160],
-        [40, 180],
-        [20, 180],
-      ],
-    ];
-    expect(at({ ...ladder, waterAreas: wet })).toEqual(['posts']);
-  });
-
-  it('wants every hanging element under a line, below the build', () => {
-    expect(at(withPicture(8, { x: 100 }))).toEqual(['pictures[8]']);
-    expect(at(withPicture(8, { y: 120 }))).toEqual(['pictures[8]']);
-    expect(at(withPicture(8, { band: 'middle' }))).toEqual(['pictures[8]']);
-  });
-
-  it('leaves the middle of a sides layout open', () => {
-    const post = (order: number, x: number) => ({
-      slot: 'marker',
-      part: 'post',
-      order,
-      band: 'near',
-      x: x - 17,
-      y: 138.125,
-      width: 34,
-      height: 34,
-    });
-    const bead = (order: number, x: number) => ({
-      slot: 'marker',
-      part: 'bead',
-      order,
-      band: 'near',
-      x: x - 10,
-      y: 150,
-      width: 20,
-      height: 20,
-    });
-    const cord = (order: number) => ({
-      slot: 'marker',
-      part: 'cord',
-      order,
-      art: 'setting-river-cord-1',
-      ...whole,
-    });
-    const sides = {
+      ladderProblems(
+        ladder,
+        names.filter((name) => name !== 'marker-flower-2-open'),
+        hues,
+      ).map((p) => p.at),
+    ).toEqual(['pictures[6]']);
+    // before the build, a flower has no slot to fill
+    const first = {
       ...ladder,
-      layout: 'sides',
-      posts: [
-        [20, 170],
-        [60, 170],
-        [200, 170],
-        [240, 170],
-      ],
-      pictures: [
-        ...ladder.pictures.slice(0, 5),
-        post(1, 20),
-        post(2, 60),
-        post(3, 200),
-        post(4, 240),
-        cord(2),
-        cord(4),
-        bead(5, 40),
-        bead(6, 220),
-        ladder.pictures[10],
-      ],
+      pictures: [ladder.pictures[0], ladder.pictures[5], ...ladder.pictures.slice(1, 5)],
     };
-    expect(at(sides)).toEqual([]);
-    const inGap = {
-      ...sides,
-      pictures: sides.pictures.map((p, i) => (i === 12 ? bead(6, 130) : p)),
-    };
-    expect(at(inGap)).toEqual(['pictures[12]']);
-    expect(at({ ...sides, pictures: [...sides.pictures, cord(3)] })).toContain('marker');
-  });
-
-  it('wants nothing of the marker on the way where it meets the build', () => {
-    // the left way point is at 79.5, 110.25–122.5 in the setting
-    expect(at(withPicture(8, { x: 70, y: 105 }))).toEqual(['pictures[8]', 'ways[0]', 'ways[0]']);
+    expect(at(first)).toContain('pictures[1]');
+    const one = { ...ladder, pictures: ladder.pictures.filter((p) => p.art !== 'marker-flower-2') };
+    expect(at(one)).toEqual(['marker']);
   });
 
   it('wants band sizes, feet inside the band and back-to-front order', () => {
     expect(at(withPicture(1, { width: 24, height: 24 }))).toEqual(['pictures[1]']);
-    expect(at(withPicture(10, { y: 100 }))).toEqual(['pictures[10]', 'pictures[10]']);
+    expect(at(withPicture(7, { y: 100 }))).toEqual(['pictures[7]', 'pictures[7]']);
   });
 
   it('wants every version and the setting to meet the path at the way points', () => {

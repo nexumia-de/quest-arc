@@ -1,6 +1,5 @@
 import { describe, expect, it } from 'vitest';
 import { journeyProblems, languageProblems } from '../src/content-check';
-import { withWaterLadder } from './water-ladder';
 
 // The journey checker on a small journey that passes, and on one broken
 // copy per rule (docs/authoring-journeys.md, what CI checks).
@@ -257,14 +256,6 @@ describe('journey checker', () => {
 
   it('checks the build against content/art/', () => {
     expect(errors((j) => (j.build = { ladder: 'castle' }))[0]?.message).toContain('castle');
-    expect(errors((j) => (j.build.marker = 'balloons'))[0]?.message).toContain('not a marker');
-    expect(errors((j) => (j.build.marker = 'flowers'))).toEqual([]);
-    withWaterLadder(() => {
-      expect(
-        errors((j) => (j.build = { ladder: 'pond', marker: 'flowers' }))[0]?.message,
-      ).toContain('water');
-      expect(errors((j) => (j.build = { ladder: 'pond', marker: 'lanterns' }))).toEqual([]);
-    });
     expect(errors((j) => (j.build = { ladder: 'Home' }))[0]?.message).toBe('build: invalid');
   });
 
