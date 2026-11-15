@@ -152,7 +152,7 @@ journey):
    on both banks, as thick as the surface. A build the way leads to (a
    home or a garden) has one: the threshold stone (x = 53–67,
    y = 74–77.5) in front of the fire, the tent's opening and each door,
-   of the garden's bed and the walled garden's gate, or of the cairn, or of the water hole and
+   of the garden's bed and the walled garden's gate, or of the lookout, or of the water hole and
    each well, where the path ends.
    `ways` lists them; the checker requires a corner of every version and
    of the setting's path at each way point.
@@ -190,12 +190,11 @@ journey):
    forked post with a stone and the bucket on a pole) over a low stone
    curb, a round well with a winch, the well under a roof, a stone well
    house with the well inside, under its arch (owner: a spring and a pump
-   break the line, a fountain is another use). Lookout is drawn once,
-   like Garden, and only adds and grows: a cairn of flat stones laid by
-   hand (1), a platform on posts resting on it (2), its railing and a
-   ladder (3), posts narrowing up to a second deck with a brace and its
-   own ladder, a tower (4), a roof over the top deck (5); the flag's pole
-   grows with it and the flag, the accent, stays on top.
+   break the line, a fountain is another use). Lookout is one wooden
+   lookout tower at one height from the start (a built thing does not
+   grow taller, owner): two posts with a deck and a ladder, then a
+   railing, a cross brace, a second tier of braces with a crossbeam, a
+   roof; the flag, the accent, stays on top.
 8. **History, step by step** (owner, 2026-11-15). A ladder follows one
    real line of development for one use; each version is what people
    actually built next, within a world before electricity, so the row

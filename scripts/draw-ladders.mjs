@@ -709,77 +709,69 @@ build('well-5', 'A well house', [
   masonry(minus(box(10, 30, 100, 43), grow([ARCH], T + 0.5)), 7, 9),
 ]);
 
-// Lookout: a place to look out from, built up over its first cairn, in
-// front of the same threshold stone as Home's. Drawn once, version by
-// version; what stands keeps its place and grows on: the cairn stays as
-// the footing, the posts grow taller, the flag's pole grows with the
-// building and the flag (the accent) stays on top. A cairn of flat stones
-// (1), a platform on posts resting on it (2), its railing and a ladder
-// (3), posts narrowing up to a second deck with a brace and its own ladder
-// (4), a roof over the top deck (5).
+// Lookout: one wooden lookout tower at one height from the start (a built
+// thing does not grow taller), in front of the same threshold stone as
+// Home's; it gets better by what is added: two posts with a deck and a
+// ladder (1), a railing (2), a cross brace (3), a second tier of braces
+// with a crossbeam (4), a roof (5). The ladder climbs to the deck's right
+// end, clear of the threshold; the flag (the accent) stays on top.
 const LOOKOUT_WAYS = HOME_WAYS;
-/** The cairn: flat stones stacked, each smaller than the one below and laid a little off centre ([width, height, shift]). */
-const CAIRN = [
-  [32, 6, 0],
-  [25, 5.5, -2],
-  [20, 5, 1.5],
-  [13, 4.5, -1],
-  [9, 4, 1],
-];
-/** Where the flag's pole ends in each version (it grows with the building). */
-const POLE_TOP = [37, 30, 30, 12, 4];
+const LOOKOUT_DECK = 26;
+const LOOKOUT_FEET = [34, 86];
+const LOOKOUT_TOPS = [42, 78];
 const lookout = (v) => {
-  const top = POLE_TOP[v - 1];
-  let base = 74;
-  const cairn = CAIRN.flatMap(([w, h, shift]) => {
-    base -= h;
-    return boxO(60 + shift - w / 2, base, w, h, T, 2);
-  });
+  const [left, right] = [LOOKOUT_TOPS[0] - 4, LOOKOUT_TOPS[1] + 4]; // the deck overhangs the posts
+  const under = LOOKOUT_DECK + 4.5; // the deck's underside
+  /** Where a post is at height y (it narrows towards the deck). */
+  const postAt = (i, y) =>
+    LOOKOUT_FEET[i] + ((LOOKOUT_TOPS[i] - LOOKOUT_FEET[i]) * (73.5 - y)) / (73.5 - under);
+  const cross = (y1, y2) => [
+    poly('fg', bar(postAt(0, y1), y1, postAt(1, y2), y2, 1.8)),
+    poly('fg', bar(postAt(1, y1), y1, postAt(0, y2), y2, 1.8)),
+  ];
   return [
     yard(),
-    rect('fg', 59.2, top, 1.6, 74 - top),
-    ...(v >= 4
-      ? [
-          ...polyO(bar(36.5, 46, 42.5, 24, 4), 1.4),
-          ...polyO(bar(83.5, 46, 77.5, 24, 4), 1.4),
-          poly('fg', bar(40, 42, 78, 28, 1.8)),
-          ...boxO(37, 24, 46, 4.5, T),
-          rect('fg', 46, 28.5, 1.8, 15.5),
-          rect('fg', 54, 28.5, 1.8, 15.5),
-          ...[33, 38].map((y) => rect('fg', 46, y, 9.8, 1.6)),
-        ]
-      : []),
+    rect('fg', 59.2, 4, 1.6, LOOKOUT_DECK - 4),
     ...(v >= 5
+      ? polyO(
+          [
+            [60, 11],
+            [right + 6, LOOKOUT_DECK - 7],
+            [left - 6, LOOKOUT_DECK - 7],
+          ],
+          T,
+        )
+      : []),
+    ...(v >= 2
       ? [
-          ...layered([40, 77].map((x) => boxO(x, 19, 3, 5, 1.4))),
-          ...polyO(
-            [
-              [60, 9],
-              [93, 20],
-              [27, 20],
-            ],
-            T,
+          rect('fg', left + 1, LOOKOUT_DECK - 8, right - left - 2, 1.8),
+          ...layered(
+            [left + 2, (left + 60) / 2, (60 + right) / 2, right - 3.8].map((x) => [
+              rect('fg', x, LOOKOUT_DECK - 8, 1.8, 8),
+            ]),
           ),
         ]
       : []),
-    ...cairn,
-    ...(v >= 2
-      ? [...layered([34, 81].map((x) => boxO(x, 49, 5, 25, T))), ...boxO(30, 44, 60, 5, T)]
+    ...(v >= 3 ? cross(71, v >= 4 ? 52 : under + 3) : []),
+    ...(v >= 4
+      ? [...cross(50, under + 3), poly('fg', bar(postAt(0, 51), 51, postAt(1, 51), 51, 2.4))]
       : []),
-    ...(v >= 3
-      ? [
-          rect('fg', 31, 36, 58, 1.8),
-          ...layered([32, 44, 74, 86].map((x) => [rect('fg', x, 36, 1.8, 8)])),
-          rect('fg', 67, 49, 1.8, 25),
-          rect('fg', 76, 49, 1.8, 25),
-          ...[54, 60, 66].map((y) => rect('fg', 67, y, 10.8, 1.6)),
-        ]
-      : []),
+    // a post's foot ends a little higher, so its slanted corner stays on the ground
+    ...layered(
+      [0, 1].map((i) => polyO(bar(LOOKOUT_FEET[i], 73.5, LOOKOUT_TOPS[i], under, 4.4), 1.5)),
+    ),
+    ...boxO(left, LOOKOUT_DECK, right - left, 4.5, T),
+    // the ladder: under the deck's right end, from the ground up to it
+    rect('fg', right - 13, under, 1.8, 74 - under),
+    rect('fg', right - 4, under, 1.8, 74 - under),
+    ...Array.from({ length: Math.floor((74 - under - 3) / 6) }, (_, i) =>
+      rect('fg', right - 13, 70 - i * 6, 10.8, 1.6),
+    ),
     ...polyO(
       [
-        [60.8, top],
-        [72, top + 3.5],
-        [60.8, top + 7],
+        [60.8, 4],
+        [72, 7.5],
+        [60.8, 11],
       ],
       1.4,
       'accent',
@@ -787,9 +779,9 @@ const lookout = (v) => {
   ];
 };
 [
-  'A cairn',
-  'A platform on the cairn',
-  'A lookout with a ladder',
+  'A lookout',
+  'A lookout with a railing',
+  'A braced lookout',
   'A tower',
   'A tower with a roof',
 ].forEach((title, i) => build(`lookout-${i + 1}`, title, lookout(i + 1)));
@@ -1330,9 +1322,9 @@ ladder(
     ways: LOOKOUT_WAYS,
     ...markerOf(MARKER_LAYOUTS.heights),
     versions: [
-      { art: 'build-lookout-1', title: 'A cairn' },
-      { art: 'build-lookout-2', title: 'A platform' },
-      { art: 'build-lookout-3', title: 'A lookout with a ladder' },
+      { art: 'build-lookout-1', title: 'A lookout' },
+      { art: 'build-lookout-2', title: 'A lookout with a railing' },
+      { art: 'build-lookout-3', title: 'A braced lookout' },
       { art: 'build-lookout-4', title: 'A tower' },
       { art: 'build-lookout-5', title: 'A tower with a roof' },
     ],

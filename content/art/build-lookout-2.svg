@@ -1,23 +1,12 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 80">
-  <title>A platform on the cairn</title>
+  <title>A lookout with a railing</title>
   <ellipse class="tint-strong" cx="60" cy="75" rx="54" ry="4.6"/>
   <rect class="fg" x="53" y="74" width="14" height="3.5" rx="1"/>
   <rect class="bg" x="54.4" y="75.4" width="11.2" height="0.7"/>
-  <rect class="fg" x="59.2" y="30" width="1.6" height="44"/>
-  <rect class="fg" x="44" y="68" width="32" height="6" rx="2"/>
-  <rect class="bg" x="46" y="70" width="28" height="2"/>
-  <rect class="fg" x="45.5" y="62.5" width="25" height="5.5" rx="2"/>
-  <rect class="bg" x="47.5" y="64.5" width="21" height="1.5"/>
-  <rect class="fg" x="51.5" y="57.5" width="20" height="5" rx="2"/>
-  <rect class="bg" x="53.5" y="59.5" width="16" height="1"/>
-  <rect class="fg" x="52.5" y="53" width="13" height="4.5" rx="2"/>
-  <rect class="bg" x="54.5" y="55" width="9" height="0.5"/>
-  <rect class="fg" x="56.5" y="49" width="9" height="4" rx="2"/>
-  <rect class="bg" x="58.5" y="51" width="5" height="0"/>
-  <path class="fg" d="M34 49H39V74H34ZM81 49H86V74H81Z"/>
-  <path class="bg" d="M36 51H37V72H36ZM83 51H84V72H83Z"/>
-  <rect class="fg" x="30" y="44" width="60" height="5"/>
-  <rect class="bg" x="32" y="46" width="56" height="1"/>
-  <polygon class="fg" points="60.8,30 72,33.5 60.8,37"/>
-  <polygon class="accent" points="67.3,33.5 62.2,35.1 62.2,31.9"/>
+  <path class="fg" d="M59.2 4H60.8V26H59.2ZM39 18H81V19.8H39ZM40 18H41.8V26H40ZM49 18H50.8V26H49ZM71 18H72.8V26H71ZM78.2 18H80V26H78.2ZM31.8 73.1L39.8 30.1L44.2 30.9L36.2 73.9ZM83.8 73.9L75.8 30.9L80.2 30.1L88.2 73.1Z"/>
+  <path class="bg" d="M42.4 32.1L35 72.2L33.6 71.9L41 31.8ZM86.4 71.9L85 72.2L77.6 32.1L79 31.8Z"/>
+  <rect class="fg" x="38" y="26" width="44" height="4.5"/>
+  <rect class="bg" x="40" y="28" width="40" height="0.5"/>
+  <path class="fg" d="M69 30.5H70.8V74H69ZM78 30.5H79.8V74H78ZM69 70H79.8V71.6H69ZM69 64H79.8V65.6H69ZM69 58H79.8V59.6H69ZM69 52H79.8V53.6H69ZM69 46H79.8V47.6H69ZM69 40H79.8V41.6H69ZM60.8 4L72 7.5L60.8 11Z"/>
+  <polygon class="accent" points="67.3,7.5 62.2,9.1 62.2,5.9"/>
 </svg>
