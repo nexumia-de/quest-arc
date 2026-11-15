@@ -53,7 +53,8 @@ const wording = (
   ladder: Ladder | undefined,
   journey: Journey | undefined,
 ): string => {
-  const thing = place.thing;
+  // One thing is drawn: the first (a place holds up to three, game rules §8).
+  const thing = place.things[0];
   const parts: string[] = [];
   if (thing && ladder) {
     const state = journey
@@ -110,9 +111,10 @@ export const valleyModel = (
       if (!piece) return [];
       const anchor = anchors.find((a) => a.id === view.anchorId);
       const title = anchor ? anchorTitle(anchor, journeys) : view.name;
-      const ladder = view.thing ? pack.ladders[view.thing.ladder] : undefined;
-      const journey = view.thing && journeys.find((j) => j.id === view.thing?.journeyId);
-      const art = ladder && view.thing ? versionArt(ladder, view.thing.version) : undefined;
+      const thing = view.things[0];
+      const ladder = thing ? pack.ladders[thing.ladder] : undefined;
+      const journey = thing && journeys.find((j) => j.id === thing.journeyId);
+      const art = ladder && thing ? versionArt(ladder, thing.version) : undefined;
       // The thing's row: slot and name side by side, from edge to edge.
       const top = Math.min(piece.slot.y, piece.name.y);
       const bottom = Math.max(piece.slot.y + piece.slot.height, piece.name.y + piece.name.height);
@@ -147,11 +149,12 @@ export const grownSince = (
   const versions = new Map<string, number>();
   const grown = new Set<string>();
   for (const { view } of model.places) {
-    if (!view.thing) continue;
-    const key = `${view.anchorId}/${view.thing.runId}`;
-    versions.set(key, view.thing.version);
+    const thing = view.things[0];
+    if (!thing) continue;
+    const key = `${view.anchorId}/${thing.runId}`;
+    versions.set(key, thing.version);
     const was = before?.get(key);
-    if (was !== undefined && view.thing.version > was) grown.add(view.anchorId);
+    if (was !== undefined && thing.version > was) grown.add(view.anchorId);
   }
   return { grown, versions };
 };

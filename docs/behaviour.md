@@ -88,8 +88,9 @@ piece"); the screen places nothing by hand.
 With [one](screenshots/valley-home-1-phone-light.png) and
 [six](screenshots/valley-home-6-phone-light.png) places, and
 [dark](screenshots/valley-home-6-desktop-dark.png) on the desktop.
-_Screenshots from demo data at 360 × 720 and 1000 × 700; the signs and the
-surroundings follow with #131._
+_Screenshots from demo data at 360 × 720 and 1000 × 700; the signs
+follow with #131; a place draws its first thing, the further things (up to
+three, game rules §8) follow with the place piece._
 
 - **The scene** is the page's picture. Per place, from the layout: the
   ground in the place's hue, blending into the next place's; the path and
@@ -314,8 +315,10 @@ Opened from the growing step of a moment (screen 0); back leads there.
   by Undo).
 - **The build** (#100, #110, [journey
   design](journey-design.md#the-journey-screen-with-the-build)). The
-  upper part is the build in its setting and the run's hue: the ladder's
-  current version, the marker with its first `ceil(markerProgress × E)`
+  upper part is the build in its setting and the run's hue: its own
+  thing, on the place's ladder when the moment has an earlier journey
+  ([game rules](game-rules.md) §8: a further journey builds another thing
+  of the same kind, from version 1), in its current version, the marker with its first `ceil(markerProgress × E)`
   elements, all hanging elements "on" while ready. Below it the row of
   versions (the standing ones as small pictures with their number, the
   next one as a plain step without a picture, nothing further), then one

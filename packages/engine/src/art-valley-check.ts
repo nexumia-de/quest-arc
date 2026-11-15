@@ -62,7 +62,7 @@ export const valleyProblems = (layout: ValleyLayout): Problem[] => {
     const at = `place ${i + 1}`;
     const { slot, plot, name, bay, doorstep, side } = place;
     if (!(slot.scale > 0)) error(at, 'the slot has no room');
-    // the plot holds the slot and the room beside it (the lantern, the surroundings)
+    // the plot holds the slot and the room beside it towards the path (the lantern)
     if (
       slot.x < plot.x - EPS ||
       slot.x + slot.width > plot.x + plot.width + EPS ||

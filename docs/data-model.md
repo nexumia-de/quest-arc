@@ -436,13 +436,14 @@ interface ValleyPlace {
   name: string; // the user's name for the place, else the anchor's words, else its time
   side: 'left' | 'right'; // the user's, else alternating from the right
   hue: string; // the user's, else by position in the palette's order; neighbours differ
-  thing?: ValleyThing; // the first journey's build; absent: plain land
+  things: ValleyThing[]; // one to three, in the order the journeys started (game rules §8); empty: plain land
+  unbuilt: { runId: string; journeyId: string; state: ValleyThing['state'] }[]; // journeys beyond THINGS_PER_PLACE (3)
   sign?: 'flowers' | 'lantern'; // a step is maintained / graduated
-  surroundings: number; // 0..4 steps from further journeys' finished stations
   growing: boolean; // the active journey starts from here
   chosen: { position?: number; side?: 'left' | 'right'; hue?: string }; // `place:<anchorId>`
 }
 
+// the build of one journey, on the ladder of the place's first journey
 interface ValleyThing extends Omit<BuildView, 'hue'> {
   runId: string;
   journeyId: string;

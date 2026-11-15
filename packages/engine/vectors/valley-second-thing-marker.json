@@ -1,6 +1,6 @@
 {
-  "name": "Surroundings count the finished stations of the further journeys: one finished stage is one step",
-  "rule": "game rules \u00a78, the Valley; issue #126",
+  "name": "Without a choice the second thing's marker is the ladder's default on the place's ladder (Home: bunting, not Well's lanterns); its version is its own, 2 after one finished stage",
+  "rule": "game rules \u00a78, the Valley; issue #148",
   "kind": "evaluate",
   "input": {
     "day": {
@@ -26,13 +26,9 @@
       "stage:r1:a": {
         "acceptedDay": "2026-08-01"
       },
-      "stage-done:r1:a": {
-        "day": "2026-08-15",
-        "dataFormat": 2
-      },
-      "run-end:r1": {
-        "day": "2026-08-16",
-        "reason": "ended"
+      "pause:r1:2026-08-05": {
+        "action": "pause",
+        "source": "user"
       },
       "run:r2": {
         "journeyId": "test-build",
@@ -59,15 +55,21 @@
     "valley": [
       {
         "anchorId": "m1",
-        "growing": true,
-        "surroundings": 1,
-        "thing": {
-          "runId": "r1",
-          "state": "ended",
-          "version": 2,
-          "markerProgress": 0,
-          "ready": false
-        }
+        "things": [
+          {
+            "runId": "r1",
+            "state": "paused",
+            "version": 1,
+            "marker": "bunting"
+          },
+          {
+            "runId": "r2",
+            "state": "growing",
+            "ladder": "home",
+            "version": 2,
+            "marker": "bunting"
+          }
+        ]
       }
     ],
     "problems": []

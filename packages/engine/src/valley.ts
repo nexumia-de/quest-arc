@@ -5,13 +5,17 @@ import type { AnchorView, RunView, ValleyPlace, ValleyThing } from './types/view
 
 /**
  * The Valley (docs/game-rules.md §8, issue #114): the user's anchors as
- * places along the path of a day, each with the one thing its first
- * journey builds. Derived every time from what the engine has computed
+ * places along the path of a day, each with the things its
+ * journeys build. Derived every time from what the engine has computed
  * and the `place` records; nothing is counted or stored here.
  */
 
-/** Steps of the surroundings that are drawn (fence, tree, bench, gate). */
-export const SURROUNDINGS_STEPS = 4;
+/**
+ * How many things a place holds: the first journey started from the anchor
+ * and the next two build one each; a fourth and later journey builds none
+ * (game rules §8; the owner may raise the limit later).
+ */
+export const THINGS_PER_PLACE = 3;
 
 const NO_RUN = '9999-99-99';
 
@@ -106,38 +110,39 @@ export const valleyView = (
       }
     }
 
-    const [first, ...further] = candidate.runs;
+    // Every journey here builds its own thing on the place's ladder (the
+    // first journey's), up to the limit, in the order they started.
     const habits = anchor.steps.map((step) => step.state);
-    const thing: ValleyThing | undefined = first && {
-      runId: first.run.runId,
-      journeyId: first.run.journeyId,
-      state: first.state,
-      ladder: first.run.build.ladder,
-      version: first.run.build.version,
-      skipped: first.run.build.skipped,
-      versions: first.run.build.versions,
-      marker: first.run.build.marker,
-      markerProgress: first.run.build.markerProgress,
-      ready: first.run.build.ready,
-    };
+    const things: ValleyThing[] = candidate.runs
+      .slice(0, THINGS_PER_PLACE)
+      .map(({ run, state }) => ({
+        runId: run.runId,
+        journeyId: run.journeyId,
+        state,
+        ladder: run.build.ladder,
+        version: run.build.version,
+        skipped: run.build.skipped,
+        versions: run.build.versions,
+        marker: run.build.marker,
+        markerProgress: run.build.markerProgress,
+        ready: run.build.ready,
+      }));
+    const unbuilt = candidate.runs
+      .slice(THINGS_PER_PLACE)
+      .map(({ run, state }) => ({ runId: run.runId, journeyId: run.journeyId, state }));
     const name = anchor.name ?? anchor.words ?? anchor.time ?? '';
     places.push({
       anchorId: anchor.id,
       name,
       side: picked.side ?? (index % 2 === 0 ? 'right' : 'left'),
       hue: hue ?? '',
-      ...(thing ? { thing } : {}),
+      things,
+      unbuilt,
       ...(habits.includes('maintained')
         ? { sign: 'flowers' as const }
         : habits.includes('graduated')
           ? { sign: 'lantern' as const }
           : {}),
-      // A further journey adds the steps it has finished or skipped; they stay
-      // whether it waits or was ended early.
-      surroundings: Math.min(
-        SURROUNDINGS_STEPS,
-        further.reduce((sum, { run }) => sum + run.build.version - 1, 0),
-      ),
       growing: anchor.state === 'growing',
       chosen: {
         ...(picked.position !== undefined ? { position: picked.position } : {}),

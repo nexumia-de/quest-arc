@@ -17,7 +17,8 @@ const place = (id: string, over: Partial<ValleyPlace> = {}): ValleyPlace => ({
   name: id,
   side: 'right',
   hue: 'meadow',
-  surroundings: 0,
+  things: [],
+  unbuilt: [],
   growing: false,
   chosen: {},
   ...over,
@@ -34,7 +35,7 @@ const thing = (version: number, ladder = 'home') =>
     marker: 'lanterns',
     markerProgress: 0,
     ready: false,
-  }) as unknown as NonNullable<ValleyPlace['thing']>;
+  }) as unknown as ValleyPlace['things'][number];
 const anchor = (id: string, words: string): AnchorView =>
   ({
     id,
@@ -49,8 +50,8 @@ const journeys = [] as readonly Journey[];
 
 describe('the Valley model', () => {
   const places = [
-    place('a', { growing: true, thing: thing(3), sign: 'flowers' }),
-    place('b', { side: 'left', thing: thing(2, 'garden'), sign: 'lantern' }),
+    place('a', { growing: true, things: [thing(3)], sign: 'flowers' }),
+    place('b', { side: 'left', things: [thing(2, 'garden')], sign: 'lantern' }),
     place('c'),
   ];
   const anchors = [anchor('a', 'getting up'), anchor('b', 'lunch'), anchor('c', 'dinner')];
@@ -100,7 +101,7 @@ describe('the Valley model', () => {
   it('tap areas of neighbours do not overlap, up to six places and beyond', () => {
     for (const n of [1, 3, 6, 9]) {
       const many = Array.from({ length: n }, (_, i) =>
-        place(`p${i}`, { side: i % 2 === 0 ? 'right' : 'left', thing: thing(1) }),
+        place(`p${i}`, { side: i % 2 === 0 ? 'right' : 'left', things: [thing(1)] }),
       );
       const m = valleyModel(many, [], journeys, pack);
       for (let i = 1; i < m.places.length; i += 1) {
@@ -128,7 +129,7 @@ describe('the Valley model', () => {
   });
 
   it('draws no thing where its ladder is not in the pack', () => {
-    const bare = valleyModel([place('a', { thing: thing(1) })], [], journeys, { ladders: {} });
+    const bare = valleyModel([place('a', { things: [thing(1)] })], [], journeys, { ladders: {} });
     expect(bare.places[0]?.art).toBeUndefined();
     expect(bare.places[0]?.label).toBe('a: nothing stands here yet.');
   });
@@ -136,7 +137,10 @@ describe('the Valley model', () => {
 
 describe('a new version appears, the first draw animates nothing', () => {
   const at = (version: number) =>
-    valleyValue([place('a', { thing: thing(version) }), place('b', { thing: thing(2, 'garden') })]);
+    valleyValue([
+      place('a', { things: [thing(version)] }),
+      place('b', { things: [thing(2, 'garden')] }),
+    ]);
   const valleyValue = (places: ValleyPlace[]) => valleyModel(places, [], journeys, pack);
 
   it('marks only the thing whose version grew', () => {

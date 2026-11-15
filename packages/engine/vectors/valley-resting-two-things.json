@@ -1,0 +1,113 @@
+{
+  "name": "A resting anchor with two waiting journeys shows both things, paused, each at its own version; nothing is taken away",
+  "rule": "game rules \u00a78, the Valley; issue #148",
+  "kind": "evaluate",
+  "input": {
+    "day": {
+      "todayStr": "2026-11-11",
+      "startOfNextDayDiffMs": 0,
+      "timeZone": "Europe/Berlin"
+    },
+    "tasks": [],
+    "repeatCfgs": [],
+    "choices": {
+      "anchor:m1": {
+        "kind": "routine",
+        "words": "getting up"
+      },
+      "anchor:m2": {
+        "kind": "routine",
+        "words": "lunch"
+      },
+      "run:r1": {
+        "journeyId": "test-daily",
+        "journeyVersion": 1,
+        "startDay": "2026-08-01"
+      },
+      "run-anchor:r1": {
+        "anchorId": "m1"
+      },
+      "stage:r1:a": {
+        "acceptedDay": "2026-08-01"
+      },
+      "stage-done:r1:a": {
+        "day": "2026-08-15",
+        "dataFormat": 2
+      },
+      "stage:r1:b": {
+        "acceptedDay": "2026-08-15"
+      },
+      "pause:r1:2026-09-01": {
+        "action": "pause",
+        "source": "user"
+      },
+      "run:r2": {
+        "journeyId": "test-build",
+        "journeyVersion": 1,
+        "startDay": "2026-09-02"
+      },
+      "run-anchor:r2": {
+        "anchorId": "m1"
+      },
+      "stage:r2:a": {
+        "acceptedDay": "2026-09-02"
+      },
+      "stage-done:r2:a": {
+        "day": "2026-09-10",
+        "dataFormat": 2
+      },
+      "stage:r2:b": {
+        "acceptedDay": "2026-09-10"
+      },
+      "pause:r2:2026-09-15": {
+        "action": "pause",
+        "source": "user"
+      },
+      "run:r3": {
+        "journeyId": "test-night",
+        "journeyVersion": 1,
+        "startDay": "2026-11-01"
+      },
+      "run-anchor:r3": {
+        "anchorId": "m2"
+      },
+      "stage:r3:a": {
+        "acceptedDay": "2026-11-01"
+      }
+    },
+    "journeys": ["$test-daily", "$test-build", "$test-morning", "$test-night"]
+  },
+  "expect": {
+    "valley": [
+      {
+        "anchorId": "m2",
+        "growing": true,
+        "things": [
+          {
+            "runId": "r3",
+            "state": "growing",
+            "version": 1
+          }
+        ]
+      },
+      {
+        "anchorId": "m1",
+        "growing": false,
+        "things": [
+          {
+            "runId": "r1",
+            "state": "paused",
+            "version": 2
+          },
+          {
+            "runId": "r2",
+            "state": "paused",
+            "version": 2,
+            "ladder": "home"
+          }
+        ]
+      }
+    ],
+    "problems": []
+  }
+}

@@ -160,28 +160,21 @@ export const valleyScene = (
     );
   });
 
-  // The things.
-  model.places.forEach((place, i) => {
-    const source = place.art && art().pictures[place.art];
-    if (!source) return;
-    const { x, y, width: w, height: ht } = place.piece.slot;
-    const thing = part(source, { x, y, width: w, height: ht }, placeHue(place.view));
-    const slot = layers.get('thing')?.[i];
-    if (!slot) return;
-    if (grown.has(place.view.anchorId)) slot.setAttribute('class', 'qa-grow');
-    slot.append(thing);
-  });
-
-  // The signs (#131), drawn in the thing's box and reaching beyond it: the
-  // flowers behind the thing, the lit lantern (one picture per side of the
-  // path) in front of its marker (docs/journey-design.md, "The signs of a place").
-  model.places.forEach(({ piece, view }, i) => {
-    const sign = (layer: Layer, name: string) => {
-      const source = art().pictures[name];
-      if (source) layers.get(layer)?.[i]?.append(part(source, piece.slot, placeHue(view)));
+  // The things, and the signs (#131) drawn in the thing's box and reaching
+  // beyond it: the flowers behind the thing, the lit lantern (one picture per
+  // side of the path) in front of its marker (docs/journey-design.md, "The
+  // signs of a place").
+  model.places.forEach(({ piece, view, art: thing }, i) => {
+    const draw = (layer: Layer, name?: string) => {
+      const source = name && art().pictures[name];
+      const slot = layers.get(layer)?.[i];
+      if (source) slot?.append(part(source, piece.slot, placeHue(view)));
+      return slot;
     };
-    if (view.sign) sign('flowers', 'place-flowers');
-    if (view.sign === 'lantern') sign('lantern', `place-lantern-${view.side}`);
+    const slot = draw('thing', thing);
+    if (thing && grown.has(view.anchorId)) slot?.setAttribute('class', 'qa-grow');
+    if (view.sign) draw('flowers', 'place-flowers');
+    if (view.sign === 'lantern') draw('lantern', `place-lantern-${view.side}`);
   });
 
   // The names, in HTML over the picture; sizes follow the scene's width.
