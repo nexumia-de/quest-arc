@@ -55,8 +55,8 @@ try {
   await makeRecurring(page);
   await questArc();
   expect(
-    (await label())?.startsWith('A fireplace, version 1 of 5; nothing on its way yet'),
-    `the Home stands, nothing on its way (${await label()})`,
+    (await label()) === 'A fireplace, version 1 of 5',
+    `the Home stands, nothing announced (${await label()})`,
   );
 
   // Day 1: the first tick, its message opens the build.
@@ -83,8 +83,8 @@ try {
   const ready = await label();
   expect(/; 6 of 6 flowers, open; ready$/.test(ready ?? ''), `ready after five days: ${ready}`);
   expect(
-    (await view().locator('.qa-build-state').innerText()).includes('a tent is ready'),
-    'the line says the tent is ready',
+    (await view().locator('.qa-build-state').innerText()) === 'A fireplace stands',
+    'the line says only what stands',
   );
   await name('3-ready');
 
@@ -112,13 +112,11 @@ try {
   await view().locator('.qa-build').waitFor();
   await page.waitForTimeout(1000);
   const next = await label();
+  expect(next === 'A tent, version 2 of 5', `the next version stands: ${next}`);
   expect(
-    next?.startsWith('A tent, version 2 of 5; nothing on its way yet'),
-    `the next version stands: ${next}`,
-  );
-  expect(
-    (await view().locator('.qa-versions li').count()) === 3,
-    'the row shows 1, 2 and the next step',
+    (await view().locator('.qa-versions li').count()) === 2 &&
+      (await view().locator('.qa-version-next').count()) === 0,
+    'the row shows 1 and 2 only, no step for the next',
   );
   await name('4-next-version');
 

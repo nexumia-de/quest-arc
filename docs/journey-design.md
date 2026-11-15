@@ -271,8 +271,7 @@ then all six open), light above, dark below:
 Counts stay where they are exact: the progress bar, the words ("3 of 5
 days") and the seven day marks in the card. Under the row of versions
 the state is said in words, never as a building site: "A hut
-stands · a cottage is on its way" while the stage runs, "… · a cottage
-is ready" while it is met.
+stands", whether the stage runs or is met: never the next version.
 
 **Measured** by `flowerProblems` (`scripts/ladder-checks.mjs`) before
 `scripts/draw-ladders.mjs` writes anything: every flower's feet on the
@@ -293,8 +292,9 @@ thing beside the doorstep instead
 ([the sign of a place](#the-sign-of-a-place-the-valley-131)).
 
 **Row of versions.** Below the build: the standing versions as small
-pictures (60 × 40 px), the next one as a plain outlined step without a
-picture, like stations ahead; nothing further is shown.
+pictures (60 × 40 px) and nothing else: no box or step for the next
+version, nothing is announced before it is earned (#155, decision 6 of
+#114).
 
 **A region is an anchor** (#96, which changes #42: not one region per
 journey). Every journey started from an anchor builds on in the same
@@ -618,19 +618,19 @@ stations list and Settings with the side panel switch:
 - **Desktop (720 px and wider):** the build with its row and line on the
   left, the card on the right, both from the top. The build is at most 560 px wide.
 - **Row of versions:** the versions that stand as 60 × 40 px pictures
-  with their number under them, the next as a plain rounded step with its
-  number, nothing beyond. A journey uses `versions` = stages + 1; when a
+  with their number under them, nothing beyond: no step or box for the
+  next version (#155). A journey uses `versions` = stages + 1; when a
   ladder has fewer pictures than that, the last picture stands for the
   versions after it (the checker warns about such journeys).
-- **Line of state:** the version's name and what is on its way, from the
+- **Line of state:** only what stands ("A hut stands"), from the
   journey's own names (`build.names`) where given, else the ladder's
-  titles. Before the stage's first counting completion only "A hut
-  stands"; after the last stage only what stands.
+  titles; never the next version, before or after the stage's first
+  counting completion (#155).
 - **For screen readers** the picture's label is the same in words with
   the flowers counted: "A hut, version 3 of 5; 3 of 6 flowers, in bud;
-  not ready yet" (or "6 of 6 flowers, open; ready", or "nothing on its
-  way yet"). The row is a list ("Versions: 1, 2 and 3 stand; 4 is
-  next"). The flowers counted in the label are the only place where
+  not ready yet" (or "6 of 6 flowers, open; ready", or only "A hut,
+  version 3 of 5" before the first flower). The row is a list of the
+  versions that stand, none for the next. The flowers counted in the label are the only place where
   elements are counted; the card keeps the exact stage counts.
 - **The moment of the tick:** the screen remembers, for as long as it is
   open, which run, version and number of elements it last drew. When a

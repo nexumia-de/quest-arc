@@ -197,16 +197,12 @@ describe('German sentences', () => {
     useLanguage('de', builtInJourneys);
     setArt(artPackIn());
     const well = artPackIn().ladders.well as Ladder;
-    expect(buildWords(well, 1, { progress: 0.5 })).toBe(
-      'Ein Wasserloch steht · ein Ziehbrunnen entsteht',
-    );
-    expect(buildWords(well, 3, { ready: true })).toBe(
-      'Ein Brunnen mit Winde steht · ein überdachter Brunnen ist bereit',
-    );
+    expect(buildWords(well, 1, { progress: 0.5 })).toBe('Ein Wasserloch steht');
+    expect(buildWords(well, 3, { ready: true })).toBe('Ein Brunnen mit Winde steht');
     expect(buildWords(well, 5, { progress: 1 })).toBe('Ein Brunnenhaus steht');
     // a name without an article is several things (no ladder title has one since #128)
     expect(buildWords(well, 1, { progress: 0.5, names: ['Trittsteine'] })).toBe(
-      'Trittsteine stehen · ein Ziehbrunnen entsteht',
+      'Trittsteine stehen',
     );
     expect(buildLabel(well, 3, { progress: 3 / 6 })).toBe(
       'Ein Brunnen mit Winde, Stufe 3 von 5; 3 von 6 Blumen, in Knospen; noch nicht bereit',
@@ -217,9 +213,7 @@ describe('German sentences', () => {
   it('keeps the English build words', () => {
     setArt(artPackIn());
     const well = wellFile as unknown as Ladder;
-    expect(buildWords(well, 1, { progress: 0.5 })).toBe(
-      'A water hole stands · a well sweep is on its way',
-    );
+    expect(buildWords(well, 1, { progress: 0.5 })).toBe('A water hole stands');
     expect(buildSummary(walk as never, {})).toBe('Lookout');
   });
 });
