@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 180">
+  <title>Village green</title>
+  <path class="tint" d="M0 52C50 46 110 40 170 44C220 47 270 40 320 46V180H0Z"/>
+  <polygon class="tint-strong" points="22,48 29,41.7 36,48 34.6,54 23.4,54"/>
+  <polygon class="tint-strong" points="40,46 45,41.5 50,46 49,52 41,52"/>
+  <polygon class="tint-strong" points="272,45 278,39.6 284,45 282.8,51 273.2,51"/>
+  <path class="tint-strong" d="M0 148C30 144 58 154 78 180H0Z"/>
+  <path class="tint-strong" d="M320 148C298 146 282 158 270 180H320Z"/>
+  <path class="bg" d="M128 180L130.5 176C139 163 146 155 147.8 146.1H172.3C174 155 181 163 189.5 176L192 180Z"/>
+</svg>

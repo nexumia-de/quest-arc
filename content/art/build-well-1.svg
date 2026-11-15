@@ -1,0 +1,25 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 80">
+  <title>A spring in a basin of stones</title>
+  <ellipse class="tint-strong" cx="60" cy="75" rx="54" ry="4.6"/>
+  <rect class="fg" x="53" y="74" width="14" height="3.5" rx="1"/>
+  <rect class="bg" x="54.4" y="75.4" width="11.2" height="0.7"/>
+  <polygon class="fg" points="40,66 42,57 50,50 61,52 70,47 79,55 80,66"/>
+  <polygon class="bg" points="42.5,64 43.8,58.1 50.6,52.1 61.3,54.1 69.7,49.4 77.1,56 77.8,64"/>
+  <rect class="fg" x="55" y="55" width="10" height="5"/>
+  <rect class="bg" x="56.6" y="56.6" width="6.8" height="1.8"/>
+  <rect class="tint-strong" x="57.5" y="60" width="5" height="6"/>
+  <ellipse class="tint-strong" cx="60" cy="66.5" rx="17" ry="3.5"/>
+  <ellipse class="fg" cx="40" cy="69.5" rx="5.8" ry="4.6"/>
+  <ellipse class="bg" cx="40" cy="69.5" rx="4.2" ry="3"/>
+  <ellipse class="fg" cx="50" cy="69.5" rx="5.8" ry="4.6"/>
+  <ellipse class="bg" cx="50" cy="69.5" rx="4.2" ry="3"/>
+  <ellipse class="fg" cx="60" cy="69.5" rx="5.8" ry="4.6"/>
+  <ellipse class="bg" cx="60" cy="69.5" rx="4.2" ry="3"/>
+  <ellipse class="fg" cx="70" cy="69.5" rx="5.8" ry="4.6"/>
+  <ellipse class="bg" cx="70" cy="69.5" rx="4.2" ry="3"/>
+  <ellipse class="fg" cx="80" cy="69.5" rx="5.8" ry="4.6"/>
+  <ellipse class="bg" cx="80" cy="69.5" rx="4.2" ry="3"/>
+  <polygon class="fg" points="88,63 98,63 96.8,73 89.2,73"/>
+  <polygon class="accent" points="89.8,64.6 96.2,64.6 95.4,71.4 90.6,71.4"/>
+  <rect class="fg" x="88" y="66.5" width="10" height="1.4"/>
+</svg>

@@ -3,6 +3,7 @@
 import * as crossing from '../../../content/art/crossing.ladder.json';
 import * as garden from '../../../content/art/garden.ladder.json';
 import * as home from '../../../content/art/home.ladder.json';
+import * as well from '../../../content/art/well.ladder.json';
 import markers from '../../../content/art/markers.json';
 import palette from '../../../content/art/palette.json';
 import type { Journey } from './types/journey';
@@ -39,6 +40,7 @@ const SOURCES: Readonly<Record<string, LadderFile>> = {
     marker: garden.marker,
     hue: garden.hue,
   },
+  well: { versions: well.versions, water: well.water, marker: well.marker, hue: well.hue },
 };
 
 export interface Ladder {

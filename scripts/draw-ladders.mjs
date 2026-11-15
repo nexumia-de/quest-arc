@@ -507,6 +507,150 @@ build('garden-5', 'An orchard around a greenhouse', [
   ...greenhouse(),
 ]);
 
+// Well: a spring that grows into a fountain, in front of the same
+// threshold stone as Home's. Size and form both grow: a basin of stones
+// under a spring, a trough under a pump, a round well with a winch, the
+// well under a roof, a fountain of two bowls. Water is `tint-strong`; the
+// accent is the bucket, and the fountain's top jet.
+const WELL_WAYS = HOME_WAYS;
+const rock = (cx, cy, rx, ry) => ellipseO(cx, cy, rx, ry, 1.6);
+/** A bucket standing or hanging with its top at `top`, in the accent. */
+const bucket = (cx, top, w = 10, h = 10) => {
+  const shape = [
+    [cx - w / 2, top],
+    [cx + w / 2, top],
+    [cx + w * 0.38, top + h],
+    [cx - w * 0.38, top + h],
+  ];
+  return [
+    poly('fg', shape),
+    poly('accent', inset(shape, 1.6)),
+    rect('fg', cx - w / 2, top + h * 0.35, w, 1.4),
+  ];
+};
+/** Falling water: a band from (x, top) down to `bottom`. */
+const fall = (x, top, bottom, w = 3) => rect('tint-strong', x, top, w, bottom - top);
+/** The round well seen from the front: stone wall with joints, its rim an ellipse round the water. */
+const wellWall = (x, w) => [
+  ...boxO(x + 2, 52, w - 4, 22, T, 3),
+  ...[60, 66.5].map((y) => rect('fg', x + 2, y, w - 4, 1.6)),
+  ...[0.25, 0.5, 0.75].map((t, i) => rect('fg', x + w * t - 0.8 + (i === 1 ? 6 : 0), 61.5, 1.6, 5)),
+  ellipse('fg', 60, 52, w / 2, 5.5),
+  ellipse('tint-strong', 60, 52, w / 2 - 3, 3),
+];
+/** Two posts with a winch between them, the crank on the right, the bucket on its rope. */
+const winch = (x, w, top) => [
+  ...boxO(x, top, 6, 50 - top, T),
+  ...boxO(x + w - 6, top, 6, 50 - top, T),
+  ...boxO(x + 4, top + 4, w - 8, 6, T, 3),
+  rect('fg', x + w - 1, top + 6, 8, 2),
+  rect('fg', x + w + 5, top + 6, 2, 8),
+  rect('fg', 59.2, top + 10, 1.6, 30 - top),
+  ...bucket(60, 40, 11, 9),
+];
+
+build('well-1', 'A spring in a basin of stones', [
+  yard(),
+  ...polyO(
+    [
+      [40, 66],
+      [42, 57],
+      [50, 50],
+      [61, 52],
+      [70, 47],
+      [79, 55],
+      [80, 66],
+    ],
+    T,
+  ),
+  ...boxO(55, 55, 10, 5, 1.6),
+  fall(57.5, 60, 66, 5),
+  ellipse('tint-strong', 60, 66.5, 17, 3.5),
+  ...[40, 50, 60, 70, 80].flatMap((cx) => rock(cx, 69.5, 5.8, 4.6)),
+  ...bucket(93, 63),
+]);
+
+build('well-2', 'A trough under a pump', [
+  yard(),
+  ...boxO(48, 30, 9, 30, T),
+  ...boxO(46, 27, 13, 5, T, 1.5),
+  ...boxO(55, 38, 12, 5, T),
+  rect('fg', 44, 34, 6, 2),
+  fall(62, 43, 58),
+  ...polyO(
+    [
+      [30, 56],
+      [90, 56],
+      [87, 74],
+      [33, 74],
+    ],
+    T,
+  ),
+  rect('tint-strong', 32, 58, 56, 3.5),
+  ...[48, 72].map((x) => rect('fg', x - 0.8, 61, 1.6, 13)),
+  ...bucket(98, 64),
+]);
+
+build('well-3', 'A well with a winch', [yard(), ...winch(30, 60, 22), ...wellWall(26, 68)]);
+
+build('well-4', 'A well under a roof', [
+  yard(),
+  ...winch(30, 60, 26),
+  ...polyO(
+    [
+      [60, 4],
+      [108, 30],
+      [12, 30],
+    ],
+    T,
+  ),
+  rect('fg', 34, 20, 52, 1.6),
+  ...wellWall(22, 76),
+]);
+
+build('well-5', 'A fountain', [
+  yard(),
+  ...boxO(57, 18, 6, 14, T),
+  ...polyO(
+    [
+      [46, 14],
+      [74, 14],
+      [68, 20],
+      [52, 20],
+    ],
+    T,
+  ),
+  ...polyO(
+    [
+      [60, 2],
+      [64.5, 10],
+      [62.5, 14],
+      [57.5, 14],
+      [55.5, 10],
+    ],
+    1.6,
+    'accent',
+  ),
+  fall(45.5, 20, 30),
+  fall(71.5, 20, 30),
+  ...boxO(54, 34, 12, 22, T),
+  ...polyO(
+    [
+      [30, 30],
+      [90, 30],
+      [80, 40],
+      [40, 40],
+    ],
+    T,
+  ),
+  fall(31, 40, 56, 4),
+  fall(85, 40, 56, 4),
+  ...boxO(10, 58, 100, 16, T),
+  ...[64.5, 69.5].map((y) => rect('fg', 10, y, 100, 1.6)),
+  ...[30, 50, 70, 90].map((x, i) => rect('fg', x + (i % 2 ? 0 : 6) - 0.8, 60, 1.6, 4.5)),
+  ...boxO(6, 54, 108, 6, T, 1.5),
+]);
+
 // ---- markers: drawn once for every ladder (32 × 32) ---------------------
 // While a stage runs, a small festive marker grows in the foreground, one
 // element at a time (owner, 2026-11-12, #42): first the posts, one after
@@ -710,6 +854,25 @@ setting('field', 'Open fields', [
   path('tint-strong', 'M320 146C296 146 280 158 268 180H320Z'),
   pathToThreshold(),
 ]);
+// A village green for a well: a long low ridge far away with the roofs of
+// a village on it, no water.
+const roof = (x, y, w) =>
+  poly('tint-strong', [
+    [x, y],
+    [x + w / 2, y - w * 0.45],
+    [x + w, y],
+    [x + w * 0.9, y + 6],
+    [x + w * 0.1, y + 6],
+  ]);
+setting('green', 'Village green', [
+  path('tint', 'M0 52C50 46 110 40 170 44C220 47 270 40 320 46V180H0Z'),
+  roof(22, 48, 14),
+  roof(40, 46, 10),
+  roof(272, 45, 12),
+  path('tint-strong', 'M0 148C30 144 58 154 78 180H0Z'),
+  path('tint-strong', 'M320 148C298 146 282 158 270 180H320Z'),
+  pathToThreshold(),
+]);
 
 // ---- the marker's posts: per setting (320 × 180) ------------------------
 // A setting declares its marker layout and an ordered list of post points
@@ -821,8 +984,9 @@ const MARKER_LAYOUTS = {
     beads: 6,
   },
 };
-// The field has the clearing's path, so its marker stands where Home's does.
+// The field and the green have the clearing's path, so their markers stand where Home's does.
 MARKER_LAYOUTS.field = MARKER_LAYOUTS.clearing;
+MARKER_LAYOUTS.green = MARKER_LAYOUTS.clearing;
 const markerOf = ({ layout, posts }) => ({ layout, posts });
 
 // Where a setting has water: polygons in setting units, so the checker can
@@ -972,6 +1136,35 @@ ladder(
     at('bush', 'near', 296, 179, 48),
     at('tuft', 'near', 70, 178, 20),
     ...markerPlaces('field', MARKER_LAYOUTS.field),
+  ],
+);
+
+ladder(
+  'well',
+  {
+    title: 'Well',
+    hue: 'water',
+    water: false,
+    marker: 'lanterns',
+    ways: WELL_WAYS,
+    ...markerOf(MARKER_LAYOUTS.green),
+    versions: [
+      { art: 'build-well-1', title: 'A spring' },
+      { art: 'build-well-2', title: 'A trough' },
+      { art: 'build-well-3', title: 'A well with a winch' },
+      { art: 'build-well-4', title: 'A roofed well' },
+      { art: 'build-well-5', title: 'A fountain' },
+    ],
+  },
+  groundOf('green'),
+  [
+    at('tree', 'far', 250, 42, 20),
+    slot('build', { band: 'middle', ...SLOT }),
+    at('tuft', 'middle', 290, 132, 14),
+    lanternAtPost(MARKER_LAYOUTS.green),
+    at('bush', 'near', -22, 179, 48),
+    at('tuft', 'near', 236, 178, 20),
+    ...markerPlaces('green', MARKER_LAYOUTS.green),
   ],
 );
 
