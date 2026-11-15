@@ -507,11 +507,11 @@ build('garden-5', 'An orchard around a greenhouse', [
   ...greenhouse(),
 ]);
 
-// Well: a spring that grows into a fountain, in front of the same
+// Well: a spring that grows into a well house, in front of the same
 // threshold stone as Home's. Size and form both grow: a basin of stones
 // under a spring, a trough under a pump, a round well with a winch, the
-// well under a roof, a fountain of two bowls. Water is `tint-strong`; the
-// accent is the bucket, and the fountain's top jet.
+// well under a roof, a stone well house over it. Water is `tint-strong`; the
+// accent is the bucket.
 const WELL_WAYS = HOME_WAYS;
 const rock = (cx, cy, rx, ry) => ellipseO(cx, cy, rx, ry, 1.6);
 /** A bucket standing or hanging with its top at `top`, in the accent. */
@@ -608,47 +608,27 @@ build('well-4', 'A well under a roof', [
   ...wellWall(22, 76),
 ]);
 
-build('well-5', 'A fountain', [
+// The well house: the well with its bucket under a wide stone arch, between
+// two stone piers and under a wide roof, so the well stays the subject.
+const ARCH = [[26, 74], ...dome(60, 60, 34, 28), [94, 74]];
+build('well-5', 'A well house', [
   yard(),
-  ...boxO(57, 18, 6, 14, T),
   ...polyO(
     [
-      [46, 14],
-      [74, 14],
-      [68, 20],
-      [52, 20],
+      [60, 4],
+      [118, 30],
+      [2, 30],
     ],
     T,
   ),
-  ...polyO(
-    [
-      [60, 2],
-      [64.5, 10],
-      [62.5, 14],
-      [57.5, 14],
-      [55.5, 10],
-    ],
-    1.6,
-    'accent',
-  ),
-  fall(45.5, 20, 30),
-  fall(71.5, 20, 30),
-  ...boxO(54, 34, 12, 22, T),
-  ...polyO(
-    [
-      [30, 30],
-      [90, 30],
-      [80, 40],
-      [40, 40],
-    ],
-    T,
-  ),
-  fall(31, 40, 56, 4),
-  fall(85, 40, 56, 4),
-  ...boxO(10, 58, 100, 16, T),
-  ...[64.5, 69.5].map((y) => rect('fg', 10, y, 100, 1.6)),
-  ...[30, 50, 70, 90].map((x, i) => rect('fg', x + (i % 2 ? 0 : 6) - 0.8, 60, 1.6, 4.5)),
-  ...boxO(6, 54, 108, 6, T, 1.5),
+  rect('fg', 32, 18, 56, 1.6),
+  ...boxO(8, 28, 104, 46, T),
+  ...[42, 56].flatMap((y) => [rect('fg', 8, y, 16, 1.6), rect('fg', 96, y, 16, 1.6)]),
+  ...[16, 104].map((x) => rect('fg', x - 0.8, 43.6, 1.6, 12.4)),
+  ...polyO(ARCH, T),
+  rect('fg', 59.2, 33, 1.6, 9),
+  ...bucket(60, 41, 11, 9),
+  ...wellWall(28, 64),
 ]);
 
 // ---- markers: drawn once for every ladder (32 × 32) ---------------------
@@ -1153,7 +1133,7 @@ ladder(
       { art: 'build-well-2', title: 'A trough' },
       { art: 'build-well-3', title: 'A well with a winch' },
       { art: 'build-well-4', title: 'A roofed well' },
-      { art: 'build-well-5', title: 'A fountain' },
+      { art: 'build-well-5', title: 'A well house' },
     ],
   },
   groundOf('green'),

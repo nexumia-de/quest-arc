@@ -139,7 +139,7 @@ journey):
    home or a garden) has one: the threshold stone (x = 53–67,
    y = 74–77.5) in front of the fire, the tent's opening and each door,
    of the garden's bed and the greenhouse door, or of the spring, the
-   trough, the well and the fountain, where the path ends.
+   trough, the well and the well house, where the path ends.
    `ways` lists them; the checker requires a corner of every version and
    of the setting's path at each way point.
 4. **Water runs through.** Water in a setting runs from edge to edge (the
@@ -167,11 +167,12 @@ journey):
    the rows before a hedge with a fruit tree, a greenhouse between hedges
    and trees, an orchard of five fruit trees around the greenhouse. Well
    is a spring from a rock into a basin of stones, a trough under a pump,
-   a round well with a winch, the well under a roof, a fountain of two
-   bowls over a wide basin.
+   a round well with a winch, the well under a roof, a stone well
+   house with the well under its arch (owner: a fountain is another use,
+   not a well).
 8. **Look.** Outlined in `fg` with a `bg` fill, one `accent` detail (the
    flame, a glowing door or window, the keystone, a rail cap, the
-   sunflower, the fruit, the bucket, the fountain's top jet), water and
+   sunflower, the fruit, the bucket), water and
    the yard in `tint-strong` of the region's hue. The setting is quiet:
    ground and far trees in `tint`, a few reused plants (tuft, reeds, bush,
    flowers, far trees) in the [depth bands](#look-and-depth-bands).
