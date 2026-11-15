@@ -3,8 +3,9 @@
 // shown beside the build while the next version is on its way
 // (`marker-<kind>-post|bead[-lit].svg`, 32 × 32, and `markers.json`), the
 // settings (`setting-<name>.svg`, 320 × 180) with their marker cords
-// (`setting-<name>-cord-<n>.svg`) and the ladder files
-// (`<ladder>.ladder.json`) that place them.
+// (`setting-<name>-cord-<n>.svg`), the ladder files
+// (`<ladder>.ladder.json`) that place them, and what a place in the Valley
+// gains around its thing (`place-…svg`, `lantern.svg`, `place.json`, #131).
 // Shapes and places come from the numbers here, so a picture is changed by
 // changing this file and running it again:
 //
@@ -15,7 +16,8 @@
 import { readdirSync, rmSync, writeFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { box, grow, minus, within } from './ladder-geometry.mjs';
-import { ladderGeometryProblems, RETIRING } from './ladder-checks.mjs';
+import { valleyLayout } from '../packages/engine/src/valley-layout.ts';
+import { ladderGeometryProblems, placeProblems, RETIRING } from './ladder-checks.mjs';
 
 const out = join(import.meta.dirname, '..', 'content', 'art');
 const n = (v) => String(Math.round(v * 10) / 10);
@@ -1110,6 +1112,163 @@ ladder(
   ],
 );
 
+// ---- the place: signs and surroundings, 120 × 120 from y = -20 ---------
+// What a place gains after its thing (#114 decision 5, #131), drawn once
+// and fitting every thing: plants while the routine is still followed, the
+// lit lantern when it runs by itself, and the surroundings in fixed steps
+// when a further journey at the same moment finishes stations. They are
+// drawn in the build's units over its slot (the frame is the build's view
+// box, 20 higher and 20 deeper), for a thing on the right of the path: the
+// far side, away from the path, is x = 120; a host mirrors the frame for a
+// thing on the left. Layers, back to front: surroundings, plants, the
+// thing, the marker, the lantern. The bay (the path widening under the
+// thing) covers the box's lower band, so plants stand on the yard beside
+// the thing, never in front of the doorstep (x 50–70 below y = 74); the
+// surroundings lie on the far side: the tree behind the thing in the far
+// corner, its crown above every version's shoulder, and the fence, the
+// bench and the gate on the ground in front of the far corner, below the
+// bay. Measured by placeProblems (ladder-checks.mjs) against the Valley's
+// layout for every number of places and choice of sides.
+const PLACE_VIEW_BOX = '0 -20 120 120';
+const place = (name, title, shapes) => write(`${name}.svg`, svg(PLACE_VIEW_BOX, title, shapes));
+
+/** A low bush of three round parts standing on `feet`. */
+const shrub = (cx, feet, r) => [
+  ellipse('tint-strong', cx - r * 0.8, feet - r * 0.6, r * 0.7, r * 0.6),
+  ellipse('tint-strong', cx + r * 0.8, feet - r * 0.55, r * 0.65, r * 0.55),
+  ellipse('tint-strong', cx, feet - r * 0.85, r * 0.85, r * 0.85),
+  rect('tint-strong', cx - r * 1.4, feet - r * 0.6, r * 2.8, r * 0.6),
+];
+/** A tuft of grass: three blades on `feet`. */
+const blades = (cx, feet, h) => [
+  poly('tint-strong', [
+    [cx - 2.4, feet],
+    [cx - 4.6, feet - h * 0.7],
+    [cx - 0.6, feet],
+  ]),
+  poly('tint-strong', [
+    [cx - 1, feet],
+    [cx + 0.4, feet - h],
+    [cx + 1.4, feet],
+  ]),
+  poly('tint-strong', [
+    [cx + 0.6, feet],
+    [cx + 4.4, feet - h * 0.6],
+    [cx + 2.6, feet],
+  ]),
+];
+// Plants: a bush at each back corner of the yard, half behind the thing,
+// and low shrubs and tufts in front of the yard on the side of the path,
+// on the bay (the yard itself is tint-strong, so plants on it would not
+// show). The ground in front of the far corner is the surroundings'.
+const PLANTS = [
+  ...shrub(11, 72, 7),
+  ...shrub(109, 72, 7),
+  ...shrub(28, 89, 5.5),
+  ...blades(40, 89, 8),
+  ...blades(15, 88, 6.5),
+];
+place('place-plants', 'Plants around the thing', PLANTS);
+
+// The surroundings, one picture per step, each whole; a host draws steps 1
+// to n in this order. Built things are outlined in fg with a bg fill; the
+// tree is growth, solid tint-strong like the setting's trees. In front of
+// the far corner, from the far edge in: the fence, its gate, the bench.
+const O = 1.4; // their outline: thinner than a build's, they are smaller
+const FEET = 96;
+const picket = (x) =>
+  polyO(
+    [
+      [x, FEET],
+      [x, 85],
+      [x + 2.5, 82.4],
+      [x + 5, 85],
+      [x + 5, FEET],
+    ],
+    O,
+  );
+const FENCE = [
+  ...boxO(101, 86.4, 19, 3, O),
+  ...boxO(101, 91.4, 19, 3, O),
+  ...layered([102.4, 108.6, 114.8].map(picket)),
+];
+const TREE = [
+  rect('tint-strong', 103, 2, 4.4, 72),
+  ellipse('tint-strong', 105.2, -4, 10, 10),
+  ellipse('tint-strong', 97, 3, 7.4, 6.4),
+  ellipse('tint-strong', 113, 3, 6.8, 6.4),
+];
+const GATE = [
+  // a post at the inner end and the gate hung between it and the fence
+  ...boxO(87, 82.4, 4, FEET - 82.4, O),
+  ...boxO(91, 85.6, 10, 9.4, O),
+  poly('fg', [
+    [91.8, 94.2],
+    [93.8, 94.2],
+    [100.2, 86.4],
+    [98.2, 86.4],
+  ]),
+];
+const BENCH = [
+  // seen from the front: the back plank on two posts, the seat wider than
+  // the back, the legs splayed a little
+  rect('fg', 73.2, 83, 2.2, 8),
+  rect('fg', 81.2, 83, 2.2, 8),
+  poly('fg', [
+    [73, 92],
+    [75.4, 92],
+    [74, FEET],
+    [71.4, FEET],
+  ]),
+  poly('fg', [
+    [81.2, 92],
+    [83.6, 92],
+    [85.2, FEET],
+    [82.6, FEET],
+  ]),
+  ...boxO(71.4, 82.6, 13.8, 3, O),
+  ...boxO(70.2, 89.4, 16.2, 3.4, O),
+];
+const SURROUNDINGS = [
+  { art: 'place-fence', title: 'A low fence', shapes: FENCE },
+  { art: 'place-tree', title: 'A tree', shapes: TREE },
+  { art: 'place-bench', title: 'A bench', shapes: BENCH },
+  { art: 'place-gate', title: 'A gate', shapes: GATE },
+];
+for (const { art, title, shapes } of SURROUNDINGS) place(art, title, shapes);
+
+// The lit lantern (graduation): a lantern on a post, its glass filled with
+// the flame, a halo behind it and rays around it. The unlit lantern (the
+// marker's) is an empty outlined lantern without halo or rays, so the two
+// differ in shape, not only in colour. A 32 × 32 picture, as in the
+// settings' `lantern` slot; in the place it stands beside the doorstep,
+// clear of the threshold stone, its foot on the yard.
+write(
+  'lantern.svg',
+  svg('0 0 32 32', 'Lit lantern', [
+    ellipse('tint-strong', 16, 12.5, 11, 11),
+    rect('fg', 15, 20, 2, 9.5),
+    rect('fg', 11.5, 28.4, 9, 1.6, 0.8),
+    ...lantern(16, 7, 10, 12, true, [0, 180, 35, 145, 215, 325]).slice(1),
+  ]),
+);
+const LANTERN_AT = { art: 'lantern', x: 63, y: 50.8, width: 28, height: 28 };
+
+write(
+  'place.json',
+  `${JSON.stringify(
+    {
+      viewBox: PLACE_VIEW_BOX.split(' ').map(Number),
+      far: 'right',
+      plants: 'place-plants',
+      lantern: LANTERN_AT,
+      surroundings: SURROUNDINGS.map(({ art, title }) => ({ art, title })),
+    },
+    null,
+    2,
+  )}\n`,
+);
+
 write(
   'markers.json',
   `${JSON.stringify(
@@ -1135,6 +1294,20 @@ for (const [name, text] of files) {
     refused ||= !RETIRING.has(ladder);
   }
 }
+const ladderFiles = Object.fromEntries(
+  [...files]
+    .filter(([name]) => name.endsWith('.ladder.json'))
+    .map(([name, text]) => [name.slice(0, -'.ladder.json'.length), JSON.parse(text)]),
+);
+for (const problem of placeProblems(
+  JSON.parse(files.get('place.json')),
+  pictures,
+  ladderFiles,
+  valleyLayout,
+)) {
+  console.error(`error: ${problem}`);
+  refused = true;
+}
 if (refused) {
   console.error('Nothing written: fix the numbers above (docs/journey-design.md, rules).');
   process.exit(1);
@@ -1148,7 +1321,7 @@ for (const [name, text] of files)
     name.endsWith('.json') ? await format(text, { parser: 'json' }) : text,
   );
 // Generated pictures this run no longer writes are removed.
-const generated = /^(build-|marker-|setting-[a-z]+-cord-)/;
+const generated = /^(build-|marker-|place-|setting-[a-z]+-cord-)/;
 for (const name of readdirSync(out))
   if (generated.test(name) && !files.has(name)) rmSync(join(out, name));
 console.log(`Wrote ${files.size} files to content/art/`);

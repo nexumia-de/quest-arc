@@ -15,6 +15,18 @@ export const grow = (shape, d) =>
   fromD(
     Clipper.inflatePathsD(toD(shape), d, JoinType.Miter, EndType.Polygon, MITER_LIMIT, PRECISION),
   );
+/** An open line of points drawn `d` wide, with round ends. */
+export const stroke = (points, d) =>
+  fromD(
+    Clipper.inflatePathsD(
+      [points.map(([x, y]) => ({ x, y }))],
+      d / 2,
+      JoinType.Round,
+      EndType.Round,
+      MITER_LIMIT,
+      PRECISION,
+    ),
+  );
 /** Everything any of the shapes covers. */
 export const union = (...shapes) =>
   fromD(Clipper.unionD(toD(shapes.flat()), FillRule.NonZero, PRECISION));

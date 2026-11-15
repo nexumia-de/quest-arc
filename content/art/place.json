@@ -1,0 +1,30 @@
+{
+  "viewBox": [0, -20, 120, 120],
+  "far": "right",
+  "plants": "place-plants",
+  "lantern": {
+    "art": "lantern",
+    "x": 63,
+    "y": 50.8,
+    "width": 28,
+    "height": 28
+  },
+  "surroundings": [
+    {
+      "art": "place-fence",
+      "title": "A low fence"
+    },
+    {
+      "art": "place-tree",
+      "title": "A tree"
+    },
+    {
+      "art": "place-bench",
+      "title": "A bench"
+    },
+    {
+      "art": "place-gate",
+      "title": "A gate"
+    }
+  ]
+}

@@ -1,11 +1,11 @@
-import { ladders, markers, palette, pictures } from 'virtual:questarc-art';
+import { ladders, markers, palette, pictures, place } from 'virtual:questarc-art';
 
 import type { ArtPack } from '../shared/protocol';
 import { hasText, t } from '../shared/texts';
 import type { LadderVersion } from '../ui/ladder';
 
 /** The ladders' pictures plugin.js carries for the view (#100), titles as content/art has them. */
-export const artPack: ArtPack = { pictures, ladders, palette, markers };
+export const artPack: ArtPack = { pictures, ladders, palette, markers, place };
 
 const titled = <T extends { readonly title: string }>(
   all: Readonly<Record<string, T>>,
@@ -38,4 +38,5 @@ export const artPackIn = (): ArtPack => ({
   ),
   palette: titled(palette, (name) => `ui.art.hue.${name}`),
   markers: titled(markers, (name) => `ui.art.marker.${name}`),
+  place,
 });

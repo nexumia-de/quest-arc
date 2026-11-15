@@ -2,6 +2,7 @@ import type { GameView, Journey } from '@questarc/engine';
 
 import type { Hue } from '../ui/art';
 import type { Ladder } from '../ui/ladder';
+import type { PlaceArt } from '../ui/valley-place';
 
 /**
  * Messages between the view (iframe) and plugin.js. The view posts
@@ -38,6 +39,8 @@ export interface ArtPack {
   readonly markers: Readonly<
     Record<string, { readonly title: string; readonly landOnly: boolean }>
   >;
+  /** What a place in the Valley gains around its thing (content/art/place.json, #131). */
+  readonly place?: PlaceArt;
 }
 
 /**

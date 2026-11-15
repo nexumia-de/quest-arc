@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 -20 120 120">
+  <title>A bench</title>
+  <path class="fg" d="M73.2 83H75.4V91H73.2ZM81.2 83H83.4V91H81.2ZM73 92L75.4 92L74 96L71.4 96ZM81.2 92L83.6 92L85.2 96L82.6 96ZM71.4 82.6H85.2V85.6H71.4Z"/>
+  <rect class="bg" x="72.8" y="84" width="11" height="0.2"/>
+  <rect class="fg" x="70.2" y="89.4" width="16.2" height="3.4"/>
+  <rect class="bg" x="71.6" y="90.8" width="13.4" height="0.6"/>
+</svg>

@@ -27,12 +27,21 @@ const read = () => {
   );
   const palette = JSON.parse(readFileSync(join(dir, 'palette.json'), 'utf8'));
   const markers = JSON.parse(readFileSync(join(dir, 'markers.json'), 'utf8'));
-  return { pictures, ladders, palette, markers };
+  const place = JSON.parse(readFileSync(join(dir, 'place.json'), 'utf8'));
+  return { pictures, ladders, palette, markers, place };
 };
 
-/** The names of the pictures the journey screen and the build page draw. */
-export const ladderArt = ({ ladders, markers }) => {
+/**
+ * The names of the pictures the journey screen, the build page and the
+ * Valley draw (with a place's plants, lantern and surroundings, #131).
+ */
+export const ladderArt = ({ ladders, markers, place }) => {
   const names = new Set(['lantern']);
+  if (place) {
+    names.add(place.plants);
+    names.add(place.lantern.art);
+    for (const step of place.surroundings) names.add(step.art);
+  }
   for (const ladder of Object.values(ladders)) {
     for (const version of ladder.versions) names.add(version.art);
     for (const place of ladder.pictures) if (place.art) names.add(place.art);
@@ -43,7 +52,7 @@ export const ladderArt = ({ ladders, markers }) => {
 };
 
 const source = (only) => {
-  const { pictures, ladders, palette, markers } = read();
+  const { pictures, ladders, palette, markers, place } = read();
   const kept = only ? ladderArt(read()) : undefined;
   return [
     `export const pictures = ${JSON.stringify(
@@ -54,6 +63,7 @@ const source = (only) => {
     `export const ladders = ${JSON.stringify(ladders)};`,
     `export const palette = ${JSON.stringify(palette)};`,
     `export const markers = ${JSON.stringify(markers)};`,
+    `export const place = ${JSON.stringify(place)};`,
   ].join('\n');
 };
 

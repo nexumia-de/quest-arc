@@ -4,7 +4,7 @@
 // docs/journey-design.md ("Rules for drawing a ladder") that can be
 // measured no longer depends on looking. Own work, CC BY-SA 4.0 like
 // content/.
-import { area, bounds, box, minus, oval, union, within } from './ladder-geometry.mjs';
+import { area, bounds, box, minus, oval, stroke, union, within } from './ladder-geometry.mjs';
 
 /**
  * Each version must cover at least this much more area than the one before
@@ -181,5 +181,154 @@ export const ladderGeometryProblems = (name, ladder, pictures) => {
       if (over.length > 0) problems.push(`${art}: ${over.length} shapes cover the threshold stone`);
     }
   });
+  return problems;
+};
+
+// ---- the place: signs and surroundings (#131) ------------------------------
+
+/** Every layout the Valley's check measures (art-valley-check.ts): 1–6 places on every choice of sides, 7–12 alternating. */
+const LAYOUT_SIDES = (() => {
+  const all = [];
+  for (let n = 1; n <= 6; n += 1)
+    for (let m = 0; m < 1 << n; m += 1)
+      all.push(Array.from({ length: n }, (_, i) => ((m >> i) & 1 ? 'left' : 'right')));
+  for (let n = 7; n <= 12; n += 1)
+    for (const first of [0, 1])
+      all.push(Array.from({ length: n }, (_, i) => ((i + first) % 2 ? 'left' : 'right')));
+  return all;
+})();
+/** The doorstep's zone in the frame: nothing but the thing and the lantern in front of it. */
+const DOORSTEP = box(50, 74, 20, 26);
+/** The threshold stone, which the lantern leaves free. */
+const STONE = box(53, 74, 14, 3.5);
+/** Room kept between a place's pictures and the edge of the path. */
+const PATH_GAP = 2;
+const ROLES = {
+  plants: new Set(['tint-strong']),
+  surroundings: new Set(['fg', 'bg', 'tint-strong']),
+};
+
+/** A shape moved into the scene: frame units → scene, mirrored for a thing on the left. */
+const toScene = (shape, slot, mirror) =>
+  shape.map((ring) =>
+    ring.map(([x, y]) => [slot.x + (mirror ? 120 - x : x) * slot.scale, slot.y + y * slot.scale]),
+  );
+const rectShape = (b) => box(b.x, b.y, b.width, b.height);
+
+/**
+ * Problems of the place's pictures (content/art/place.json): `pictures`
+ * maps a picture's name to its SVG text, `ladders` a ladder's name to its
+ * file. Measured in the frame and in the Valley's layout (`valleyLayout`)
+ * for every number of places and choice of sides, at 360 and 720 wide.
+ */
+export const placeProblems = (place, pictures, ladders, valleyLayout) => {
+  const problems = [];
+  const [fx, fy, fw, fh] = place.viewBox;
+  const frame = box(fx, fy, fw, fh);
+  const shapesNamed = (name) => {
+    const source = pictures[name];
+    if (source === undefined) {
+      problems.push(`place: no picture ${name}`);
+      return [];
+    }
+    const bytes = new TextEncoder().encode(source).length;
+    if (bytes > MAX_BYTES) problems.push(`${name}: ${bytes} bytes, more than ${MAX_BYTES}`);
+    return shapesOf(source);
+  };
+  // the lantern in the frame's units
+  const { art: lanternArt, x: lx, y: ly, width: lw, height: lh } = place.lantern;
+  const lantern = shapesNamed(lanternArt).map((s) => ({
+    ...s,
+    shape: s.shape.map((ring) => ring.map(([x, y]) => [lx + (x * lw) / 32, ly + (y * lh) / 32])),
+  }));
+  const layers = [
+    { name: place.plants, kind: 'plants', shapes: shapesNamed(place.plants) },
+    ...place.surroundings.map(({ art }) => ({
+      name: art,
+      kind: 'surroundings',
+      shapes: shapesNamed(art),
+    })),
+  ];
+  const lanternShape = union(...lantern.map((s) => s.shape));
+  if (area(minus(lanternShape, frame)) > EPS) problems.push('lantern: outside the frame');
+  if (area(within(lanternShape, STONE)) > EPS) problems.push('lantern: covers the threshold stone');
+  for (const { name, kind, shapes } of layers) {
+    const all = union(...shapes.map((s) => s.shape));
+    const wrong = shapes.filter((s) => !ROLES[kind].has(s.role)).map((s) => s.role);
+    if (wrong.length > 0)
+      problems.push(`${name}: roles ${[...new Set(wrong)].join(', ')} are not for ${kind}`);
+    if (area(minus(all, frame)) > EPS)
+      problems.push(`${name}: outside the frame ${fx} ${fy} ${fw} ${fh}`);
+    if (area(within(all, DOORSTEP)) > EPS) problems.push(`${name}: in front of the doorstep`);
+  }
+  // nothing hides the marker: the lantern, drawn over it, leaves every
+  // marker place of every ladder free (setting units → build units)
+  for (const [ladderName, ladder] of Object.entries(ladders)) {
+    const kind = ladder.marker;
+    for (const p of ladder.pictures.filter((q) => q.slot === 'marker')) {
+      const art =
+        p.part === 'cord' ? p.art : `marker-${kind}-${p.part}${p.part === 'bead' ? '-lit' : ''}`;
+      const source = pictures[art];
+      if (source === undefined) continue;
+      const [, , vw] = /viewBox="([^"]+)"/.exec(source)[1].split(' ').map(Number);
+      const k = p.width / vw;
+      const shape = union(
+        ...shapesOf(source).map((s) =>
+          s.shape.map((ring) =>
+            ring.map(([x, y]) => [(p.x + x * k - 55) / 1.75, (p.y + y * k - 10.5) / 1.75]),
+          ),
+        ),
+      );
+      if (area(within(shape, lanternShape)) > EPS)
+        problems.push(`lantern: covers ${ladderName}'s marker (${p.part} ${p.order})`);
+    }
+  }
+  // in the Valley: inside the scene, clear of the path and of every other place
+  const seen = new Set();
+  for (const width of [360, 720])
+    for (const sides of LAYOUT_SIDES) {
+      const layout = valleyLayout({ sides, width, height: width * 2 });
+      const scene = box(0, 0, layout.width, layout.height);
+      // the path as drawn, with a little room on both sides
+      const way = stroke(
+        layout.path.flatMap((c) =>
+          Array.from({ length: 24 }, (_, s) => {
+            const t = s / 24;
+            const u = 1 - t;
+            const mix = (k) =>
+              u * u * u * c.from[k] +
+              3 * u * u * t * c.c1[k] +
+              3 * u * t * t * c.c2[k] +
+              t * t * t * c.to[k];
+            return [mix('x'), mix('y')];
+          }),
+        ),
+        layout.pathWidth + 2 * PATH_GAP * layout.unit,
+      );
+      const placed = layout.places.map((p) => {
+        const mirror = p.side !== place.far;
+        const own = [
+          lanternShape,
+          ...layers.map((l) => union(...l.shapes.map((s) => s.shape))),
+        ].map((shape) => toScene(shape, p.slot, mirror));
+        return { p, own, all: union(...own) };
+      });
+      placed.forEach(({ p, all }, i) => {
+        const report = (what) => {
+          const key = `${what} (${sides.length} places)`;
+          if (seen.has(key)) return;
+          seen.add(key);
+          problems.push(`place ${i + 1} of ${sides.join(',')} at ${width}: ${what}`);
+        };
+        if (area(minus(all, scene)) > EPS) report('leaves the scene');
+        if (area(within(all, way)) > EPS) report('crosses the path');
+        placed.forEach((other, j) => {
+          if (j === i) return;
+          const theirs = union(rectShape(other.p.slot), rectShape(other.p.name), other.all);
+          if (area(within(all, theirs)) > EPS) report(`overlaps place ${j + 1}`);
+        });
+        if (area(within(all, rectShape(p.name))) > EPS) report('covers its own name');
+      });
+    }
   return problems;
 };

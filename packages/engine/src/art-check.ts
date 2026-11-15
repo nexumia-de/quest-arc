@@ -15,19 +15,23 @@ export const ART_MAX_BYTES = 4096;
 
 /**
  * The view boxes: a ladder's setting (`setting-…`), a version of a build (`build-…`, larger than an icon so a
- * bridge or a house reads as the subject of a screen) and every other
- * picture.
+ * bridge or a house reads as the subject of a screen), what a place in the
+ * Valley gains around its thing (`place-…`: the build's box, 20 higher and
+ * 20 deeper) and every other picture.
  */
 export const ART_VIEW_BOX = {
   setting: '0 0 320 180',
   build: '0 0 120 80',
+  place: '0 -20 120 120',
   picture: '0 0 32 32',
 } as const;
 
 /** The view box a picture's name asks for. */
 export const artViewBox = (name: string): string => {
   const [kind] = name.split('-');
-  return kind === 'setting' || kind === 'build' ? ART_VIEW_BOX[kind] : ART_VIEW_BOX.picture;
+  return kind === 'setting' || kind === 'build' || kind === 'place'
+    ? ART_VIEW_BOX[kind]
+    : ART_VIEW_BOX.picture;
 };
 
 /**

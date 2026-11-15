@@ -126,6 +126,15 @@ _Screenshots from demo data._
   adds one small step to it. You keep using your normal tasks."
 - The menu has Shelf and Settings. When the active journey is
   read-only, its calm page stands here instead (screen 4).
+- **Signs and surroundings** (#131), in the Valley and on the place:
+  plants around the thing while a step there is still followed, the lit
+  lantern beside the doorstep when it runs by itself (the plants stay),
+  and a low fence, a tree, a bench and a gate, one per station a further
+  journey at the moment has finished. They appear when earned, never
+  before; nothing on the screen names what is still to come. For screen
+  readers the place's words add them: "plants grow around it and its
+  lantern is lit; around it: a low fence and a tree" (`placeSignWords`;
+  pictures and layers in [journey design](journey-design.md#signs-and-surroundings-of-a-place-the-valley-131)).
 
 ### 0a. A moment
 

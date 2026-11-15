@@ -4,6 +4,7 @@ import { describe, expect, it } from 'vitest';
 import { artProblems } from '../src/art-check';
 import { ladderProblems, markerProblems, type MarkerKind } from '../src/art-ladder-check';
 import { paletteProblems } from '../src/art-palette';
+import { SURROUNDINGS_STEPS } from '../src/valley';
 
 // Every picture and ladder in content/art/ must pass the picture checker
 // (docs/decisions/shared-pictures.md). `npm run journeys` runs this file.
@@ -20,9 +21,24 @@ describe('pictures in content/art', () => {
     expect(pictures.length).toBeGreaterThan(2);
   });
 
-  it('are pictures, ladders, the markers and the palette only', () => {
+  it('are pictures, ladders, the markers, the palette and the place only', () => {
     const known = (f: string) => f.endsWith('.svg') || f.endsWith('.ladder.json');
-    expect(files.filter((f) => !known(f))).toEqual(['markers.json', 'palette.json']);
+    expect(files.filter((f) => !known(f))).toEqual(['markers.json', 'palette.json', 'place.json']);
+  });
+
+  it('have the place: plants, the lit lantern and one picture per step of the surroundings', () => {
+    const place = read('place.json') as {
+      plants: string;
+      lantern: { art: string };
+      surroundings: { art: string; title: string }[];
+    };
+    expect(pictures).toContain(place.plants);
+    expect(pictures).toContain(place.lantern.art);
+    expect(place.surroundings).toHaveLength(SURROUNDINGS_STEPS);
+    for (const step of place.surroundings) {
+      expect(pictures).toContain(step.art);
+      expect(step.title).not.toBe('');
+    }
   });
 
   it('have the markers lanterns, bunting and flowers, each with its pictures', () => {
