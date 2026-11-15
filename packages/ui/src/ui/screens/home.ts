@@ -26,23 +26,17 @@ export const homeScreen = (ctx: Context): Screen => {
   const ended = ctx.draft.ended as { runId: string; title: string } | undefined;
   // The scene is as wide as the page up to 440 px (style.css) and two thirds of the window high.
   const pixels = Math.min(440, Math.max(document.documentElement.clientWidth - 32, 1));
-  const model = valleyModel(
-    view.valley,
-    view.anchors,
-    journeys,
-    art(),
-    sceneHeight(window.innerHeight, pixels),
-  );
+  const model = valleyModel(view.valley, view.anchors, journeys, art(), {
+    height: sceneHeight(window.innerHeight, pixels),
+  });
   const scene = valleyScene(
     model,
     ({ view: place }) =>
-      ctx.go(place.growing ? { name: 'journey' } : { name: 'moment', anchorId: place.anchorId }),
+      ctx.go(place.growing ? { name: 'journey' } : { name: 'place', anchorId: place.anchorId }),
     t('ui.valley.label'),
   );
   const active = view.anchors.some((a) => a.growing) ? view.active : undefined;
   const growing = active ? growingStep(ctx, active) : null;
-  // Until the place has its own page, the growing moment is changed from here.
-  const growingId = view.valley.find((place) => place.growing)?.anchorId;
   return {
     title: t('ui.app.name'),
     menu: [{ label: t('ui.shelf.title'), onSelect: () => ctx.go({ name: 'shelf' }) }],
@@ -54,17 +48,6 @@ export const homeScreen = (ctx: Context): Screen => {
         'div',
         { class: 'qa-home-side qa-stack' },
         growing,
-        growing && growingId
-          ? h(
-              'button',
-              {
-                class: 'qa-btn qa-btn-text',
-                type: 'button',
-                onclick: () => ctx.go({ name: 'moment', anchorId: growingId }),
-              },
-              t('ui.moment.change'),
-            )
-          : null,
         ...view.anchors.map((anchor) => confirmCard(ctx, anchor)),
         ended
           ? h(

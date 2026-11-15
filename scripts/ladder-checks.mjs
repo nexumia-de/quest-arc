@@ -272,26 +272,34 @@ export const placeProblems = (place, pictures, ladders, valleyLayout) => {
     clearOfThings(name, all);
   }
   // nothing hides the marker: the lantern, drawn over it, leaves every
-  // marker place of every ladder free (setting units → build units)
+  // marker element of every ladder free, mapped as the place's pages draw
+  // it (packages/ui/src/ui/valley/model.ts, markerPieces): the posts' span
+  // fills the thing's box, their feet on its lower edge
   for (const [ladderName, ladder] of Object.entries(ladders)) {
     const kind = ladder.marker;
-    for (const p of ladder.pictures.filter((q) => q.slot === 'marker')) {
+    const markers = ladder.pictures.filter((q) => q.slot === 'marker');
+    const loose = markers.filter((q) => q.part !== 'cord');
+    const left = Math.min(...loose.map((q) => q.x));
+    const right = Math.max(...loose.map((q) => q.x + q.width));
+    const base = Math.max(...loose.map((q) => q.y + q.height));
+    const k = 120 / (right - left);
+    for (const p of markers) {
       const art =
         p.part === 'cord' ? p.art : `marker-${kind}-${p.part}${p.part === 'bead' ? '-lit' : ''}`;
       const source = pictures[art];
       if (source === undefined) continue;
       const [, , vw] = /viewBox="([^"]+)"/.exec(source)[1].split(' ').map(Number);
-      const k = p.width / vw;
+      const unit = p.width / vw;
       const shape = union(
         ...shapesOf(source).map((s) =>
           s.shape.map((ring) =>
-            ring.map(([x, y]) => [(p.x + x * k - 55) / 1.75, (p.y + y * k - 10.5) / 1.75]),
+            ring.map(([x, y]) => [(p.x + x * unit - left) * k, 80 + (p.y + y * unit - base) * k]),
           ),
         ),
       );
-      // the ladder's setting has the path's side on the left, as a thing on the right
-      if (area(within(shape, lanterns.right)) > EPS)
-        problems.push(`lantern: covers ${ladderName}'s marker (${p.part} ${p.order})`);
+      for (const [side, lantern] of Object.entries(lanterns))
+        if (area(within(shape, lantern)) > EPS)
+          problems.push(`lantern (${side}): covers ${ladderName}'s marker (${p.part} ${p.order})`);
     }
   }
   // in the Valley: inside the scene, clear of the path and of every other place

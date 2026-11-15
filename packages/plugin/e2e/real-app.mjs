@@ -42,7 +42,7 @@ try {
 
   await makeRecurring(page);
   expect(
-    (await view().locator('.qa-title').innerText()) === 'A gentle morning',
+    (await view().locator('.qa-title').innerText()) === 'After getting up',
     'the journey picks up the repeat',
   );
 

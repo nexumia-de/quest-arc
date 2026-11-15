@@ -3,8 +3,12 @@ import { t } from '../../shared/texts';
 import { banners } from '../banners';
 import { h } from '../dom';
 import { habitBanners } from '../habit-banners';
-import { buildSection } from '../journey/build';
+import { art } from '../art-store';
+import { buildState, markerTitle } from '../journey/build';
 import { stationCard } from '../journey/card';
+import { anchorTitle } from '../journey/moment';
+import { buildLabel } from '../ladder';
+import { placeOfRun, placeSection } from '../valley/place';
 import type { Context, MenuItem, Screen } from '../screen';
 import { readOnlyScreen } from './read-only';
 
@@ -31,7 +35,13 @@ export const journeyScreen = (ctx: Context): Screen => {
   }
 
   const station = run.stations[run.position.stage];
-  const build = buildSection(run, journey);
+  const place = placeOfRun(ctx, run);
+  const ladder = art().ladders[run.build.ladder];
+  const state = buildState(run.build, journey);
+  const label =
+    ladder && buildLabel(ladder, run.build.version, state, markerTitle(run.build.marker));
+  const build = placeSection(ctx, place, label, run.runId);
+  const anchor = view.anchors.find((a) => a.id !== undefined && a.id === place.anchorId);
 
   const action = (label: string, route: Parameters<Context['go']>[0], quiet = false) =>
     h(
@@ -76,14 +86,16 @@ export const journeyScreen = (ctx: Context): Screen => {
           .then(() => ctx.reset({ name: 'home' }, { ended: { runId: run.runId, title } }));
       },
     },
-    ...(build ? [{ label: t('ui.build.title'), onSelect: () => ctx.go({ name: 'build' }) }] : []),
+    ...(place.things[0]?.runId === run.runId
+      ? [{ label: t('ui.build.title'), onSelect: () => ctx.go({ name: 'build' }) }]
+      : []),
     { label: t('ui.check.title'), onSelect: () => ctx.go({ name: 'plan-check' }) },
     { label: t('ui.build.stations'), onSelect: () => ctx.go({ name: 'stations' }) },
     shelfItem,
   ];
 
   return {
-    title: t(journey.title),
+    title: anchor ? anchorTitle(anchor, journeys) : t(journey.title),
     layout: 'fill',
     menu,
     body: h(

@@ -113,9 +113,9 @@ three, game rules §8) follow with the place piece._
   itself." (pictures and layers in
   [journey design](journey-design.md#the-signs-of-a-place-the-valley-131)).
 - **Tapping a place** opens it: the journey (screen 4) for the growing
-  place; for any other the moment (screen 0a, which offers **Extend This
-  Moment** while no journey grows there) until the place has its own page
-  (next issue of #114). Each place is one button of at least 44 × 44 px,
+  place; for any other the place (screen 0b), also where nothing stands
+  yet. "Change this moment" (screen 0a) is reached from the place by its
+  pencil. Each place is one button of at least 44 × 44 px,
   its row from edge to edge. A place never opens by itself; back leads to
   the Valley.
 - **For screen readers** the scene is a section "The Valley: your moments
@@ -148,8 +148,9 @@ three, game rules §8) follow with the place piece._
     whenever you like.", "This station needs a recurring task.", "Paused.
     Paused days don't count.", or "Good to see you." when the card after a
     long break waits on the journey (flow D). In Super Productivity the
-    tick itself stays in the task list (flow A). Under it **Change this
-    moment** (screen 0a), until the place has its own page.
+    tick itself stays in the task list (flow A). Nothing else stands
+    under it: the home has no button for changing the moment (the pencil
+    on the place, screens 4 and 0b).
   - **Banners**, as before: the undo after ending a journey, and for the
     habits finished journeys left (flow F) at most one each: the question
     after graduation, the offer to graduate, or the weekly look back.
@@ -162,10 +163,9 @@ three, game rules §8) follow with the place piece._
     and the moment has no place in the Valley.
   - The main action at the bottom: **A New Moment** (screen 2; an
     outlined button while a journey is active).
-- **What the list said in words** ("Runs by itself: …", "Still followed:
-  …", "Waiting: …") is no longer on the home: the place's sign says it in
-  the scene's words, and the place's own page (next issue) lists the
-  steps. Nothing is ticked, counted or shown as due for what runs by
+- **What the list said in words** ("Runs by itself", "Still followed",
+  "Waiting") is no longer on the home: the place's sign says it in the
+  scene's words, and the place's own page (screen 0b) lists the steps. Nothing is ticked, counted or shown as due for what runs by
   itself.
 - **Nothing animates on opening.** When a new version of a thing appears
   while the screen is open, it grows in with the calm animation of the
@@ -196,10 +196,75 @@ three, game rules §8) follow with the place piece._
   anchors `confirmAnchor`). Without words or a time: "A moment needs a
   few words or a time." A leading "after" the user typed is not
   doubled.
+- **Where in your day** (#130, [#114](https://github.com/nexumia-de/quest-arc/issues/114)
+  decisions 3 and 10), for a moment that has a place: the places in the
+  order of the day as a numbered list in words, this one in bold with
+  "This moment" after it, then **Move Earlier** and **Move Later**
+  (disabled at the ends). **Side of the path**: **Left** or **Right**,
+  the side the thing stands on. **Colour**: the eight hues, each a swatch
+  with its name (the name carries it, not the colour). Each change is
+  written at once, as the engine's `movePlace`, `choosePlaceSide` or
+  `choosePlaceHue` makes it (`place:<anchorId>` records); the screen
+  keeps what was typed above. **Use the suggestion** (only while
+  something was chosen) withdraws all three (`withdrawPlace`): the place
+  goes back to its position by the kind of moment, the alternating side
+  and the hue by position. The hue belongs to the place, not to the
+  journey ([game rules](game-rules.md) §8).
 - **Extend This Moment** while no journey grows at the moment: screen 2
-  for it (the home no longer has this button, #129).
+  for it (also on the place, screen 0b).
+
+| ![Phone, light](screenshots/place-change-phone-light.png) | ![Phone, dark](screenshots/place-change-phone-dark.png) |
+| --------------------------------------------------------- | ------------------------------------------------------- |
+
 - **Remove This Moment** only while nothing stands there ("Nothing
   stands here yet, so nothing is lost.", `removeAnchor`).
+
+### 0b. The place
+
+#130 ([#114](https://github.com/nexumia-de/quest-arc/issues/114) decisions
+4, 5 and 12): a place without a growing journey opens here, from the
+Valley, also where nothing stands yet. The growing place opens its
+journey (screen 4), which draws the same piece.
+
+| ![Phone, light](screenshots/place-rest-phone-light.png) | ![Phone, dark](screenshots/place-rest-phone-dark.png) |
+| ------------------------------------------------------- | ----------------------------------------------------- |
+
+![Desktop, light](screenshots/place-rest-desktop-light.png)
+
+_Screenshots from demo data: the place's routine runs by itself, so the
+flowers stand at the thing's foot and the lantern is lit beside the
+doorstep (#131)._
+
+- Title: the place's name (the moment's name, else "After getting up").
+  Back leads to the Valley.
+- **The place piece**, large (the Valley's layout for one place,
+  [journey design](journey-design.md#the-place-piece-the-valley-127), 230
+  units high): the ground in the place's hue, the path and the bay, the
+  thing in the version that stands and its hue, the name; the place's
+  sign (flowers, the lit lantern) in the layers of the Valley's scene (#131). The
+  **pencil** at its top right (44 × 44) opens "Change this moment"
+  (screen 0a). Where nothing stands yet the piece is plain land with the
+  name.
+- **The versions that stand**, as on the journey screen (the row of
+  small pictures with their numbers; a version that stands for a skipped
+  stage says "already yours"), and the line of state ("A well house
+  stands"), once per thing: where the place holds more than one (up to
+  three, game rules §8) each row is headed by the title of the journey
+  that grows it. The piece draws the first thing until the layout
+  stacks the others (#151). Journeys beyond three build no thing and
+  have no row.
+- **One card, "Your routine here"**: the routine's steps in words, each
+  with **Still followed** or **Runs by itself**, and what waits with
+  **Waiting**; for a step that runs by itself also "Nothing is ticked or
+  counted for it any more." Nothing is ticked, counted or shown as due
+  for it. Where no step stands: "Nothing stands here yet."
+- **The questions that are due** at this moment, as banners (flow F):
+  the weekly question, the question after graduation, the offer to
+  graduate. Banners of other places stay on the home.
+- **Extend This Moment** (screen 2 for this moment).
+- Screen readers get the piece as the place in words ("After lunch: …,
+  version 2 of 5. …"); at 720 px and wider the piece is on the left and
+  the card on the right.
 
 ### 1. Welcome (first start)
 
@@ -258,8 +323,16 @@ three, game rules §8) follow with the place piece._
   is written. Nothing is shown, counted or built for answering.
 - **What you build** (#100): the journey's suggested
   build in words and as its first version, which stands from the start
-  ("You build a home · pennants · meadow green"), and **Change**, which
-  opens screen 3a. Nothing is shown of the versions to come.
+  ("You build: Home · pennants"), and **Change**, which
+  opens screen 3a. Nothing is shown of the versions to come. For a
+  further journey at a moment that already has its thing (#130) there is
+  nothing to choose and no **Change**: "This journey builds another thing
+  of the same kind at this moment (up to three)." (once three stand: "This
+  moment already holds three things; this journey builds no new one.";
+  #114, decision 5: a
+  place holds one to three things of the same kind, engine #148/#149;
+  until then the place shows its first thing only); nothing is written
+  for the build.
 - Main action: **Start**. Then the flow "Set up the task" (flow B) for
   the first stage. A changed build is written with the start, as one
   `build:<runId>` record ([data model](data-model.md)); an unchanged one
@@ -272,17 +345,21 @@ as their own page from **What you build** in the journey's menu
 (screen 4).
 
 - **What grows**: one option per ladder (Home, Garden, Well, Lookout), each with
-  its first version as a small picture and its name in words; the
-  journey's suggestion says "Suggested by the journey".
+  its first version as a small picture and its name in words, and
+  nothing of the versions to come; the journey's suggestion says
+  "Suggested by the journey". Under the heading: "This is the kind of thing
+  this moment builds. Later journeys here build more of the same kind."
+  (#114 decision 5).
 - **What hangs**: lanterns, pennants, flowers, each with its plain
   element as a small picture (the "on" form is earned, never shown ahead)
   and its name. Flowers need ground: with a ladder on water the option is
   disabled and says "Only on land"; a marker that no longer fits after
   changing the ladder falls back to the ladder's own.
-- **Colour**: the eight hues of the palette, each a swatch with its name
-  (the name carries it, not the colour). The engine no longer reads a
-  run's hue: it belongs to the place ([game rules](game-rules.md) §8,
-  #126); the picker moves to the place with the Valley's screens.
+- There is **no colour choice** here any more: the colour is the
+  place's hue, chosen in "Change this moment" (screen 0a). The engine
+  does not read a run's hue ([game rules](game-rules.md) §8, #126). The
+  screen is only for the journey that builds the place's thing; a
+  further journey at the moment has no build to choose (screen 3).
 - On screen 3 the choice is written with **Start**; from the menu each
   change is written at once (`chooseBuild`). Only what the user picked
   is stored; the rest follows the journey. Changing later loses nothing:
@@ -308,18 +385,34 @@ page only. They are never written into a task and never sent anywhere.
 
 Opened from the growing step of a moment (screen 0); back leads there.
 
-- Top: journey title; menu (Pause or Resume, End journey, **What you
+- Top: the place's name (the journey's title for a journey from before
+  anchors); menu (Pause or Resume, End journey, **What you
   build** (screen 3a), **Plan check** (screen 3b), **Stations**, Shelf,
   Settings). **End journey**
   happens at once and offers **Undo** (it writes one record, withdrawn
   by Undo).
-- **The build** (#100, #110, [journey
+- **The build** (#100, #110, #130, [journey
   design](journey-design.md#the-journey-screen-with-the-build)). The
-  upper part is the build in its setting and the run's hue: its own
-  thing, on the place's ladder when the moment has an earlier journey
-  ([game rules](game-rules.md) §8: a further journey builds another thing
-  of the same kind, from version 1), in its current version, the marker with its first `ceil(markerProgress × E)`
-  elements, all hanging elements "on" while ready. Below it the row of
+  title is the place's name. The upper part is the **place piece drawn
+  large** (screen 0b) in the place's hue instead of the ladder's own
+  setting: the thing this journey builds (the place's first thing, or,
+  for a further journey, its own: [game rules](game-rules.md) §8, a
+  further journey builds another thing of the same kind from version 1)
+  in its current version, and the marker standing in front of it, mapped
+  onto the thing's slot (so it never crosses the path), with its first
+  `ceil(markerProgress × E)` elements, all hanging elements "on" while
+  ready. The pencil on it opens "Change this moment" (screen 0a). A
+  journey from before anchors has no place yet: it stands on a place made
+  from its own build, with no pencil. A journey beyond the place's three
+  things builds none: it shows the place only, without the row of
+  versions and the line of state. The menu has **What you build** only
+  for the place's first thing (a further journey's ladder is the first
+  one's).
+
+  | ![Phone, light](screenshots/place-journey-phone-light.png) | ![Phone, dark](screenshots/place-journey-phone-dark.png) |
+  | ---------------------------------------------------------- | -------------------------------------------------------- |
+
+  Below the place the row of
   versions (the standing ones as small pictures with their number, the
   next one as a plain step without a picture, nothing further), then one
   line of state in words ("A hut stands · a cottage is on
@@ -330,6 +423,7 @@ Opened from the growing step of a moment (screen 0); back leads there.
   yet". At 720 px and wider the build is on the left and the card on the
   right. There is no drawn path any more: the stations are a list
   (**Stations** in the menu), each opening its details (screen 5).
+
 - **The moment of the tick:** while the screen is open, a completion
   that adds marker elements makes them appear with a short calm
   animation (grow and fade in, about half a second), a new version

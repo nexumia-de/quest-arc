@@ -505,13 +505,15 @@ pictures and mirrors nothing. `content/art/place.json` names the frame,
 the flowers and the two lanterns.
 
 **Layers**, back to front: ground, path and bay, flowers, the thing, the
-marker, the lantern, the name. `placeSigns`
-(`packages/ui/src/ui/valley-place.ts`, pure, no imports) gives each
-picture of a place's sign with its layer and its box from the slot and
-the view, and the home's scene (`packages/ui/src/ui/valley/scene.ts`)
-draws them into its `flowers` and `lantern` layers; the place's words for
-screen readers name the sign ("Flowers grow at its foot: the routine is
-still followed.", `ui.valley.sign.flowers`). The plugin bundles the
+marker, the lantern, the name. The Valley's scene
+(`packages/ui/src/ui/valley/scene.ts`), which draws the home and the
+place's pages, draws a place's thing and its signs in one loop: the
+flowers into its `flowers` layer and the lantern for the place's side into
+its `lantern` layer, each in the thing's own box. On the place's pages the
+marker stands in front of the thing, inside its box; the lantern stays
+clear of it. The place's words for screen readers name the sign
+("Flowers grow at its foot: the routine is still followed.",
+`ui.valley.sign.flowers`). The plugin bundles the
 place's pictures with the ladders' (`ladderArt`) in `plugin.js`, and
 `place.json` travels in the art pack; the view's `index.html` carries
 only the few lines that place them, because it is near its limit (with
@@ -574,6 +576,17 @@ then dropped the surroundings altogether, so only the lantern's room
 stays and the things are drawn as large as that allows.
 
 ## The journey screen with the build
+
+**Since #130 the setting is the place piece** ([behaviour](behaviour.md),
+screens 0b and 4): the journey screen draws the place piece above, large
+(`valleyLayout` for one place, 230 units high) in the place's hue instead
+of the ladder's own setting. The marker (`ladderScene`'s posts, cords and
+beads) is mapped from the ladder's setting onto the thing's slot: the
+posts' span fills the slot's width and the feet stand on its lower edge,
+so it stands in front of the thing and, like everything in the piece, never
+crosses the path. The older text of this section describes the ladder's
+own scene and stays valid for the versions, the marker's growth and the
+words.
 
 Issue #100, for every journey since #110. The
 engine's `build` view ([game rules](game-rules.md) §7) gives the ladder,

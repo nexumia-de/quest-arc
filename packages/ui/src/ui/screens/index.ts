@@ -10,6 +10,7 @@ import { journeyScreen } from './journey';
 import { momentScreen } from './moment';
 import { motivatesScreen } from './motivates';
 import { pickTaskScreen } from './pick-task';
+import { placeScreen } from './place';
 import { planCheckScreen } from './plan-check';
 import { previewScreen } from './preview';
 import { settingsScreen } from './settings';
@@ -31,6 +32,8 @@ export const screenFor = (route: Route, ctx: Context): Screen => {
       return homeScreen(ctx);
     case 'journey':
       return journeyScreen(ctx);
+    case 'place':
+      return placeScreen(ctx, route.anchorId);
     case 'moment':
       return momentScreen(ctx, route.anchorId, route.journeyId);
     case 'choose':
