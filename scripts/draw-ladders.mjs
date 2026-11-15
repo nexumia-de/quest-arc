@@ -14,6 +14,8 @@
 // ladders". Own work, CC BY-SA 4.0 like everything in content/.
 import { readdirSync, rmSync, writeFileSync } from 'node:fs';
 import { join } from 'node:path';
+import { box, grow, minus, within } from './ladder-geometry.mjs';
+import { ladderGeometryProblems, RETIRING } from './ladder-checks.mjs';
 
 const out = join(import.meta.dirname, '..', 'content', 'art');
 const n = (v) => String(Math.round(v * 10) / 10);
@@ -39,31 +41,14 @@ const ellipseO = (cx, cy, rx, ry, t) => [
   ellipse('bg', cx, cy, rx - t, ry - t),
 ];
 
-/** The polygon moved `t` inwards (edges parallel, corners mitred). */
-const inset = (list, t) => {
-  let area = 0;
-  list.forEach(([x1, y1], i) => {
-    const [x2, y2] = list[(i + 1) % list.length];
-    area += x1 * y2 - x2 * y1;
-  });
-  const s = area > 0 ? 1 : -1; // inwards normal side
-  const lines = list.map(([x1, y1], i) => {
-    const [x2, y2] = list[(i + 1) % list.length];
-    const len = Math.hypot(x2 - x1, y2 - y1);
-    const nx = (-(y2 - y1) / len) * s;
-    const ny = ((x2 - x1) / len) * s;
-    return [x1 + nx * t, y1 + ny * t, x2 - x1, y2 - y1];
-  });
-  return lines.map((b, i) => {
-    const a = lines[(i - 1 + lines.length) % lines.length];
-    const [ax, ay, adx, ady] = a;
-    const [bx, by, bdx, bdy] = b;
-    const det = adx * bdy - ady * bdx;
-    const u = ((bx - ax) * bdy - (by - ay) * bdx) / det;
-    return [ax + adx * u, ay + ady * u];
-  });
-};
-const polyO = (list, t, fill = 'bg') => [poly('fg', list), poly(fill, inset(list, t))];
+/** Path data for a shape's rings (outer rings and holes). */
+const rings = (shape) =>
+  shape.map((ring) => `M${ring.map(([x, y]) => `${n(x)} ${n(y)}`).join('L')}Z`).join('');
+/** A shape in one role: a polygon when it is one ring, else a path. */
+const shapeIn = (role, shape) =>
+  shape.length === 1 ? poly(role, shape[0]) : path(role, rings(shape), true);
+/** The polygon outlined: `fg` with the polygon `t` smaller in `fill` (ladder-geometry.mjs). */
+const polyO = (list, t, fill = 'bg') => [poly('fg', list), shapeIn(fill, grow([list], -t))];
 
 const svg = (viewBox, title, shapes) =>
   `<svg xmlns="http://www.w3.org/2000/svg" viewBox="${viewBox}">\n  <title>${title}</title>\n${shapes
@@ -503,7 +488,7 @@ build('garden-5', 'An orchard around a greenhouse', [
   ...fruitTree(86, 19, 16, false),
   ...fruitTree(13, 30, 13, false),
   ...fruitTree(107, 30, 13, false),
-  ...hedge(0, 120, 42, 62),
+  ...hedge(1, 118, 42, 62),
   ...greenhouse(),
 ]);
 
@@ -524,43 +509,36 @@ const bucket = (cx, top, w = 10, h = 10) => {
   ];
   return [
     poly('fg', shape),
-    poly('accent', inset(shape, 1.6)),
+    shapeIn('accent', grow([shape], -1.6)),
     rect('fg', cx - w / 2, top + h * 0.35, w, 1.4),
   ];
 };
 /**
- * Masonry: courses of stones from (x0, y0) to (x1, y1), each course `h`
- * high, the joints of every second course shifted by half a stone `w`;
- * one path, so a wall of many stones stays a small file.
+ * Masonry: courses of stones over a wall (a shape), each course `h` high,
+ * the joints of every second course shifted by half a stone `w`, clipped
+ * to the wall, so they stop at its edges and at any opening cut out of it
+ * (ladder-geometry.mjs). One path, so a wall of many stones stays small.
  */
-const masonry = (x0, y0, x1, y1, h, w, hole = () => null) => {
-  let d = '';
-  const joint = (x, y, jw, jh) => `M${n(x)} ${n(y)}h${n(jw)}v${n(jh)}h${n(-jw)}Z`;
-  /** A joint across from a to b, split around the hole at height y. */
-  const across = (a, b, y) => {
-    const gap = hole(y);
-    if (!gap) return joint(a, y - 0.8, b - a, 1.6);
-    return [
-      [a, gap[0]],
-      [gap[1], b],
-    ]
-      .filter(([l, r]) => r - l > 1)
-      .map(([l, r]) => joint(l, y - 0.8, r - l, 1.6))
-      .join('');
-  };
+const masonry = (wall, h, w) => {
+  const [x0, y0, x1, y1] = [
+    Math.min(...wall.flat().map(([x]) => x)),
+    Math.min(...wall.flat().map(([, y]) => y)),
+    Math.max(...wall.flat().map(([x]) => x)),
+    Math.max(...wall.flat().map(([, y]) => y)),
+  ];
+  const joints = [];
   for (let k = 0, y = y0; y < y1 - 0.5; k += 1, y += h) {
     const bottom = Math.min(y + h, y1);
-    if (k > 0) d += across(x0, x1, y);
-    const gaps = [hole(y), hole(bottom)].filter(Boolean);
+    if (k > 0) joints.push(...box(x0, y - 0.8, x1 - x0, 1.6));
     for (let x = x0 + w * (k % 2 ? 0.5 : 1); x < x1 - 2; x += w)
-      if (!gaps.some(([l, r]) => x > l - 1 && x < r + 1)) d += joint(x - 0.8, y, 1.6, bottom - y);
+      joints.push(...box(x - 0.8, y, 1.6, bottom - y));
   }
-  return path('fg', d);
+  return path('fg', rings(within(joints, wall)));
 };
 /** The round well seen from the front: a wall of stones, its rim an ellipse round the water. */
 const wellWall = (x, w, top = 52) => [
   ...boxO(x + 2, top, w - 4, 74 - top, T, 3),
-  masonry(x + 3, top + 4, x + w - 3, 73, (74 - top - 4) / (top < 56 ? 3 : 2), w / 5),
+  masonry(box(x + 3, top + 4, w - 6, 69 - top), (74 - top - 4) / (top < 56 ? 3 : 2), w / 5),
   ellipse('fg', 60, top, w / 2, 5.5),
   ellipse('tint-strong', 60, top, w / 2 - 3, 3),
 ];
@@ -588,7 +566,7 @@ build('well-1', 'A water hole', [
   ].map(([x, y]) => rect('fg', x, y, 5, 1.6, 0.8)),
   ellipse('fg', 60, 67, 28, 7),
   ellipse('tint-strong', 60, 67, 25, 4.6),
-  ...[40, 80].flatMap((cx) => rock(cx, 72, 6, 2.8)),
+  ...[40, 80].flatMap((cx) => rock(cx, 71.2, 6, 2.8)),
   ...bucket(25, 62),
 ]);
 
@@ -636,14 +614,6 @@ build('well-4', 'A well under a roof', [
 // inside the arch, a smaller well set back on its floor, then the front
 // wall with the arch cut out over it, so the wall's edges cover the well's.
 const ARCH = [[26, 74], ...dome(60, 60, 34, 28), [94, 74]];
-/** Where the arch and its outline cut a course at height y: [left, right], or none above it. */
-const archAt = (y) => {
-  const [base, rx, ry] = [60, 34, 28];
-  if (y < base - ry - T) return null;
-  const t = y >= base ? 1 : Math.max(0, 1 - (base - y + T) / ry) ** (1 / 1.7);
-  return [60 - rx * t - T - 0.5, 60 + rx * t + T + 0.5];
-};
-const ring = (list) => `M${list.map(([x, y]) => `${n(x)} ${n(y)}`).join('L')}Z`;
 const FRONT = [
   [8, 28],
   [112, 28],
@@ -666,13 +636,9 @@ build('well-5', 'A well house', [
   rect('fg', 59.2, 33, 1.6, 15),
   ...bucket(60, 46, 10, 8),
   ...wellWall(38, 44, 58),
-  path('fg', ring(FRONT) + ring(ARCH), true),
-  path(
-    'bg',
-    ring(inset(FRONT, T)) + ring(inset(ARCH, -T).map(([x, y]) => [x, Math.min(y, 74 - T)])),
-    true,
-  ),
-  masonry(10, 30, 110, 73, 7, 9, archAt),
+  shapeIn('fg', minus([FRONT], [ARCH])),
+  shapeIn('bg', minus(grow([FRONT], -T), grow([ARCH], T))),
+  masonry(minus(box(10, 30, 100, 43), grow([ARCH], T + 0.5)), 7, 9),
 ]);
 
 // ---- markers: drawn once for every ladder (32 × 32) ---------------------
@@ -1200,6 +1166,27 @@ write(
     2,
   )}\n`,
 );
+
+// The measured rules (ladder-checks.mjs) before anything is written: a
+// ladder that breaks one is not written at all.
+const pictures = Object.fromEntries(
+  [...files]
+    .filter(([name]) => name.endsWith('.svg'))
+    .map(([name, text]) => [name.slice(0, -4), text]),
+);
+let refused = false;
+for (const [name, text] of files) {
+  if (!name.endsWith('.ladder.json')) continue;
+  const ladder = name.slice(0, -'.ladder.json'.length);
+  for (const problem of ladderGeometryProblems(ladder, JSON.parse(text), pictures)) {
+    console.error(`${RETIRING.has(ladder) ? 'warning' : 'error'}: ${problem}`);
+    refused ||= !RETIRING.has(ladder);
+  }
+}
+if (refused) {
+  console.error('Nothing written: fix the numbers above (docs/journey-design.md, rules).');
+  process.exit(1);
+}
 
 // JSON as prettier writes it, so `npm run check` passes without a second step.
 const { format } = await import('prettier');

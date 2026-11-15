@@ -4,7 +4,7 @@
   <rect class="fg" x="53" y="74" width="14" height="3.5" rx="1"/>
   <rect class="bg" x="54.4" y="75.4" width="11.2" height="0.7"/>
   <polygon class="fg" points="60,32 86,74 34,74"/>
-  <polygon class="bg" points="60,35.8 82.4,72 37.6,72"/>
+  <polygon class="bg" points="82.4,72 37.6,72 60,35.8"/>
   <polygon class="accent" points="60,48 68,74 52,74"/>
   <rect class="fg" x="59" y="26" width="2" height="8"/>
   <rect class="fg" x="59" y="48" width="2" height="24"/>

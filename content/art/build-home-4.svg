@@ -8,7 +8,7 @@
   <rect class="fg" x="24" y="44" width="72" height="30"/>
   <rect class="bg" x="26" y="46" width="68" height="26"/>
   <polygon class="fg" points="38,14 82,14 102,46 18,46"/>
-  <polygon class="bg" points="39.1,16 80.9,16 98.4,44 21.6,44"/>
+  <polygon class="bg" points="80.9,16 98.4,44 21.6,44 39.1,16"/>
   <rect class="fg" x="53" y="54" width="14" height="20" rx="1"/>
   <rect class="accent" x="55" y="56" width="10" height="18"/>
   <rect class="fg" x="30" y="52" width="15" height="13" rx="1"/>
