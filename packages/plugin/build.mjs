@@ -26,7 +26,8 @@ const common = {
 
 await build({ ...common, entryPoints: ['src/plugin.ts'], outfile: join(files, 'plugin.js') });
 
-// The view's script and style without whitespace, names kept readable:
+// The view's script and style without whitespace, with shorter syntax and
+// shortened names (QUESTARC_READABLE=1 keeps the names, for debugging):
 // Super Productivity 19.3 installs an index.html of at most 100 KB (below).
 const view = await build({
   ...common,
@@ -36,8 +37,9 @@ const view = await build({
   entryPoints: ['src/ui/main.ts'],
   write: false,
   minifyWhitespace: true,
-  // shorter syntax only (no renaming), to keep room under the 100 KB limit
+  // room under the 100 KB limit (docs/decisions/one-build-for-older-versions.md)
   minifySyntax: true,
+  minifyIdentifiers: process.env.QUESTARC_READABLE !== '1',
 });
 const script = view.outputFiles[0].text.replaceAll('</script', '<\\/script');
 const { code: style } = await transform(
