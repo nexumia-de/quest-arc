@@ -3,14 +3,18 @@
   <ellipse class="tint-strong" cx="60" cy="75" rx="54" ry="4.6"/>
   <rect class="fg" x="53" y="74" width="14" height="3.5" rx="1"/>
   <rect class="bg" x="54.4" y="75.4" width="11.2" height="0.7"/>
-  <path class="fg" d="M59.2 4H60.8V26H59.2ZM60 11L88 19L32 19Z"/>
-  <polygon class="bg" points="73.7,17 46.3,17 60,13.1"/>
-  <path class="fg" d="M39 18H81V19.8H39ZM40 18H41.8V26H40ZM49 18H50.8V26H49ZM71 18H72.8V26H71ZM78.2 18H80V26H78.2ZM34.1 70.2L81.9 52.2L82.5 53.8L34.8 71.8ZM85.2 71.8L37.5 53.8L38.1 52.2L85.9 70.2ZM31.8 73.1L39.8 30.1L44.2 30.9L36.2 73.9ZM83.8 73.9L75.8 30.9L80.2 30.1L88.2 73.1Z"/>
-  <path class="bg" d="M42.4 32.1L35 72.2L33.6 71.9L41 31.8ZM86.4 71.9L85 72.2L77.6 32.1L79 31.8Z"/>
-  <rect class="fg" x="35.7" y="48" width="48.5" height="4.5"/>
-  <rect class="bg" x="37.7" y="50" width="44.5" height="0.5"/>
-  <rect class="fg" x="38" y="26" width="44" height="4.5"/>
-  <rect class="bg" x="40" y="28" width="40" height="0.5"/>
-  <path class="fg" d="M69 30.5H70.8V74H69ZM78 30.5H79.8V74H78ZM69 70H79.8V71.6H69ZM69 64H79.8V65.6H69ZM69 58H79.8V59.6H69ZM69 52H79.8V53.6H69ZM69 46H79.8V47.6H69ZM69 40H79.8V41.6H69ZM60.8 4L72 7.5L60.8 11Z"/>
+  <path class="fg" d="M59.2 4H60.8V48H59.2ZM36.4 47.6L39.8 28.1L44.2 28.9L40.7 48.4ZM79.3 48.4L75.8 28.9L80.2 28.1L83.6 47.6Z"/>
+  <path class="bg" d="M42.4 30.1L39.5 46.6L38.1 46.4L41 29.9ZM81.9 46.4L80.5 46.6L77.6 30.1L79 29.9Z"/>
+  <rect class="fg" x="38.8" y="24" width="42.4" height="4.5"/>
+  <rect class="bg" x="40.8" y="26" width="38.4" height="0.5"/>
+  <path class="fg" d="M44 28.5H45.8V48H44ZM53 28.5H54.8V48H53ZM44 44H54.8V45.6H44ZM44 38H54.8V39.6H44ZM41.8 16H44.8V24H41.8ZM75.2 16H78.2V24H75.2Z"/>
+  <path class="bg" d="M43.2 17.4H43.4V22.6H43.2ZM76.6 17.4H76.8V22.6H76.6Z"/>
+  <polygon class="fg" points="60,9 87.2,17 32.8,17"/>
+  <polygon class="bg" points="73.3,15 46.7,15 60,11.1"/>
+  <path class="fg" d="M35.5 40H84.4V41.8H35.5ZM36.5 40H38.3V48H36.5ZM47.3 40H49.1V48H47.3ZM72.7 40H74.5V48H72.7ZM81.7 40H83.5V48H81.7ZM34.2 70.1L82.5 54.6L83.1 56.4L34.7 71.9ZM85.3 71.9L36.9 56.4L37.5 54.6L85.8 70.1ZM31.8 73.1L35.6 52.1L39.9 52.9L36.2 73.9ZM83.8 73.9L80.1 52.9L84.4 52.1L88.2 73.1Z"/>
+  <path class="bg" d="M38.2 54.1L35 72.1L33.6 71.9L36.8 53.9ZM86.4 71.9L85 72.1L81.8 54.1L83.2 53.9Z"/>
+  <rect class="fg" x="34.5" y="48" width="50.9" height="4.5"/>
+  <rect class="bg" x="36.5" y="50" width="46.9" height="0.5"/>
+  <path class="fg" d="M72.5 52.5H74.3V74H72.5ZM81.5 52.5H83.3V74H81.5ZM72.5 70H83.3V71.6H72.5ZM72.5 64H83.3V65.6H72.5ZM72.5 58H83.3V59.6H72.5ZM60.8 4L72 7.5L60.8 11Z"/>
   <polygon class="accent" points="67.3,7.5 62.2,9.1 62.2,5.9"/>
 </svg>

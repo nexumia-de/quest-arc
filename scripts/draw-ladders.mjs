@@ -709,65 +709,84 @@ build('well-5', 'A well house', [
   masonry(minus(box(10, 30, 100, 43), grow([ARCH], T + 0.5)), 7, 9),
 ]);
 
-// Lookout: one wooden lookout tower at one height from the start (a built
-// thing does not grow taller), in front of the same threshold stone as
-// Home's; it gets better by what is added: two posts with a deck and a
-// ladder (1), a railing (2), a cross brace in the lower part (3), a second
-// level resting on it (4), a roof (5). The ladder climbs to the deck's right
-// end, clear of the threshold; the flag (the accent) stays on top.
+// Lookout: a wooden lookout built from the bottom up, in front of the
+// same threshold stone as Home's. What is built stays where it is (a built
+// thing does not grow): a low platform on two posts with a ladder (1), its
+// railing (2), a cross brace under it (3), the posts carried on up to an
+// upper deck with its own ladder (4), a roof over the upper deck (5). The
+// flag (the accent) stands at full height from the start; the tower grows
+// up around its pole.
 const LOOKOUT_WAYS = HOME_WAYS;
-const LOOKOUT_DECK = 26;
+const LOW = 48; // the platform's deck
+const HIGH = 24; // the upper deck
 const LOOKOUT_FEET = [34, 86];
-const LOOKOUT_TOPS = [42, 78];
-const MID = 48; // the second level's deck
+const LOOKOUT_TOPS = [42, 78]; // the posts where they meet the upper deck
 const lookout = (v) => {
-  const [left, right] = [LOOKOUT_TOPS[0] - 4, LOOKOUT_TOPS[1] + 4]; // the deck overhangs the posts
-  const under = LOOKOUT_DECK + 4.5; // the deck's underside
-  /** Where a post is at height y (it narrows towards the deck). */
+  /** Where a post is at height y (it narrows towards the upper deck). */
   const postAt = (i, y) =>
-    LOOKOUT_FEET[i] + ((LOOKOUT_TOPS[i] - LOOKOUT_FEET[i]) * (73.5 - y)) / (73.5 - under);
+    LOOKOUT_FEET[i] + ((LOOKOUT_TOPS[i] - LOOKOUT_FEET[i]) * (73.5 - y)) / (73.5 - HIGH - 4.5);
+  const deckAt = (y) => [postAt(0, y) - 4, postAt(1, y) + 4];
+  const [low0, low1] = deckAt(LOW);
+  const [high0, high1] = deckAt(HIGH);
+  const ladder = (x, top, bottom) => [
+    rect('fg', x, top, 1.8, bottom - top),
+    rect('fg', x + 9, top, 1.8, bottom - top),
+    ...Array.from({ length: Math.floor((bottom - top - 3) / 6) }, (_, i) =>
+      rect('fg', x, bottom - 4 - i * 6, 10.8, 1.6),
+    ),
+  ];
   const cross = (y1, y2) => [
     poly('fg', bar(postAt(0, y1), y1, postAt(1, y2), y2, 1.8)),
     poly('fg', bar(postAt(1, y1), y1, postAt(0, y2), y2, 1.8)),
   ];
   return [
     yard(),
-    rect('fg', 59.2, 4, 1.6, LOOKOUT_DECK - 4),
+    rect('fg', 59.2, 4, 1.6, LOW - 4),
+    ...(v >= 4
+      ? [
+          ...layered(
+            [0, 1].map((i) =>
+              polyO(bar(postAt(i, LOW), LOW, LOOKOUT_TOPS[i], HIGH + 4.5, 4.4), 1.5),
+            ),
+          ),
+          ...boxO(high0, HIGH, high1 - high0, 4.5, T),
+          ...ladder(44, HIGH + 4.5, LOW),
+        ]
+      : []),
+    // the roof on two short posts over the upper deck
     ...(v >= 5
-      ? polyO(
-          [
-            [60, 11],
-            [right + 6, LOOKOUT_DECK - 7],
-            [left - 6, LOOKOUT_DECK - 7],
-          ],
-          T,
-        )
+      ? [
+          ...layered([high0 + 3, high1 - 6].map((x) => boxO(x, HIGH - 8, 3, 8, 1.4))),
+          ...polyO(
+            [
+              [60, 9],
+              [high1 + 6, HIGH - 7],
+              [high0 - 6, HIGH - 7],
+            ],
+            T,
+          ),
+        ]
       : []),
     ...(v >= 2
       ? [
-          rect('fg', left + 1, LOOKOUT_DECK - 8, right - left - 2, 1.8),
+          rect('fg', low0 + 1, LOW - 8, low1 - low0 - 2, 1.8),
           ...layered(
-            [left + 2, (left + 60) / 2, (60 + right) / 2, right - 3.8].map((x) => [
-              rect('fg', x, LOOKOUT_DECK - 8, 1.8, 8),
+            [low0 + 2, (low0 + 60) / 2, (60 + low1) / 2, low1 - 3.8].map((x) => [
+              rect('fg', x, LOW - 8, 1.8, 8),
             ]),
           ),
         ]
       : []),
-    // the cross brace in the lower part, up to where the second level rests on it
-    ...(v >= 3 ? cross(71, MID + 5) : []),
+    ...(v >= 3 ? cross(71, LOW + 7.5) : []),
     // a post's foot ends a little higher, so its slanted corner stays on the ground
     ...layered(
-      [0, 1].map((i) => polyO(bar(LOOKOUT_FEET[i], 73.5, LOOKOUT_TOPS[i], under, 4.4), 1.5)),
+      [0, 1].map((i) =>
+        polyO(bar(LOOKOUT_FEET[i], 73.5, postAt(i, LOW + 4.5), LOW + 4.5, 4.4), 1.5),
+      ),
     ),
-    // the second level: a deck between the posts, resting on the brace
-    ...(v >= 4 ? boxO(postAt(0, MID) - 3, MID, postAt(1, MID) - postAt(0, MID) + 6, 4.5, T) : []),
-    ...boxO(left, LOOKOUT_DECK, right - left, 4.5, T),
-    // the ladder: under the deck's right end, from the ground up to it
-    rect('fg', right - 13, under, 1.8, 74 - under),
-    rect('fg', right - 4, under, 1.8, 74 - under),
-    ...Array.from({ length: Math.floor((74 - under - 3) / 6) }, (_, i) =>
-      rect('fg', right - 13, 70 - i * 6, 10.8, 1.6),
-    ),
+    ...boxO(low0, LOW, low1 - low0, 4.5, T),
+    // the ladder: under the platform's right end, from the ground up to it
+    ...ladder(low1 - 13, LOW + 4.5, 74),
     ...polyO(
       [
         [60.8, 4],
