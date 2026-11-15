@@ -174,7 +174,8 @@ journey):
    sunflower stood, an orchard of three trees behind the hedge, then five
    inside a wall of stones at shoulder height with its gate on the
    threshold (#135); the trees grow from the middle, and what stands keeps
-   its place. Well
+   its place and grows on: a tree is young with one fruit when planted,
+   grown with two a version later, old with three after that. Well
    follows how water is drawn: a water hole dug down to the water (its
    earth heaped behind with the spade in it), a well sweep (a beam on a
    forked post with a stone and the bucket on a pole) over a low stone

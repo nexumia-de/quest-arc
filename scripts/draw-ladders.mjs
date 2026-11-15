@@ -460,11 +460,28 @@ build('garden-2', 'A garden in rows', [
 ]);
 
 // From version 3 on, the trees grow from the middle, where the sunflower
-// stood: one, then three, then five; what stands keeps its place.
+// stood: one, then three, then five; what stands keeps its place and grows
+// on, so the first tree is the largest. A tree of age 1 (planted in this
+// version) is young with one fruit, age 2 grown with two, age 3 old with
+// three; its trunk ends behind the hedge or wall whose top is `top`.
 const ORCHARD = [14, 37, 60, 83, 106];
+const TREE_AGES = [
+  { r: 9, trunk: 4, fruits: 1 },
+  { r: 12, trunk: 6, fruits: 2 },
+  { r: 15, trunk: 8, fruits: 3 },
+];
+/** The trees of the orchard, ages by place (outer to middle), the oldest drawn last. */
+const orchard = (ages, top) =>
+  ORCHARD.map((x, i) => [x, ages[Math.min(i, 4 - i)]])
+    .filter(([, age]) => age > 0)
+    .sort(([, a], [, b]) => a - b)
+    .flatMap(([x, age]) => {
+      const { r, trunk, fruits } = TREE_AGES[age - 1];
+      return fruitTree(x, top - trunk - r * 0.92, r, 'solid', FRUIT.slice(0, fruits));
+    });
 build('garden-3', 'A garden with a fruit tree', [
   yard(),
-  ...fruitTree(60, 24, 14, 'solid'),
+  ...orchard([0, 0, 1], 42),
   ...hedge(6, 108, 42, 60),
   ...[19, 30, 41, 79, 90, 101].flatMap((x) => plant(x, 66, 5.5)),
   ...bed(12, 40, 66),
@@ -473,7 +490,7 @@ build('garden-3', 'A garden with a fruit tree', [
 
 build('garden-4', 'An orchard', [
   yard(),
-  ...ORCHARD.slice(1, 4).flatMap((x) => fruitTree(x, 24, 12, 'solid', FRUIT.slice(0, 2))),
+  ...orchard([0, 1, 2], 42),
   ...hedge(5, 110, 42, 60),
   ...[24, 38, 82, 96].flatMap((x) => plant(x, 66, 6)),
   ...bed(14, 38, 66),
@@ -492,7 +509,7 @@ const WALL = [
 ];
 build('garden-5', 'A walled garden', [
   yard(),
-  ...ORCHARD.flatMap((x) => fruitTree(x, 20, 12, 'solid', FRUIT.slice(0, 2))),
+  ...orchard([1, 2, 3], 45),
   ...[48.5, 71.5].flatMap((x) => plant(x, 48, 6.5)),
   poly('tint', GATE),
   shapeIn('fg', minus([WALL], [GATE])),

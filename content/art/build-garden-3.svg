@@ -3,12 +3,10 @@
   <ellipse class="tint-strong" cx="60" cy="75" rx="54" ry="4.6"/>
   <rect class="fg" x="53" y="74" width="14" height="3.5" rx="1"/>
   <rect class="bg" x="54.4" y="75.4" width="11.2" height="0.7"/>
-  <rect class="fg" x="57.8" y="24" width="4.4" height="34"/>
-  <ellipse class="fg" cx="60" cy="24" rx="14" ry="12.9"/>
-  <ellipse class="bg" cx="60" cy="24" rx="12" ry="10.9"/>
-  <ellipse class="accent" cx="53.7" cy="23.3" rx="2.8" ry="2.8"/>
-  <ellipse class="accent" cx="65.6" cy="19.1" rx="2.8" ry="2.8"/>
-  <ellipse class="accent" cx="62.1" cy="29.6" rx="2.8" ry="2.8"/>
+  <rect class="fg" x="57.8" y="29.7" width="4.4" height="28.3"/>
+  <ellipse class="fg" cx="60" cy="29.7" rx="9" ry="8.3"/>
+  <ellipse class="bg" cx="60" cy="29.7" rx="7" ry="6.3"/>
+  <ellipse class="accent" cx="56" cy="29.3" rx="2.8" ry="2.8"/>
   <ellipse class="fg" cx="13.7" cy="48.2" rx="8.7" ry="6.2"/>
   <ellipse class="fg" cx="29.1" cy="48.2" rx="8.7" ry="6.2"/>
   <ellipse class="fg" cx="44.6" cy="48.2" rx="8.7" ry="6.2"/>

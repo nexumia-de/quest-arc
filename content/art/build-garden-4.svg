@@ -3,21 +3,19 @@
   <ellipse class="tint-strong" cx="60" cy="75" rx="54" ry="4.6"/>
   <rect class="fg" x="53" y="74" width="14" height="3.5" rx="1"/>
   <rect class="bg" x="54.4" y="75.4" width="11.2" height="0.7"/>
-  <rect class="fg" x="34.8" y="24" width="4.4" height="34"/>
-  <ellipse class="fg" cx="37" cy="24" rx="12" ry="11"/>
-  <ellipse class="bg" cx="37" cy="24" rx="10" ry="9"/>
-  <ellipse class="accent" cx="31.6" cy="23.4" rx="2.8" ry="2.8"/>
-  <ellipse class="accent" cx="41.8" cy="19.8" rx="2.8" ry="2.8"/>
-  <rect class="fg" x="57.8" y="24" width="4.4" height="34"/>
-  <ellipse class="fg" cx="60" cy="24" rx="12" ry="11"/>
-  <ellipse class="bg" cx="60" cy="24" rx="10" ry="9"/>
-  <ellipse class="accent" cx="54.6" cy="23.4" rx="2.8" ry="2.8"/>
-  <ellipse class="accent" cx="64.8" cy="19.8" rx="2.8" ry="2.8"/>
-  <rect class="fg" x="80.8" y="24" width="4.4" height="34"/>
-  <ellipse class="fg" cx="83" cy="24" rx="12" ry="11"/>
-  <ellipse class="bg" cx="83" cy="24" rx="10" ry="9"/>
-  <ellipse class="accent" cx="77.6" cy="23.4" rx="2.8" ry="2.8"/>
-  <ellipse class="accent" cx="87.8" cy="19.8" rx="2.8" ry="2.8"/>
+  <rect class="fg" x="34.8" y="29.7" width="4.4" height="28.3"/>
+  <ellipse class="fg" cx="37" cy="29.7" rx="9" ry="8.3"/>
+  <ellipse class="bg" cx="37" cy="29.7" rx="7" ry="6.3"/>
+  <ellipse class="accent" cx="33" cy="29.3" rx="2.8" ry="2.8"/>
+  <rect class="fg" x="80.8" y="29.7" width="4.4" height="28.3"/>
+  <ellipse class="fg" cx="83" cy="29.7" rx="9" ry="8.3"/>
+  <ellipse class="bg" cx="83" cy="29.7" rx="7" ry="6.3"/>
+  <ellipse class="accent" cx="79" cy="29.3" rx="2.8" ry="2.8"/>
+  <rect class="fg" x="57.8" y="25" width="4.4" height="33"/>
+  <ellipse class="fg" cx="60" cy="25" rx="12" ry="11"/>
+  <ellipse class="bg" cx="60" cy="25" rx="10" ry="9"/>
+  <ellipse class="accent" cx="54.6" cy="24.4" rx="2.8" ry="2.8"/>
+  <ellipse class="accent" cx="64.8" cy="20.8" rx="2.8" ry="2.8"/>
   <ellipse class="fg" cx="12.9" cy="48.3" rx="8.9" ry="6.3"/>
   <ellipse class="fg" cx="28.6" cy="48.3" rx="8.9" ry="6.3"/>
   <ellipse class="fg" cx="44.3" cy="48.3" rx="8.9" ry="6.3"/>
