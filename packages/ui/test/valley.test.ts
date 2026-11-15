@@ -1,3 +1,4 @@
+import { valleyLayout, valleyProblems } from '@questarc/engine';
 import type { AnchorView, Journey, ValleyPlace } from '@questarc/engine';
 import { describe, expect, it } from 'vitest';
 
@@ -5,7 +6,7 @@ import garden from '../../../content/art/garden.ladder.json';
 import home from '../../../content/art/home.ladder.json';
 import '../src/shared/languages';
 import type { Ladder } from '../src/ui/ladder';
-import { grownSince, valleyModel } from '../src/ui/valley/model';
+import { grownSince, MIN_SCENE_HEIGHT, sceneHeight, valleyModel } from '../src/ui/valley/model';
 
 // The Valley as the home (#129): what is drawn and said per place, from the
 // engine's valley view and its layout. The DOM is walked in the real-app test.
@@ -151,5 +152,37 @@ describe('a new version appears, the first draw animates nothing', () => {
     const before = grownSince(undefined, at(3)).versions;
     expect(grownSince(before, at(2)).grown.size).toBe(0);
     expect(grownSince(new Map(), at(2)).grown.size).toBe(0);
+  });
+});
+
+describe('the scene is about two thirds of the window high', () => {
+  it('is 480 units on a 360 × 720 phone, so the growing card starts on the first screen', () => {
+    expect(sceneHeight(720, 360)).toBe(480);
+    expect(sceneHeight(900, 360)).toBe(600);
+  });
+
+  it("is scaled to the scene's width, and never below the checked minimum", () => {
+    expect(sceneHeight(700, 440)).toBe(MIN_SCENE_HEIGHT);
+    expect(sceneHeight(300, 360)).toBe(MIN_SCENE_HEIGHT);
+  });
+
+  it('passes the layout checks at the minimum for one to twelve places', () => {
+    for (let n = 1; n <= 12; n += 1) {
+      const sides = Array.from(
+        { length: n },
+        (_, i) => (i % 2 === 0 ? 'right' : 'left') as 'right' | 'left',
+      );
+      expect(valleyProblems(valleyLayout({ sides, height: MIN_SCENE_HEIGHT }))).toEqual([]);
+    }
+  });
+
+  it('is the height of the layout, longer beyond six places', () => {
+    const six = Array.from({ length: 6 }, (_, i) =>
+      place(`p${i}`, { side: i % 2 ? 'left' : 'right' }),
+    );
+    const eight = [...six, place('p6'), place('p7', { side: 'left' })];
+    expect(valleyModel(six, [], journeys, pack, 480).geometry.height).toBe(480);
+    expect(valleyModel(eight, [], journeys, pack, 480).geometry.height).toBe(640);
+    expect(valleyModel(six, [], journeys, pack, 300).geometry.height).toBe(480);
   });
 });

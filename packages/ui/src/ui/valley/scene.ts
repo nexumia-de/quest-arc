@@ -48,9 +48,20 @@ export const forgetValley = (): void => {
 
 /** The surface the scene stands on: the host's card, as for every picture. */
 const SURFACE = 'var(--bg-lighter, #fff)';
+/**
+ * The path and the bays: the host's background in the light theme; in the
+ * dark theme the place's `tint-strong`, so the bay reads as the path
+ * widening and not as a hole in the lighter ground (#145).
+ */
+const WAY = (hue: string) =>
+  `color-mix(in srgb, color-mix(in srgb, ${hue} 40%, ${SURFACE}) calc(var(--is-dark-theme, 0) * 100%), ${SURFACE})`;
 /** A place's hue, light or dark as the theme is (as `.qa-art-hue` in style.css). */
 const HUE =
   'color-mix(in srgb, var(--qa-hue-dark) calc(var(--is-dark-theme, 0) * 100%), var(--qa-hue-light))';
+
+/** The place's hue as custom properties, for the colours above. */
+const hueVars = (hue: { light: string; dark: string } | undefined): string =>
+  `--qa-hue-light:${hue?.light ?? 'transparent'};--qa-hue-dark:${hue?.dark ?? 'transparent'}`;
 
 export interface ValleyScene {
   readonly element: HTMLElement;
@@ -96,10 +107,7 @@ export const valleyScene = (
     const tint = hue ? `color-mix(in srgb, ${HUE} 16%, ${SURFACE})` : SURFACE;
     return [y + span * 0.3, y + span * 0.7].map((at) => {
       const stop = svgEl('stop', { offset: `${n1((100 * at) / height)}%` });
-      stop.setAttribute(
-        'style',
-        `stop-color:${tint};--qa-hue-light:${hue?.light ?? 'transparent'};--qa-hue-dark:${hue?.dark ?? 'transparent'}`,
-      );
+      stop.setAttribute('style', `stop-color:${tint};${hueVars(hue)}`);
       return stop;
     });
   });
@@ -117,15 +125,37 @@ export const valleyScene = (
     }),
   );
 
-  // Path and bays: the host's background.
-  const way = svgEl('path', {
-    d: cubicPathData(geometry.path),
-    class: 'qa-valley-way',
-    'stroke-width': geometry.pathWidth,
+  // Path and bays: one colour, along the path as the places' hues follow each other.
+  const wayStops = model.places.flatMap(({ view, piece }) => {
+    const hue = placeHue(view);
+    const { y, height: span } = piece.piece;
+    return [y + span * 0.2, y + span * 0.8].map((at) => {
+      const stop = svgEl('stop', { offset: `${n1((100 * at) / height)}%` });
+      stop.setAttribute('style', `stop-color:${hue ? WAY(HUE) : SURFACE};${hueVars(hue)}`);
+      return stop;
+    });
   });
-  group('path').prepend(way);
-  model.places.forEach(({ piece }, i) => {
+  const wayGradient = svgEl('linearGradient', {
+    id: 'qa-valley-way',
+    gradientUnits: 'userSpaceOnUse',
+    x1: 0,
+    y1: 0,
+    x2: 0,
+    y2: height,
+  });
+  wayGradient.append(...wayStops);
+  defs.append(wayGradient);
+  group('path').prepend(
+    svgEl('path', {
+      d: cubicPathData(geometry.path),
+      class: 'qa-valley-way',
+      'stroke-width': geometry.pathWidth,
+      style: `stroke:${wayStops.length > 0 ? 'url(#qa-valley-way)' : SURFACE}`,
+    }),
+  );
+  model.places.forEach(({ piece, view }, i) => {
     const { bay } = piece;
+    const hue = placeHue(view);
     layers.get('path')?.[i]?.append(
       svgEl('ellipse', {
         cx: n1(bay.cx),
@@ -133,6 +163,7 @@ export const valleyScene = (
         rx: n1(bay.rx),
         ry: n1(bay.ry),
         class: 'qa-valley-bay',
+        style: `fill:${hue ? WAY(HUE) : SURFACE};${hueVars(hue)}`,
       }),
     );
   });

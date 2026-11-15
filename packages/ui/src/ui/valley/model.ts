@@ -76,16 +76,32 @@ const wording = (
 /** The height of the plain land where no moment stands yet. */
 const EMPTY_HEIGHT = 240;
 
+/**
+ * The scene's height in layout units (360 wide) for a window: about two
+ * thirds of its height, so the growing card starts on the first screen
+ * (#145), never below 480, the height at which the layout's checks hold
+ * for six places and beyond (`valleyProblems`). The page is `pixels`
+ * wide and the scene stands as wide as it, so units are scaled to it.
+ */
+export const MIN_SCENE_HEIGHT = 480;
+export const sceneHeight = (windowHeight: number, pixels: number): number =>
+  Math.max(MIN_SCENE_HEIGHT, Math.round(((2 / 3) * windowHeight * 360) / Math.max(pixels, 1)));
+
 export const valleyModel = (
   places: readonly PlaceView[],
   anchors: readonly AnchorView[],
   journeys: readonly Journey[],
   pack: Pick<ArtPack, 'ladders'>,
+  height?: number,
 ): ValleyModel => {
   // Where nothing stands yet, plain land with the path, short enough to leave the words in view.
   const geometry = valleyLayout({
     sides: places.map((p) => p.side),
-    ...(places.length === 0 ? { height: EMPTY_HEIGHT } : {}),
+    ...(places.length === 0
+      ? { height: EMPTY_HEIGHT }
+      : height === undefined
+        ? {}
+        : { height: Math.max(height, MIN_SCENE_HEIGHT) }),
   });
   return {
     geometry,
