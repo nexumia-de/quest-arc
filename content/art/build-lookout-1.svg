@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 80">
+  <title>A lookout</title>
+  <ellipse class="tint-strong" cx="60" cy="75" rx="54" ry="4.6"/>
+  <rect class="fg" x="53" y="74" width="14" height="3.5" rx="1"/>
+  <rect class="bg" x="54.4" y="75.4" width="11.2" height="0.7"/>
+  <path class="fg" d="M31.8 73.1L35.4 53.6L39.7 54.4L36.2 73.9ZM83.8 73.9L80.3 54.4L84.6 53.6L88.2 73.1Z"/>
+  <path class="bg" d="M38 55.6L35 72.2L33.6 71.9L36.6 55.3ZM86.4 71.9L85 72.2L82 55.6L83.4 55.3Z"/>
+  <rect class="fg" x="34.7" y="48" width="50.6" height="6"/>
+  <rect class="accent" x="36.7" y="50" width="46.6" height="2"/>
+  <path class="fg" d="M72.3 54H74.1V74H72.3ZM81.3 54H83.1V74H81.3ZM72.3 70H83.1V71.6H72.3ZM72.3 64H83.1V65.6H72.3ZM72.3 58H83.1V59.6H72.3Z"/>
+</svg>

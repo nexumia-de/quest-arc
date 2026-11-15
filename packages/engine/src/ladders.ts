@@ -3,6 +3,7 @@
 import * as crossing from '../../../content/art/crossing.ladder.json';
 import * as garden from '../../../content/art/garden.ladder.json';
 import * as home from '../../../content/art/home.ladder.json';
+import * as lookout from '../../../content/art/lookout.ladder.json';
 import * as well from '../../../content/art/well.ladder.json';
 import markers from '../../../content/art/markers.json';
 import palette from '../../../content/art/palette.json';
@@ -41,6 +42,12 @@ const SOURCES: Readonly<Record<string, LadderFile>> = {
     hue: garden.hue,
   },
   well: { versions: well.versions, water: well.water, marker: well.marker, hue: well.hue },
+  lookout: {
+    versions: lookout.versions,
+    water: lookout.water,
+    marker: lookout.marker,
+    hue: lookout.hue,
+  },
 };
 
 export interface Ladder {

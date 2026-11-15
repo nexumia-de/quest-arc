@@ -1,0 +1,220 @@
+{
+  "title": "Lookout",
+  "hue": "rust",
+  "water": false,
+  "marker": "bunting",
+  "ways": [
+    [
+      [53, 77.5],
+      [67, 77.5]
+    ]
+  ],
+  "layout": "sides",
+  "posts": [
+    [34, 170],
+    [116, 173],
+    [204, 173],
+    [286, 170]
+  ],
+  "versions": [
+    {
+      "art": "build-lookout-1",
+      "title": "A lookout"
+    },
+    {
+      "art": "build-lookout-2",
+      "title": "A lookout with a railing"
+    },
+    {
+      "art": "build-lookout-3",
+      "title": "A braced lookout"
+    },
+    {
+      "art": "build-lookout-4",
+      "title": "A tower"
+    },
+    {
+      "art": "build-lookout-5",
+      "title": "A tower with a roof"
+    }
+  ],
+  "width": 320,
+  "height": 180,
+  "pictures": [
+    {
+      "art": "setting-heights",
+      "x": 0,
+      "y": 0,
+      "width": 320,
+      "height": 180
+    },
+    {
+      "art": "tree",
+      "band": "far",
+      "x": 28,
+      "y": 27.25,
+      "width": 20,
+      "height": 20
+    },
+    {
+      "art": "tuft",
+      "band": "middle",
+      "x": 286,
+      "y": 118.875,
+      "width": 14,
+      "height": 14
+    },
+    {
+      "slot": "build",
+      "band": "middle",
+      "x": 55,
+      "y": 10.5,
+      "width": 210,
+      "height": 140
+    },
+    {
+      "band": "near",
+      "x": 17,
+      "y": 138.125,
+      "width": 34,
+      "height": 34,
+      "slot": "lantern"
+    },
+    {
+      "slot": "marker",
+      "part": "post",
+      "order": 1,
+      "band": "near",
+      "x": 17,
+      "y": 138.125,
+      "width": 34,
+      "height": 34
+    },
+    {
+      "slot": "marker",
+      "part": "post",
+      "order": 4,
+      "band": "near",
+      "x": 269,
+      "y": 138.125,
+      "width": 34,
+      "height": 34
+    },
+    {
+      "slot": "marker",
+      "part": "post",
+      "order": 2,
+      "band": "near",
+      "x": 99,
+      "y": 141.125,
+      "width": 34,
+      "height": 34
+    },
+    {
+      "slot": "marker",
+      "part": "post",
+      "order": 3,
+      "band": "near",
+      "x": 187,
+      "y": 141.125,
+      "width": 34,
+      "height": 34
+    },
+    {
+      "slot": "marker",
+      "part": "cord",
+      "order": 2,
+      "art": "setting-heights-cord-1",
+      "x": 0,
+      "y": 0,
+      "width": 320,
+      "height": 180
+    },
+    {
+      "slot": "marker",
+      "part": "cord",
+      "order": 4,
+      "art": "setting-heights-cord-2",
+      "x": 0,
+      "y": 0,
+      "width": 320,
+      "height": 180
+    },
+    {
+      "slot": "marker",
+      "part": "bead",
+      "order": 5,
+      "band": "near",
+      "x": 42.5,
+      "y": 156.88185151479547,
+      "width": 24,
+      "height": 24
+    },
+    {
+      "slot": "marker",
+      "part": "bead",
+      "order": 6,
+      "band": "near",
+      "x": 63,
+      "y": 158.55496868639398,
+      "width": 24,
+      "height": 24
+    },
+    {
+      "slot": "marker",
+      "part": "bead",
+      "order": 7,
+      "band": "near",
+      "x": 83.5,
+      "y": 158.38185151479547,
+      "width": 24,
+      "height": 24
+    },
+    {
+      "slot": "marker",
+      "part": "bead",
+      "order": 8,
+      "band": "near",
+      "x": 212.5,
+      "y": 158.38185151479547,
+      "width": 24,
+      "height": 24
+    },
+    {
+      "slot": "marker",
+      "part": "bead",
+      "order": 9,
+      "band": "near",
+      "x": 233,
+      "y": 158.55496868639398,
+      "width": 24,
+      "height": 24
+    },
+    {
+      "slot": "marker",
+      "part": "bead",
+      "order": 10,
+      "band": "near",
+      "x": 253.5,
+      "y": 156.88185151479547,
+      "width": 24,
+      "height": 24
+    },
+    {
+      "art": "tuft",
+      "band": "near",
+      "x": 236,
+      "y": 159.25,
+      "width": 20,
+      "height": 20
+    },
+    {
+      "art": "bush",
+      "band": "near",
+      "x": -22,
+      "y": 134,
+      "width": 48,
+      "height": 48
+    }
+  ]
+}

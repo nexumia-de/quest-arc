@@ -709,6 +709,94 @@ build('well-5', 'A well house', [
   masonry(minus(box(10, 30, 100, 43), grow([ARCH], T + 0.5)), 7, 9),
 ]);
 
+// Lookout: a wooden lookout built from the bottom up, in front of the
+// same threshold stone as Home's. What is built stays where it is (a built
+// thing does not grow): a low platform on two posts with a ladder (1), its
+// railing (2), a cross brace under it (3), the posts carried on up to an
+// upper deck with its own ladder (4), a roof over the upper deck (5). The
+// accent is the deck you stand on to look out: the top one.
+const LOOKOUT_WAYS = HOME_WAYS;
+const LOW = 48; // the platform's deck
+const DECK_H = 6; // a deck's thickness, so its accent shows
+const HIGH = 24; // the upper deck
+const LOOKOUT_FEET = [34, 86];
+const LOOKOUT_TOPS = [42, 78]; // the posts where they meet the upper deck
+const lookout = (v) => {
+  /** Where a post is at height y (it narrows towards the upper deck). */
+  const postAt = (i, y) =>
+    LOOKOUT_FEET[i] + ((LOOKOUT_TOPS[i] - LOOKOUT_FEET[i]) * (73.5 - y)) / (73.5 - HIGH - DECK_H);
+  const deckAt = (y) => [postAt(0, y) - 4, postAt(1, y) + 4];
+  const [low0, low1] = deckAt(LOW);
+  const [high0, high1] = deckAt(HIGH);
+  const ladder = (x, top, bottom) => [
+    rect('fg', x, top, 1.8, bottom - top),
+    rect('fg', x + 9, top, 1.8, bottom - top),
+    // rungs every 6 from the foot up to just under the deck
+    ...Array.from({ length: Math.floor((bottom - 4 - top - 1) / 6) + 1 }, (_, i) =>
+      rect('fg', x, bottom - 4 - i * 6, 10.8, 1.6),
+    ),
+  ];
+  const cross = (y1, y2) => [
+    poly('fg', bar(postAt(0, y1), y1, postAt(1, y2), y2, 1.8)),
+    poly('fg', bar(postAt(1, y1), y1, postAt(0, y2), y2, 1.8)),
+  ];
+  return [
+    yard(),
+    ...(v >= 4
+      ? [
+          ...layered(
+            [0, 1].map((i) =>
+              polyO(bar(postAt(i, LOW), LOW, LOOKOUT_TOPS[i], HIGH + DECK_H, 4.4), 1.5),
+            ),
+          ),
+          ...boxO(high0, HIGH, high1 - high0, DECK_H, T, 0, 'accent'),
+          ...ladder(44, HIGH + DECK_H, LOW),
+        ]
+      : []),
+    // the roof on two short posts over the upper deck
+    ...(v >= 5
+      ? [
+          ...layered([high0 + 3, high1 - 6].map((x) => boxO(x, HIGH - 8, 3, 8, 1.4))),
+          ...polyO(
+            [
+              [60, 9],
+              [high1 + 6, HIGH - 7],
+              [high0 - 6, HIGH - 7],
+            ],
+            T,
+          ),
+        ]
+      : []),
+    ...(v >= 2
+      ? [
+          rect('fg', low0 + 1, LOW - 8, low1 - low0 - 2, 1.8),
+          ...layered(
+            [low0 + 2, (low0 + 60) / 2, (60 + low1) / 2, low1 - 3.8].map((x) => [
+              rect('fg', x, LOW - 8, 1.8, 8),
+            ]),
+          ),
+        ]
+      : []),
+    ...(v >= 3 ? cross(71, LOW + 7.5) : []),
+    // a post's foot ends a little higher, so its slanted corner stays on the ground
+    ...layered(
+      [0, 1].map((i) =>
+        polyO(bar(LOOKOUT_FEET[i], 73.5, postAt(i, LOW + DECK_H), LOW + DECK_H, 4.4), 1.5),
+      ),
+    ),
+    ...boxO(low0, LOW, low1 - low0, DECK_H, T, 0, v >= 4 ? 'bg' : 'accent'),
+    // the ladder: under the platform's right end, from the ground up to it
+    ...ladder(low1 - 13, LOW + DECK_H, 74),
+  ];
+};
+[
+  'A lookout',
+  'A lookout with a railing',
+  'A braced lookout',
+  'A tower',
+  'A tower with a roof',
+].forEach((title, i) => build(`lookout-${i + 1}`, title, lookout(i + 1)));
+
 // ---- markers: drawn once for every ladder (32 × 32) ---------------------
 // While a stage runs, a small festive marker grows in the foreground, one
 // element at a time (owner, 2026-11-12, #42): first the posts, one after
@@ -932,6 +1020,14 @@ setting('green', 'Village green', [
   pathToThreshold(),
 ]);
 
+// Heights for a lookout: far ridges with peaks, no water.
+setting('heights', 'Heights', [
+  path('tint', 'M0 60L30 44L52 54L84 30L118 50L150 42L186 54L224 28L262 48L292 38L320 50V180H0Z'),
+  path('tint-strong', 'M0 150C28 142 60 150 80 180H0Z'),
+  path('tint-strong', 'M320 148C298 146 282 158 270 180H320Z'),
+  pathToThreshold(),
+]);
+
 // ---- the marker's posts: per setting (320 × 180) ------------------------
 // A setting declares its marker layout and an ordered list of post points
 // in the near band (`marker` in the ladder file), like it declares where
@@ -1045,6 +1141,7 @@ const MARKER_LAYOUTS = {
 // The field and the green have the clearing's path, so their markers stand where Home's does.
 MARKER_LAYOUTS.field = MARKER_LAYOUTS.clearing;
 MARKER_LAYOUTS.green = MARKER_LAYOUTS.clearing;
+MARKER_LAYOUTS.heights = MARKER_LAYOUTS.clearing;
 const markerOf = ({ layout, posts }) => ({ layout, posts });
 
 // Where a setting has water: polygons in setting units, so the checker can
@@ -1223,6 +1320,35 @@ ladder(
     at('bush', 'near', -22, 179, 48),
     at('tuft', 'near', 236, 178, 20),
     ...markerPlaces('green', MARKER_LAYOUTS.green),
+  ],
+);
+
+ladder(
+  'lookout',
+  {
+    title: 'Lookout',
+    hue: 'rust',
+    water: false,
+    marker: 'bunting',
+    ways: LOOKOUT_WAYS,
+    ...markerOf(MARKER_LAYOUTS.heights),
+    versions: [
+      { art: 'build-lookout-1', title: 'A lookout' },
+      { art: 'build-lookout-2', title: 'A lookout with a railing' },
+      { art: 'build-lookout-3', title: 'A braced lookout' },
+      { art: 'build-lookout-4', title: 'A tower' },
+      { art: 'build-lookout-5', title: 'A tower with a roof' },
+    ],
+  },
+  groundOf('heights'),
+  [
+    at('tree', 'far', 28, 46, 20),
+    slot('build', { band: 'middle', ...SLOT }),
+    at('tuft', 'middle', 286, 132, 14),
+    lanternAtPost(MARKER_LAYOUTS.heights),
+    at('bush', 'near', -22, 179, 48),
+    at('tuft', 'near', 236, 178, 20),
+    ...markerPlaces('heights', MARKER_LAYOUTS.heights),
   ],
 );
 
