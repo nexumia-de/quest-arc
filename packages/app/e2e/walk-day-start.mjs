@@ -144,7 +144,7 @@ try {
   writeFileSync(
     join(OUT, `expect-daystart-${width}.json`),
     JSON.stringify({
-      journey: 'A gentle morning',
+      journey: 'After getting up',
       card: '1 of 5 days',
       why: 'Calmer mornings',
       dayStart: '04:00',
