@@ -66,16 +66,14 @@ falls to zero; the run text ("Run 4 · best 6") stays next to the marks.
 Decided by the owner on 2026-11-12[^42]: a journey builds **one thing**,
 whole at every stage, and every stage makes it a larger version. A
 **ladder** is that thing drawn once in five versions and used by every
-journey that picks it. The first two ladders, Crossing (with lanterns
-and with pennants) and Home (with pennants and with flowers), then Garden
-(with flowers), Well (with lanterns) and Lookout (with pennants, #128); plugin
-light above, Day Planner dark below (scale 2). Each version, then its
-marker growing element by element (every element for the first stage, a
-few sampled steps for the others), ready, then the next version:
-
-![Crossing with lanterns](screenshots/ladder-crossing.png)
-
-![Crossing with pennants](screenshots/ladder-crossing-pennants.png)
+journey that picks it. The ladders are Home (with pennants and with
+flowers), Garden (with flowers), Well (with lanterns) and Lookout (with
+pennants, #128); plugin light above, Day Planner dark below (scale 2).
+The first ladder, Crossing (a river: stepping stones to a covered
+bridge), was retired by #128: the Valley has no water (owner,
+2026-11-15). Each version, then its marker growing element by element
+(every element for the first stage, a few sampled steps for the
+others), ready, then the next version:
 
 ![Home with pennants](screenshots/ladder-home.png)
 
@@ -109,7 +107,7 @@ Lookout the same way:
 ![Lookout, journey mock](screenshots/ladder-lookout-journey.png)
 
 The journey screen as a static mock (plugin and Day Planner side by side;
-Crossing above, Home below; first mid-way, posts up and two elements
+the retired Crossing above, Home below; first mid-way, posts up and two elements
 hanging, then ready), light and dark: the build on top, the row of
 versions below it, the state in words, the card unchanged.
 
@@ -146,33 +144,36 @@ journey):
    placed in the same build slot of the setting (210 × 140 setting units,
    1.75 per build unit, base line on y = 140). Switching versions must
    read as the thing growing, not as a new picture.
-3. **The way.** A build that carries the way (a crossing) has two fixed
-   way points: its walking surface runs from x = 14 to x = 106 at
-   y = 57–64 in every version, and the setting's path ends exactly there
-   on both banks, as thick as the surface. A build the way leads to (a
+3. **The way.** A build that carries the way (a bridge, for a later
+   ladder with water; the retired Crossing had one) has two fixed way
+   points: its walking surface runs between them at the same height in
+   every version, and the setting's path ends exactly there on both
+   banks, as thick as the surface. A build the way leads to (a
    home or a garden) has one: the threshold stone (x = 53–67,
    y = 74–77.5) in front of the fire, the tent's opening and each door,
    of the garden's bed and the walled garden's gate, or of the lookout, or of the water hole and
    each well, where the path ends.
    `ways` lists them; the checker requires a corner of every version and
    of the setting's path at each way point.
-4. **Water runs through.** Water in a setting runs from edge to edge (the
-   river leaves the near edge and bends away to the left edge behind the
-   crossing); it never stops in the middle of the scene. The shore's water
+4. **Water runs through** (for a later ladder with water; the Valley's
+   ladders have none). Water in a setting runs from edge to edge (a
+   river leaves the near edge and bends away to an edge behind the
+   build); it never stops in the middle of the scene. The shore's water
    also spans the whole width.
 5. **Sizes.** Outlines 2 build units (3.5 px at 360 px, 1 px in the row of
    versions); every version must read at the journey screen's size (the
    setting 360 px wide) and in the row of versions at 60 × 40 px: give the
    smallest versions mass and a clear silhouette (stones with a flat top,
-   a log as thick as two path widths), not thin lines. A ladder whose
+   a curb of single stones), not thin lines. A ladder whose
    small versions are wide and flat may name `row`, a 3 : 2 part of the
-   build's view box that the row shows zoomed (Crossing: `[30, 38, 60,
-40]`, the stones without the bank slabs); the scene always shows the whole build. The largest version may
+   build's view box that the row shows zoomed (e.g. `[30, 38, 60, 40]`;
+   no current ladder needs it); the scene always shows the whole build. The largest version may
    reach y = 4; the setting's sky is at most its top fifth.
-6. **Bank contact.** A crossing rests on the banks at both way points:
-   stone abutments under the deck ends (stepping stones, log, plank
-   bridge) or masonry reaching into the banks (stone and covered bridge).
-   No deck floats.
+6. **Bank contact** (for a later ladder with water). A build across
+   water rests on the banks at both way points: stone abutments under
+   the deck ends or masonry reaching into the banks. No deck floats;
+   such a build may reach down into its water to the edge of the box
+   (y = 80, `"water": true`).
 7. **Growth in size and form.** Each version is larger than the one
    before and also different in form, so the row reads as a story: Home
    is a fire in a ring of single stones, a tent, a hut under a round
@@ -211,7 +212,7 @@ journey):
    flame, a glowing door or window, the keystone, a rail cap, the
    fruit, the bucket, the lookout's top deck), water and
    the yard in `tint-strong` of the region's hue. The setting is quiet:
-   ground and far trees in `tint`, a few reused plants (tuft, reeds, bush,
+   ground and far trees in `tint`, a few reused plants (tuft, bush,
    flowers, far trees) in the [depth bands](#look-and-depth-bands).
 
 **Markers: a stage on its way** (owner, 2026-11-12; replacing the
@@ -241,14 +242,14 @@ build, never on it, behind it or across it:
 
 Counts stay where they are exact: the progress bar, the words ("3 of 5
 days") and the seven day marks in the card. Under the row of versions
-the state is said in words, never as a building site: "A plank bridge
-stands · a stone bridge is on its way" while the stage runs, "… · a stone
-bridge is ready" while it is met.
+the state is said in words, never as a building site: "A hut
+stands · a cottage is on its way" while the stage runs, "… · a cottage
+is ready" while it is met.
 
 **Marker kinds** (`content/art/markers.json`), each drawn once and used
 with every ladder and setting; what hangs is the user's choice per
-journey, the ladder only gives the default (`marker`: Crossing lanterns,
-Home pennants, Garden flowers, Well lanterns, Lookout pennants):
+journey, the ladder only gives the default (`marker`: Home pennants,
+Garden flowers, Well lanterns, Lookout pennants):
 
 - **lanterns**: small lanterns, outlined; ready filled with a flame, a
   halo and rays.
@@ -256,7 +257,7 @@ Home pennants, Garden flowers, Well lanterns, Lookout pennants):
   accent with a second tail.
 - **flowers**: vines with closed buds; ready open blossoms. Land only:
   the checker refuses flowers for a ladder whose setting is water
-  (`"water": true`).
+  (`"water": true`). All current ladders are land, so flowers fit each.
 
 Each kind has three pictures (view box 32 × 32): `marker-<kind>-post`
 stands on y = 30 and the line is tied on at (16, 15); `marker-<kind>-bead`
@@ -269,9 +270,10 @@ path meets the build:
 
 - `span`: one continuous line over all posts (at least two). For a
   setting where the line can run in front of the build without crossing
-  the way or the view: Crossing, two posts on the near ground of each
-  bank and one line across the water in front of the bridge, sagging
-  gently.
+  the way or the view, such as a later ladder whose way runs across the
+  scene (the retired Crossing: two posts, one on the near ground of each
+  bank, and one line across the water in front of the bridge, sagging
+  gently). No current ladder uses it.
 - `sides`: two short lines, left and right, with a gap in the middle
   (four posts, two on each side). For a way leading to the build (Home
   Garden, Well and Lookout: the path to the threshold) or a build on water (a boat: the gap is the
@@ -287,8 +289,8 @@ path meets the build:
 
 The lines are pictures of the setting (`setting-<kind>-cord-<n>.svg`, the
 same for every kind); the hanging elements sit at fixed points along
-them, spread evenly, in order from the first post (Crossing 2 posts and 6
-elements, Home 4 posts and 6 elements). All numbers come from
+them, spread evenly, in order from the first post (Home, Garden, Well and
+Lookout: 4 posts and 6 elements). All numbers come from
 `MARKER_LAYOUTS` in `scripts/draw-ladders.mjs`. Every marker place in the
 ladder file has its `order` (1 … E); a line has the order of its second
 post.
@@ -333,13 +335,13 @@ on its own screen as below, and the hue belongs to the run.
 `tint-strong` from one hue of `content/art/palette.json` (eight named
 hues, a light and a dark value each); `fg`, `bg` and `dim` stay the
 host's, and the path, card and controls keep the host's accent. The
-setting's kind sets the default (river: water blue; clearing: meadow
-green; Garden's open fields: moss; Well's village green: water blue; Lookout's heights: rust). Each hue is checked by computation (WCAG relative luminance) in
+setting's kind sets the default (clearing: meadow green; Garden's open fields: moss; Well's village green: water blue; Lookout's heights: rust). Each hue is checked by computation (WCAG relative luminance) in
 both repositories: `accent` at least 3 : 1 against every host card (WCAG
 1.4.11, non-text), `tint-strong` at least 1.5 : 1 (decorative, but the
 water must show) and the outline `fg` at least 3 : 1 on `tint-strong`;
-`tint` is decorative and not tested. Each ladder in two hues, plugin
-light above, Day Planner dark below:
+`tint` is decorative and not tested. Two ladders in two hues each, plugin
+light above, Day Planner dark below (taken before #128 with the retired
+Crossing and Home; the palette page now shows Well and Home):
 
 ![Every hue, each ladder in two hues](screenshots/ladder-palette.png)
 
@@ -380,10 +382,9 @@ with the ladder's scene of "Builds and ladders" above.
 | ---------------------------------------------------------- | -------------------------------------------------------- |
 | ![Phone, light](screenshots/journey-build-phone-light.png) | ![Phone, dark](screenshots/journey-build-phone-dark.png) |
 
-| Ready, light                                                                 | Ready, dark                                                                       |
-| ---------------------------------------------------------------------------- | --------------------------------------------------------------------------------- |
-| ![Ready, light](screenshots/journey-build-phone-ready-light.png)             | ![Ready, dark](screenshots/journey-build-phone-ready-dark.png)                    |
-| ![Crossing in sand](screenshots/journey-build-phone-crossing-sand-light.png) | ![Crossing in sand, dark](screenshots/journey-build-phone-crossing-sand-dark.png) |
+| Ready, light                                                     | Ready, dark                                                    |
+| ---------------------------------------------------------------- | -------------------------------------------------------------- |
+| ![Ready, light](screenshots/journey-build-phone-ready-light.png) | ![Ready, dark](screenshots/journey-build-phone-ready-dark.png) |
 
 ![Desktop, light](screenshots/journey-build-desktop-light.png)
 
@@ -466,7 +467,7 @@ and are removed; they are in git history up to version 3.1.0.
 
 **Look.** Calm and light: built things are outlined in `fg` and filled
 with `bg`, with at most one `accent` detail; nothing built is solid.
-Growth (tufts, flowers, bushes, trees, reeds) is solid `tint-strong`,
+Growth (tufts, flowers, bushes, trees) is solid `tint-strong`,
 with `accent` only for blossoms. Ground and distance use `tint` and
 `tint-strong` only; the sky is the card itself.
 
@@ -474,11 +475,11 @@ with `accent` only for blossoms. Ground and distance use `tint` and
 feet are on y = 30 of its 32 grid, so feet = y + 15/16 of its size). In
 a setting (320 × 180) the feet stand:
 
-| Band   | Feet between | Large (tree) | Medium (bush, lantern, reeds) | Small (tuft, flowers) | Drawn as                 |
-| ------ | ------------ | ------------ | ----------------------------- | --------------------- | ------------------------ |
-| far    | 36–80        | 20           | 12                            | –                     | one silhouette in `tint` |
-| middle | 80–145       | 34           | 24                            | 14                    | own roles                |
-| near   | 145–180      | 48           | 34                            | 20                    | own roles                |
+| Band   | Feet between | Large (tree) | Medium (bush, lantern) | Small (tuft, flowers) | Drawn as                 |
+| ------ | ------------ | ------------ | ---------------------- | --------------------- | ------------------------ |
+| far    | 36–80        | 20           | 12                     | –                     | one silhouette in `tint` |
+| middle | 80–145       | 34           | 24                     | 14                    | own roles                |
+| near   | 145–180      | 48           | 34                     | 20                    | own roles                |
 
 At most the top fifth is empty sky. The far band holds only scenery: it
 merges with the ground into one light silhouette, so it never competes

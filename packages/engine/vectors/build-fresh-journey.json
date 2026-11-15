@@ -36,7 +36,7 @@
   "expect": {
     "active": {
       "build": {
-        "ladder": "crossing",
+        "ladder": "well",
         "version": 1,
         "versions": 4,
         "marker": "lanterns",

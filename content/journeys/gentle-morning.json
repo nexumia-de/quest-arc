@@ -2,12 +2,12 @@
   "$schema": "../schema/journey.schema.json",
   "format": 3,
   "id": "gentle-morning",
-  "version": 4,
+  "version": 5,
   "title": "gentle-morning.title",
   "description": "gentle-morning.description",
   "why": "gentle-morning.why",
   "build": {
-    "ladder": "home"
+    "ladder": "well"
   },
   "anchor": {
     "moment": "gentle-morning.moment",

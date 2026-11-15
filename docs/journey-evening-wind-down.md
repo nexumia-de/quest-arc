@@ -54,12 +54,18 @@ All stages daily; anchor "brushing my teeth in the evening".
 | `calm-10`    | give ten minutes to my calm thing, with my phone on its charger                    | 5 of 7 days  |
 | `lights-out` | turn the light out at about my chosen time, after the charger and ten calm minutes | 8 of 10 days |
 
-The journey builds a **Crossing** ([game rules](game-rules.md) §7) with
-lanterns, the ladder's default: an evening routine is a way over from
-the day into the night. Four stages use all five versions. Their names
-in the journey's words: Stepping stones at dusk, A log over the quiet
-water, A plank bridge into the evening, A stone bridge at nightfall, A
-covered bridge for the night. Home is what the morning journey builds.
+The journey builds a **Garden** ([game rules](game-rules.md) §7) with
+flowers, the ladder's default: an evening routine is tended a little
+every night, like a garden, and its names follow the light from evening
+to night. Four stages use all five versions. Their names in the
+journey's words: A garden bed in the evening light, A row of beds at
+dusk, A garden with fruit trees after dark, An orchard under the first
+stars, A walled garden for the night (German: Ein Gartenbeet im
+Abendlicht, Eine Reihe Beete in der Dämmerung, Ein Garten mit Obstbäumen
+im Dunkeln, Ein Obstgarten unter den ersten Sternen, Ein ummauerter
+Garten für die Nacht). Until #128 retired the Crossing (the Valley has
+no water) the journey built a Crossing; it moved to the Garden in
+version 3. Home is what the reading journey builds.
 
 ## How it follows the evidence and the design rules
 

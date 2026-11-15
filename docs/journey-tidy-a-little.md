@@ -43,12 +43,17 @@ The time stays at five minutes from the second stage on; what grows is
 the area. That works because a spot that is cleared most days takes
 less time, so the same five minutes reach further.
 
-The journey builds a **Home** ([game rules](game-rules.md) §7) with
-bunting, the ladder's default: it is about the place one lives in. Four
+The journey builds a **Garden** ([game rules](game-rules.md) §7) with
+flowers, the ladder's default: a few spots kept clear a little at a time
+are tended like a garden, and every version is kept in order. Four
 stages use all five versions. Their names in the journey's words: A
-fire to come home to, A tent with everything in reach, A hut with a
-clear table, A cottage in good order, A house where things have a
-place.
+freshly weeded garden bed, A row of neatly kept beds, A tidy garden with
+fruit trees, A well-kept orchard, A walled garden in good order
+(German: Ein frisch gejätetes Gartenbeet, Eine Reihe sauber angelegter
+Beete, Ein aufgeräumter Garten mit Obstbäumen, Ein gepflegter
+Obstgarten, Ein ummauerter Garten in guter Ordnung). It built a Home
+until version 3; it moved to the Garden with #128 so that the built-in
+journeys spread over the ladders (owner, 2026-11-15).
 
 ## How it follows the evidence and the design rules
 

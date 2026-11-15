@@ -23,10 +23,14 @@ texts in `content/i18n/en.json` (keys `gentle-morning.*`).
 | `stretch-5` | drink a glass of water and stretch for five minutes                                 | 5 of 7 days  |
 | `plan-day`  | drink a glass of water, stretch for five minutes and write down one thing for today | 8 of 10 days |
 
-All stages are daily. The journey builds a **Home**
+All stages are daily. The journey builds a **Well**
 ([game rules](game-rules.md) §7): four stages use all five versions,
-from a fireplace to a house, with bunting on the marker (the ladder's default); a morning
-routine is something one comes home to every day.
+from a water hole to a well house, with lanterns on the marker (the
+ladder's default) and the ladder's own version titles; the morning
+starts with a glass of water, and a well is where the day's water is
+drawn. It built a Home until version 5; it moved to the Well with #128
+so that the built-in journeys spread over the ladders (owner,
+2026-11-15).
 
 ## How it follows the design rules
 

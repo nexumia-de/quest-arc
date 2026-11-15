@@ -2,7 +2,9 @@ import { describe, expect, it } from 'vitest';
 import { ladderProblems, markerProblems } from '../src/art-ladder-check';
 
 // The ladder checker on a ladder that passes, and on broken copies
-// (docs/journey-design.md, "Builds and ladders").
+// (docs/journey-design.md, "Builds and ladders"). A synthetic ladder on
+// water with a `span` marker, so the water and `span` rules stay tested
+// though no ladder of the Valley has water (#128).
 const names = [
   'setting-river',
   'build-x-1',
@@ -22,7 +24,7 @@ const markers = {
 const hues = ['water', 'meadow'];
 const whole = { x: 0, y: 0, width: 320, height: 180 };
 const ladder = {
-  title: 'Crossing',
+  title: 'Bridge',
   hue: 'water',
   width: 320,
   height: 180,

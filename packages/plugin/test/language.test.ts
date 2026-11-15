@@ -3,7 +3,7 @@ import { afterEach, describe, expect, it } from 'vitest';
 
 import german from '../../../content/i18n/de.json';
 import english from '../../../content/i18n/en.json';
-import crossingFile from '../../../content/art/crossing.ladder.json';
+import wellFile from '../../../content/art/well.ladder.json';
 import { artPack, artPackIn } from '@questarc/ui/adapter/art-pack';
 import { createBrain } from '@questarc/ui/adapter/brain';
 import { contentPack } from '../src/adapter/content-pack';
@@ -199,26 +199,30 @@ describe('German sentences', () => {
   it('says what stands, with German nouns left as they are', () => {
     useLanguage('de', builtInJourneys);
     setArt(artPackIn());
-    const crossing = artPackIn().ladders.crossing as Ladder;
-    expect(buildWords(crossing, 1, { progress: 0.5 })).toBe(
-      'Trittsteine stehen · ein Baumstamm entsteht',
+    const well = artPackIn().ladders.well as Ladder;
+    expect(buildWords(well, 1, { progress: 0.5 })).toBe(
+      'Ein Wasserloch steht · ein Ziehbrunnen entsteht',
     );
-    expect(buildWords(crossing, 3, { ready: true })).toBe(
-      'Eine Bretterbrücke steht · eine Steinbrücke ist bereit',
+    expect(buildWords(well, 3, { ready: true })).toBe(
+      'Ein Brunnen mit Winde steht · ein überdachter Brunnen ist bereit',
     );
-    expect(buildWords(crossing, 5, { progress: 1 })).toBe('Eine überdachte Brücke steht');
-    expect(buildLabel(crossing, 3, { progress: 5 / 8 }, 'Laternen')).toBe(
-      'Eine Bretterbrücke, Stufe 3 von 5; Schmuck: 2 von 2 Pfosten und 3 von 6 Laternen; noch nicht bereit',
+    expect(buildWords(well, 5, { progress: 1 })).toBe('Ein Brunnenhaus steht');
+    // a name without an article is several things (no ladder title has one since #128)
+    expect(buildWords(well, 1, { progress: 0.5, names: ['Trittsteine'] })).toBe(
+      'Trittsteine stehen · ein Ziehbrunnen entsteht',
     );
-    expect(buildSummary(walk as never, {})).toBe('Übergang · Laternen · Wasserblau');
+    expect(buildLabel(well, 3, { progress: 5 / 8 }, 'Laternen')).toBe(
+      'Ein Brunnen mit Winde, Stufe 3 von 5; Schmuck: 4 von 4 Pfosten und 3 von 6 Laternen; noch nicht bereit',
+    );
+    expect(buildSummary(walk as never, {})).toBe('Ausguck · Wimpel · Rost');
   });
 
   it('keeps the English build words', () => {
     setArt(artPackIn());
-    const crossing = crossingFile as unknown as Ladder;
-    expect(buildWords(crossing, 1, { progress: 0.5 })).toBe(
-      'Stepping stones stand · a log is on its way',
+    const well = wellFile as unknown as Ladder;
+    expect(buildWords(well, 1, { progress: 0.5 })).toBe(
+      'A water hole stands · a well sweep is on its way',
     );
-    expect(buildSummary(walk as never, {})).toBe('Crossing · lanterns · water blue');
+    expect(buildSummary(walk as never, {})).toBe('Lookout · pennants · rust');
   });
 });

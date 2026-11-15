@@ -1,7 +1,7 @@
 ---
 type: Concept
 title: 'Journey: A walk after lunch'
-description: The built-in journey for movement; every day after lunch, from stepping outside the door to a 20-minute walk in four stages, building a Crossing with its own version names; based on the evidence on walking after meals and on exercise habits.
+description: The built-in journey for movement; every day after lunch, from stepping outside the door to a 20-minute walk in four stages, building a Lookout with its own version names; based on the evidence on walking after meals and on exercise habits.
 tags: [content, journey, movement, walking]
 resource: ../content/journeys/walk-after-lunch.json
 generated: { by: claude-code/2.1.318, at: 2026-11-13 }
@@ -35,23 +35,25 @@ All stages daily; anchor "lunch".
 | `walk-10` | walk for 10 minutes at an easy pace                       | 5 of 7 days  |
 | `walk-20` | walk for 20 minutes, a round I like                       | 8 of 10 days |
 
-The journey builds a **Crossing** ([game rules](game-rules.md) §7) with
-lanterns on the marker (the ladder's default): a walk leads out and
-over, and a crossing grows the way the walk does, from a few stones to
-a bridge for any weather. Four stages use all five versions, so the
-checker has no warning. The versions have the journey's own names
-(`build.names`):
+The journey builds a **Lookout** ([game rules](game-rules.md) §7) with
+pennants on the marker (the ladder's default): a walk leads out to a
+place with a view, and the lookout grows the way the walk does, from a
+low platform to a tower with a roof for any weather. Four stages use all
+five versions, so the checker has no warning. Until #128 retired the
+Crossing (the Valley has no water) the journey built a Crossing; it
+moved to the Lookout in version 3. The versions have the journey's own
+names (`build.names`):
 
-| Version | Name                              | The ladder's title |
-| ------- | --------------------------------- | ------------------ |
-| 1       | A row of stepping stones          | Stepping stones    |
-| 2       | A log to balance across           | A log              |
-| 3       | A plank bridge for short rounds   | A plank bridge     |
-| 4       | A stone bridge for an easy stroll | A stone bridge     |
-| 5       | A covered bridge for any weather  | A covered bridge   |
+| Version | Name                                 | German                                   | The ladder's title       |
+| ------- | ------------------------------------ | ---------------------------------------- | ------------------------ |
+| 1       | A lookout at the end of a short walk | Ein Ausguck am Ende eines kurzen Wegs    | A lookout                |
+| 2       | A lookout with a railing to lean on  | Ein Ausguck mit Geländer zum Anlehnen    | A lookout with a railing |
+| 3       | A braced lookout for longer rounds   | Ein verstrebter Ausguck für lange Runden | A braced lookout         |
+| 4       | A tower with a wide view             | Ein Turm mit weitem Blick                | A tower                  |
+| 5       | A tower with a roof for any weather  | Ein Turm mit Dach für jedes Wetter       | A tower with a roof      |
 
-The names start with "A" so the line of state reads "A log to balance
-across stands". They describe the Crossing's pictures. The view shows a
+The names start with "A" so the line of state reads "A lookout with a
+railing to lean on stands". They describe the Lookout's pictures. The view shows a
 journey's names with whatever ladder the user picks
 (`versionName` in `packages/ui/src/ui/ladder.ts`), so a user who
 changes to the Home sees these names under a hut; that is a question for
@@ -103,8 +105,9 @@ the view, not for this file.
 ## Checked in the preview
 
 At 360 × 720 on 2026-11-13: the journey's card in the list, its page,
-the start page ("You build: Crossing · lanterns · water blue"), the
-journey with "A row of stepping stones stands" on one line, and the
+the start page ("You build: Crossing · lanterns · water blue", the
+ladder the journey built until version 3), the journey with "A row of
+stepping stones stands" on one line, and the
 list of stations; every action fits two lines, no horizontal overflow.
 
 ## Later

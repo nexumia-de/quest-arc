@@ -39,7 +39,7 @@ of the threshold stone was only ever checked by eye.
   the pictures the generator made; `scripts/draw-ladders.mjs` writes
   nothing while one breaks a rule:
   - the thing (roles `fg`, `bg`, `accent`, `dim`) stays in the box
-    0–120 × 4–74 (a crossing down to 80, its water);
+    0–120 × 4–74 (a build on water down to 80, its water);
   - it covers at least 5 % more area than the version before (a tall,
     thin version such as a well sweep grows less in area than it looks,
     so the bar is low; it catches a version that is not larger);
@@ -49,8 +49,10 @@ of the threshold stone was only ever checked by eye.
 - `packages/engine/test/art-geometry.test.ts` measures the committed
   pictures the same way, so `npm run journeys` and CI catch a picture
   changed by other means.
-- Crossing, retired by #128, is measured and only warned about (its
-  plank bridge covers 1 % more than the log).
+- A ladder being retired can be listed in `RETIRING`: it is measured and
+  only warned about. The set is empty: Crossing, the ladder it was made
+  for (its plank bridge covered 1 % more than the log), was removed by
+  #128.
 
 ## Writing the pictures small
 
@@ -70,7 +72,7 @@ Added with #135, when Garden 5 came out at 5.8 KB:
 - The measuring reads half-ellipse arcs and turns every single ring the
   same way before it unites them. Before, a ring drawn the other way round
   cancelled part of another in the union, so some versions were measured
-  too small (Crossing 2: 1,627 instead of 1,704).
+  too small (the retired Crossing's log: 1,627 instead of 1,704).
 
 ## Considered
 

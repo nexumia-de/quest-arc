@@ -1,5 +1,5 @@
 {
-  "name": "Choices that do not fit fall back: unknown ladder and hue, flowers on water",
+  "name": "Choices that do not fit fall back: unknown ladder, marker and hue",
   "rule": "game-rules §7",
   "kind": "evaluate",
   "input": {
@@ -32,7 +32,7 @@
       },
       "build:r1": {
         "ladder": "castle",
-        "marker": "flowers",
+        "marker": "balloons",
         "hue": "gold"
       }
     },
@@ -42,7 +42,7 @@
     "problems": [],
     "active": {
       "build": {
-        "ladder": "crossing",
+        "ladder": "well",
         "marker": "lanterns",
         "hue": "water"
       }

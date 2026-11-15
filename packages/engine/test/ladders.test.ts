@@ -1,7 +1,9 @@
 import { readdirSync } from 'node:fs';
 import { join } from 'node:path';
 import { describe, expect, it } from 'vitest';
-import { LADDERS, markerFits } from '../src/ladders';
+import type { Journey } from '../src/types/journey';
+import { LADDERS, markerFits, resolveBuild } from '../src/ladders';
+import { withWaterLadder } from './water-ladder';
 
 // The engine's list of ladders comes from content/art/ (docs/game-rules.md
 // §9); the art checker checks the files themselves.
@@ -24,8 +26,18 @@ describe('the list of ladders', () => {
   });
 
   it('keeps flowers off water', () => {
-    expect(LADDERS.ladders.crossing).toMatchObject({ versions: 5, water: true });
-    expect(markerFits('flowers', 'crossing')).toBe(false);
+    // every ladder of the Valley is land (#128); the rule stays for one on water
+    for (const ladder of Object.values(LADDERS.ladders)) expect(ladder.water).toBe(false);
+    withWaterLadder(() => {
+      expect(markerFits('flowers', 'pond')).toBe(false);
+      expect(markerFits('lanterns', 'pond')).toBe(true);
+      const journey = { build: { ladder: 'pond' } } as unknown as Journey;
+      expect(resolveBuild(journey, { marker: 'flowers' })).toEqual({
+        ladder: 'pond',
+        marker: 'lanterns',
+        hue: 'water',
+      });
+    });
     expect(markerFits('flowers', 'home')).toBe(true);
     expect(markerFits('balloons', 'home')).toBe(false);
   });

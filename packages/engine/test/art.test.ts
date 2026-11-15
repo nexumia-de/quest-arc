@@ -34,9 +34,8 @@ describe('pictures in content/art', () => {
     expect(paletteProblems(palette)).toEqual([]);
   });
 
-  it('have the ladders crossing, garden, home, lookout and well', () => {
+  it('have the ladders garden, home, lookout and well', () => {
     expect(ladders).toEqual([
-      'crossing.ladder.json',
       'garden.ladder.json',
       'home.ladder.json',
       'lookout.ladder.json',

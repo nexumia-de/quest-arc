@@ -207,11 +207,6 @@ export const hues = (el: El): Node[] => {
   return [
     el('h1', '', 'A hue per region'),
     el('div', 'card swatches', ...Object.entries(palette).map(([name, hue]) => swatch(name, hue))),
-    el(
-      'div',
-      'frames',
-      ...two('crossing', 'water', 'slate', 4),
-      ...two('home', 'meadow', 'rust', 4),
-    ),
+    el('div', 'frames', ...two('well', 'water', 'slate', 4), ...two('home', 'meadow', 'rust', 4)),
   ];
 };

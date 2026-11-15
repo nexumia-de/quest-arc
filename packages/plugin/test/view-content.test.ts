@@ -31,13 +31,7 @@ describe('the content for the view (#102)', () => {
     expect(contentPack().style).not.toMatch(/\n\s/);
     // the titles of content/art are the English texts
     expect(contentPack().art).toEqual(artPack);
-    expect(Object.keys(artPack.ladders).sort()).toEqual([
-      'crossing',
-      'garden',
-      'home',
-      'lookout',
-      'well',
-    ]);
+    expect(Object.keys(artPack.ladders).sort()).toEqual(['garden', 'home', 'lookout', 'well']);
     expect(artPack.pictures['build-home-3']).toContain('<svg');
     expect(artPack.pictures['keepsake-first-step']).toBeUndefined();
   });
