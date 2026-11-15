@@ -144,7 +144,7 @@ journey):
    on both banks, as thick as the surface. A build the way leads to (a
    home or a garden) has one: the threshold stone (x = 53–67,
    y = 74–77.5) in front of the fire, the tent's opening and each door,
-   of the garden's bed and the greenhouse door, or of the water hole and
+   of the garden's bed and the walled garden's gate, or of the water hole and
    each well, where the path ends.
    `ways` lists them; the checker requires a corner of every version and
    of the setting's path at each way point.
@@ -169,9 +169,14 @@ journey):
    before and also different in form, so the row reads as a story: Home
    is a fire in a ring of single stones, a tent, a hut under a round
    thatch, a cottage with a pitched roof and chimney, a house of two
-   storeys. Garden is one raised bed with a sunflower, two rows of beds,
-   the rows before a hedge with a fruit tree, a greenhouse between hedges
-   and trees, an orchard of five fruit trees around the greenhouse. Well
+   storeys. Garden is drawn once from elements with states (#137): every
+   element enters at its smallest state and grows one state per version,
+   and nothing moves, shrinks or disappears. The middle bed with
+   seedlings and a bare stake (1); a bed on each side (2); a low hedge
+   and two saplings (3); the hedge full, two more saplings (4); a low wall
+   of stones with its gate (5). Plants go seedling → grown → ripe, the
+   stake bare → climber → ripe, trees sapling → young → grown → old;
+   fruit shows only on what is ripe. Choosing what grows is #138. Well
    follows how water is drawn: a water hole dug down to the water (its
    earth heaped behind with the spade in it), a well sweep (a beam on a
    forked post with a stone and the bucket on a pole) over a low stone
@@ -184,13 +189,14 @@ journey):
    reads as a story without words and no version is a step back. A
    ladder has five versions; a journey with more stages uses the rule of
    game rules §7 (the last version gains fixed additions). Parked: a
-   version that is a new technique joining what stands (a hand pump at
-   the well house), and several things at one place
+   version that is a different technique joining what stands (a hand
+   pump at the well house, a greenhouse in the garden), and several
+   things at one place
    ([#114](https://github.com/nexumia-de/quest-arc/issues/114),
    decision 13).
 9. **Look.** Outlined in `fg` with a `bg` fill, one `accent` detail (the
    flame, a glowing door or window, the keystone, a rail cap, the
-   sunflower, the fruit, the bucket), water and
+   fruit, the bucket), water and
    the yard in `tint-strong` of the region's hue. The setting is quiet:
    ground and far trees in `tint`, a few reused plants (tuft, reeds, bush,
    flowers, far trees) in the [depth bands](#look-and-depth-bands).

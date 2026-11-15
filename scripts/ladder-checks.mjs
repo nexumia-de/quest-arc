@@ -17,6 +17,8 @@ const BOX = { left: 0, top: 4, right: 120, base: 74, water: 80 };
 /** Ladders measured but not held to the checks: Crossing is retired by #128. */
 export const RETIRING = new Set(['crossing']);
 const EPS = 0.05;
+/** The picture checker's limit (ART_MAX_BYTES in packages/engine/src/art-check.ts). */
+const MAX_BYTES = 4096;
 /** Roles that are the thing itself; `tint` and `tint-strong` are ground and water. */
 const THING = new Set(['fg', 'bg', 'accent', 'dim']);
 
@@ -24,12 +26,16 @@ const attrs = (tag) =>
   Object.fromEntries([...tag.matchAll(/([a-z-]+)="([^"]*)"/g)].map(([, k, v]) => [k, v]));
 const num = (v) => Number(v ?? 0);
 
-/** Path data with M, L, H, V, C, h, v and Z (what the generator writes for builds); curves become points. */
+/**
+ * Path data with M, L, H, V, C, h, v, a and Z (what the generator writes for
+ * builds); curves become points. An arc must be half an ellipse along x, as
+ * the generator writes ellipses.
+ */
 const pathRings = (d) => {
   const rings = [];
   let ring = [];
   let [x, y] = [0, 0];
-  for (const [, cmd, args] of d.matchAll(/([MLHVChvZ])([^MLHVChvZ]*)/g)) {
+  for (const [, cmd, args] of d.matchAll(/([MLHVChvaZ])([^MLHVChvaZ]*)/g)) {
     const v =
       args.trim() === ''
         ? []
@@ -63,6 +69,18 @@ const pathRings = (d) => {
         }
         [x, y] = [x3, y3];
       }
+    } else if (cmd === 'a') {
+      for (let i = 0; i + 6 < v.length; i += 7) {
+        const [rx, ry, , , sweep, dx, dy] = v.slice(i, i + 7);
+        if (Math.abs(dy) > 0.01 || Math.abs(Math.abs(dx) - 2 * rx) > 0.11)
+          throw new Error(`arc is not half an ellipse: ${v.slice(i, i + 7).join(' ')}`);
+        const [cx, start] = [x + dx / 2, dx > 0 ? Math.PI : 0];
+        for (let s = 1; s <= 24; s += 1) {
+          const t = start + (sweep ? 1 : -1) * Math.PI * (s / 24);
+          ring.push([cx + rx * Math.cos(t), y + ry * Math.sin(t)]);
+        }
+        x += dx;
+      }
     } else if (cmd === 'Z') {
       if (ring.length) rings.push(ring);
       ring = [];
@@ -72,27 +90,44 @@ const pathRings = (d) => {
   return rings;
 };
 
+/** The ring turned so that its signed area is positive. */
+const clockwise = (ring) => {
+  const turn = ring.reduce((sum, [x1, y1], i) => {
+    const [x2, y2] = ring[(i + 1) % ring.length];
+    return sum + x1 * y2 - x2 * y1;
+  }, 0);
+  return turn < 0 ? [...ring].reverse() : ring;
+};
 /** The shapes of a picture in drawing order: { role, shape }. */
 export const shapesOf = (source) =>
-  [...source.matchAll(/<(rect|ellipse|polygon|path)\b([^>]*)\/>/g)].map(([, name, rest]) => {
-    const a = attrs(rest);
-    if (name === 'path' && /[^MLHVChvZ0-9.,\s-]/.test(a.d))
-      throw new Error(`path with curves cannot be measured: ${a.d.slice(0, 30)}`);
-    const shape =
-      name === 'rect'
-        ? box(num(a.x), num(a.y), num(a.width), num(a.height))
-        : name === 'ellipse'
-          ? oval(num(a.cx), num(a.cy), num(a.rx), num(a.ry))
-          : name === 'polygon'
-            ? [
-                a.points
-                  .trim()
-                  .split(/\s+/)
-                  .map((p) => p.split(',').map(Number)),
-              ]
-            : pathRings(a.d);
-    return { role: a.class, shape, evenodd: a['fill-rule'] === 'evenodd' };
-  });
+  [...source.matchAll(/<(rect|ellipse|polygon|path)\b([^>]*)\/>/g)]
+    .map(([, name, rest]) => {
+      const a = attrs(rest);
+      if (name === 'path' && /[^MLHVChvaZ0-9.,\s-]/.test(a.d))
+        throw new Error(`path with curves cannot be measured: ${a.d.slice(0, 30)}`);
+      const shape =
+        name === 'rect'
+          ? box(num(a.x), num(a.y), num(a.width), num(a.height))
+          : name === 'ellipse'
+            ? oval(num(a.cx), num(a.cy), num(a.rx), num(a.ry))
+            : name === 'polygon'
+              ? [
+                  a.points
+                    .trim()
+                    .split(/\s+/)
+                    .map((p) => p.split(',').map(Number)),
+                ]
+              : pathRings(a.d);
+      return { role: a.class, shape, evenodd: a['fill-rule'] === 'evenodd' };
+    })
+    // a path of several shapes in one colour (compact in draw-ladders.mjs)
+    // is measured shape by shape; one with holes stays whole
+    .flatMap((s) =>
+      s.evenodd || s.shape.length < 2 ? [s] : s.shape.map((ring) => ({ ...s, shape: [ring] })),
+    )
+    // a single filled ring looks the same either way round; turned one way,
+    // so rings drawn either way do not cancel each other in a union
+    .map((s) => (s.shape.length === 1 ? { ...s, shape: [clockwise(s.shape[0])] } : s));
 
 /** What a version covers as a thing (its silhouette), without its threshold stone. */
 const silhouette = (shapes, stone) =>
@@ -117,6 +152,8 @@ export const ladderGeometryProblems = (name, ladder, pictures) => {
       problems.push(`${name}: no picture ${art}`);
       return;
     }
+    const bytes = new TextEncoder().encode(source).length;
+    if (bytes > MAX_BYTES) problems.push(`${art}: ${bytes} bytes, more than ${MAX_BYTES}`);
     const shapes = shapesOf(source);
     const thing = silhouette(shapes, stone);
     const [x0, y0, x1, y1] = bounds(thing) ?? [0, 0, 0, 0];

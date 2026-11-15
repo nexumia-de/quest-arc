@@ -1,53 +1,15 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 80">
-  <title>A garden in rows</title>
+  <title>A row of beds</title>
   <ellipse class="tint-strong" cx="60" cy="75" rx="54" ry="4.6"/>
   <rect class="fg" x="53" y="74" width="14" height="3.5" rx="1"/>
   <rect class="bg" x="54.4" y="75.4" width="11.2" height="0.7"/>
-  <rect class="fg" x="59" y="28" width="2" height="30"/>
-  <ellipse class="fg" cx="55.5" cy="46" rx="4.5" ry="2.4"/>
-  <ellipse class="bg" cx="55.5" cy="46" rx="3.1" ry="1"/>
-  <ellipse class="fg" cx="64.5" cy="40" rx="4.5" ry="2.4"/>
-  <ellipse class="bg" cx="64.5" cy="40" rx="3.1" ry="1"/>
-  <ellipse class="fg" cx="60" cy="28" rx="6.5" ry="6.5"/>
-  <ellipse class="accent" cx="60" cy="28" rx="4.7" ry="4.7"/>
-  <ellipse class="fg" cx="60" cy="28" rx="2" ry="2"/>
-  <ellipse class="fg" cx="34" cy="55.2" rx="7" ry="6.3"/>
-  <ellipse class="bg" cx="34" cy="55.2" rx="5.4" ry="4.7"/>
-  <rect class="fg" x="33.2" y="50.3" width="1.6" height="7.7"/>
-  <ellipse class="fg" cx="46" cy="55.2" rx="7" ry="6.3"/>
-  <ellipse class="bg" cx="46" cy="55.2" rx="5.4" ry="4.7"/>
-  <rect class="fg" x="45.2" y="50.3" width="1.6" height="7.7"/>
-  <ellipse class="fg" cx="74" cy="55.2" rx="7" ry="6.3"/>
-  <ellipse class="bg" cx="74" cy="55.2" rx="5.4" ry="4.7"/>
-  <rect class="fg" x="73.2" y="50.3" width="1.6" height="7.7"/>
-  <ellipse class="fg" cx="86" cy="55.2" rx="7" ry="6.3"/>
-  <ellipse class="bg" cx="86" cy="55.2" rx="5.4" ry="4.7"/>
-  <rect class="fg" x="85.2" y="50.3" width="1.6" height="7.7"/>
-  <rect class="fg" x="26" y="58" width="68" height="16" rx="1"/>
-  <rect class="bg" x="28" y="60" width="64" height="12"/>
-  <rect class="fg" x="26" y="65.2" width="68" height="1.6"/>
-  <ellipse class="fg" cx="23" cy="63.8" rx="5.5" ry="5"/>
-  <ellipse class="bg" cx="23" cy="63.8" rx="3.9" ry="3.4"/>
-  <rect class="fg" x="22.2" y="60" width="1.6" height="6.1"/>
-  <ellipse class="fg" cx="34" cy="63.8" rx="5.5" ry="5"/>
-  <ellipse class="bg" cx="34" cy="63.8" rx="3.9" ry="3.4"/>
-  <rect class="fg" x="33.2" y="60" width="1.6" height="6.1"/>
-  <ellipse class="fg" cx="45" cy="63.8" rx="5.5" ry="5"/>
-  <ellipse class="bg" cx="45" cy="63.8" rx="3.9" ry="3.4"/>
-  <rect class="fg" x="44.2" y="60" width="1.6" height="6.1"/>
-  <ellipse class="fg" cx="75" cy="63.8" rx="5.5" ry="5"/>
-  <ellipse class="bg" cx="75" cy="63.8" rx="3.9" ry="3.4"/>
-  <rect class="fg" x="74.2" y="60" width="1.6" height="6.1"/>
-  <ellipse class="fg" cx="86" cy="63.8" rx="5.5" ry="5"/>
-  <ellipse class="bg" cx="86" cy="63.8" rx="3.9" ry="3.4"/>
-  <rect class="fg" x="85.2" y="60" width="1.6" height="6.1"/>
-  <ellipse class="fg" cx="97" cy="63.8" rx="5.5" ry="5"/>
-  <ellipse class="bg" cx="97" cy="63.8" rx="3.9" ry="3.4"/>
-  <rect class="fg" x="96.2" y="60" width="1.6" height="6.1"/>
-  <rect class="fg" x="16" y="66" width="36" height="8" rx="1"/>
-  <rect class="bg" x="18" y="68" width="32" height="4"/>
-  <rect class="fg" x="16" y="69.2" width="36" height="1.6"/>
-  <rect class="fg" x="68" y="66" width="36" height="8" rx="1"/>
-  <rect class="bg" x="70" y="68" width="32" height="4"/>
-  <rect class="fg" x="68" y="69.2" width="36" height="1.6"/>
+  <path class="fg" d="M59 40H61V62H59ZM52.8 44a3.6 2.2 0 1 1 7.2 0a3.6 2.2 0 1 1 -7.2 0ZM60 50a3.6 2.2 0 1 1 7.2 0a3.6 2.2 0 1 1 -7.2 0ZM52.8 56a3.6 2.2 0 1 1 7.2 0a3.6 2.2 0 1 1 -7.2 0Z"/>
+  <path class="bg" d="M54.1 44a2.3 0.9 0 1 1 4.6 0a2.3 0.9 0 1 1 -4.6 0ZM61.3 50a2.3 0.9 0 1 1 4.6 0a2.3 0.9 0 1 1 -4.6 0ZM54.1 56a2.3 0.9 0 1 1 4.6 0a2.3 0.9 0 1 1 -4.6 0Z"/>
+  <path class="fg" d="M39.5 59.4a6.5 5.9 0 1 1 13 0a6.5 5.9 0 1 1 -13 0ZM67.5 59.4a6.5 5.9 0 1 1 13 0a6.5 5.9 0 1 1 -13 0Z"/>
+  <path class="bg" d="M41.1 59.4a4.9 4.3 0 1 1 9.8 0a4.9 4.3 0 1 1 -9.8 0ZM69.1 59.4a4.9 4.3 0 1 1 9.8 0a4.9 4.3 0 1 1 -9.8 0Z"/>
+  <path class="fg" d="M45.2 54.9H46.8V62.1H45.2ZM73.2 54.9H74.8V62.1H73.2ZM11.5 60.2a4.5 4.1 0 1 1 9 0a4.5 4.1 0 1 1 -9 0ZM99.5 60.2a4.5 4.1 0 1 1 9 0a4.5 4.1 0 1 1 -9 0Z"/>
+  <path class="bg" d="M13.1 60.2a2.9 2.4 0 1 1 5.8 0a2.9 2.4 0 1 1 -5.8 0ZM101.1 60.2a2.9 2.4 0 1 1 5.8 0a2.9 2.4 0 1 1 -5.8 0Z"/>
+  <path class="fg" d="M15.2 57.1H16.8V62.1H15.2ZM103.2 57.1H104.8V62.1H103.2ZM32 62H88V74H32ZM4 62H28V74H4ZM92 62H116V74H92Z"/>
+  <path class="bg" d="M34 64H86V72H34ZM6 64H26V72H6ZM94 64H114V72H94Z"/>
+  <path class="fg" d="M32 67.2H88V68.8H32ZM4 67.2H28V68.8H4ZM92 67.2H116V68.8H92Z"/>
 </svg>

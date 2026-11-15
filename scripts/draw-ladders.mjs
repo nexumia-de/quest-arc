@@ -43,16 +43,112 @@ const ellipseO = (cx, cy, rx, ry, t) => [
 
 /** Path data for a shape's rings (outer rings and holes). */
 const rings = (shape) =>
-  shape.map((ring) => `M${ring.map(([x, y]) => `${n(x)} ${n(y)}`).join('L')}Z`).join('');
+  shape
+    .map((ring) => {
+      // straight runs as steps along one axis (H, V), which keeps stonework
+      // small; absolute, so the picture checker reads their corners
+      const [[x0, y0], ...rest] = ring.map(([x, y]) => [Number(n(x)), Number(n(y))]);
+      let [px, py] = [x0, y0];
+      let d = `M${n(x0)} ${n(y0)}`;
+      for (const [x, y] of rest) {
+        d += y === py ? `H${n(x)}` : x === px ? `V${n(y)}` : `L${n(x)} ${n(y)}`;
+        [px, py] = [x, y];
+      }
+      return `${d}Z`;
+    })
+    .join('');
 /** A shape in one role: a polygon when it is one ring, else a path. */
 const shapeIn = (role, shape) =>
   shape.length === 1 ? poly(role, shape[0]) : path(role, rings(shape), true);
 /** The polygon outlined: `fg` with the polygon `t` smaller in `fill` (ladder-geometry.mjs). */
 const polyO = (list, t, fill = 'bg') => [poly('fg', list), shapeIn(fill, grow([list], -t))];
 
+/**
+ * Masonry: courses of stones over a wall (a shape), each course `h` high,
+ * the joints of every second course shifted by half a stone `w`, clipped
+ * to the wall, so they stop at its edges and at any opening cut out of it
+ * (ladder-geometry.mjs). One path, so a wall of many stones stays small.
+ */
+const masonry = (wall, h, w) => {
+  const [x0, y0, x1, y1] = [
+    Math.min(...wall.flat().map(([x]) => x)),
+    Math.min(...wall.flat().map(([, y]) => y)),
+    Math.max(...wall.flat().map(([x]) => x)),
+    Math.max(...wall.flat().map(([, y]) => y)),
+  ];
+  const joints = [];
+  for (let k = 0, y = y0; y < y1 - 0.5; k += 1, y += h) {
+    const bottom = Math.min(y + h, y1);
+    if (k > 0) joints.push(...box(x0, y - 0.8, x1 - x0, 1.6));
+    for (let x = x0 + w * (k % 2 ? 0.5 : 1); x < x1 - 2; x += w)
+      joints.push(...box(x - 0.8, y, 1.6, bottom - y));
+  }
+  return path('fg', rings(within(joints, wall)));
+};
+
+/**
+ * Path data of a plain shape element (a rectangle without rounded corners,
+ * an ellipse, a polygon), drawn clockwise; null for any other element.
+ */
+const asPathData = (element) => {
+  const [, name, rest = ''] =
+    /^<(rect|ellipse|polygon) class="[^"]+"([^>]*)\/>$/.exec(element) ?? [];
+  const a = Object.fromEntries([...rest.matchAll(/([a-z]+)="([^"]*)"/g)].map(([, k, v]) => [k, v]));
+  if (name === 'rect' && a.rx === undefined)
+    return `M${a.x} ${a.y}H${n(Number(a.x) + Number(a.width))}V${n(Number(a.y) + Number(a.height))}H${a.x}Z`;
+  if (name === 'ellipse') {
+    const arc = (dx) => `a${a.rx} ${a.ry} 0 1 1 ${n(dx)} 0`;
+    return `M${n(a.cx - a.rx)} ${a.cy}${arc(2 * a.rx)}${arc(-2 * a.rx)}Z`;
+  }
+  if (name === 'polygon') {
+    let list = a.points.split(' ').map((p) => p.split(',').map(Number));
+    const turn = list.reduce((sum, [x1, y1], i) => {
+      const [x2, y2] = list[(i + 1) % list.length];
+      return sum + x1 * y2 - x2 * y1;
+    }, 0);
+    if (turn < 0) list = list.reverse(); // clockwise on screen, like the others
+    return `M${list.map(([x, y]) => `${n(x)} ${n(y)}`).join('L')}Z`;
+  }
+  return null;
+};
+/**
+ * The elements with every run of plain shapes of the same role written as
+ * one path: the same picture (one colour, all clockwise, so they join), in
+ * far fewer bytes. Rounded rectangles and paths stay as they are.
+ */
+const compact = (elements) => {
+  const out = [];
+  let run = [];
+  const flush = () => {
+    if (run.length === 1) out.push(run[0].element);
+    else if (run.length > 1) out.push(path(run[0].role, run.map((r) => r.d).join('')));
+    run = [];
+  };
+  for (const element of elements) {
+    const d = asPathData(element);
+    const role = /class="([^"]+)"/.exec(element)?.[1];
+    if (d === null) {
+      flush();
+      out.push(element);
+      continue;
+    }
+    if (run.length > 0 && run[0].role !== role) flush();
+    run.push({ element, role, d });
+  }
+  flush();
+  return out;
+};
+/**
+ * Objects that do not overlap, drawn layer by layer: the first element of
+ * each, then the second of each, and so on, so that `compact` writes each
+ * layer as one path. The objects must have the same elements in the same
+ * roles; the picture is the same as drawing them one after the other.
+ */
+const layered = (objects) => objects[0].flatMap((_, i) => objects.map((o) => o[i]));
 const svg = (viewBox, title, shapes) =>
-  `<svg xmlns="http://www.w3.org/2000/svg" viewBox="${viewBox}">\n  <title>${title}</title>\n${shapes
-    .flat()
+  `<svg xmlns="http://www.w3.org/2000/svg" viewBox="${viewBox}">\n  <title>${title}</title>\n${compact(
+    shapes.flat(),
+  )
     .map((s) => `  ${s}`)
     .join('\n')}\n</svg>\n`;
 
@@ -362,14 +458,12 @@ build('home-5', 'A house of two storeys', [
 ]);
 
 // Garden: everything grows from one bed in front of the threshold stone at
-// x = 53–67, the same stone and way as Home's. Size and form both grow:
-// one raised bed, rows of beds, rows behind a hedge with a fruit tree, a
-// greenhouse, an orchard around it. The accent is the sunflower, then the
-// fruit.
+// x = 53–67, the same stone and way as Home's (history rule: the
+// greenhouse, a different technique, is parked). The accent is the fruit.
 const GARDEN_WAYS = HOME_WAYS;
 /** A raised bed of boards from x to x + w, its top at y. */
 const bed = (x, w, y = 64) => [
-  ...boxO(x, y, w, 74 - y, T, 1),
+  ...boxO(x, y, w, 74 - y, T),
   rect('fg', x, (y + 74) / 2 - 0.8, w, 1.6),
 ];
 /** A leafy plant in a bed: a mound with a middle vein; the bed hides its foot. */
@@ -377,120 +471,116 @@ const plant = (cx, base, r) => [
   ...ellipseO(cx, base - r * 0.4, r, r * 0.9, 1.6),
   rect('fg', cx - 0.8, base - r * 1.1, 1.6, r * 1.1),
 ];
-/** The sunflower: a stem from `base` with two leaves, the bloom in the accent. */
-const sunflower = (cx, base, top) => [
-  rect('fg', cx - 1, top, 2, base - top),
-  ...ellipseO(cx - 4.5, top + (base - top) * 0.6, 4.5, 2.4, 1.4),
-  ...ellipseO(cx + 4.5, top + (base - top) * 0.4, 4.5, 2.4, 1.4),
-  ellipse('fg', cx, top, 6.5, 6.5),
-  ellipse('accent', cx, top, 4.7, 4.7),
-  ellipse('fg', cx, top, 2, 2),
-];
 /** A hedge from x to x + w: a row of round bushes grown into one, its top at y. */
-const hedge = (x, w, top, base = 66) => {
-  const bumps = Math.round(w / 16);
+const hedge = (x, w, top, base = 66, size = 16) => {
+  const bumps = Math.round(w / size);
   const r = w / bumps / 2;
-  const cy = top + r * 0.8;
+  const ry = Math.min(r * 0.8, 6.4); // large bushes stay low, like a clipped hedge
+  const cy = top + ry;
   const cxs = Array.from({ length: bumps }, (_, i) => x + r + i * 2 * r);
   return [
-    ...cxs.map((cx) => ellipse('fg', cx, cy, r + 1, r * 0.8)),
+    ...cxs.map((cx) => ellipse('fg', cx, cy, r + 1, ry)),
     rect('fg', x, cy, w, base - cy, 2),
-    ...cxs.map((cx) => ellipse('bg', cx, cy, r + 1 - T, r * 0.8 - T)),
+    ...cxs.map((cx) => ellipse('bg', cx, cy, r + 1 - T, ry - T)),
     rect('bg', x + T, cy, w - 2 * T, base - cy - T),
   ];
 };
-/** A fruit tree: trunk (unless hidden), round crown, fruits in the accent. */
+/**
+ * A fruit tree: trunk (outlined to the ground; `'solid'`, ending behind a
+ * hedge or wall at y = 58; or none), round crown, fruits in the accent.
+ */
 const FRUIT = [
   [-0.45, -0.05],
   [0.4, -0.35],
   [0.15, 0.4],
 ];
 const fruitTree = (cx, cy, r, trunk = true, fruits = FRUIT) => [
-  ...(trunk ? boxO(cx - 3.5, cy, 7, 74 - cy, T) : []),
+  ...(trunk === 'solid'
+    ? [rect('fg', cx - 2.2, cy, 4.4, 58 - cy)]
+    : trunk
+      ? boxO(cx - 3.5, cy, 7, 74 - cy, T)
+      : []),
   ...ellipseO(cx, cy, r, r * 0.92, T),
   ...fruits.map(([dx, dy]) => ellipse('accent', cx + dx * r, cy + dy * r, 2.8, 2.8)),
 ];
-/** The greenhouse: glass walls and roof in panes on a low wall, its door on the threshold. */
-const GLASS = [
-  [32, 74],
-  [32, 46],
-  [60, 22],
-  [88, 46],
-  [88, 74],
+// The garden is drawn once, version by version, from elements that each
+// have states: every element enters at its smallest state and grows one
+// state per version, and nothing moves, shrinks or disappears (#137). The
+// accent is the fruit, shown only on what is ripe.
+//
+//   element          enters  states
+//   middle bed       1       plants seedling → grown → ripe; stake bare → climber → ripe
+//   side beds        2       plants seedling → grown → ripe
+//   hedge            3       low → full
+//   inner trees      3       sapling → young → grown → old
+//   outer trees      4       sapling → young → …
+//   low wall, gate   5
+const stage = (v, from, last) => Math.min(v - from, last);
+/** A plant in a bed: larger with each state, its fruit in the accent once ripe. */
+const bedPlant = (x, s) => [
+  ...plant(x, 62, [4.5, 6.5, 8][s]),
+  ...(s === 2 ? [ellipse('accent', x + 3, 55, 2.4, 2.4)] : []),
 ];
-const greenhouse = () => [
-  ...polyO(GLASS, T),
-  rect('fg', 32, 45, 56, 2),
-  ...[44, 76].map((x) => rect('fg', x - 0.8, 46, 1.6, 20)),
-  poly('fg', [
-    [45, 46],
-    [47, 46],
-    [61, 24.5],
-    [59, 24.5],
-  ]),
-  poly('fg', [
-    [73, 46],
-    [75, 46],
-    [61, 24.5],
-    [59, 24.5],
-  ]),
-  ...plant(39, 66, 5),
-  ...plant(81, 66, 5),
-  ...boxO(32, 65, 56, 9, T),
-  ...boxO(52, 50, 16, 24, T, 1),
-  rect('fg', 59.2, 50, 1.6, 24),
+/** The stake in the middle bed: the stick grows, a climber with it, fruit once ripe. */
+const stake = (x, s) => {
+  const top = 48 - 8 * s;
+  return [
+    rect('fg', x - 1, top, 2, 62 - top),
+    ...layered(
+      // two leaves from the start (one alone reads as a flag), three when grown
+      Array.from({ length: Math.min(s + 2, 3) }, (_, i) =>
+        ellipseO(x + (i % 2 ? 3.6 : -3.6), top + 4 + i * 6, 3.6, 2.2, 1.3),
+      ),
+    ),
+    ...(s === 2 ? [x - 3, x + 3].map((fx) => ellipse('accent', fx, top + 9, 2.2, 2.2)) : []),
+  ];
+};
+const TREE_STATES = [
+  { r: 5, trunk: 4, fruits: 0 },
+  { r: 9, trunk: 4, fruits: 0 },
+  { r: 12, trunk: 6, fruits: 2 },
+  { r: 15, trunk: 8, fruits: 3 },
 ];
-
-build('garden-1', 'A garden bed', [
+const TREES = [
+  { x: 14, from: 4 },
+  { x: 106, from: 4 },
+  { x: 37, from: 3 },
+  { x: 83, from: 3 },
+];
+/** The hedge: low when planted, full a version later. */
+const hedgeTop = (v) => (v === 3 ? 52 : 44);
+const garden = (v) => [
   yard(),
-  ...sunflower(60, 62, 36),
-  ...plant(46, 62, 8),
-  ...plant(74, 62, 8),
-  ...bed(32, 56, 62),
-]);
-
-build('garden-2', 'A garden in rows', [
-  yard(),
-  ...sunflower(60, 58, 28),
-  ...[34, 46, 74, 86].flatMap((x) => plant(x, 58, 7)),
-  ...bed(26, 68, 58),
-  ...[23, 34, 45, 75, 86, 97].flatMap((x) => plant(x, 66, 5.5)),
-  ...bed(16, 36, 66),
-  ...bed(68, 36, 66),
-]);
-
-build('garden-3', 'A garden with a fruit tree', [
-  yard(),
-  ...hedge(6, 108, 42, 60),
-  ...fruitTree(92, 28, 16),
-  ...[28, 40, 52].flatMap((x) => plant(x, 58, 7)),
-  ...bed(20, 46, 58),
-  ...[19, 30, 41, 79, 90, 101].flatMap((x) => plant(x, 66, 5.5)),
-  ...bed(12, 40, 66),
-  ...bed(68, 40, 66),
-]);
-
-build('garden-4', 'A garden with a greenhouse', [
-  yard(),
-  ...fruitTree(102, 27, 15, false),
-  ...fruitTree(18, 27, 15, false),
-  ...hedge(4, 112, 40, 60),
-  ...greenhouse(),
-  ...[12, 22, 98, 108].flatMap((x) => plant(x, 66, 5)),
-  ...bed(6, 24, 66),
-  ...bed(90, 24, 66),
-]);
-
-build('garden-5', 'An orchard around a greenhouse', [
-  yard(),
-  ...fruitTree(60, 18, 15, false, FRUIT.slice(0, 2)),
-  ...fruitTree(34, 19, 16, false),
-  ...fruitTree(86, 19, 16, false),
-  ...fruitTree(13, 30, 13, false),
-  ...fruitTree(107, 30, 13, false),
-  ...hedge(1, 118, 42, 62),
-  ...greenhouse(),
-]);
+  ...TREES.filter((t) => v >= t.from).flatMap(({ x, from }) => {
+    const { r, trunk, fruits } = TREE_STATES[stage(v, from, 3)];
+    return fruitTree(x, hedgeTop(v) - trunk - r * 0.92, r, 'solid', FRUIT.slice(0, fruits));
+  }),
+  ...(v >= 3 ? hedge(2, 116, hedgeTop(v), 62, 23) : []),
+  ...stake(60, stage(v, 1, 2)),
+  // plants of the same state are drawn as one layer each (`layered`)
+  ...(stage(v, 1, 2) === stage(v, 2, 2)
+    ? layered([16, 46, 74, 104].map((x) => bedPlant(x, stage(v, 1, 2))))
+    : [
+        ...layered([46, 74].map((x) => bedPlant(x, stage(v, 1, 2)))),
+        ...(v >= 2 ? layered([16, 104].map((x) => bedPlant(x, stage(v, 2, 2)))) : []),
+      ]),
+  ...layered([bed(32, 56, 62), ...(v >= 2 ? [bed(4, 24, 62), bed(92, 24, 62)] : [])]),
+  ...(v >= 5
+    ? [
+        ...layered([2, 72].map((x) => boxO(x, 64, 46, 10, T))),
+        masonry([...box(4, 66, 42, 7), ...box(74, 66, 42, 7)], 3.5, 12),
+        ...layered([1, 71].map((x) => boxO(x, 60.5, 48, 5, T))),
+        ...layered([46, 69].map((x) => boxO(x, 56, 5, 18, T))),
+      ]
+    : []),
+];
+[
+  'A garden bed',
+  'A row of beds',
+  'A garden with fruit trees',
+  'An orchard',
+  'A walled garden',
+].forEach((title, i) => build(`garden-${i + 1}`, title, garden(i + 1)));
 
 // Well: a hole dug for water that grows into a well house, in front of the
 // same threshold stone as Home's. Size and form both grow, step by step in
@@ -512,28 +602,6 @@ const bucket = (cx, top, w = 10, h = 10) => {
     shapeIn('accent', grow([shape], -1.6)),
     rect('fg', cx - w / 2, top + h * 0.35, w, 1.4),
   ];
-};
-/**
- * Masonry: courses of stones over a wall (a shape), each course `h` high,
- * the joints of every second course shifted by half a stone `w`, clipped
- * to the wall, so they stop at its edges and at any opening cut out of it
- * (ladder-geometry.mjs). One path, so a wall of many stones stays small.
- */
-const masonry = (wall, h, w) => {
-  const [x0, y0, x1, y1] = [
-    Math.min(...wall.flat().map(([x]) => x)),
-    Math.min(...wall.flat().map(([, y]) => y)),
-    Math.max(...wall.flat().map(([x]) => x)),
-    Math.max(...wall.flat().map(([, y]) => y)),
-  ];
-  const joints = [];
-  for (let k = 0, y = y0; y < y1 - 0.5; k += 1, y += h) {
-    const bottom = Math.min(y + h, y1);
-    if (k > 0) joints.push(...box(x0, y - 0.8, x1 - x0, 1.6));
-    for (let x = x0 + w * (k % 2 ? 0.5 : 1); x < x1 - 2; x += w)
-      joints.push(...box(x - 0.8, y, 1.6, bottom - y));
-  }
-  return path('fg', rings(within(joints, wall)));
 };
 /** The round well seen from the front: a wall of stones, its rim an ellipse round the water. */
 const wellWall = (x, w, top = 52) => [
@@ -1111,10 +1179,10 @@ ladder(
     ...markerOf(MARKER_LAYOUTS.field),
     versions: [
       { art: 'build-garden-1', title: 'A garden bed' },
-      { art: 'build-garden-2', title: 'A garden in rows' },
-      { art: 'build-garden-3', title: 'A garden with a fruit tree' },
-      { art: 'build-garden-4', title: 'A greenhouse' },
-      { art: 'build-garden-5', title: 'An orchard' },
+      { art: 'build-garden-2', title: 'A row of beds' },
+      { art: 'build-garden-3', title: 'A garden with fruit trees' },
+      { art: 'build-garden-4', title: 'An orchard' },
+      { art: 'build-garden-5', title: 'A walled garden' },
     ],
   },
   groundOf('field'),

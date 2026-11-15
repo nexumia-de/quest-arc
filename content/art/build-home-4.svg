@@ -13,10 +13,8 @@
   <rect class="accent" x="55" y="56" width="10" height="18"/>
   <rect class="fg" x="30" y="52" width="15" height="13" rx="1"/>
   <rect class="bg" x="31.8" y="53.8" width="11.4" height="9.4"/>
-  <rect class="fg" x="36.7" y="52" width="1.6" height="13"/>
-  <rect class="fg" x="30" y="57.7" width="15" height="1.6"/>
+  <path class="fg" d="M36.7 52H38.3V65H36.7ZM30 57.7H45V59.3H30Z"/>
   <rect class="fg" x="75" y="52" width="15" height="13" rx="1"/>
   <rect class="bg" x="76.8" y="53.8" width="11.4" height="9.4"/>
-  <rect class="fg" x="81.7" y="52" width="1.6" height="13"/>
-  <rect class="fg" x="75" y="57.7" width="15" height="1.6"/>
+  <path class="fg" d="M81.7 52H83.3V65H81.7ZM75 57.7H90V59.3H75Z"/>
 </svg>
