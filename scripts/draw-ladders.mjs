@@ -712,13 +712,14 @@ build('well-5', 'A well house', [
 // Lookout: one wooden lookout tower at one height from the start (a built
 // thing does not grow taller), in front of the same threshold stone as
 // Home's; it gets better by what is added: two posts with a deck and a
-// ladder (1), a railing (2), a cross brace (3), a second tier of braces
-// with a crossbeam (4), a roof (5). The ladder climbs to the deck's right
+// ladder (1), a railing (2), a cross brace in the lower part (3), a second
+// level resting on it (4), a roof (5). The ladder climbs to the deck's right
 // end, clear of the threshold; the flag (the accent) stays on top.
 const LOOKOUT_WAYS = HOME_WAYS;
 const LOOKOUT_DECK = 26;
 const LOOKOUT_FEET = [34, 86];
 const LOOKOUT_TOPS = [42, 78];
+const MID = 48; // the second level's deck
 const lookout = (v) => {
   const [left, right] = [LOOKOUT_TOPS[0] - 4, LOOKOUT_TOPS[1] + 4]; // the deck overhangs the posts
   const under = LOOKOUT_DECK + 4.5; // the deck's underside
@@ -752,14 +753,14 @@ const lookout = (v) => {
           ),
         ]
       : []),
-    ...(v >= 3 ? cross(71, v >= 4 ? 52 : under + 3) : []),
-    ...(v >= 4
-      ? [...cross(50, under + 3), poly('fg', bar(postAt(0, 51), 51, postAt(1, 51), 51, 2.4))]
-      : []),
+    // the cross brace in the lower part, up to where the second level rests on it
+    ...(v >= 3 ? cross(71, MID + 5) : []),
     // a post's foot ends a little higher, so its slanted corner stays on the ground
     ...layered(
       [0, 1].map((i) => polyO(bar(LOOKOUT_FEET[i], 73.5, LOOKOUT_TOPS[i], under, 4.4), 1.5)),
     ),
+    // the second level: a deck between the posts, resting on the brace
+    ...(v >= 4 ? boxO(postAt(0, MID) - 3, MID, postAt(1, MID) - postAt(0, MID) + 6, 4.5, T) : []),
     ...boxO(left, LOOKOUT_DECK, right - left, 4.5, T),
     // the ladder: under the deck's right end, from the ground up to it
     rect('fg', right - 13, under, 1.8, 74 - under),

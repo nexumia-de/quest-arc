@@ -193,8 +193,8 @@ journey):
    break the line, a fountain is another use). Lookout is one wooden
    lookout tower at one height from the start (a built thing does not
    grow taller, owner): two posts with a deck and a ladder, then a
-   railing, a cross brace, a second tier of braces with a crossbeam, a
-   roof; the flag, the accent, stays on top.
+   railing, a cross brace in the lower part, a second level resting on
+   it, a roof; the flag, the accent, stays on top.
 8. **History, step by step** (owner, 2026-11-15). A ladder follows one
    real line of development for one use; each version is what people
    actually built next, within a world before electricity, so the row
