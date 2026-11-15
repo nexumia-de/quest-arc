@@ -194,9 +194,8 @@ journey):
    bottom up, and what is built stays where it is (a built thing does not
    grow, owner): a low platform on two posts with a ladder, its railing,
    a cross brace under it, the posts carried on up to an upper deck with
-   its own ladder, a roof on short posts over the upper deck. The flag,
-   the accent, stands at full height from the start; the tower grows up
-   around its pole.
+   its own ladder, a roof on short posts over the upper deck. The accent
+   is the deck you stand on to look out, the top one.
 8. **History, step by step** (owner, 2026-11-15). A ladder follows one
    real line of development for one use; each version is what people
    actually built next, within a world before electricity, so the row
@@ -210,7 +209,7 @@ journey):
    decision 13).
 9. **Look.** Outlined in `fg` with a `bg` fill, one `accent` detail (the
    flame, a glowing door or window, the keystone, a rail cap, the
-   fruit, the bucket, the flag), water and
+   fruit, the bucket, the lookout's top deck), water and
    the yard in `tint-strong` of the region's hue. The setting is quiet:
    ground and far trees in `tint`, a few reused plants (tuft, reeds, bush,
    flowers, far trees) in the [depth bands](#look-and-depth-bands).

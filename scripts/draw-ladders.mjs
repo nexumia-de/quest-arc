@@ -714,17 +714,17 @@ build('well-5', 'A well house', [
 // thing does not grow): a low platform on two posts with a ladder (1), its
 // railing (2), a cross brace under it (3), the posts carried on up to an
 // upper deck with its own ladder (4), a roof over the upper deck (5). The
-// flag (the accent) stands at full height from the start; the tower grows
-// up around its pole.
+// accent is the deck you stand on to look out: the top one.
 const LOOKOUT_WAYS = HOME_WAYS;
 const LOW = 48; // the platform's deck
+const DECK_H = 6; // a deck's thickness, so its accent shows
 const HIGH = 24; // the upper deck
 const LOOKOUT_FEET = [34, 86];
 const LOOKOUT_TOPS = [42, 78]; // the posts where they meet the upper deck
 const lookout = (v) => {
   /** Where a post is at height y (it narrows towards the upper deck). */
   const postAt = (i, y) =>
-    LOOKOUT_FEET[i] + ((LOOKOUT_TOPS[i] - LOOKOUT_FEET[i]) * (73.5 - y)) / (73.5 - HIGH - 4.5);
+    LOOKOUT_FEET[i] + ((LOOKOUT_TOPS[i] - LOOKOUT_FEET[i]) * (73.5 - y)) / (73.5 - HIGH - DECK_H);
   const deckAt = (y) => [postAt(0, y) - 4, postAt(1, y) + 4];
   const [low0, low1] = deckAt(LOW);
   const [high0, high1] = deckAt(HIGH);
@@ -741,16 +741,15 @@ const lookout = (v) => {
   ];
   return [
     yard(),
-    rect('fg', 59.2, 4, 1.6, LOW - 4),
     ...(v >= 4
       ? [
           ...layered(
             [0, 1].map((i) =>
-              polyO(bar(postAt(i, LOW), LOW, LOOKOUT_TOPS[i], HIGH + 4.5, 4.4), 1.5),
+              polyO(bar(postAt(i, LOW), LOW, LOOKOUT_TOPS[i], HIGH + DECK_H, 4.4), 1.5),
             ),
           ),
-          ...boxO(high0, HIGH, high1 - high0, 4.5, T),
-          ...ladder(44, HIGH + 4.5, LOW),
+          ...boxO(high0, HIGH, high1 - high0, DECK_H, T, 0, 'accent'),
+          ...ladder(44, HIGH + DECK_H, LOW),
         ]
       : []),
     // the roof on two short posts over the upper deck
@@ -781,21 +780,12 @@ const lookout = (v) => {
     // a post's foot ends a little higher, so its slanted corner stays on the ground
     ...layered(
       [0, 1].map((i) =>
-        polyO(bar(LOOKOUT_FEET[i], 73.5, postAt(i, LOW + 4.5), LOW + 4.5, 4.4), 1.5),
+        polyO(bar(LOOKOUT_FEET[i], 73.5, postAt(i, LOW + DECK_H), LOW + DECK_H, 4.4), 1.5),
       ),
     ),
-    ...boxO(low0, LOW, low1 - low0, 4.5, T),
+    ...boxO(low0, LOW, low1 - low0, DECK_H, T, 0, v >= 4 ? 'bg' : 'accent'),
     // the ladder: under the platform's right end, from the ground up to it
-    ...ladder(low1 - 13, LOW + 4.5, 74),
-    ...polyO(
-      [
-        [60.8, 4],
-        [72, 7.5],
-        [60.8, 11],
-      ],
-      1.4,
-      'accent',
-    ),
+    ...ladder(low1 - 13, LOW + DECK_H, 74),
   ];
 };
 [
