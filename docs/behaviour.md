@@ -261,15 +261,13 @@ Opened from the growing step of a moment (screen 0); back leads there.
   by Undo).
 - **The build** (#100, #110, [journey
   design](journey-design.md#the-journey-screen-with-the-build)). The
-  upper part is the build in its setting and the place's hue: the
-  place's one thing in its current version (a further journey from the
-  same moment goes on with the thing the first journey began, [game
-  rules](game-rules.md) §8; no second thing, no surroundings), the marker with its first `ceil(markerProgress × E)`
+  upper part is the build in its setting and the run's hue: its own
+  thing, on the place's ladder when the moment has an earlier journey
+  ([game rules](game-rules.md) §8: a further journey builds another thing
+  of the same kind, from version 1), in its current version, the marker with its first `ceil(markerProgress × E)`
   elements, all hanging elements "on" while ready. Below it the row of
-  versions: the one the journey started from (`from`) and the ones it
-  added (`added`), as small pictures with their number, the next one as a
-  plain step without a picture, nothing further; where the ladder has no
-  further version the row ends and the thing stays at its last one), then one
+  versions (the standing ones as small pictures with their number, the
+  next one as a plain step without a picture, nothing further), then one
   line of state in words ("A hut stands · a cottage is on
   its way", "… is ready", or only "A hut stands" before the stage's first
   counting completion; the journey's own version names only while the run's ladder is the journey's own, else the ladder's titles, #115), then the card. The picture's text for

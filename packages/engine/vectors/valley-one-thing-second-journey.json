@@ -1,5 +1,5 @@
 {
-  "name": "One thing per place: a second journey at the moment goes on with the first journey's thing (its ladder, version 4 standing) and its marker; the graduated step of the first journey puts the lantern",
+  "name": "A second journey from the same moment builds a second thing on the first journey's ladder, starting at version 1 (its own ladder, Well, is not used here); the first journey's finished thing stands at version 4 with the lantern, and no surroundings exist",
   "rule": "game rules \u00a78, the Valley; issues #126, #148",
   "kind": "evaluate",
   "input": {
@@ -75,9 +75,7 @@
       "runId": "r2",
       "build": {
         "ladder": "home",
-        "version": 4,
-        "from": 4,
-        "versions": 5
+        "version": 1
       }
     },
     "valley": [
@@ -85,18 +83,29 @@
         "anchorId": "m1",
         "growing": true,
         "sign": "lantern",
-        "thing": {
-          "runId": "r2",
-          "journeyId": "test-build",
-          "state": "growing",
-          "ladder": "home",
-          "version": 4,
-          "from": 4,
-          "added": [],
-          "versions": 5,
-          "markerProgress": 0,
-          "ready": false
-        }
+        "things": [
+          {
+            "runId": "r1",
+            "journeyId": "test-daily",
+            "state": "finished",
+            "ladder": "home",
+            "version": 4,
+            "versions": 4,
+            "markerProgress": 0,
+            "ready": false
+          },
+          {
+            "runId": "r2",
+            "journeyId": "test-build",
+            "state": "growing",
+            "ladder": "home",
+            "version": 1,
+            "versions": 4,
+            "markerProgress": 0,
+            "ready": false
+          }
+        ],
+        "unbuilt": []
       }
     ],
     "problems": []

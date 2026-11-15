@@ -1,0 +1,132 @@
+{
+  "name": "A fourth journey at the same moment builds no thing: it is listed in `unbuilt` (THINGS_PER_PLACE = 3) and its own build view still computes",
+  "rule": "game rules \u00a78, the Valley; issue #148",
+  "kind": "evaluate",
+  "input": {
+    "day": {
+      "todayStr": "2026-11-11",
+      "startOfNextDayDiffMs": 0,
+      "timeZone": "Europe/Berlin"
+    },
+    "tasks": [],
+    "repeatCfgs": [],
+    "choices": {
+      "anchor:m1": {
+        "kind": "routine",
+        "words": "getting up"
+      },
+      "run:r1": {
+        "journeyId": "test-daily",
+        "journeyVersion": 1,
+        "startDay": "2026-08-01"
+      },
+      "run-anchor:r1": {
+        "anchorId": "m1"
+      },
+      "stage:r1:a": {
+        "acceptedDay": "2026-08-01"
+      },
+      "stage-done:r1:a": {
+        "day": "2026-08-15",
+        "dataFormat": 2
+      },
+      "stage:r1:b": {
+        "acceptedDay": "2026-08-15"
+      },
+      "pause:r1:2026-08-20": {
+        "action": "pause",
+        "source": "user"
+      },
+      "run:r2": {
+        "journeyId": "test-build",
+        "journeyVersion": 1,
+        "startDay": "2026-09-01"
+      },
+      "run-anchor:r2": {
+        "anchorId": "m1"
+      },
+      "stage:r2:a": {
+        "acceptedDay": "2026-09-01"
+      },
+      "stage-done:r2:a": {
+        "day": "2026-09-10",
+        "dataFormat": 2
+      },
+      "stage:r2:b": {
+        "acceptedDay": "2026-09-10"
+      },
+      "pause:r2:2026-09-15": {
+        "action": "pause",
+        "source": "user"
+      },
+      "run:r3": {
+        "journeyId": "test-night",
+        "journeyVersion": 1,
+        "startDay": "2026-10-01"
+      },
+      "run-anchor:r3": {
+        "anchorId": "m1"
+      },
+      "stage:r3:a": {
+        "acceptedDay": "2026-10-01"
+      },
+      "pause:r3:2026-10-05": {
+        "action": "pause",
+        "source": "user"
+      },
+      "run:r4": {
+        "journeyId": "test-morning",
+        "journeyVersion": 1,
+        "startDay": "2026-10-20"
+      },
+      "run-anchor:r4": {
+        "anchorId": "m1"
+      },
+      "stage:r4:a": {
+        "acceptedDay": "2026-10-20"
+      },
+      "stage-done:r4:a": {
+        "day": "2026-10-30",
+        "dataFormat": 2
+      },
+      "stage:r4:b": {
+        "acceptedDay": "2026-10-30"
+      }
+    },
+    "journeys": ["$test-daily", "$test-build", "$test-morning", "$test-night"]
+  },
+  "expect": {
+    "valley": [
+      {
+        "anchorId": "m1",
+        "growing": true,
+        "things": [
+          {
+            "runId": "r1"
+          },
+          {
+            "runId": "r2"
+          },
+          {
+            "runId": "r3"
+          }
+        ],
+        "unbuilt": [
+          {
+            "runId": "r4",
+            "journeyId": "test-morning",
+            "state": "growing"
+          }
+        ]
+      }
+    ],
+    "active": {
+      "runId": "r4",
+      "build": {
+        "ladder": "home",
+        "version": 2
+      }
+    },
+    "problems": []
+  }
+}

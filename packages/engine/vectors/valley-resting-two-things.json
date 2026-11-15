@@ -1,5 +1,5 @@
 {
-  "name": "A paused first journey stands at version 3; a second journey at the same moment continues the same thing from 3 to 4 with its first finished station, hangs its own marker on it, and shows the versions it added",
+  "name": "A resting anchor with two waiting journeys shows both things, paused, each at its own version; nothing is taken away",
   "rule": "game rules \u00a78, the Valley; issue #148",
   "kind": "evaluate",
   "input": {
@@ -14,6 +14,10 @@
       "anchor:m1": {
         "kind": "routine",
         "words": "getting up"
+      },
+      "anchor:m2": {
+        "kind": "routine",
+        "words": "lunch"
       },
       "run:r1": {
         "journeyId": "test-daily",
@@ -32,10 +36,6 @@
       },
       "stage:r1:b": {
         "acceptedDay": "2026-08-15"
-      },
-      "stage-done:r1:b": {
-        "day": "2026-08-25",
-        "dataFormat": 2
       },
       "pause:r1:2026-09-01": {
         "action": "pause",
@@ -59,8 +59,20 @@
       "stage:r2:b": {
         "acceptedDay": "2026-09-10"
       },
-      "build:r2": {
-        "marker": "flowers"
+      "pause:r2:2026-09-15": {
+        "action": "pause",
+        "source": "user"
+      },
+      "run:r3": {
+        "journeyId": "test-night",
+        "journeyVersion": 1,
+        "startDay": "2026-11-01"
+      },
+      "run-anchor:r3": {
+        "anchorId": "m2"
+      },
+      "stage:r3:a": {
+        "acceptedDay": "2026-11-01"
       }
     },
     "journeys": ["$test-daily", "$test-build", "$test-morning", "$test-night"]
@@ -68,45 +80,32 @@
   "expect": {
     "valley": [
       {
-        "anchorId": "m1",
+        "anchorId": "m2",
         "growing": true,
-        "thing": {
-          "runId": "r2",
-          "journeyId": "test-build",
-          "state": "growing",
-          "ladder": "home",
-          "version": 4,
-          "from": 3,
-          "added": [4],
-          "versions": 5,
-          "marker": "flowers",
-          "markerProgress": 0,
-          "ready": false
-        }
-      }
-    ],
-    "active": {
-      "runId": "r2",
-      "build": {
-        "ladder": "home",
-        "version": 4,
-        "from": 3,
-        "added": [4],
-        "skipped": [],
-        "versions": 5,
-        "marker": "flowers"
-      }
-    },
-    "paused": [
+        "things": [
+          {
+            "runId": "r3",
+            "state": "growing",
+            "version": 1
+          }
+        ]
+      },
       {
-        "runId": "r1",
-        "build": {
-          "ladder": "home",
-          "version": 4,
-          "from": 1,
-          "added": [2, 3],
-          "versions": 4
-        }
+        "anchorId": "m1",
+        "growing": false,
+        "things": [
+          {
+            "runId": "r1",
+            "state": "paused",
+            "version": 2
+          },
+          {
+            "runId": "r2",
+            "state": "paused",
+            "version": 2,
+            "ladder": "home"
+          }
+        ]
       }
     ],
     "problems": []

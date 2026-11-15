@@ -1,5 +1,5 @@
 {
-  "name": "A resting anchor with two waiting journeys shows the latest started one on the one thing, paused, at the version both built together; nothing is taken away",
+  "name": "Without a choice the second thing's marker is the ladder's default on the place's ladder (Home: bunting, not Well's lanterns); its version is its own, 2 after one finished stage",
   "rule": "game rules \u00a78, the Valley; issue #148",
   "kind": "evaluate",
   "input": {
@@ -15,10 +15,6 @@
         "kind": "routine",
         "words": "getting up"
       },
-      "anchor:m2": {
-        "kind": "routine",
-        "words": "lunch"
-      },
       "run:r1": {
         "journeyId": "test-daily",
         "journeyVersion": 1,
@@ -30,14 +26,7 @@
       "stage:r1:a": {
         "acceptedDay": "2026-08-01"
       },
-      "stage-done:r1:a": {
-        "day": "2026-08-15",
-        "dataFormat": 2
-      },
-      "stage:r1:b": {
-        "acceptedDay": "2026-08-15"
-      },
-      "pause:r1:2026-09-01": {
+      "pause:r1:2026-08-05": {
         "action": "pause",
         "source": "user"
       },
@@ -58,21 +47,6 @@
       },
       "stage:r2:b": {
         "acceptedDay": "2026-09-10"
-      },
-      "pause:r2:2026-09-15": {
-        "action": "pause",
-        "source": "user"
-      },
-      "run:r3": {
-        "journeyId": "test-night",
-        "journeyVersion": 1,
-        "startDay": "2026-11-01"
-      },
-      "run-anchor:r3": {
-        "anchorId": "m2"
-      },
-      "stage:r3:a": {
-        "acceptedDay": "2026-11-01"
       }
     },
     "journeys": ["$test-daily", "$test-build", "$test-morning", "$test-night"]
@@ -80,26 +54,22 @@
   "expect": {
     "valley": [
       {
-        "anchorId": "m2",
-        "growing": true,
-        "thing": {
-          "runId": "r3",
-          "state": "growing",
-          "version": 1,
-          "from": 1
-        }
-      },
-      {
         "anchorId": "m1",
-        "growing": false,
-        "thing": {
-          "runId": "r2",
-          "state": "paused",
-          "ladder": "home",
-          "version": 3,
-          "from": 2,
-          "added": [3]
-        }
+        "things": [
+          {
+            "runId": "r1",
+            "state": "paused",
+            "version": 1,
+            "marker": "bunting"
+          },
+          {
+            "runId": "r2",
+            "state": "growing",
+            "ladder": "home",
+            "version": 2,
+            "marker": "bunting"
+          }
+        ]
       }
     ],
     "problems": []

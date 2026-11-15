@@ -1,5 +1,5 @@
 {
-  "name": "A further journey that skips its first stage ('already yours') adds that version without a station's work; skipped versions are named; the journey ended early leaves its version standing",
+  "name": "A first journey ended early leaves its thing at version 2; the second journey's thing follows \u00a77 within itself: a skipped stage raises its version (3) and is named 'already yours'",
   "rule": "game rules \u00a78, the Valley; issue #148",
   "kind": "evaluate",
   "input": {
@@ -54,13 +54,6 @@
       },
       "stage:r2:b": {
         "acceptedDay": "2026-09-02"
-      },
-      "stage-done:r2:b": {
-        "day": "2026-09-12",
-        "dataFormat": 2
-      },
-      "stage:r2:c": {
-        "acceptedDay": "2026-09-12"
       }
     },
     "journeys": ["$test-daily", "$test-build", "$test-morning", "$test-night"]
@@ -69,34 +62,20 @@
     "valley": [
       {
         "anchorId": "m1",
-        "thing": {
-          "runId": "r2",
-          "state": "growing",
-          "ladder": "home",
-          "version": 4,
-          "from": 2,
-          "added": [3, 4],
-          "skipped": [3],
-          "versions": 5
-        }
-      }
-    ],
-    "active": {
-      "build": {
-        "version": 4,
-        "skipped": [3],
-        "added": [3, 4]
-      }
-    },
-    "finished": [
-      {
-        "runId": "r1",
-        "build": {
-          "version": 4,
-          "from": 1,
-          "added": [2],
-          "skipped": []
-        }
+        "things": [
+          {
+            "runId": "r1",
+            "state": "ended",
+            "version": 2
+          },
+          {
+            "runId": "r2",
+            "state": "growing",
+            "version": 2,
+            "skipped": [2]
+          }
+        ],
+        "unbuilt": []
       }
     ],
     "problems": []

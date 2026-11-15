@@ -436,25 +436,25 @@ interface ValleyPlace {
   name: string; // the user's name for the place, else the anchor's words, else its time
   side: 'left' | 'right'; // the user's, else alternating from the right
   hue: string; // the user's, else by position in the palette's order; neighbours differ
-  thing?: ValleyThing; // the place's one thing, grown by every journey there; absent: plain land
+  things: ValleyThing[]; // one to three, in the order the journeys started (game rules §8); empty: plain land
+  unbuilt: { runId: string; journeyId: string; state: ValleyThing['state'] }[]; // journeys beyond THINGS_PER_PLACE (3)
   sign?: 'plants' | 'lantern'; // a step is maintained / graduated
   growing: boolean; // the active journey starts from here
   chosen: { position?: number; side?: 'left' | 'right'; hue?: string }; // `place:<anchorId>`
 }
 
+// the build of one journey, on the ladder of the place's first journey
 interface ValleyThing extends Omit<BuildView, 'hue'> {
-  runId: string; // the journey that stands here now: growing, else the latest waiting, else the latest
+  runId: string;
   journeyId: string;
   state: 'growing' | 'paused' | 'finished' | 'ended'; // ended: ended early
 }
 
 interface BuildView {
   ladder: string; // a ladder in content/art/ (<name>.ladder.json)
-  version: number; // at a place: 1 + finished and skipped stages of every journey there, at most the ladder's last
-  skipped: number[]; // versions this journey's skipped stages gave
-  from: number; // the version this journey started from (1 for a first journey)
-  added: number[]; // the versions this journey added, within the ladder
-  versions: number; // from + stages, at most the ladder's last version
+  version: number; // 1 + finished and skipped stages
+  skipped: number[]; // standing versions that came from a skipped stage
+  versions: number; // stages + 1
   marker: string; // what hangs: lanterns, bunting, flowers (markers.json)
   hue: string; // the ladder's default; `build:<runId>.hue` is no longer read (game rules §8)
   markerProgress: number; // 0..1, the stage's highest condition progress so far

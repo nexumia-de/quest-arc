@@ -1,5 +1,5 @@
 {
-  "name": "The ladder has five versions: the first journey stands at 4, the second adds version 5 with its first station, and its second station finds no further version; the thing stays at the last one",
+  "name": "A second journey builds a second thing on the first journey's ladder: it starts at version 1 and follows its own stations; the paused first journey keeps its thing at version 3; the second thing hangs its own marker (flowers, the user's choice)",
   "rule": "game rules \u00a78, the Valley; issue #148",
   "kind": "evaluate",
   "input": {
@@ -40,38 +40,23 @@
       "stage:r1:c": {
         "acceptedDay": "2026-08-25"
       },
-      "stage-done:r1:c": {
-        "day": "2026-09-05",
-        "dataFormat": 2
-      },
-      "run-end:r1": {
-        "day": "2026-09-05",
-        "reason": "finished"
+      "pause:r1:2026-09-01": {
+        "action": "pause",
+        "source": "user"
       },
       "run:r2": {
         "journeyId": "test-build",
         "journeyVersion": 1,
-        "startDay": "2026-09-10"
+        "startDay": "2026-09-02"
       },
       "run-anchor:r2": {
         "anchorId": "m1"
       },
       "stage:r2:a": {
-        "acceptedDay": "2026-09-10"
+        "acceptedDay": "2026-09-02"
       },
-      "stage-done:r2:a": {
-        "day": "2026-09-20",
-        "dataFormat": 2
-      },
-      "stage:r2:b": {
-        "acceptedDay": "2026-09-20"
-      },
-      "stage-done:r2:b": {
-        "day": "2026-10-01",
-        "dataFormat": 2
-      },
-      "stage:r2:c": {
-        "acceptedDay": "2026-10-01"
+      "build:r2": {
+        "marker": "flowers"
       }
     },
     "journeys": ["$test-daily", "$test-build", "$test-morning", "$test-night"]
@@ -80,33 +65,44 @@
     "valley": [
       {
         "anchorId": "m1",
-        "thing": {
-          "runId": "r2",
-          "state": "growing",
-          "ladder": "home",
-          "version": 5,
-          "from": 4,
-          "added": [5],
-          "versions": 5
-        }
+        "growing": true,
+        "things": [
+          {
+            "runId": "r1",
+            "journeyId": "test-daily",
+            "state": "paused",
+            "ladder": "home",
+            "version": 3,
+            "marker": "bunting"
+          },
+          {
+            "runId": "r2",
+            "journeyId": "test-build",
+            "state": "growing",
+            "ladder": "home",
+            "version": 1,
+            "marker": "flowers",
+            "markerProgress": 0,
+            "ready": false
+          }
+        ],
+        "unbuilt": []
       }
     ],
     "active": {
+      "runId": "r2",
       "build": {
-        "version": 5,
-        "from": 4,
-        "added": [5],
-        "skipped": []
+        "ladder": "home",
+        "version": 1,
+        "marker": "flowers"
       }
     },
-    "finished": [
+    "paused": [
       {
         "runId": "r1",
         "build": {
-          "version": 5,
-          "from": 1,
-          "added": [2, 3, 4],
-          "versions": 4
+          "ladder": "home",
+          "version": 3
         }
       }
     ],

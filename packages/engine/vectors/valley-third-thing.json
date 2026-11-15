@@ -1,5 +1,5 @@
 {
-  "name": "The versions are given in the order the stations were finished, across journeys: r1's first station is version 2, r2's first version 3, r1's second version 4",
+  "name": "A third journey builds a third thing, each at its own version on the first journey's ladder",
   "rule": "game rules \u00a78, the Valley; issue #148",
   "kind": "evaluate",
   "input": {
@@ -33,20 +33,20 @@
       "stage:r1:b": {
         "acceptedDay": "2026-08-15"
       },
-      "pause:r1:2026-08-16": {
+      "pause:r1:2026-08-20": {
         "action": "pause",
         "source": "user"
       },
       "run:r2": {
         "journeyId": "test-build",
         "journeyVersion": 1,
-        "startDay": "2026-09-02"
+        "startDay": "2026-09-01"
       },
       "run-anchor:r2": {
         "anchorId": "m1"
       },
       "stage:r2:a": {
-        "acceptedDay": "2026-09-02"
+        "acceptedDay": "2026-09-01"
       },
       "stage-done:r2:a": {
         "day": "2026-09-10",
@@ -55,16 +55,24 @@
       "stage:r2:b": {
         "acceptedDay": "2026-09-10"
       },
-      "pause:r1:2026-09-11": {
-        "action": "resume",
+      "pause:r2:2026-09-15": {
+        "action": "pause",
         "source": "user"
       },
-      "stage-done:r1:b": {
-        "day": "2026-09-20",
-        "dataFormat": 2
+      "run:r3": {
+        "journeyId": "test-night",
+        "journeyVersion": 1,
+        "startDay": "2026-10-01"
       },
-      "stage:r1:c": {
-        "acceptedDay": "2026-09-20"
+      "run-anchor:r3": {
+        "anchorId": "m1"
+      },
+      "stage:r3:a": {
+        "acceptedDay": "2026-10-01"
+      },
+      "pause:r3:2026-10-05": {
+        "action": "pause",
+        "source": "user"
       }
     },
     "journeys": ["$test-daily", "$test-build", "$test-morning", "$test-night"]
@@ -73,9 +81,24 @@
     "valley": [
       {
         "anchorId": "m1",
-        "thing": {
-          "version": 4
-        }
+        "things": [
+          {
+            "runId": "r1",
+            "version": 2,
+            "ladder": "home"
+          },
+          {
+            "runId": "r2",
+            "version": 2,
+            "ladder": "home"
+          },
+          {
+            "runId": "r3",
+            "version": 1,
+            "ladder": "home"
+          }
+        ],
+        "unbuilt": []
       }
     ],
     "problems": []

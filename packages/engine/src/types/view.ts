@@ -100,8 +100,13 @@ export interface ValleyPlace {
   readonly side: 'left' | 'right';
   /** A hue name from content/art/palette.json. */
   readonly hue: string;
-  /** The one thing; absent where no journey stands yet (plain land). */
-  readonly thing?: ValleyThing;
+  /**
+   * The things of the place in the order their journeys started: one to
+   * `THINGS_PER_PLACE`; empty where no journey stands yet (plain land).
+   */
+  readonly things: readonly ValleyThing[];
+  /** Journeys beyond the limit: listed, building no thing. */
+  readonly unbuilt: readonly ValleyJourney[];
   /** `plants`: a step here is still followed; `lantern`: a step runs by itself. */
   readonly sign?: 'plants' | 'lantern';
   /** The active journey grows here (the anchor's `state` is `growing`). */
@@ -115,15 +120,21 @@ export interface ValleyPlace {
 }
 
 /**
- * The one thing of a place: the ladder of the first journey started there
- * and the version that every journey there has built (game rules §8); the
- * run is the journey that stands at the place now, which the marker belongs to.
+ * A thing of a place: the build of one journey started from it, on the
+ * ladder of the place's first journey (game rules §8).
  */
 export interface ValleyThing extends Omit<BuildView, 'hue'> {
   readonly runId: string;
   readonly journeyId: string;
   /** `growing`: the active journey; `paused`; `finished`; `ended`: ended early. */
   readonly state: 'growing' | 'paused' | 'finished' | 'ended';
+}
+
+/** A journey at a place that builds no thing (the place holds `THINGS_PER_PLACE`). */
+export interface ValleyJourney {
+  readonly runId: string;
+  readonly journeyId: string;
+  readonly state: ValleyThing['state'];
 }
 
 export interface AnchorStep {
@@ -315,19 +326,11 @@ export interface ContinueOffer {
 export interface BuildView {
   /** A ladder in content/art/ (<name>.ladder.json). */
   readonly ladder: string;
-  /**
-   * The version of the place's thing standing: 1 + the finished and skipped
-   * stages of every journey at the place, at most the ladder's last version;
-   * a step back does not lower it. Without a place it is this journey's own.
-   */
+  /** The version standing: 1 + the finished and skipped stages; a step back does not lower it. */
   readonly version: number;
-  /** The standing versions that this journey's skipped stages gave ("already yours"). */
+  /** The standing versions that came from a skipped stage ("already yours"). */
   readonly skipped: readonly number[];
-  /** The version this journey started from (1 for the first journey at a place). */
-  readonly from: number;
-  /** The versions this journey added (finished or skipped stages), within the ladder. */
-  readonly added: readonly number[];
-  /** The last version this journey can reach: `from` + its stages, at most the ladder's last. */
+  /** The versions this journey uses: its stages + 1. */
   readonly versions: number;
   /** What hangs on the marker: lanterns, bunting or flowers (content/art/markers.json). */
   readonly marker: string;

@@ -465,6 +465,8 @@ the engine gives only names and numbers.
   (a `build` record, [data model](data-model.md) §2). A ladder the engine
   does not know, or a journey without `build`, gets the default
   ladder `home`, so a host always has pictures.
+  At a place (§8) a further journey's thing uses the ladder of the
+  place's first journey instead of its own or the chosen one.
 - **Version.** Version 1 stands when the journey starts. Every finished
   stage (a stage with a checkpoint,
   [deleted history](decisions/deleted-history.md)) raises the version by
@@ -476,21 +478,10 @@ the engine gives only names and numbers.
   smaller stage is walked again, and its marker grows from 0 again. `skipped` lists the
   standing versions that came from a skipped stage, so a host can say
   "already yours" in the row of versions.
-  `versions` is the last version the journey can reach: where it
-  started from (`from`, 1 for a first journey) + its stages, at most
-  the ladder's last version. That is its stages + 1 for a first
-  journey; if that is more than the ladder has, the thing stays at the
-  ladder's last version (staying is fine) and the checker warns.
-  `added` lists the versions the journey gave the thing (its finished
-  and skipped stages, within the ladder).
-- **At a place the thing is the place's** (§8, #148): a journey that
-  starts from an anchor builds on the thing of that anchor. Its ladder
-  is the one of the first journey started there, `version` is the
-  place's version, and `from`, `added`, `skipped` and `versions` are
-  the journey's own part in it. A `build` record's ladder only counts
-  for the first journey at a place; every journey keeps its own marker
-  kind (the user's choice, else the journey's, else the ladder's
-  default; one that does not fit the place's ladder is skipped).
+  `versions` is the number of versions the journey uses: its stages + 1.
+  If that is more than the ladder has, the ladder's last version stands
+  for the rest and gains one fixed addition per version beyond it (a
+  flag, a bench; drawn by the host); the checker warns.
 - **Marker progress** of the current stage: the highest condition
   progress (§4) the stage has reached on any day since it was accepted
   (and its task bound), from 0 to 1. The progress of a day `d` is the
@@ -658,40 +649,31 @@ picked. Nothing here changes what is counted (§1 to §7).
   hue the user chose for the place after, takes the next hue in the
   order instead, so neighbours never share a hue unless the user chose
   it.
-- **One thing per place, which every journey there grows** (#148,
-  owner, 2026-11-15). One moment is one routine, and one thing stands
-  for it, however many journeys the user starts from the anchor. The
-  thing's **ladder** is the one of the first journey started from the
-  anchor (earliest start day, then run id), in whatever state. Its
-  **version** is 1 + the finished stations of _every_ journey at the
-  anchor, in the order they were finished (day of the checkpoint or
-  of the skip, then the journey's start day, run id and stage), capped
-  at the ladder's last version: the k-th finished station is version
-  k + 1, and when the ladder has no further version the thing stays at
-  its last one. The engine reads the number of versions from the
-  ladder file (`LADDERS`); no number is fixed in code, so a ladder with
-  more versions needs no engine change. A further journey builds no
-  second thing and no surroundings; the signs below are the only
-  additions.
-- **Stations count as in §7.** A stage with a checkpoint and a skipped
-  stage ("already yours") each give one version; a skipped stage earns
-  no run and no completions (design rule 8), as in §4. Nothing is
-  taken away: a paused journey keeps what it finished, a journey ended
-  early leaves its versions standing, and the user taking a skip back
-  is the only thing that lowers a version. A step back (§4) does not.
-  Journeys this engine cannot compute (read-only) add nothing.
-- **Who stands at the place.** `thing.runId` and `state` name the
-  journey whose station is growing or waiting now: the active journey
-  of the anchor (`growing`), else the latest started journey that waits
-  (`paused`), else the latest started one (`finished` or `ended`, early).
-  The thing's marker, its progress and `ready` are that journey's (§7);
-  a paused journey keeps its marker as it was, and a journey that was
-  ended early or finished has no marker progress. `from`, `added`,
-  `skipped` and `versions` are that journey's part. A journey's build
-  view (§7, `RunView.build`) shows the same: the place's ladder and
-  version, and the row of versions is `from` and the versions the
-  journey `added`.
-  Where no journey stands, there is no thing: plain land.
+- **One to three things per place** (#148, owner, 2026-11-15). Every
+  journey started from the anchor builds its own thing, in the order the
+  journeys started (earliest start day, then run id), in whatever state.
+  The first journey's thing is its build; a further journey builds a
+  second and then a third thing **on the same ladder as the first**,
+  whatever ladder it names itself or the user chose for it. Each thing
+  starts at version 1 and follows its own journey as §7 computes it:
+  version, `skipped` ("already yours"), marker kind, marker progress
+  and `ready`; each keeps its own marker kind (the user's choice, else
+  the journey's, else the ladder's default; a kind that does not fit the
+  place's ladder is skipped). `state` says whether the thing's journey
+  grows (`growing`), waits (`paused`), is finished (`finished`) or was
+  ended early (`ended`). A thing never passes to another journey: a
+  paused journey keeps its version standing and its marker as it was
+  (§7), and a journey ended early leaves its version standing without a
+  marker, as §7 says. Nothing is taken away. Where no journey stands,
+  there is no thing: plain land (`things` is empty). A journey's own
+  build view (§7, `RunView.build`) shows its thing, so a further
+  journey's screen draws the place's ladder.
+- **The limit is `THINGS_PER_PLACE` = 3** (a named constant, to be
+  raised later perhaps). A fourth and any later journey at the anchor
+  builds no thing: it is listed in `unbuilt` (run, journey and state)
+  and its own build is still computed as §7 says. There are no
+  surroundings and no second kind of addition: the signs below are the
+  only things that are not a journey's thing.
 - **Sign.** `plants` when a step at the place is `maintained` (a habit
   still followed and ticked off); else `lantern` when a step is
   `graduated` (it runs by itself, after which nothing is counted); else
@@ -704,14 +686,12 @@ picked. Nothing here changes what is counted (§1 to §7).
   `withdrawPlace`; `removeAnchor` takes the place record along when
   the user picked anything.
 
-**Example L.** "Getting up" has _A gentle morning_, stages done on 15 Aug
-and 25 Aug (versions 2 and 3), then paused on 1 Sep. On 2 Sep the user
-starts a second journey from the same moment; its first station is done
-on 10 Sep. The one thing stands at version 4 (the ladder of the first
-journey), the second journey started from version 3 and added version 4;
-its row shows 3 and 4. Two more finished stations take it to 6, but
-the ladder has five versions: the thing stays at 5. A ladder with eight
-versions would stand at 6.
+**Example L.** The user's anchor is "getting up". _A gentle morning_
+stands at version 3 and is paused. On 2 Sep the user starts a second
+journey from the same moment: the place has a second thing on the first
+journey's ladder, at version 1, growing; the first thing waits at 3. A
+third and a fourth journey follow: the third builds a third thing; the
+fourth builds none and is listed in `unbuilt`.
 
 **Example K.** Four anchors; "brushing my teeth" (night journey), "getting
 up" (morning journey), "lunch" (no kind of moment), and a free one. The

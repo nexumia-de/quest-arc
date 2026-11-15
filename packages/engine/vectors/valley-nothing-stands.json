@@ -36,15 +36,15 @@
       {
         "anchorId": "t1",
         "name": "21:00",
-        "thing": null,
-        "sign": null
+        "sign": null,
+        "things": []
       },
       {
         "anchorId": "t2",
         "name": "Noon",
-        "thing": null,
         "sign": null,
-        "growing": false
+        "growing": false,
+        "things": []
       }
     ],
     "anchors": [
