@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 80">
+  <title>Lit lantern</title>
+  <ellipse class="tint-strong" cx="-7" cy="62.6" rx="7" ry="13.4"/>
+  <rect class="fg" x="-8" y="69" width="2" height="9"/>
+  <rect class="fg" x="-10.5" y="76.4" width="7" height="1.6" rx="0.8"/>
+  <path class="fg" d="M-7.6 52.4H-6.4V54.2H-7.6ZM-7 53.8L-2.2 57.2L-11.8 57.2Z"/>
+  <rect class="fg" x="-10.8" y="57" width="7.6" height="12.4" rx="1.4"/>
+  <rect class="accent" x="-9.4" y="58.4" width="4.8" height="9.6" rx="0.6"/>
+  <ellipse class="bg" cx="-7" cy="63.4" rx="1.1" ry="2.4"/>
+  <rect class="fg" x="-10" y="68.6" width="6" height="1.6" rx="0.6"/>
+</svg>

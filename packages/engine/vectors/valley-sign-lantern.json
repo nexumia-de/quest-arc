@@ -1,6 +1,6 @@
 {
-  "name": "A step still followed puts plants at the place; a step that runs by itself puts the lantern only when none is still followed",
-  "rule": "game rules \u00a78, the Valley; issue #126",
+  "name": "A step that runs by itself puts the lit lantern at its place, whatever else stands there; a step still followed (here brought back) gives no sign",
+  "rule": "game rules §8, the Valley; issues #126 and #131",
   "kind": "evaluate",
   "input": {
     "day": {
@@ -158,7 +158,7 @@
       },
       {
         "anchorId": "m1",
-        "sign": "plants"
+        "sign": null
       }
     ],
     "problems": []

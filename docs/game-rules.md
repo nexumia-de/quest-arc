@@ -667,13 +667,13 @@ picked. Nothing here changes what is counted (§1 to §7).
   raised later perhaps). A fourth and any later journey at the anchor
   builds no thing: it is listed in `unbuilt` (run, journey and state)
   and its own build is still computed as §7 says. There are no
-  surroundings and no second kind of addition: the signs below are the
-  only things that are not a journey's thing.
-- **Sign.** `plants` when a step at the place is `maintained` (a habit
-  still followed and ticked off); else `lantern` when a step is
-  `graduated` (it runs by itself, after which nothing is counted); else
-  none. A step waiting for a task (`unbound`, `unsupported-repeat`)
-  gives no sign.
+  surroundings and no second kind of addition: the sign below is the
+  only thing that is not a journey's thing.
+- **Sign.** `lantern` when a step at the place is `graduated` (it runs
+  by itself, after which nothing is counted), whatever else stands
+  there; else none. It is the place's only sign (owner, 2026-11-15,
+  #131): a step still followed (`maintained`) or waiting for a task
+  (`unbound`, `unsupported-repeat`) gives none.
 - **`growing`** is true when the active journey starts from the place.
 - **`chosen`** repeats what the user picked (`place:<anchorId>`, data
   model §2); a field that is absent follows the rules above.

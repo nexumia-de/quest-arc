@@ -107,8 +107,8 @@ export interface ValleyPlace {
   readonly things: readonly ValleyThing[];
   /** Journeys beyond the limit: listed, building no thing. */
   readonly unbuilt: readonly ValleyJourney[];
-  /** `plants`: a step here is still followed; `lantern`: a step runs by itself. */
-  readonly sign?: 'plants' | 'lantern';
+  /** `lantern`: a step here runs by itself (it graduated); absent otherwise. */
+  readonly sign?: 'lantern';
   /** The active journey grows here (the anchor's `state` is `growing`). */
   readonly growing: boolean;
   /** What the user picked; a field that is absent is by rule. */

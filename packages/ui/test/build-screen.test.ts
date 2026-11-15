@@ -6,6 +6,7 @@ import home from '../../../content/art/home.ladder.json';
 import lookout from '../../../content/art/lookout.ladder.json';
 import well from '../../../content/art/well.ladder.json';
 import palette from '../../../content/art/palette.json';
+import place from '../../../content/art/place.json';
 // @ts-expect-error: a plain build script without types
 import { ladderArt } from '../art.mjs';
 
@@ -23,7 +24,7 @@ const ladders: Record<
 };
 
 describe('the plugin bundles only the pictures of the build', () => {
-  const kept: Set<string> = ladderArt({ ladders });
+  const kept: Set<string> = ladderArt({ ladders, place });
 
   it('keeps every picture a ladder scene, the row or the chooser draws', () => {
     for (const ladder of Object.values(ladders))
@@ -35,6 +36,11 @@ describe('the plugin bundles only the pictures of the build', () => {
         expect(kept).toContain(`${p.art}-open`);
       }
     expect(kept).toContain('lantern');
+  });
+
+  it('keeps the lantern of a place for each side of the path (#131)', () => {
+    expect(kept).toContain(place.lantern.left);
+    expect(kept).toContain(place.lantern.right);
   });
 
   it('leaves out pictures the journey screen does not draw', () => {

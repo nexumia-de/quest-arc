@@ -178,7 +178,6 @@
   "ui.valley.place": "{name}: {thing}, version {version} of {total}.",
   "ui.valley.place.free": "{name}: nothing stands here yet.",
   "ui.valley.growing": "Growing here.",
-  "ui.valley.sign.plants": "Plants grow here: the routine is still followed.",
   "ui.valley.sign.lantern": "The lantern is lit: the routine runs by itself.",
   "ui.moment.title": "Your moment",
   "ui.moment.hint": "This journey starts from {moment}: something that already happens in your day. You could name it in your own words.",

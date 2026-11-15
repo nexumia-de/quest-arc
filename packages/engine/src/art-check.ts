@@ -15,9 +15,10 @@ export const ART_MAX_BYTES = 4096;
 
 /**
  * The view boxes: a ladder's setting (`setting-…`), a version of a build (`build-…`, larger than an icon so a
- * bridge or a house reads as the subject of a screen; the marker's flowers,
- * `marker-…`, share it, drawn in the thing's own box) and every other
- * picture.
+ * bridge or a house reads as the subject of a screen) and every other
+ * picture. The marker's flowers (`marker-…`, #152) and what a place in the
+ * Valley shows around its thing (`place-…`) share the build's view box,
+ * drawn in the thing's own box; a place's pictures reach beyond it.
  */
 export const ART_VIEW_BOX = {
   setting: '0 0 320 180',
@@ -28,7 +29,7 @@ export const ART_VIEW_BOX = {
 /** The view box a picture's name asks for. */
 export const artViewBox = (name: string): string => {
   const [kind] = name.split('-');
-  if (kind === 'marker') return ART_VIEW_BOX.build;
+  if (kind === 'marker' || kind === 'place') return ART_VIEW_BOX.build;
   return kind === 'setting' || kind === 'build' ? ART_VIEW_BOX[kind] : ART_VIEW_BOX.picture;
 };
 

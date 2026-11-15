@@ -7,7 +7,7 @@ import { own } from './demo-words';
  * Demo datasets for the Valley as the home (#129, never real tasks): one,
  * three and six places, in the order of the day. Walk after lunch grows
  * (station 2), the others are finished (a lantern where the routine runs
- * by itself, plants where it is still followed) or wait.
+ * by itself, flowers where it is still followed) or wait.
  *
  * 1: lunch (the growing walk).
  * 3: getting up (finished, runs by itself), lunch (growing), evening

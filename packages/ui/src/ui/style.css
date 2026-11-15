@@ -879,6 +879,11 @@
   border-radius: var(--card-border-radius, 8px);
 }
 
+.qa-valley-svg > g svg {
+  /* a place's signs reach beyond the thing's box (#131) */
+  overflow: visible;
+}
+
 .qa-valley-svg {
   position: absolute;
   inset: 0;

@@ -137,11 +137,8 @@ export const valleyView = (
       hue: hue ?? '',
       things,
       unbuilt,
-      ...(habits.includes('maintained')
-        ? { sign: 'plants' as const }
-        : habits.includes('graduated')
-          ? { sign: 'lantern' as const }
-          : {}),
+      // the one sign: a step here runs by itself (owner, 2026-11-15, #131)
+      ...(habits.includes('graduated') ? { sign: 'lantern' as const } : {}),
       growing: anchor.state === 'growing',
       chosen: {
         ...(picked.position !== undefined ? { position: picked.position } : {}),
