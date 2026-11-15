@@ -1,5 +1,5 @@
 {
-  "name": "Choices that do not fit fall back: unknown ladder, marker and hue",
+  "name": "Choices that do not fit fall back: unknown ladder and hue; a marker in an older record is ignored (#152)",
   "rule": "game-rules §7",
   "kind": "evaluate",
   "input": {
@@ -43,7 +43,7 @@
     "active": {
       "build": {
         "ladder": "well",
-        "marker": "lanterns",
+        "marker": null,
         "hue": "water"
       }
     }

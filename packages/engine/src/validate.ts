@@ -74,7 +74,6 @@ export const journeyErrors = (value: unknown): string[] => {
     const ok =
       isObject(b) &&
       name(b.ladder) &&
-      (b.marker === undefined || name(b.marker)) &&
       (b.names === undefined ||
         (Array.isArray(b.names) &&
           b.names.length >= 1 &&

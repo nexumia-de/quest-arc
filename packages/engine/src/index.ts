@@ -97,7 +97,7 @@ export { journeyErrors, isJourney } from './validate';
 export { journeyProblems, languageProblems, TEXT_LIMITS } from './content-check';
 export type { Problem } from './content-check';
 export { isScheduled, isSupported } from './schedule';
-export { LADDERS, markerFits, resolveBuild } from './ladders';
+export { LADDERS, resolveBuild } from './ladders';
 export { THINGS_PER_PLACE } from './valley';
 export { DAYPARTS } from './types/journey';
 export type { Daypart } from './types/journey';

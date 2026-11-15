@@ -37,7 +37,6 @@
     {
       "build:r1": {
         "ladder": "home",
-        "marker": "flowers",
         "hue": "rose"
       }
     },
@@ -50,7 +49,6 @@
       "changes": {
         "build:r1": {
           "ladder": "home",
-          "marker": "flowers",
           "hue": "rose"
         }
       },

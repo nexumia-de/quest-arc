@@ -1,9 +1,8 @@
 /**
  * The scene of a ladder (content/art/<name>.ladder.json, #42): one build
- * standing in its slot of its setting; while a stage runs a festive marker
- * (lanterns, pennants or flowers) grows in the foreground one element at a
- * time, plain posts first, then the hanging elements, which take their
- * "on" form while the stage's condition is met; after graduation the lantern. The
+ * standing in its slot of its setting; while a stage runs flowers grow in
+ * the thing's yard one at a time (#152), in bud, and open while the stage's
+ * condition is met; after graduation the lantern. The
  * picture shows states, never a count: counts stay exact in the card. The
  * rules are in docs/journey-design.md, "Builds and ladders"; Day Planner
  * composes the same scene (pensum/ui/journey/art.py, `ladder_scene`).
@@ -21,10 +20,10 @@ type Place = Omit<Placed, 'art'> & { readonly art?: string };
 export type LadderPlace =
   | (Placed & { readonly slot?: undefined })
   | (Place & { readonly slot: 'build' | 'lantern' })
-  | (Place & {
+  | (Placed & {
+      /** A flower in the build's box (`marker-flower-<k>`, open: `…-open`). */
       readonly slot: 'marker';
-      readonly part: 'post' | 'cord' | 'bead';
-      /** Its place in the marker's order of elements (1 … E). */
+      /** Its place in the order the flowers grow (1 … E). */
       readonly order: number;
     });
 
@@ -32,14 +31,8 @@ export interface Ladder {
   readonly title: string;
   /** The default hue of its setting's kind (palette.json). */
   readonly hue: string;
-  /** Whether the setting is water (no flowers there). */
+  /** Whether the setting is water (a build on water reaches its box's lower edge). */
   readonly water: boolean;
-  /** The default marker kind (markers.json). */
-  readonly marker: string;
-  /** The marker's layout: one line (`span`) or two with a gap (`sides`). */
-  readonly layout: 'span' | 'sides';
-  /** The marker's post points in the near band, in order. */
-  readonly posts: readonly (readonly [number, number])[];
   readonly width: number;
   readonly height: number;
   /**
@@ -61,8 +54,6 @@ export interface Ladder {
 export interface BuildState {
   readonly progress?: number;
   readonly ready?: boolean;
-  /** The marker kind; the ladder's default when left out. */
-  readonly marker?: string;
   /** After graduation: the lantern. */
   readonly graduated?: boolean;
   /**
@@ -100,7 +91,7 @@ export const versionName = (
   return inLine ? lowered(title) : title;
 };
 
-/** E: how many elements the ladder's marker has (posts and hanging ones). */
+/** E: how many flowers the ladder's marker has. */
 export const markerElements = (ladder: Ladder): number =>
   Math.max(0, ...ladder.pictures.map((p) => (p.slot === 'marker' ? p.order : 0)));
 
@@ -124,44 +115,28 @@ export const buildWords = (ladder: Ladder, version: number, state: BuildState = 
   return t(ready ? 'ui.build.words.ready' : 'ui.build.words.on-its-way', { now: stands, next });
 };
 
-/** What of the marker stands: posts and hanging elements, each shown of all. */
-export interface MarkerCount {
-  readonly posts: number;
-  readonly postsShown: number;
-  readonly hanging: number;
-  readonly hangingShown: number;
-}
-
-/** The marker in numbers for a version and state (nothing after the last version). */
+/** The flowers in numbers: how many stand of all (none after the last version). */
 export const markerCount = (
   ladder: Ladder,
   version: number,
   state: BuildState = {},
-): MarkerCount => {
-  const posts = ladder.posts.length;
-  const all = markerElements(ladder);
+): { readonly flowers: number; readonly shown: number } => {
+  const flowers = markerElements(ladder);
   const last = version >= versionCount(ladder, state);
-  const shown = last ? 0 : state.ready === true ? all : elementsShown(ladder, state.progress ?? 0);
-  return {
-    posts,
-    postsShown: Math.min(shown, posts),
-    hanging: all - posts,
-    hangingShown: Math.max(0, shown - posts),
-  };
+  const shown = last
+    ? 0
+    : state.ready === true
+      ? flowers
+      : elementsShown(ladder, state.progress ?? 0);
+  return { flowers, shown };
 };
 
 /**
  * The build for screen readers (docs/journey-design.md, "The journey
- * screen with the build"): "A plank bridge, version 3 of 5; marker: 2 of
- * 2 posts and 3 of 6 lanterns; not ready yet". `kind` names the hanging
- * elements in the plural.
+ * screen with the build"): "A hut, version 3 of 5; 3 of 6 flowers, in
+ * bud; not ready yet".
  */
-export const buildLabel = (
-  ladder: Ladder,
-  version: number,
-  state: BuildState,
-  kind: string,
-): string => {
+export const buildLabel = (ladder: Ladder, version: number, state: BuildState): string => {
   const total = versionCount(ladder, state);
   const head = t('ui.build.label.head', {
     name: versionName(ladder, version, state),
@@ -170,14 +145,11 @@ export const buildLabel = (
   });
   if (version >= total) return t('ui.build.label.all', { head });
   const count = markerCount(ladder, version, state);
-  if (count.postsShown === 0) return t('ui.build.label.nothing', { head });
+  if (count.shown === 0) return t('ui.build.label.nothing', { head });
   return t(state.ready === true ? 'ui.build.label.ready' : 'ui.build.label.not-ready', {
     head,
-    'posts-shown': count.postsShown,
-    posts: count.posts,
-    'hanging-shown': count.hangingShown,
-    hanging: count.hanging,
-    kind: lowered(kind),
+    shown: count.shown,
+    flowers: count.flowers,
   });
 };
 
@@ -189,9 +161,9 @@ export interface Drawn {
 }
 
 /**
- * What appears with this draw: marker elements with an order above the
- * last drawn count, and the version when it grew. Nothing on a first draw
- * or after the run, ladder or marker changed (the key).
+ * What appears with this draw: flowers with an order above the last drawn
+ * count, and the version when it grew. Nothing on a first draw or after
+ * the run or ladder changed (the key).
  */
 export const appearing = (
   before: Drawn | undefined,
@@ -204,7 +176,7 @@ export const appearing = (
   return { version: false, fromOrder: now.shown > before.shown ? before.shown + 1 : Infinity };
 };
 
-/** The scene with `version` (from 1) standing and the marker in `state`. */
+/** The scene with `version` (from 1) standing and the flowers in `state`. */
 export const ladderScene = (ladder: Ladder, version: number, state: BuildState = {}): Scene => {
   const standing = versionAt(ladder, version);
   // after the last version nothing is on its way: no marker
@@ -215,7 +187,6 @@ export const ladderScene = (ladder: Ladder, version: number, state: BuildState =
     : ready
       ? markerElements(ladder)
       : elementsShown(ladder, state.progress ?? 0);
-  const kind = state.marker ?? ladder.marker;
   let title = buildWords(ladder, version, last ? {} : { ...state, ready }).replace(' · ', ', ');
   if (state.graduated === true) title += ', the lantern lit';
   const pictures: Placed[] = [];
@@ -226,13 +197,7 @@ export const ladderScene = (ladder: Ladder, version: number, state: BuildState =
     else if (place.slot === 'lantern' && state.graduated === true)
       pictures.push({ ...place, art: 'lantern' });
     else if (place.slot === 'marker' && place.order <= shown)
-      pictures.push({
-        ...place,
-        art:
-          place.part === 'cord'
-            ? (place.art ?? '')
-            : `marker-${kind}-${place.part}${ready && place.part === 'bead' ? '-lit' : ''}`,
-      });
+      pictures.push({ ...place, art: ready ? `${place.art}-open` : place.art });
   }
   return { title, width: ladder.width, height: ladder.height, pictures };
 };

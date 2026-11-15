@@ -134,7 +134,7 @@ writes `…-de.png` in German, and the preview takes `?lang=de` (or
 `journey`, `reminder` (a reminder on the task and two weekly answers
 of 5 or more, #60), `paired`, `hard-week`, `met`, `stayed`, `skipped`, `comeback`
 (the card after a long break, #82), `smaller` (after starting smaller),
-`unbound`, `newer`, `build`, `build-ready`, `build-lookout`,
+`unbound`, `newer`, `build`, `build-ready`, `build-home`, `build-garden`, `build-lookout`,
 `before-anchors` (a journey from before #96: the home asks once whether
 its moment is the user's), the home with several moments
 (`preview/demo-moments.ts`: `moments`, `moments-chain`, `moments-rest`),
@@ -168,16 +168,18 @@ have their own page, `dist/preview/art.html?theme=light|dark&part=…`
 (`preview/art.ts`): `sizes` (every picture at 48, 32 and 24 px, the
 default). `node screenshots.mjs art:sizes 2` (in `packages/plugin`,
 after `npm run preview`) writes them at scale 2; the second argument is
-the device scale. The ladders (#42): `sequence-<ladder>[-<marker>]`
-(each version, its marker growing element by element, ready, the
+the device scale. The ladders (#42): `sequence-<ladder>`
+(each version, its flowers growing one by one, open when ready, the
 lantern, the row of versions), `journey-<ladder>[-ready]` (a static mock
 of the journey screen, mid-way or ready) and `palette`; `&hue=<name>`
 picks a palette hue. `node screenshots.mjs
 art:sequence-lookout,art:journey-home,art:palette 2` writes the
 sequences and the palette as one full page 1400 px wide and the mock at
 phone size (`art:sequence-lookout@slate` for a hue). The journey screen
-itself has the demos `build`, `build-ready` and `build-lookout`
-(`node screenshots.mjs build,build-ready,build-lookout 2`); the Valley as
+itself has the demos `build` (the journey's Well), `build-ready`,
+`build-home`, `build-garden` and `build-lookout` (`node screenshots.mjs
+build-home:Station,build-ready:Station 2` opens the place with its
+flowers); the Valley as
 the home (#129) has `valley-1`, `valley-3`, `valley-6` and `valley-6-stacked` (#151; some places with two or three things), one place with one to three things `place-<home|garden>-<1|2|3>` (open it by its name: `place-home-3:brushing`, `place-garden-3:dinner`)
 (`node screenshots.mjs valley-1,valley-3,valley-6 2`);
 `preview.tick()` in the console ticks today off, to see new marker

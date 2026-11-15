@@ -50,9 +50,9 @@ export interface PlaceModel {
   /** The place in words for screen readers: name, thing, version, sign. */
   readonly label: string;
   /**
-   * The marker's pictures in front of the growing thing, in its box and
-   * scene units, while its journey grows: the thing of `options.runId`, or
-   * the place's growing one.
+   * The flowers in front of the growing thing, in its box and scene units,
+   * while its journey grows: the thing of `options.runId`, or the place's
+   * growing one.
    */
   readonly marker?: readonly (Placed & { readonly order: number })[];
   /** The run whose thing the marker stands at. */
@@ -110,10 +110,8 @@ export const sceneHeight = (windowHeight: number, pixels: number): number =>
   Math.max(MIN_SCENE_HEIGHT, Math.round(((2 / 3) * windowHeight * 360) / Math.max(pixels, 1)));
 
 /**
- * The marker's pictures (posts, cords, beads) of a growing thing, mapped
- * from the ladder's setting onto the thing's slot: the posts' span fills
- * the slot's width, the feet stand on its lower edge, so the marker stands
- * in front of the thing and never beyond the slot.
+ * The flowers of a growing thing (#152): each is a picture in the build's
+ * box, so it is drawn in the thing's slot, in front of the thing.
  */
 const markerPieces = (
   ladder: Ladder,
@@ -121,23 +119,11 @@ const markerPieces = (
   thing: ThingView,
   journey: Journey | undefined,
 ): (Placed & { order: number })[] => {
-  const loose = ladder.pictures.filter((p) => p.slot === 'marker' && p.part !== 'cord');
-  const left = Math.min(...loose.map((p) => p.x));
-  const right = Math.max(...loose.map((p) => p.x + p.width));
-  const base = Math.max(...loose.map((p) => p.y + p.height));
-  const scale = slot.width / (right - left);
   const state = buildState({ ...thing, hue: '' }, journey);
   return ladderScene(ladder, thing.version, state).pictures.flatMap((p) => {
     const order = (p as { order?: number }).order;
     if ((p as { slot?: string }).slot !== 'marker' || order === undefined) return [];
-    return {
-      ...p,
-      order,
-      x: slot.x + (p.x - left) * scale,
-      y: slot.y + slot.height + (p.y - base) * scale,
-      width: p.width * scale,
-      height: p.height * scale,
-    };
+    return { art: p.art, order, x: slot.x, y: slot.y, width: slot.width, height: slot.height };
   });
 };
 
@@ -151,7 +137,7 @@ export interface ModelOptions {
   readonly own?: boolean;
   /** The journey whose page it is: the place is about its thing. */
   readonly runId?: string;
-  /** Draw the marker of a growing thing (the place's pages, not the Valley). */
+  /** Draw the flowers of a growing thing (the place's pages, not the Valley). */
   readonly marker?: boolean;
 }
 

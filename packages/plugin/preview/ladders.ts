@@ -1,11 +1,10 @@
 // The ladders' pages (#42) for preview/art.ts, for the owner to judge:
-// `sequence-<ladder>[-<marker>]` shows one ladder as it grows (each
-// version, then its marker growing element by element (every element for
-// the first stage, a few sampled steps for the others), ready, then the
-// next version; the last version with the lit lantern; the row of
-// versions), `journey-<ladder>[-ready]` a static mock of the journey screen
-// at 360 px with the build on top (posts up and two elements hanging, or
-// ready), `palette`
+// `sequence-<ladder>` shows one ladder as it grows (each version, then its
+// flowers growing one by one (every flower for the first stage, a few
+// sampled steps for the others), open when ready, then the next version;
+// the last version with the lit lantern; the row of versions),
+// `journey-<ladder>[-ready]` a static mock of the journey screen at 360 px
+// with the build on top (half the flowers in bud, or all open), `palette`
 // every hue and each ladder in two hues. Not part of the plugin; the real
 // journey screen is unchanged.
 import { ladders, palette, pictures } from 'virtual:questarc-art';
@@ -81,21 +80,18 @@ const versionRow = (el: El, ladder: Ladder, hue: Hue, standing: number) =>
 const hueOf = (ladder: Ladder, name: string | null): Hue =>
   palette[name ?? ''] ?? palette[ladder.hue] ?? { title: '', light: '#6495ed', dark: '#6495ed' };
 
-/** The steps shown for a stage: every element for the first, a few for the others. */
+/** The steps shown for a stage: every flower for the first, a few for the others. */
 const steps = (ladder: Ladder, version: number): number[] => {
   const all = markerElements(ladder);
-  const posts = ladder.posts.length;
   if (version === 1) return Array.from({ length: all }, (_, i) => i + 1);
-  return [1, posts, posts + Math.ceil((all - posts) / 2), all];
+  return [1, Math.ceil(all / 2), all];
 };
 
-/** `name` is `<ladder>` or `<ladder>-<marker kind>`. */
+/** `name` is `<ladder>`. */
 export const sequence = (el: El, name: string, hueName: string | null): Node[] => {
-  const [ladderName = '', marker] = name.split('-');
-  const ladder = ladders[ladderName];
+  const ladder = ladders[name];
   if (ladder === undefined) return [el('p', '', `No ladder ${name}`)];
   const hue = hueOf(ladder, hueName);
-  const kind = marker ?? ladder.marker;
   const frames: Node[] = [];
   const last = ladder.versions.length;
   const all = markerElements(ladder);
@@ -103,12 +99,12 @@ export const sequence = (el: El, name: string, hueName: string | null): Node[] =
     frames.push(frame(el, ladder, hue, v, {}, `${v} · ${buildWords(ladder, v)}`));
     if (v < last) {
       for (const n of steps(ladder, v)) {
-        const state = { progress: n / all, marker: kind };
+        const state = { progress: n / all };
         frames.push(
           frame(el, ladder, hue, v, state, `${n} of ${all} · ${buildWords(ladder, v, state)}`),
         );
       }
-      const ready = { ready: true, marker: kind };
+      const ready = { ready: true };
       frames.push(frame(el, ladder, hue, v, ready, `ready · ${buildWords(ladder, v, ready)}`));
     }
   }
@@ -134,13 +130,13 @@ export const sequence = (el: El, name: string, hueName: string | null): Node[] =
     el(
       'h1',
       '',
-      `${ladder.title} with ${kind}: one thing, whole at every step (${hue.title.toLowerCase()})`,
+      `${ladder.title} with its flowers: one thing, whole at every step (${hue.title.toLowerCase()})`,
     ),
     el('div', 'frames', ...frames),
   ];
 };
 
-/** `name` is `<ladder>` (posts up, two elements hanging) or `<ladder>-ready`. */
+/** `name` is `<ladder>` (half the flowers in bud) or `<ladder>-ready`. */
 export const journey = (el: El, name: string, hueName: string | null): Node[] => {
   const [ladderName = '', flag] = name.split('-');
   const ladder = ladders[ladderName];
@@ -148,7 +144,7 @@ export const journey = (el: El, name: string, hueName: string | null): Node[] =>
   const hue = hueOf(ladder, hueName);
   const standing = 3;
   const ready = flag === 'ready';
-  const midway = (ladder.posts.length + 2) / markerElements(ladder);
+  const midway = 0.5;
   const state: BuildState = ready ? { ready } : { progress: midway };
   const dots = [
     ['Fr', ready ? 'on' : 'off'],

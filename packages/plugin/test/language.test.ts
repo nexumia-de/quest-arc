@@ -100,7 +100,6 @@ describe("Super Productivity's language", () => {
     expect(contentPack().language).toBe('de');
     expect(contentPack().texts).toEqual(german);
     expect(contentPack().art.ladders.home?.versions[2]?.title).toBe('Eine Hütte');
-    expect(contentPack().art.markers.bunting?.title).toBe('Wimpel');
     expect(contentPack().art.palette.meadow?.title).toBe('Wiesengrün');
     const state = (await handleMessage(brain, { type: 'questarc:get' })) as State;
     expect(state.language).toBe('de');
@@ -119,8 +118,6 @@ describe("Super Productivity's language", () => {
         expect(all[`ui.art.ladder.${name}.${i + 1}`]).toBe(v.title),
       );
     }
-    for (const [name, marker] of Object.entries(artPack.markers))
-      expect(all[`ui.art.marker.${name}`]).toBe(marker.title);
     for (const [name, hue] of Object.entries(artPack.palette))
       expect(all[`ui.art.hue.${name}`]).toBe(hue.title);
   });
@@ -211,10 +208,10 @@ describe('German sentences', () => {
     expect(buildWords(well, 1, { progress: 0.5, names: ['Trittsteine'] })).toBe(
       'Trittsteine stehen · ein Ziehbrunnen entsteht',
     );
-    expect(buildLabel(well, 3, { progress: 5 / 8 }, 'Laternen')).toBe(
-      'Ein Brunnen mit Winde, Stufe 3 von 5; Schmuck: 4 von 4 Pfosten und 3 von 6 Laternen; noch nicht bereit',
+    expect(buildLabel(well, 3, { progress: 3 / 6 })).toBe(
+      'Ein Brunnen mit Winde, Stufe 3 von 5; 3 von 6 Blumen, in Knospen; noch nicht bereit',
     );
-    expect(buildSummary(walk as never, {})).toBe('Ausguck · Wimpel');
+    expect(buildSummary(walk as never, {})).toBe('Ausguck');
   });
 
   it('keeps the English build words', () => {
@@ -223,6 +220,6 @@ describe('German sentences', () => {
     expect(buildWords(well, 1, { progress: 0.5 })).toBe(
       'A water hole stands · a well sweep is on its way',
     );
-    expect(buildSummary(walk as never, {})).toBe('Lookout · pennants');
+    expect(buildSummary(walk as never, {})).toBe('Lookout');
   });
 });

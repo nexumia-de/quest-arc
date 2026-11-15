@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 80">
+  <title>A flower in bud</title>
+  <path class="fg" d="M42.2 67.7H43.8V78.7H42.2ZM37.8 74.6L35.6 71L39.4 71.8L43 75.4Z"/>
+  <polygon class="tint-strong" points="37.9,72.6 38.5,73.6 39.8,73.8 38.9,72.8"/>
+  <polygon class="fg" points="43,72.3 46.6,68.7 50.4,67.9 48.2,71.5"/>
+  <polygon class="tint-strong" points="47.5,70.5 46.2,70.7 47.1,69.7 48.1,69.5"/>
+  <polygon class="fg" points="43,61.7 46.6,66.7 45.4,70.7 40.6,70.7 39.4,66.7"/>
+  <polygon class="accent" points="43,63.9 45.2,66.9 44.3,69.3 41.7,69.3 40.8,66.9"/>
+</svg>

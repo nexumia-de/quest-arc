@@ -184,6 +184,63 @@ export const ladderGeometryProblems = (name, ladder, pictures) => {
   return problems;
 };
 
+/** The doorstep's column: no flower stands in front of the threshold stone. */
+const DOORSTEP_COLUMN = { left: 51, right: 69 };
+
+/**
+ * Problems of the marker's flowers (#152), as messages: `flowers` lists
+ * each flower's feet ([x, y] in build units) in the order they grow,
+ * `yard` the thing's ground ([cx, cy, rx, ry]); a flower's pictures are
+ * `marker-flower-<k>` (in bud) and `marker-flower-<k>-open`. Each stands
+ * with its feet on the yard, inside the build's box (so beside the path,
+ * never on it), clear of the doorstep's column, apart from every other
+ * flower in both forms, and within the picture checker's size; they grow
+ * from the doorstep outwards.
+ */
+export const flowerProblems = (flowers, yard, pictures) => {
+  const problems = [];
+  const [cx, cy, rx, ry] = yard;
+  const shapes = flowers.map((_, i) =>
+    ['', '-open'].map((form) => {
+      const art = `marker-flower-${i + 1}${form}`;
+      const source = pictures[art];
+      if (source === undefined) {
+        problems.push(`no picture ${art}`);
+        return [];
+      }
+      const bytes = new TextEncoder().encode(source).length;
+      if (bytes > MAX_BYTES) problems.push(`${art}: ${bytes} bytes, more than ${MAX_BYTES}`);
+      const shape = union(...shapesOf(source).map((s) => s.shape));
+      const [x0, y0, x1, y1] = bounds(shape) ?? [0, 0, 0, 0];
+      if (x0 < BOX.left - EPS || x1 > BOX.right + EPS || y0 < BOX.top - EPS || y1 > 80 + EPS)
+        problems.push(`${art}: outside the build's box`);
+      if (
+        area(
+          within(
+            shape,
+            box(DOORSTEP_COLUMN.left, 0, DOORSTEP_COLUMN.right - DOORSTEP_COLUMN.left, 80),
+          ),
+        ) > EPS
+      )
+        problems.push(`${art}: stands in front of the doorstep`);
+      return shape;
+    }),
+  );
+  flowers.forEach(([x, y], i) => {
+    if (((x - cx) / rx) ** 2 + ((y - cy) / ry) ** 2 > 1)
+      problems.push(`marker-flower-${i + 1}: its feet (${x}, ${y}) are not on the yard`);
+    const before = flowers[i - 1];
+    if (before && Math.abs(x - cx) < Math.abs(before[0] - cx))
+      problems.push(`marker-flower-${i + 1}: grows nearer the doorstep than the one before`);
+    for (let j = 0; j < i; j += 1)
+      for (const a of shapes[i])
+        for (const b of shapes[j])
+          if (a.length && b.length && area(within(a, b)) > EPS)
+            problems.push(`marker-flower-${i + 1} overlaps marker-flower-${j + 1}`);
+  });
+  return problems;
+};
+
 // ---- the place: its sign, the lit lantern (#131) -----------------------------
 
 /** Every layout the Valley's check measures (art-valley-check.ts): 1–6 places on every choice of sides, 7–12 alternating. */
@@ -257,35 +314,14 @@ export const placeProblems = (place, pictures, ladders, valleyLayout) => {
   };
   for (const [side, shape] of Object.entries(lanterns)) clearOfThings(`lantern (${side})`, shape);
   // nothing hides the marker: the lantern, drawn over it, leaves every
-  // marker element of every ladder free, mapped as the place's pages draw
-  // it (packages/ui/src/ui/valley/model.ts, markerPieces): the posts' span
-  // fills the thing's box, their feet on its lower edge
-  for (const [ladderName, ladder] of Object.entries(ladders)) {
-    const kind = ladder.marker;
-    const markers = ladder.pictures.filter((q) => q.slot === 'marker');
-    const loose = markers.filter((q) => q.part !== 'cord');
-    const left = Math.min(...loose.map((q) => q.x));
-    const right = Math.max(...loose.map((q) => q.x + q.width));
-    const base = Math.max(...loose.map((q) => q.y + q.height));
-    const k = 120 / (right - left);
-    for (const p of markers) {
-      const art =
-        p.part === 'cord' ? p.art : `marker-${kind}-${p.part}${p.part === 'bead' ? '-lit' : ''}`;
-      const source = pictures[art];
-      if (source === undefined) continue;
-      const [, , vw] = /viewBox="([^"]+)"/.exec(source)[1].split(' ').map(Number);
-      const unit = p.width / vw;
-      const shape = union(
-        ...shapesOf(source).map((s) =>
-          s.shape.map((ring) =>
-            ring.map(([x, y]) => [(p.x + x * unit - left) * k, 80 + (p.y + y * unit - base) * k]),
-          ),
-        ),
-      );
-      for (const [side, lantern] of Object.entries(lanterns))
-        if (area(within(shape, lantern)) > EPS)
-          problems.push(`lantern (${side}): covers ${ladderName}'s marker (${p.part} ${p.order})`);
-    }
+  // flower free, in bud and open (#152); a flower is a picture in the
+  // thing's box, the frame's units
+  const flowers = Object.keys(pictures).filter((name) => /^marker-flower-\d+(-open)?$/.test(name));
+  for (const name of flowers) {
+    const shape = union1(name);
+    for (const [side, lantern] of Object.entries(lanterns))
+      if (area(within(shape, lantern)) > EPS)
+        problems.push(`lantern (${side}): covers the marker's ${name}`);
   }
   // in the Valley: inside the scene, clear of the path and of every other place
   const seen = new Set();
