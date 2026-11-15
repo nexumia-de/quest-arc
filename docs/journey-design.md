@@ -329,7 +329,9 @@ records ([game rules](game-rules.md) §8). The engine already groups its
 view by anchor (`anchors`); the regions themselves, the map and the
 lantern are drawn with #114. Until then the home lists the anchors in
 words ([behaviour](behaviour.md), screen 0), a journey's build is shown
-on its own screen as below, and the hue belongs to the run.
+on its own screen as below, and the hue belongs to the anchor's place, not to the run
+([game rules](game-rules.md) §8, #126; until the screens follow, the hosts
+still show the ladder's default hue).
 
 **Colour per region.** A region's scene takes `accent`, `tint` and
 `tint-strong` from one hue of `content/art/palette.json` (eight named

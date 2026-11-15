@@ -1,0 +1,143 @@
+{
+  "name": "A further journey's finished stations are steps of the surroundings, capped at four; a waiting journey and a journey ended early keep what they finished",
+  "rule": "game rules \u00a78, the Valley; issue #126",
+  "kind": "evaluate",
+  "input": {
+    "day": {
+      "todayStr": "2026-11-11",
+      "startOfNextDayDiffMs": 0,
+      "timeZone": "Europe/Berlin"
+    },
+    "tasks": [],
+    "repeatCfgs": [],
+    "choices": {
+      "anchor:m1": {
+        "kind": "routine",
+        "words": "getting up"
+      },
+      "run:r1": {
+        "journeyId": "test-daily",
+        "journeyVersion": 1,
+        "startDay": "2026-08-01"
+      },
+      "run-anchor:r1": {
+        "anchorId": "m1"
+      },
+      "stage:r1:a": {
+        "acceptedDay": "2026-08-01"
+      },
+      "stage-done:r1:a": {
+        "day": "2026-08-15",
+        "dataFormat": 2
+      },
+      "stage:r1:b": {
+        "acceptedDay": "2026-08-15"
+      },
+      "pause:r1:2026-09-01": {
+        "action": "pause",
+        "source": "user"
+      },
+      "run:r2": {
+        "journeyId": "test-build",
+        "journeyVersion": 1,
+        "startDay": "2026-09-02"
+      },
+      "run-anchor:r2": {
+        "anchorId": "m1"
+      },
+      "stage:r2:a": {
+        "acceptedDay": "2026-09-02"
+      },
+      "stage-done:r2:a": {
+        "day": "2026-09-10",
+        "dataFormat": 2
+      },
+      "stage:r2:b": {
+        "acceptedDay": "2026-09-10"
+      },
+      "stage-done:r2:b": {
+        "day": "2026-09-20",
+        "dataFormat": 2
+      },
+      "run-end:r2": {
+        "day": "2026-09-21",
+        "reason": "ended"
+      },
+      "run:r3": {
+        "journeyId": "test-morning",
+        "journeyVersion": 1,
+        "startDay": "2026-10-01"
+      },
+      "run-anchor:r3": {
+        "anchorId": "m1"
+      },
+      "stage:r3:a": {
+        "acceptedDay": "2026-10-01"
+      },
+      "stage-done:r3:a": {
+        "day": "2026-10-10",
+        "dataFormat": 2
+      },
+      "stage:r3:b": {
+        "acceptedDay": "2026-10-10"
+      },
+      "stage-done:r3:b": {
+        "day": "2026-10-20",
+        "dataFormat": 2
+      },
+      "stage:r3:c": {
+        "acceptedDay": "2026-10-20"
+      },
+      "stage-done:r3:c": {
+        "day": "2026-10-30",
+        "dataFormat": 2
+      },
+      "run-end:r3": {
+        "day": "2026-10-30",
+        "reason": "finished"
+      },
+      "binding:r3:c": {
+        "taskId": "rpt_cfgC_2026-09-01",
+        "repeatCfgId": "cfgC",
+        "day": "2026-09-01"
+      },
+      "graduation:r3:c:2026-10-28": {
+        "choice": "end"
+      },
+      "anchor:m2": {
+        "kind": "routine",
+        "words": "lunch"
+      },
+      "run:r4": {
+        "journeyId": "test-build",
+        "journeyVersion": 1,
+        "startDay": "2026-11-09"
+      },
+      "run-anchor:r4": {
+        "anchorId": "m2"
+      },
+      "stage:r4:a": {
+        "acceptedDay": "2026-11-09"
+      }
+    },
+    "journeys": ["$test-daily", "$test-build", "$test-morning", "$test-night"]
+  },
+  "expect": {
+    "valley": [
+      {
+        "anchorId": "m1",
+        "surroundings": 4,
+        "thing": {
+          "runId": "r1",
+          "state": "paused",
+          "version": 2
+        }
+      },
+      {
+        "anchorId": "m2",
+        "growing": true
+      }
+    ],
+    "problems": []
+  }
+}

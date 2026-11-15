@@ -1,0 +1,81 @@
+{
+  "name": "A resting anchor: the active journey grows at another place, the thing here stands in its version",
+  "rule": "game rules \u00a78, the Valley; issue #126",
+  "kind": "evaluate",
+  "input": {
+    "day": {
+      "todayStr": "2026-11-11",
+      "startOfNextDayDiffMs": 0,
+      "timeZone": "Europe/Berlin"
+    },
+    "tasks": [],
+    "repeatCfgs": [],
+    "choices": {
+      "anchor:m1": {
+        "kind": "routine",
+        "words": "getting up"
+      },
+      "run:r1": {
+        "journeyId": "test-daily",
+        "journeyVersion": 1,
+        "startDay": "2026-08-01"
+      },
+      "run-anchor:r1": {
+        "anchorId": "m1"
+      },
+      "stage:r1:a": {
+        "acceptedDay": "2026-08-01"
+      },
+      "stage-done:r1:a": {
+        "day": "2026-08-15",
+        "dataFormat": 2
+      },
+      "stage:r1:b": {
+        "acceptedDay": "2026-08-15"
+      },
+      "pause:r1:2026-11-01": {
+        "action": "pause",
+        "source": "user"
+      },
+      "anchor:m2": {
+        "kind": "routine",
+        "words": "lunch"
+      },
+      "run:r2": {
+        "journeyId": "test-build",
+        "journeyVersion": 1,
+        "startDay": "2026-11-09"
+      },
+      "run-anchor:r2": {
+        "anchorId": "m2"
+      },
+      "stage:r2:a": {
+        "acceptedDay": "2026-11-09"
+      }
+    },
+    "journeys": ["$test-daily", "$test-build", "$test-morning", "$test-night"]
+  },
+  "expect": {
+    "valley": [
+      {
+        "anchorId": "m1",
+        "growing": false,
+        "thing": {
+          "runId": "r1",
+          "state": "paused",
+          "version": 2
+        }
+      },
+      {
+        "anchorId": "m2",
+        "growing": true,
+        "thing": {
+          "runId": "r2",
+          "state": "growing",
+          "version": 1
+        }
+      }
+    ],
+    "problems": []
+  }
+}

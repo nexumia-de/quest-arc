@@ -1,0 +1,61 @@
+{
+  "name": "An anchor where nothing stands is plain land: no thing, no sign, no surroundings. A time anchor is named by its time, a named anchor by its name; a run before anchors stands in no place",
+  "rule": "game rules \u00a78, the Valley; issue #126",
+  "kind": "evaluate",
+  "input": {
+    "day": {
+      "todayStr": "2026-11-11",
+      "startOfNextDayDiffMs": 0,
+      "timeZone": "Europe/Berlin"
+    },
+    "tasks": [],
+    "repeatCfgs": [],
+    "choices": {
+      "anchor:t1": {
+        "kind": "time",
+        "time": "21:00"
+      },
+      "anchor:t2": {
+        "kind": "routine",
+        "words": "lunch",
+        "name": "Noon"
+      },
+      "run:r9": {
+        "journeyId": "test-daily",
+        "journeyVersion": 1,
+        "startDay": "2026-11-01"
+      },
+      "stage:r9:a": {
+        "acceptedDay": "2026-11-01"
+      }
+    },
+    "journeys": ["$test-daily", "$test-build", "$test-morning", "$test-night"]
+  },
+  "expect": {
+    "valley": [
+      {
+        "anchorId": "t1",
+        "name": "21:00",
+        "thing": null,
+        "sign": null,
+        "surroundings": 0
+      },
+      {
+        "anchorId": "t2",
+        "name": "Noon",
+        "thing": null,
+        "sign": null,
+        "surroundings": 0,
+        "growing": false
+      }
+    ],
+    "anchors": [
+      {},
+      {},
+      {
+        "suggest": "test-daily"
+      }
+    ],
+    "problems": []
+  }
+}

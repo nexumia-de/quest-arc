@@ -1,0 +1,63 @@
+{
+  "name": "A chosen hue wins; a neighbour's default skips to the next hue so that neighbours never share one; an unknown hue is not a choice",
+  "rule": "game rules \u00a78, the Valley; issue #126",
+  "kind": "evaluate",
+  "input": {
+    "day": {
+      "todayStr": "2026-11-11",
+      "startOfNextDayDiffMs": 0,
+      "timeZone": "Europe/Berlin"
+    },
+    "tasks": [],
+    "repeatCfgs": [],
+    "choices": {
+      "anchor:p1": {
+        "kind": "routine",
+        "words": "moment p1"
+      },
+      "anchor:p2": {
+        "kind": "routine",
+        "words": "moment p2"
+      },
+      "anchor:p3": {
+        "kind": "routine",
+        "words": "moment p3"
+      },
+      "anchor:p4": {
+        "kind": "routine",
+        "words": "moment p4"
+      },
+      "place:p2": {
+        "hue": "meadow"
+      },
+      "place:p4": {
+        "hue": "gold"
+      }
+    },
+    "journeys": ["$test-daily", "$test-build", "$test-morning", "$test-night"]
+  },
+  "expect": {
+    "valley": [
+      {
+        "anchorId": "p1",
+        "hue": "water"
+      },
+      {
+        "anchorId": "p2",
+        "hue": "meadow"
+      },
+      {
+        "anchorId": "p3",
+        "hue": "sand"
+      },
+      {
+        "anchorId": "p4",
+        "hue": "heather",
+        "chosen": {
+          "hue": "gold"
+        }
+      }
+    ],
+    "problems": []
+  }
+}

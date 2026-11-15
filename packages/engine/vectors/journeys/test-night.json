@@ -1,0 +1,57 @@
+{
+  "format": 3,
+  "id": "test-night",
+  "version": 1,
+  "title": "test-night.title",
+  "description": "test-night.description",
+  "stages": [
+    {
+      "id": "a",
+      "plan": {
+        "anchor": "test-night.a.anchor",
+        "action": "test-night.a.action"
+      },
+      "schedule": {
+        "type": "daily"
+      },
+      "condition": {
+        "type": "days",
+        "n": 5,
+        "of": 7
+      }
+    },
+    {
+      "id": "b",
+      "plan": {
+        "anchor": "test-night.b.anchor",
+        "action": "test-night.b.action"
+      },
+      "schedule": {
+        "type": "daily"
+      },
+      "condition": {
+        "type": "count",
+        "n": 3
+      }
+    },
+    {
+      "id": "c",
+      "plan": {
+        "anchor": "test-night.c.anchor",
+        "action": "test-night.c.action"
+      },
+      "schedule": {
+        "type": "daily"
+      },
+      "condition": {
+        "type": "time_spent",
+        "minutes": 30
+      }
+    }
+  ],
+  "anchor": {
+    "moment": "test-night.moment",
+    "example": "test-night.anchor",
+    "daypart": "night"
+  }
+}

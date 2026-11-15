@@ -1,5 +1,6 @@
 import type { Journey } from './types/journey';
-import type { AnchorWords, GameView, PlanCheck, RunView } from './types/view';
+import type { AnchorWords, GameView, PlanCheck, RunView, ValleyPlace } from './types/view';
+import { LADDERS } from './ladders';
 import { CHECKPOINT_FORMAT, isTime, SKIP_FORMAT, STEP_BACK_FORMAT } from './choices';
 import { anchorWords, ownWords, pairWords, PLAN_CHECK_FIELDS, PLAN_CHECK_LIMIT } from './words';
 
@@ -88,7 +89,12 @@ export const confirmAnchor = (
 export const removeAnchor = (view: GameView, anchorId: string): RecordChanges => {
   const anchor = view.anchors.find((a) => a.id === anchorId);
   if (!anchor || anchor.growing || anchor.resting.length > 0 || anchor.steps.length > 0) return {};
-  return { [`anchor:${anchorId}`]: '' };
+  // The place's own record goes with the anchor, if the user picked anything.
+  const place = view.valley.find((p) => p.anchorId === anchorId);
+  return {
+    [`anchor:${anchorId}`]: '',
+    ...(place && Object.keys(place.chosen).length > 0 ? { [`place:${anchorId}`]: '' } : {}),
+  };
 };
 
 /**
@@ -384,6 +390,73 @@ export const chooseBuild = (
   return { [`build:${runId}`]: Object.keys(value).length > 0 ? value : '' };
 };
 
+/** One `place` record from what the user picked; nothing picked withdraws it. */
+const placeRecord = (anchorId: string, chosen: ValleyPlace['chosen']): RecordChanges => ({
+  [`place:${anchorId}`]: Object.keys(chosen).length > 0 ? { ...chosen } : '',
+});
+
+/**
+ * Move a place earlier or later in the order of the day (game rules §8):
+ * it swaps with its neighbour. The order is then the user's, so every
+ * place gets its position; places keep their side and hue. At the
+ * start or the end of the path nothing moves.
+ */
+export const movePlace = (
+  view: GameView,
+  anchorId: string,
+  direction: 'earlier' | 'later',
+): RecordChanges => {
+  const order = view.valley.map((place) => place.anchorId);
+  const from = order.indexOf(anchorId);
+  const to = direction === 'earlier' ? from - 1 : from + 1;
+  if (from < 0 || to < 0 || to >= order.length) return {};
+  [order[from], order[to]] = [order[to] ?? '', order[from] ?? ''];
+  return Object.assign(
+    {},
+    ...order.flatMap((id, position) => {
+      const place = view.valley.find((p) => p.anchorId === id);
+      return place && place.chosen.position !== position
+        ? [placeRecord(id, { ...place.chosen, position })]
+        : [];
+    }),
+  );
+};
+
+/** Choose the side of the path a place's thing stands on; no side gives it back to the rule. */
+export const choosePlaceSide = (
+  view: GameView,
+  anchorId: string,
+  side: 'left' | 'right' | undefined,
+): RecordChanges => {
+  const place = view.valley.find((p) => p.anchorId === anchorId);
+  if (!place) return {};
+  const { position, hue } = place.chosen;
+  return placeRecord(anchorId, {
+    ...(position !== undefined ? { position } : {}),
+    ...(hue !== undefined ? { hue } : {}),
+    ...(side ? { side } : {}),
+  });
+};
+
+/** Choose a place's hue (a name of content/art/palette.json); none gives it back to the rule. */
+export const choosePlaceHue = (
+  view: GameView,
+  anchorId: string,
+  hue: string | undefined,
+): RecordChanges => {
+  const place = view.valley.find((p) => p.anchorId === anchorId);
+  if (!place || (hue !== undefined && !LADDERS.hues.includes(hue))) return {};
+  const { position, side } = place.chosen;
+  return placeRecord(anchorId, {
+    ...(position !== undefined ? { position } : {}),
+    ...(side !== undefined ? { side } : {}),
+    ...(hue ? { hue } : {}),
+  });
+};
+
+/** Withdraw everything the user picked for a place: position, side and hue go back to the rules. */
+export const withdrawPlace = (anchorId: string): RecordChanges => ({ [`place:${anchorId}`]: '' });
+
 /**
  * "Pair it with" (design rule 7): something the user enjoys only while
  * doing the stage's habit, in their own words, one record per stage.
@@ -419,6 +492,10 @@ export const actions = {
   anchorRun,
   confirmAnchor,
   removeAnchor,
+  movePlace,
+  choosePlaceSide,
+  choosePlaceHue,
+  withdrawPlace,
   startJourney,
   bindStage,
   continueJourney,

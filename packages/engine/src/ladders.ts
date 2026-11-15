@@ -100,8 +100,8 @@ export const markerFits = (marker: unknown, ladder: string, ladders = LADDERS): 
 };
 
 /**
- * Ladder, marker and hue of a run: the user's choice, else the journey's,
- * else the ladder's default; names that are unknown or do not fit are
+ * Ladder and marker of a run: the user's choice, else the journey's, else
+ * the ladder's default (the hue is the ladder's default, see below); names that are unknown or do not fit are
  * skipped, so an older list never leaves a host without pictures.
  */
 export const resolveBuild = (
@@ -119,9 +119,7 @@ export const resolveBuild = (
     ) ??
     own?.marker ??
     '';
-  const hue =
-    [choice?.hue].find((name): name is string => LADDERS.hues.includes(name ?? '')) ??
-    own?.hue ??
-    '';
-  return { ladder, marker, hue };
+  // The hue belongs to the anchor's place (game rules §8), no longer to the run:
+  // `build:<runId>.hue` is not read; this is the ladder's own default.
+  return { ladder, marker, hue: own?.hue ?? '' };
 };

@@ -18,7 +18,8 @@
   },
   "anchor": {
     "moment": "pages-before-sleep.moment",
-    "example": "pages-before-sleep.anchor"
+    "example": "pages-before-sleep.anchor",
+    "daypart": "night"
   },
   "stages": [
     {
