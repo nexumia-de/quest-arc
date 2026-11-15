@@ -1,5 +1,15 @@
 import { describe, expect, it } from 'vitest';
-import { contrast, luminance, mix, paletteProblems, rgb } from '../src/art-palette';
+import {
+  contrast,
+  HOST_CARDS,
+  HOST_TEXT,
+  luminance,
+  mix,
+  PALETTE_MIN,
+  paletteProblems,
+  rgb,
+  TINT_SHARE,
+} from '../src/art-palette';
 
 // The palette check (docs/decisions/shared-pictures.md, "Colours per
 // region"): WCAG contrast computed, thresholds in PALETTE_MIN.
@@ -49,5 +59,22 @@ describe('paletteProblems', () => {
   it('fails a bad colour, a missing title and too few hues', () => {
     const at = paletteProblems({ meadow: { light: 'green', dark: '#7cc576' } }).map((p) => p.at);
     expect(at).toEqual(expect.arrayContaining(['palette', 'meadow', 'meadow.light']));
+  });
+});
+
+describe('names on the tinted ground (#127)', () => {
+  it('reach 4.5 : 1 for every hue, light and dark, on every host card', () => {
+    for (const hue of Object.values(good))
+      for (const style of ['light', 'dark'] as const)
+        for (const card of HOST_CARDS[style])
+          for (const text of HOST_TEXT[style])
+            expect(
+              contrast(rgb(text), mix(rgb(hue[style]), rgb(card), TINT_SHARE)),
+            ).toBeGreaterThanOrEqual(PALETTE_MIN.nameOnTint);
+  });
+
+  it('are part of the palette check', () => {
+    expect(PALETTE_MIN.nameOnTint).toBe(4.5);
+    expect(paletteProblems(good)).toEqual([]);
   });
 });

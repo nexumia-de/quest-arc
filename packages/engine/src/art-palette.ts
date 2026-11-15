@@ -32,12 +32,23 @@ export const HOST_TEXT = {
  * non-text contrast). `tint-strong` (water, near banks, growth) is
  * decorative, but the river has to be there: 1.5 : 1. The outlines (`fg`)
  * of a build stand on `tint-strong` water and must read: 3 : 1. `tint`
- * (16 %) is the quiet ground and is not tested (about 1.1 : 1).
+ * (16 %) is the quiet ground and is not tested itself (about 1.1 : 1), but
+ * the Valley writes the places' names on it (#127): text, so 4.5 : 1 (WCAG
+ * 1.4.3) for the host's text on every hue's `tint`, and on the blend of
+ * two neighbouring places' tints, where the ground passes from one to the
+ * next.
  */
-export const PALETTE_MIN = { accent: 3, tintStrong: 1.5, outlineOnTintStrong: 3 } as const;
+export const PALETTE_MIN = {
+  accent: 3,
+  tintStrong: 1.5,
+  outlineOnTintStrong: 3,
+  nameOnTint: 4.5,
+} as const;
 
 /** The share of the hue in `tint-strong`, as in both hosts. */
 export const TINT_STRONG_SHARE = 0.4;
+/** The share of the hue in `tint`, the ground, as in both hosts. */
+export const TINT_SHARE = 0.16;
 
 type Rgb = readonly [number, number, number];
 const HEX = /^#[0-9a-f]{6}$/;
@@ -101,6 +112,12 @@ export const paletteProblems = (value: unknown): Problem[] => {
             `tint-strong ${water.toFixed(2)} : 1 on ${card}; at least ${PALETTE_MIN.tintStrong}`,
           );
         for (const text of HOST_TEXT[style]) {
+          const name = contrast(rgb(text), mix(colour, below, TINT_SHARE));
+          if (name < PALETTE_MIN.nameOnTint)
+            error(
+              at,
+              `name ${text} on its tint ${name.toFixed(2)} : 1 (card ${card}); at least ${PALETTE_MIN.nameOnTint}`,
+            );
           const outline = contrast(rgb(text), strong);
           if (outline < PALETTE_MIN.outlineOnTintStrong)
             error(
@@ -111,5 +128,25 @@ export const paletteProblems = (value: unknown): Problem[] => {
       }
     }
   }
+  // where the ground passes from one place's tint to the next
+  for (const [i, a] of names.entries())
+    for (const b of names.slice(i + 1))
+      for (const style of ['light', 'dark'] as const) {
+        const [ca, cb] = [palette[a]?.[style], palette[b]?.[style]];
+        if (typeof ca !== 'string' || typeof cb !== 'string' || !HEX.test(ca) || !HEX.test(cb))
+          continue;
+        for (const card of HOST_CARDS[style]) {
+          const below = rgb(card);
+          const ground = mix(mix(rgb(ca), below, TINT_SHARE), mix(rgb(cb), below, TINT_SHARE), 0.5);
+          for (const text of HOST_TEXT[style]) {
+            const name = contrast(rgb(text), ground);
+            if (name < PALETTE_MIN.nameOnTint)
+              error(
+                `${a}+${b}.${style}`,
+                `name ${text} where the tints blend ${name.toFixed(2)} : 1 (card ${card}); at least ${PALETTE_MIN.nameOnTint}`,
+              );
+          }
+        }
+      }
   return problems;
 };

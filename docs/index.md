@@ -16,7 +16,7 @@ links. Change history is in [log.md](log.md).
 # Design
 
 - [Behaviour](behaviour.md) - Every screen, flow and text, host-neutral, and where each lands in Super Productivity and Pensum.
-- [Journey design](journey-design.md) - The build above the station card, last seven days, accessibility, builds and ladders of the Valley (versions, markers that grow element by element, way points, a hue per region), the journey screen with the build in game mode, the older scene rules for a region; mockups.
+- [Journey design](journey-design.md) - The build above the station card, last seven days, accessibility, builds and ladders of the Valley (versions, markers that grow element by element, way points, a hue per region), the Valley's place piece laid out by rule with its checks, the journey screen with the build in game mode, the older scene rules for a region; mockups.
 - [Data model](data-model.md) - Engine input (snapshot), choice records as one plugin-data key each, the game view and events, what Pensum reads and writes.
 - [Journey: A gentle morning](journey-gentle-morning.md) - The first built-in journey: from one glass of water to a short morning routine, four stages; how it follows the design rules.
 - [Journey: First Things First](journey-first-things-first.md) - The second built-in journey, for work: one task written down, 15 then 45 quiet minutes on it, email in blocks, a one-line look back.

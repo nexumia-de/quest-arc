@@ -102,3 +102,15 @@ export { DAYPARTS } from './types/journey';
 export type { Daypart } from './types/journey';
 export type { BuildChoice, Ladder, LadderList } from './ladders';
 export { isoWeek } from './days';
+export { cubicPathData, pathPoints, VALLEY, valleyLayout } from './valley-layout';
+export type {
+  Box,
+  Cubic,
+  Ellipse,
+  Point,
+  Side,
+  ValleyInput,
+  ValleyLayout,
+  ValleyPlace,
+} from './valley-layout';
+export { valleyProblems } from './art-valley-check';
