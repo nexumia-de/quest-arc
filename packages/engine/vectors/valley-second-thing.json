@@ -1,0 +1,111 @@
+{
+  "name": "A second journey builds a second thing on the first journey's ladder: it starts at version 1 and follows its own stations; the paused first journey keeps its thing at version 3; the second thing hangs its own marker (flowers, the user's choice)",
+  "rule": "game rules \u00a78, the Valley; issue #148",
+  "kind": "evaluate",
+  "input": {
+    "day": {
+      "todayStr": "2026-11-11",
+      "startOfNextDayDiffMs": 0,
+      "timeZone": "Europe/Berlin"
+    },
+    "tasks": [],
+    "repeatCfgs": [],
+    "choices": {
+      "anchor:m1": {
+        "kind": "routine",
+        "words": "getting up"
+      },
+      "run:r1": {
+        "journeyId": "test-daily",
+        "journeyVersion": 1,
+        "startDay": "2026-08-01"
+      },
+      "run-anchor:r1": {
+        "anchorId": "m1"
+      },
+      "stage:r1:a": {
+        "acceptedDay": "2026-08-01"
+      },
+      "stage-done:r1:a": {
+        "day": "2026-08-15",
+        "dataFormat": 2
+      },
+      "stage:r1:b": {
+        "acceptedDay": "2026-08-15"
+      },
+      "stage-done:r1:b": {
+        "day": "2026-08-25",
+        "dataFormat": 2
+      },
+      "stage:r1:c": {
+        "acceptedDay": "2026-08-25"
+      },
+      "pause:r1:2026-09-01": {
+        "action": "pause",
+        "source": "user"
+      },
+      "run:r2": {
+        "journeyId": "test-build",
+        "journeyVersion": 1,
+        "startDay": "2026-09-02"
+      },
+      "run-anchor:r2": {
+        "anchorId": "m1"
+      },
+      "stage:r2:a": {
+        "acceptedDay": "2026-09-02"
+      },
+      "build:r2": {
+        "marker": "flowers"
+      }
+    },
+    "journeys": ["$test-daily", "$test-build", "$test-morning", "$test-night"]
+  },
+  "expect": {
+    "valley": [
+      {
+        "anchorId": "m1",
+        "growing": true,
+        "things": [
+          {
+            "runId": "r1",
+            "journeyId": "test-daily",
+            "state": "paused",
+            "ladder": "home",
+            "version": 3,
+            "marker": "bunting"
+          },
+          {
+            "runId": "r2",
+            "journeyId": "test-build",
+            "state": "growing",
+            "ladder": "home",
+            "version": 1,
+            "marker": "flowers",
+            "markerProgress": 0,
+            "ready": false
+          }
+        ],
+        "unbuilt": []
+      }
+    ],
+    "active": {
+      "runId": "r2",
+      "build": {
+        "ladder": "home",
+        "version": 1,
+        "marker": "flowers"
+      }
+    },
+    "paused": [
+      {
+        "runId": "r1",
+        "build": {
+          "ladder": "home",
+          "version": 3
+        }
+      }
+    ],
+    "problems": []
+  }
+}

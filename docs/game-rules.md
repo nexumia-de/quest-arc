@@ -465,6 +465,8 @@ the engine gives only names and numbers.
   (a `build` record, [data model](data-model.md) §2). A ladder the engine
   does not know, or a journey without `build`, gets the default
   ladder `home`, so a host always has pictures.
+  At a place (§8) a further journey's thing uses the ladder of the
+  place's first journey instead of its own or the chosen one.
 - **Version.** Version 1 stands when the journey starts. Every finished
   stage (a stage with a checkpoint,
   [deleted history](decisions/deleted-history.md)) raises the version by
@@ -647,33 +649,49 @@ picked. Nothing here changes what is counted (§1 to §7).
   hue the user chose for the place after, takes the next hue in the
   order instead, so neighbours never share a hue unless the user chose
   it.
-- **One thing per place.** The first journey started from the anchor
-  (earliest start day, then run id), in whatever state, builds the
-  thing: its ladder, version, marker progress and ready as §7 computes
-  them; `state` says whether its journey grows (`growing`), waits
-  (`paused`), is finished (`finished`) or was ended early (`ended`). The
-  thing never passes to another journey: a paused journey keeps its
-  version standing and its marker as it was (§7), and a journey ended
-  early leaves its version standing without a marker, as §7 says.
-  Where no journey stands, there is no thing: plain land.
+- **One to three things per place** (#148, owner, 2026-11-15). Every
+  journey started from the anchor builds its own thing, in the order the
+  journeys started (earliest start day, then run id), in whatever state.
+  The first journey's thing is its build; a further journey builds a
+  second and then a third thing **on the same ladder as the first**,
+  whatever ladder it names itself or the user chose for it. Each thing
+  starts at version 1 and follows its own journey as §7 computes it:
+  version, `skipped` ("already yours"), marker kind, marker progress
+  and `ready`; each keeps its own marker kind (the user's choice, else
+  the journey's, else the ladder's default; a kind that does not fit the
+  place's ladder is skipped). `state` says whether the thing's journey
+  grows (`growing`), waits (`paused`), is finished (`finished`) or was
+  ended early (`ended`). A thing never passes to another journey: a
+  paused journey keeps its version standing and its marker as it was
+  (§7), and a journey ended early leaves its version standing without a
+  marker, as §7 says. Nothing is taken away. Where no journey stands,
+  there is no thing: plain land (`things` is empty). A journey's own
+  build view (§7, `RunView.build`) shows its thing, so a further
+  journey's screen draws the place's ladder.
+- **The limit is `THINGS_PER_PLACE` = 3** (a named constant, to be
+  raised later perhaps). A fourth and any later journey at the anchor
+  builds no thing: it is listed in `unbuilt` (run, journey and state)
+  and its own build is still computed as §7 says. There are no
+  surroundings and no second kind of addition: the signs below are the
+  only things that are not a journey's thing.
 - **Sign.** `plants` when a step at the place is `maintained` (a habit
   still followed and ticked off); else `lantern` when a step is
   `graduated` (it runs by itself, after which nothing is counted); else
   none. A step waiting for a task (`unbound`, `unsupported-repeat`)
   gives no sign.
-- **Surroundings.** A further journey from the same anchor builds no
-  thing. Its finished stations (stages with a checkpoint, and skipped
-  ones, like the version of §7) each add one step to the place's
-  surroundings (fence, tree, bench, gate), at most `SURROUNDINGS_STEPS`
-  = 4 in all. What a waiting or an early ended journey finished stays
-  counted; nothing is taken away. The first journey's own stations are
-  the thing's versions and add nothing.
 - **`growing`** is true when the active journey starts from the place.
 - **`chosen`** repeats what the user picked (`place:<anchorId>`, data
   model §2); a field that is absent follows the rules above.
 - The actions: `movePlace`, `choosePlaceSide`, `choosePlaceHue` and
   `withdrawPlace`; `removeAnchor` takes the place record along when
   the user picked anything.
+
+**Example L.** The user's anchor is "getting up". _A gentle morning_
+stands at version 3 and is paused. On 2 Sep the user starts a second
+journey from the same moment: the place has a second thing on the first
+journey's ladder, at version 1, growing; the first thing waits at 3. A
+third and a fourth journey follow: the third builds a third thing; the
+fourth builds none and is listed in `unbuilt`.
 
 **Example K.** Four anchors; "brushing my teeth" (night journey), "getting
 up" (morning journey), "lunch" (no kind of moment), and a free one. The

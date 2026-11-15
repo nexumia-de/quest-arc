@@ -100,6 +100,24 @@ export const markerFits = (marker: unknown, ladder: string, ladders = LADDERS): 
 };
 
 /**
+ * The marker of a run on `ladder`: the user's choice, else the journey's,
+ * else the ladder's default; names that are unknown or do not fit are
+ * skipped. A further journey at a place hangs its marker on the place's
+ * ladder, not on its own (game rules §8).
+ */
+export const resolveMarker = (
+  journey: Journey,
+  choice: BuildChoice | undefined,
+  ladder: string,
+  ladders = LADDERS,
+): string =>
+  [choice?.marker, journey.build?.marker].find((name): name is string =>
+    markerFits(name, ladder, ladders),
+  ) ??
+  entry(ladders.ladders, ladder)?.marker ??
+  '';
+
+/**
  * Ladder and marker of a run: the user's choice, else the journey's, else
  * the ladder's default (the hue is the ladder's default, see below); names that are unknown or do not fit are
  * skipped, so an older list never leaves a host without pictures.
@@ -113,13 +131,7 @@ export const resolveBuild = (
       (name): name is string => entry(LADDERS.ladders, name) !== undefined,
     ) ?? LADDERS.defaultLadder;
   const own = entry(LADDERS.ladders, ladder);
-  const marker =
-    [choice?.marker, journey.build?.marker].find((name): name is string =>
-      markerFits(name, ladder),
-    ) ??
-    own?.marker ??
-    '';
   // The hue belongs to the anchor's place (game rules §8), no longer to the run:
   // `build:<runId>.hue` is not read; this is the ladder's own default.
-  return { ladder, marker, hue: own?.hue ?? '' };
+  return { ladder, marker: resolveMarker(journey, choice, ladder), hue: own?.hue ?? '' };
 };

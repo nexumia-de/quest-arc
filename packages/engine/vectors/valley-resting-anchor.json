@@ -60,20 +60,24 @@
       {
         "anchorId": "m1",
         "growing": false,
-        "thing": {
-          "runId": "r1",
-          "state": "paused",
-          "version": 2
-        }
+        "things": [
+          {
+            "runId": "r1",
+            "state": "paused",
+            "version": 2
+          }
+        ]
       },
       {
         "anchorId": "m2",
         "growing": true,
-        "thing": {
-          "runId": "r2",
-          "state": "growing",
-          "version": 1
-        }
+        "things": [
+          {
+            "runId": "r2",
+            "state": "growing",
+            "version": 1
+          }
+        ]
       }
     ],
     "problems": []

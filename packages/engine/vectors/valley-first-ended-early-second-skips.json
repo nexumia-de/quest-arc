@@ -1,0 +1,83 @@
+{
+  "name": "A first journey ended early leaves its thing at version 2; the second journey's thing follows \u00a77 within itself: a skipped stage raises its version (3) and is named 'already yours'",
+  "rule": "game rules \u00a78, the Valley; issue #148",
+  "kind": "evaluate",
+  "input": {
+    "day": {
+      "todayStr": "2026-11-11",
+      "startOfNextDayDiffMs": 0,
+      "timeZone": "Europe/Berlin"
+    },
+    "tasks": [],
+    "repeatCfgs": [],
+    "choices": {
+      "anchor:m1": {
+        "kind": "routine",
+        "words": "getting up"
+      },
+      "run:r1": {
+        "journeyId": "test-daily",
+        "journeyVersion": 1,
+        "startDay": "2026-08-01"
+      },
+      "run-anchor:r1": {
+        "anchorId": "m1"
+      },
+      "stage:r1:a": {
+        "acceptedDay": "2026-08-01"
+      },
+      "stage-done:r1:a": {
+        "day": "2026-08-15",
+        "dataFormat": 2
+      },
+      "stage:r1:b": {
+        "acceptedDay": "2026-08-15"
+      },
+      "run-end:r1": {
+        "day": "2026-08-20",
+        "reason": "ended"
+      },
+      "run:r2": {
+        "journeyId": "test-build",
+        "journeyVersion": 1,
+        "startDay": "2026-09-02"
+      },
+      "run-anchor:r2": {
+        "anchorId": "m1"
+      },
+      "stage:r2:a": {
+        "acceptedDay": "2026-09-02"
+      },
+      "skip:r2:a": {
+        "day": "2026-09-02",
+        "dataFormat": 3
+      },
+      "stage:r2:b": {
+        "acceptedDay": "2026-09-02"
+      }
+    },
+    "journeys": ["$test-daily", "$test-build", "$test-morning", "$test-night"]
+  },
+  "expect": {
+    "valley": [
+      {
+        "anchorId": "m1",
+        "things": [
+          {
+            "runId": "r1",
+            "state": "ended",
+            "version": 2
+          },
+          {
+            "runId": "r2",
+            "state": "growing",
+            "version": 2,
+            "skipped": [2]
+          }
+        ],
+        "unbuilt": []
+      }
+    ],
+    "problems": []
+  }
+}
