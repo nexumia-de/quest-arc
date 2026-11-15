@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 180">
+  <title>Heights</title>
+  <path class="tint" d="M0 60L30 44L52 54L84 30L118 50L150 42L186 54L224 28L262 48L292 38L320 50V180H0Z"/>
+  <path class="tint-strong" d="M0 150C28 142 60 150 80 180H0Z"/>
+  <path class="tint-strong" d="M320 148C298 146 282 158 270 180H320Z"/>
+  <path class="bg" d="M128 180L130.5 176C139 163 146 155 147.8 146.1H172.3C174 155 181 163 189.5 176L192 180Z"/>
+</svg>

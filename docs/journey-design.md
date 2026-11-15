@@ -68,7 +68,7 @@ whole at every stage, and every stage makes it a larger version. A
 **ladder** is that thing drawn once in five versions and used by every
 journey that picks it. The first two ladders, Crossing (with lanterns
 and with pennants) and Home (with pennants and with flowers), then Garden
-(with flowers) and Well (with lanterns, #128); plugin
+(with flowers), Well (with lanterns) and Lookout (with pennants, #128); plugin
 light above, Day Planner dark below (scale 2). Each version, then its
 marker growing element by element (every element for the first stage, a
 few sampled steps for the others), ready, then the next version:
@@ -99,6 +99,14 @@ mock.
 ![Well, versions and row](screenshots/ladder-well-versions.png)
 
 ![Well, journey mock](screenshots/ladder-well-journey.png)
+
+Lookout the same way:
+
+![Lookout with pennants](screenshots/ladder-lookout.png)
+
+![Lookout, versions and row](screenshots/ladder-lookout-versions.png)
+
+![Lookout, journey mock](screenshots/ladder-lookout-journey.png)
 
 The journey screen as a static mock (plugin and Day Planner side by side;
 Crossing above, Home below; first mid-way, posts up and two elements
@@ -144,7 +152,7 @@ journey):
    on both banks, as thick as the surface. A build the way leads to (a
    home or a garden) has one: the threshold stone (x = 53–67,
    y = 74–77.5) in front of the fire, the tent's opening and each door,
-   of the garden's bed and the walled garden's gate, or of the water hole and
+   of the garden's bed and the walled garden's gate, or of the cairn, or of the water hole and
    each well, where the path ends.
    `ways` lists them; the checker requires a corner of every version and
    of the setting's path at each way point.
@@ -182,7 +190,12 @@ journey):
    forked post with a stone and the bucket on a pole) over a low stone
    curb, a round well with a winch, the well under a roof, a stone well
    house with the well inside, under its arch (owner: a spring and a pump
-   break the line, a fountain is another use).
+   break the line, a fountain is another use). Lookout is drawn once,
+   like Garden, and only adds and grows: a cairn of flat stones laid by
+   hand (1), a platform on posts resting on it (2), its railing and a
+   ladder (3), posts narrowing up to a second deck with a brace and its
+   own ladder, a tower (4), a roof over the top deck (5); the flag's pole
+   grows with it and the flag, the accent, stays on top.
 8. **History, step by step** (owner, 2026-11-15). A ladder follows one
    real line of development for one use; each version is what people
    actually built next, within a world before electricity, so the row
@@ -196,7 +209,7 @@ journey):
    decision 13).
 9. **Look.** Outlined in `fg` with a `bg` fill, one `accent` detail (the
    flame, a glowing door or window, the keystone, a rail cap, the
-   fruit, the bucket), water and
+   fruit, the bucket, the flag), water and
    the yard in `tint-strong` of the region's hue. The setting is quiet:
    ground and far trees in `tint`, a few reused plants (tuft, reeds, bush,
    flowers, far trees) in the [depth bands](#look-and-depth-bands).
@@ -235,7 +248,7 @@ bridge is ready" while it is met.
 **Marker kinds** (`content/art/markers.json`), each drawn once and used
 with every ladder and setting; what hangs is the user's choice per
 journey, the ladder only gives the default (`marker`: Crossing lanterns,
-Home pennants, Garden flowers, Well lanterns):
+Home pennants, Garden flowers, Well lanterns, Lookout pennants):
 
 - **lanterns**: small lanterns, outlined; ready filled with a flame, a
   halo and rays.
@@ -261,7 +274,7 @@ path meets the build:
   gently.
 - `sides`: two short lines, left and right, with a gap in the middle
   (four posts, two on each side). For a way leading to the build (Home
-  Garden and Well: the path to the threshold) or a build on water (a boat: the gap is the
+  Garden, Well and Lookout: the path to the threshold) or a build on water (a boat: the gap is the
   waterway).
 - **Choosing**: the gap is wherever the user's way or view to the build
   passes. If nothing passes in front of the build, `span`; otherwise
@@ -321,7 +334,7 @@ on its own screen as below, and the hue belongs to the run.
 hues, a light and a dark value each); `fg`, `bg` and `dim` stay the
 host's, and the path, card and controls keep the host's accent. The
 setting's kind sets the default (river: water blue; clearing: meadow
-green; Garden's open fields: moss; Well's village green: water blue). Each hue is checked by computation (WCAG relative luminance) in
+green; Garden's open fields: moss; Well's village green: water blue; Lookout's heights: rust). Each hue is checked by computation (WCAG relative luminance) in
 both repositories: `accent` at least 3 : 1 against every host card (WCAG
 1.4.11, non-text), `tint-strong` at least 1.5 : 1 (decorative, but the
 water must show) and the outline `fg` at least 3 : 1 on `tint-strong`;

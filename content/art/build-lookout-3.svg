@@ -1,0 +1,23 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 80">
+  <title>A lookout with a ladder</title>
+  <ellipse class="tint-strong" cx="60" cy="75" rx="54" ry="4.6"/>
+  <rect class="fg" x="53" y="74" width="14" height="3.5" rx="1"/>
+  <rect class="bg" x="54.4" y="75.4" width="11.2" height="0.7"/>
+  <rect class="fg" x="59.2" y="30" width="1.6" height="44"/>
+  <rect class="fg" x="44" y="68" width="32" height="6" rx="2"/>
+  <rect class="bg" x="46" y="70" width="28" height="2"/>
+  <rect class="fg" x="45.5" y="62.5" width="25" height="5.5" rx="2"/>
+  <rect class="bg" x="47.5" y="64.5" width="21" height="1.5"/>
+  <rect class="fg" x="51.5" y="57.5" width="20" height="5" rx="2"/>
+  <rect class="bg" x="53.5" y="59.5" width="16" height="1"/>
+  <rect class="fg" x="52.5" y="53" width="13" height="4.5" rx="2"/>
+  <rect class="bg" x="54.5" y="55" width="9" height="0.5"/>
+  <rect class="fg" x="56.5" y="49" width="9" height="4" rx="2"/>
+  <rect class="bg" x="58.5" y="51" width="5" height="0"/>
+  <path class="fg" d="M34 49H39V74H34ZM81 49H86V74H81Z"/>
+  <path class="bg" d="M36 51H37V72H36ZM83 51H84V72H83Z"/>
+  <rect class="fg" x="30" y="44" width="60" height="5"/>
+  <rect class="bg" x="32" y="46" width="56" height="1"/>
+  <path class="fg" d="M31 36H89V37.8H31ZM32 36H33.8V44H32ZM44 36H45.8V44H44ZM74 36H75.8V44H74ZM86 36H87.8V44H86ZM67 49H68.8V74H67ZM76 49H77.8V74H76ZM67 54H77.8V55.6H67ZM67 60H77.8V61.6H67ZM67 66H77.8V67.6H67ZM60.8 30L72 33.5L60.8 37Z"/>
+  <polygon class="accent" points="67.3,33.5 62.2,35.1 62.2,31.9"/>
+</svg>
