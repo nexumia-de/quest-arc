@@ -102,17 +102,15 @@ export const elementsShown = (ladder: Ladder, progress: number): number =>
 /** The view box of a version in the row of versions. */
 export const rowViewBox = (ladder: Ladder): string => (ladder.row ?? [0, 0, 120, 80]).join(' ');
 
-/** The state in words, as under the row of versions. */
+/**
+ * The state in words, as under the row of versions: only what stands
+ * ("A hut stands"), never the next version (#155, docs/psychology.md).
+ */
 export const buildWords = (ladder: Ladder, version: number, state: BuildState = {}): string => {
   const now = versionName(ladder, version, state);
   // "A hut stands", "Stepping stones stand": the language says which names are one thing.
   const one = new RegExp(t('ui.grammar.singular')).test(now);
-  const stands = t(one ? 'ui.build.words.stands' : 'ui.build.words.stand', { name: now });
-  const last = version >= versionCount(ladder, state);
-  const ready = state.ready === true;
-  if (last || (!ready && (state.progress ?? 0) <= 0)) return stands;
-  const next = versionName(ladder, version + 1, state, true);
-  return t(ready ? 'ui.build.words.ready' : 'ui.build.words.on-its-way', { now: stands, next });
+  return t(one ? 'ui.build.words.stands' : 'ui.build.words.stand', { name: now });
 };
 
 /** The flowers in numbers: how many stand of all (none after the last version). */
@@ -145,7 +143,7 @@ export const buildLabel = (ladder: Ladder, version: number, state: BuildState): 
   });
   if (version >= total) return t('ui.build.label.all', { head });
   const count = markerCount(ladder, version, state);
-  if (count.shown === 0) return t('ui.build.label.nothing', { head });
+  if (count.shown === 0) return head;
   return t(state.ready === true ? 'ui.build.label.ready' : 'ui.build.label.not-ready', {
     head,
     shown: count.shown,
@@ -187,7 +185,7 @@ export const ladderScene = (ladder: Ladder, version: number, state: BuildState =
     : ready
       ? markerElements(ladder)
       : elementsShown(ladder, state.progress ?? 0);
-  let title = buildWords(ladder, version, last ? {} : { ...state, ready }).replace(' · ', ', ');
+  let title = buildWords(ladder, version, state);
   if (state.graduated === true) title += ', the lantern lit';
   const pictures: Placed[] = [];
   for (const place of ladder.pictures) {
