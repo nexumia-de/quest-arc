@@ -184,7 +184,7 @@ export const ladderGeometryProblems = (name, ladder, pictures) => {
   return problems;
 };
 
-// ---- the place: its signs, flowers and the lit lantern (#131) ---------------
+// ---- the place: its sign, the lit lantern (#131) -----------------------------
 
 /** Every layout the Valley's check measures (art-valley-check.ts): 1–6 places on every choice of sides, 7–12 alternating. */
 const LAYOUT_SIDES = (() => {
@@ -203,9 +203,6 @@ const DOORSTEP = box(50, 74, 20, 26);
 const STONE = box(53, 74, 14, 3.5);
 /** Room kept between a place's pictures and the edge of the path. */
 const PATH_GAP = 2;
-const ROLES = {
-  flowers: new Set(['fg', 'bg', 'tint-strong', 'accent']),
-};
 
 /** A shape moved into the scene: frame units → scene. */
 const toScene = (shape, slot) =>
@@ -233,8 +230,6 @@ export const placeProblems = (place, pictures, ladders, valleyLayout) => {
     return shapesOf(source);
   };
   const union1 = (name) => union(...shapesNamed(name).map((s) => s.shape));
-  const flowers = shapesNamed(place.flowers);
-  const layers = [{ name: place.flowers, kind: 'flowers', shapes: flowers }];
   const lanterns = { right: union1(place.lantern.right), left: union1(place.lantern.left) };
   for (const [side, lanternShape] of Object.entries(lanterns)) {
     const name = `lantern (${side})`;
@@ -261,16 +256,6 @@ export const placeProblems = (place, pictures, ladders, valleyLayout) => {
       }
   };
   for (const [side, shape] of Object.entries(lanterns)) clearOfThings(`lantern (${side})`, shape);
-  for (const { name, kind, shapes } of layers) {
-    const all = union(...shapes.map((s) => s.shape));
-    const wrong = shapes.filter((s) => !ROLES[kind].has(s.role)).map((s) => s.role);
-    if (wrong.length > 0)
-      problems.push(`${name}: roles ${[...new Set(wrong)].join(', ')} are not for ${kind}`);
-    if (area(minus(all, frame)) > EPS)
-      problems.push(`${name}: outside the frame ${fx} ${fy} ${fw} ${fh}`);
-    if (area(within(all, DOORSTEP)) > EPS) problems.push(`${name}: in front of the doorstep`);
-    clearOfThings(name, all);
-  }
   // nothing hides the marker: the lantern, drawn over it, leaves every
   // marker element of every ladder free, mapped as the place's pages draw
   // it (packages/ui/src/ui/valley/model.ts, markerPieces): the posts' span
@@ -325,11 +310,7 @@ export const placeProblems = (place, pictures, ladders, valleyLayout) => {
         layout.pathWidth + 2 * PATH_GAP * layout.unit,
       );
       const placed = layout.places.map((p) => {
-        const own = [
-          lanterns[p.side],
-          ...layers.map((l) => union(...l.shapes.map((s) => s.shape))),
-        ].map((shape) => toScene(shape, p.slot));
-        return { p, own, all: union(...own) };
+        return { p, all: toScene(lanterns[p.side], p.slot) };
       });
       placed.forEach(({ p, all }, i) => {
         const report = (what) => {

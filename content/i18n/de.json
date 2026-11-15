@@ -178,7 +178,6 @@
   "ui.valley.place": "{name}: {thing}, Stufe {version} von {total}.",
   "ui.valley.place.free": "{name}: Hier steht noch nichts.",
   "ui.valley.growing": "Hier wächst gerade etwas.",
-  "ui.valley.sign.flowers": "Blumen blühen davor: Die Routine wird noch verfolgt.",
   "ui.valley.sign.lantern": "Die Laterne brennt: Die Routine läuft von selbst.",
   "ui.moment.title": "Dein Moment",
   "ui.moment.hint": "Diese Reise geht von {moment} aus: etwas, das in deinem Tag schon vorkommt. Du könntest ihn in deinen eigenen Worten benennen.",

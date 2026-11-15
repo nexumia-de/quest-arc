@@ -33,12 +33,11 @@ const read = () => {
 
 /**
  * The names of the pictures the journey screen, the build page and the
- * Valley draw (with a place's flowers and lantern, #131).
+ * Valley draw (with a place's lantern, #131).
  */
 export const ladderArt = ({ ladders, markers, place }) => {
   const names = new Set(['lantern']);
   if (place) {
-    names.add(place.flowers);
     names.add(place.lantern.left);
     names.add(place.lantern.right);
   }

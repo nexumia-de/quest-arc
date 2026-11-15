@@ -438,7 +438,7 @@ interface ValleyPlace {
   hue: string; // the user's, else by position in the palette's order; neighbours differ
   things: ValleyThing[]; // one to three, in the order the journeys started (game rules §8); empty: plain land
   unbuilt: { runId: string; journeyId: string; state: ValleyThing['state'] }[]; // journeys beyond THINGS_PER_PLACE (3)
-  sign?: 'flowers' | 'lantern'; // a step is maintained / graduated
+  sign?: 'lantern'; // a step here runs by itself (graduated)
   growing: boolean; // the active journey starts from here
   chosen: { position?: number; side?: 'left' | 'right'; hue?: string }; // `place:<anchorId>`
 }

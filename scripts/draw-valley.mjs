@@ -12,7 +12,7 @@
 // It writes docs/screenshots/valley-<n>.png (360 × 720, light and dark side
 // by side) and valley-desktop-<n>.png (the same scene drawn at 720 wide in
 // a 1280 wide window) for one, three and six places, with signs and
-// flowers or the lit lantern at some (#131); valley-place-<thing>.png (one place in each
+// the lit lantern at some (#131); valley-place-<thing>.png (one place in each
 // state at 360 × 720, light above, dark below) and valley-place-row.png
 // (every ladder's first and fifth version in every state, the build's box at
 // 60 × 40). Nothing here is drawn by hand: change the rule's numbers in
@@ -46,7 +46,7 @@ const DAYS = {
       build: 'home-4',
       sign: 'lantern',
     },
-    { name: 'When I sit down at my desk', hue: 'meadow', build: 'garden-3', sign: 'flowers' },
+    { name: 'When I sit down at my desk', hue: 'meadow', build: 'garden-3' },
     { name: 'After brushing my teeth at night', hue: 'heather', build: 'well-3' },
   ],
   6: [
@@ -56,10 +56,10 @@ const DAYS = {
       build: 'home-5',
       sign: 'lantern',
     },
-    { name: 'When I sit down at my desk', hue: 'meadow', build: 'garden-3', sign: 'flowers' },
+    { name: 'When I sit down at my desk', hue: 'meadow', build: 'garden-3' },
     { name: 'After lunch', hue: 'water', build: 'lookout-2' },
     { name: 'When I get home', hue: 'moss', build: 'well-5', sign: 'lantern' },
-    { name: 'After dinner', hue: 'rust', build: 'garden-5', sign: 'flowers' },
+    { name: 'After dinner', hue: 'rust', build: 'garden-5' },
     { name: 'After brushing my teeth at night', hue: 'heather', build: 'home-2' },
   ],
 };
@@ -73,11 +73,9 @@ const shapesOf = (file) =>
     .replace(/^[\s\S]*?<\/title>/, '')
     .replace(/<\/svg>\s*$/, '');
 const buildShapes = (name) => shapesOf(`build-${name}`);
-/** The pictures of a place's sign, as the Valley's scene draws them (packages/ui/src/ui/valley/scene.ts). */
-const placeSigns = (place) => [
-  ...(place.sign ? [{ layer: 'flowers', art: placeArt.flowers }] : []),
-  ...(place.sign === 'lantern' ? [{ layer: 'lantern', art: placeArt.lantern[place.side] }] : []),
-];
+/** The picture of a place's sign, as the Valley's scene draws it (packages/ui/src/ui/valley/scene.ts). */
+const placeSigns = (place) =>
+  place.sign === 'lantern' ? [{ layer: 'lantern', art: placeArt.lantern[place.side] }] : [];
 /** A sign drawn in the thing's box, reaching beyond it. */
 const signSvg = (sign, box, hue) =>
   `<svg class="thing" style="--hue:${hue}" x="${n1(box.x)}" y="${n1(box.y)}" width="${n1(box.width)}" height="${n1(box.height)}" viewBox="0 0 120 80" overflow="visible">${shapesOf(sign.art)}</svg>`;
@@ -103,9 +101,6 @@ const scene = (places, theme) => {
     const { x, y, width: w, height: h } = place.slot;
     const hue = hueOf(places[i]);
     return [
-      ...signs[i]
-        .filter((sign) => sign.layer === 'flowers')
-        .map((sign) => signSvg(sign, place.slot, hue)),
       places[i].build
         ? `<svg class="thing" style="--hue:${hue}" x="${n1(x)}" y="${n1(y)}" width="${n1(w)}" height="${n1(h)}" viewBox="0 0 120 80">${buildShapes(places[i].build)}</svg>`
         : '',
@@ -205,13 +200,9 @@ for (const count of [1, 3, 6]) {
   );
 }
 
-// A place in each state (#131): plain, flowers, the lantern lit; one place at
+// A place in each state (#131): plain and with its lantern lit; one place at
 // 360 × 720, light above, dark below.
-const STATES = [
-  { label: 'plain' },
-  { label: 'flowers', sign: 'flowers' },
-  { label: 'lantern', sign: 'lantern' },
-];
+const STATES = [{ label: 'plain' }, { label: 'lantern', sign: 'lantern' }];
 const NAME = 'After I pour my morning coffee';
 for (const [build, hue, side] of [
   ['home-5', 'meadow', 'right'],
@@ -243,7 +234,7 @@ const thumb = (build, state, theme) => {
       .filter((sign) => sign.layer === layer)
       .map((sign) => signSvg(sign, box, hue))
       .join('');
-  return `<svg width="67" height="46" viewBox="0 0 67 46" style="margin:4px;background:color-mix(in srgb, ${hue} 16%, var(--bg))">${drawn('flowers')}<svg class="thing" style="--hue:${hue}" x="7" y="0" width="60" height="40" viewBox="0 0 120 80">${buildShapes(build)}</svg>${drawn('lantern')}</svg>`;
+  return `<svg width="67" height="46" viewBox="0 0 67 46" style="margin:4px;background:color-mix(in srgb, ${hue} 16%, var(--bg))"><svg class="thing" style="--hue:${hue}" x="7" y="0" width="60" height="40" viewBox="0 0 120 80">${buildShapes(build)}</svg>${drawn('lantern')}</svg>`;
 };
 const THINGS = ['home', 'garden', 'well', 'lookout'].flatMap((l) => [`${l}-1`, `${l}-5`]);
 const sheet = ['light', 'dark']

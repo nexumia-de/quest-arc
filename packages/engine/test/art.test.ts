@@ -25,13 +25,12 @@ describe('pictures in content/art', () => {
     expect(files.filter((f) => !known(f))).toEqual(['markers.json', 'palette.json', 'place.json']);
   });
 
-  it('have the place: the flowers and a lit lantern for each side of the path', () => {
+  it('have the place: a lit lantern for each side of the path', () => {
     // the Valley's scene (packages/ui/src/ui/valley/scene.ts) draws them by these names
     expect(read('place.json')).toMatchObject({
-      flowers: 'place-flowers',
       lantern: { left: 'place-lantern-left', right: 'place-lantern-right' },
     });
-    for (const name of ['place-flowers', 'place-lantern-left', 'place-lantern-right'])
+    for (const name of ['place-lantern-left', 'place-lantern-right'])
       expect(pictures).toContain(name);
   });
 

@@ -34,8 +34,7 @@ describe('the plugin bundles only the pictures of the build', () => {
     expect(kept).toContain('lantern');
   });
 
-  it('keeps the flowers and the lantern of a place (#131)', () => {
-    expect(kept).toContain(place.flowers);
+  it('keeps the lantern of a place for each side of the path (#131)', () => {
     expect(kept).toContain(place.lantern.left);
     expect(kept).toContain(place.lantern.right);
   });

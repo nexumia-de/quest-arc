@@ -13,13 +13,12 @@ import { grownSince, placeHue, type PlaceModel, type ValleyModel } from './model
  * placed by hand here.
  *
  * The scene is built in **layers**, back to front, each a named slot with
- * one group per place: the place's signs (#131) fill `flowers` and
- * `lantern`, and `slot(layer, i)` returns place i's
+ * one group per place: the place's sign (#131) fills `lantern`, and `slot(layer, i)` returns place i's
  * group in a layer. The names are HTML on top (`name`), then the places'
  * tap areas.
  */
 
-export const LAYERS = ['ground', 'path', 'flowers', 'thing', 'marker', 'lantern'] as const;
+export const LAYERS = ['ground', 'path', 'thing', 'marker', 'lantern'] as const;
 export type Layer = (typeof LAYERS)[number];
 
 const SVG_NS = 'http://www.w3.org/2000/svg';
@@ -164,10 +163,9 @@ export const valleyScene = (
     );
   });
 
-  // The things, and the signs (#131) drawn in the thing's box and reaching
-  // beyond it: the flowers behind the thing, the lit lantern (one picture per
-  // side of the path) in front of its marker (docs/journey-design.md, "The
-  // signs of a place").
+  // The things, and the sign (#131): the lit lantern, drawn in the thing's
+  // box and reaching beyond it towards the path (one picture per side), in
+  // front of the marker (docs/journey-design.md, "The sign of a place").
   model.places.forEach(({ piece, view, art: thing }, i) => {
     const draw = (layer: Layer, name?: string) => {
       const source = name && art().pictures[name];
@@ -177,7 +175,6 @@ export const valleyScene = (
     };
     const slot = draw('thing', thing);
     if (thing && grown.has(view.anchorId)) slot?.setAttribute('class', 'qa-grow');
-    if (view.sign) draw('flowers', 'place-flowers');
     if (view.sign === 'lantern') draw('lantern', `place-lantern-${view.side}`);
   });
 

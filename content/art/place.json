@@ -1,6 +1,5 @@
 {
-  "frame": [-14, 0, 148, 92],
-  "flowers": "place-flowers",
+  "frame": [-14, 0, 148, 80],
   "lantern": {
     "right": "place-lantern-right",
     "left": "place-lantern-left"
