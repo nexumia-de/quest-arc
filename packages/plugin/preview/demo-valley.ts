@@ -13,9 +13,25 @@ import { own } from './demo-words';
  * 3: getting up (finished, runs by itself), lunch (growing), evening
  *    (waiting).
  * 6: getting up, desk, lunch, dinner, bedtime reading and evening.
+ * valley-6-stacked (#151): the same six, with two things at the desk
+ *    and bedtime and three at dinner (further journeys from the same
+ *    moment).
+ * place-<home|garden>-<1|2|3> (#151): one place with one to three things
+ *    of that ladder, the last journey growing at station 2.
  */
 
-export const VALLEY_SCENARIOS = ['valley-1', 'valley-3', 'valley-6'] as const;
+export const VALLEY_SCENARIOS = [
+  'valley-1',
+  'valley-3',
+  'valley-6',
+  'valley-6-stacked',
+  'place-home-1',
+  'place-home-2',
+  'place-home-3',
+  'place-garden-1',
+  'place-garden-2',
+  'place-garden-3',
+] as const;
 export type ValleyScenario = (typeof VALLEY_SCENARIOS)[number];
 
 export const isValleyScenario = (scenario: string): scenario is ValleyScenario =>
@@ -24,7 +40,8 @@ export const isValleyScenario = (scenario: string): scenario is ValleyScenario =
 const DAY_MS = 86_400_000;
 
 export const valleyDemo = (scenario: ValleyScenario, today: string): DemoData => {
-  const count = Number(scenario.slice('valley-'.length));
+  const stacked = scenario === 'valley-6-stacked';
+  const count = stacked ? 6 : Number(scenario.slice('valley-'.length));
   const data: Record<string, string> = {};
   const tasks: DemoData['tasks'] = {};
   const repeatCfgs: DemoData['repeatCfgs'] = {};
@@ -88,6 +105,47 @@ export const valleyDemo = (scenario: ValleyScenario, today: string): DemoData =>
     record(`pause:${run}:${day(10)}`, { action: 'pause', source: 'user' });
   };
   const at = (run: string, anchor: string) => record(`run-anchor:${run}`, { anchorId: anchor });
+  /** A journey growing at its second station, today open. */
+  const growing = (run: string, journeyId: string, [first, second]: string[], title: string) => {
+    record(`run:${run}`, { journeyId, journeyVersion: 1, startDay: day(10) });
+    record(`stage:${run}:${first}`, { acceptedDay: day(10) });
+    record(`stage-done:${run}:${first}`, { day: day(5), dataFormat: 2 });
+    record(`stage:${run}:${second}`, { acceptedDay: day(5) });
+    record(`binding:${run}:${second}`, {
+      taskId: `rpt_${run}_${day(5)}`,
+      repeatCfgId: run,
+      day: day(5),
+    });
+    repeat(run, title, 5, [5, 4, 2, 1]);
+  };
+
+  // One place with one to three things (#151): the first journey builds the
+  // ladder, the last one grows.
+  const one = /^place-(home|garden)-(\d)$/.exec(scenario);
+  if (one) {
+    const [, ladder, n] = one;
+    const things = Number(n);
+    const firstJourney =
+      ladder === 'home'
+        ? { id: 'pages-before-sleep', stages: ['one-page', 'read-5', 'read-10', 'read-20'] }
+        : { id: 'tidy-a-little', stages: ['one-thing', 'table', 'counter', 'one-more'] };
+    record('anchor:here', {
+      kind: 'routine',
+      words: own(ladder === 'home' ? 'brushing my teeth' : 'dinner'),
+    });
+    if (things === 1) growing('demo', firstJourney.id, firstJourney.stages, own('One small step'));
+    else {
+      finished('first', firstJourney.id, firstJourney.stages, 70);
+      at('first', 'here');
+      if (things === 3) {
+        finished('second', 'gentle-morning', ['water', 'stretch-1', 'stretch-5', 'plan-day'], 30);
+        at('second', 'here');
+      }
+      growing('demo', 'walk-after-lunch', ['door', 'walk-5'], own('Walk after lunch'));
+    }
+    at('demo', 'here');
+    return { tasks, repeatCfgs, data };
+  }
 
   const places = {
     morning: count >= 3 || count === 6,
@@ -114,6 +172,10 @@ export const valleyDemo = (scenario: ValleyScenario, today: string): DemoData =>
     );
     followed('desk', 'look-back', own('Look back at my week'));
     at('desk', 'desk');
+    if (stacked) {
+      finished('desk-2', 'gentle-morning', ['water', 'stretch-1', 'stretch-5', 'plan-day'], 15);
+      at('desk-2', 'desk');
+    }
   }
   // The growing step: a walk after lunch at station 2, today open.
   record('anchor:noon', { kind: 'routine', words: own('lunch') });
@@ -130,7 +192,14 @@ export const valleyDemo = (scenario: ValleyScenario, today: string): DemoData =>
   at('demo', 'noon');
   if (places.dinner) {
     record('anchor:dinner', { kind: 'routine', words: own('dinner') });
-    waiting('tidy', 'tidy-a-little', 'one-thing');
+    if (stacked) {
+      // three things: two finished journeys and one that waits
+      finished('tidy', 'tidy-a-little', ['one-thing', 'table', 'counter', 'one-more'], 50);
+      finished('dinner-2', 'evening-wind-down', ['charger', 'calm-2', 'calm-10', 'lights-out'], 8);
+      waiting('dinner-3', 'first-things-first', 'one-thing');
+      at('dinner-2', 'dinner');
+      at('dinner-3', 'dinner');
+    } else waiting('tidy', 'tidy-a-little', 'one-thing');
     at('tidy', 'dinner');
   }
   if (places.bed) {
@@ -138,6 +207,10 @@ export const valleyDemo = (scenario: ValleyScenario, today: string): DemoData =>
     finished('pages', 'pages-before-sleep', ['one-page', 'read-5', 'read-10', 'read-20'], 20);
     followed('pages', 'read-20', own('Read in my book'));
     at('pages', 'bed');
+    if (stacked) {
+      finished('bed-2', 'tidy-a-little', ['one-thing', 'table', 'counter', 'one-more'], 4);
+      at('bed-2', 'bed');
+    }
   }
   if (places.evening) {
     record('anchor:evening', { kind: 'time', time: '21:30', name: own('Evening') });

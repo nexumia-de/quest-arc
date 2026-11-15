@@ -88,9 +88,12 @@ piece"); the screen places nothing by hand.
 With [one](screenshots/valley-home-1-phone-light.png) and
 [six](screenshots/valley-home-6-phone-light.png) places, and
 [dark](screenshots/valley-home-6-desktop-dark.png) on the desktop.
-_Screenshots from demo data at 360 × 720 and 1000 × 700; the signs
-follow with #131; a place draws its first thing, the further things (up to
-three, game rules §8) follow with the place piece._
+_Screenshots from demo data at 360 × 720 and 1000 × 700._ A place draws
+every thing that stands there (up to three, game rules §8): the second
+and third behind the first (#151, [journey
+design](journey-design.md#the-place-piece-the-valley-127)); demo
+`valley-6-stacked`, [phone](screenshots/valley-home-stacked-phone.png) and
+[desktop](screenshots/valley-home-stacked-desktop.png), light and dark.
 
 - **The scene** is the page's picture. Per place, from the layout: the
   ground in the place's hue, blending into the next place's; the path and
@@ -237,11 +240,12 @@ lantern is lit beside the doorstep (#131)._
   Back leads to the Valley.
 - **The place piece**, large (the Valley's layout for one place,
   [journey design](journey-design.md#the-place-piece-the-valley-127), 230
-  units high): the ground in the place's hue, the path and the bay, the
-  thing in the version that stands and its hue, the name; the place's
-  sign (flowers, the lit lantern) in the layers of the Valley's scene (#131). The
-  **pencil** at its top right (44 × 44) opens "Change this moment"
-  (screen 0a). Where nothing stands yet the piece is plain land with the
+  units high): the ground in the place's hue, the path and the bay, every
+  thing at the place in the version that stands and its hue (the second
+  and third behind the first, #151), the name; the place's sign (the lit
+  lantern) in the layers of the Valley's scene (#131). The **pencil** at
+  its top corner on the free side of the path (44 × 44), clear of the
+  things behind, opens "Change this moment" (screen 0a). Where nothing stands yet the piece is plain land with the
   name.
 - **The versions that stand**, as on the journey screen (the row of
   small pictures with their numbers; a version that stands for a skipped
@@ -393,11 +397,13 @@ Opened from the growing step of a moment (screen 0); back leads there.
   design](journey-design.md#the-journey-screen-with-the-build)). The
   title is the place's name. The upper part is the **place piece drawn
   large** (screen 0b) in the place's hue instead of the ladder's own
-  setting: the thing this journey builds (the place's first thing, or,
-  for a further journey, its own: [game rules](game-rules.md) §8, a
-  further journey builds another thing of the same kind from version 1)
-  in its current version, and the marker standing in front of it, mapped
-  onto the thing's slot (so it never crosses the path), with its first
+  setting: every thing of the place where it stands (the second and
+  third behind the first, #151); the one this journey builds (the
+  place's first thing, or, for a further journey, its own: [game
+  rules](game-rules.md) §8, a further journey builds another thing of the
+  same kind from version 1) in its current version, and the marker
+  standing at its foot in front of every thing, mapped onto that thing's
+  box (so it never crosses the path and nothing hides it), with its first
   `ceil(markerProgress × E)` elements, all hanging elements "on" while
   ready. The pencil on it opens "Change this moment" (screen 0a). A
   journey from before anchors has no place yet: it stands on a place made

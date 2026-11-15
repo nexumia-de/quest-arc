@@ -69,9 +69,8 @@ falls to zero; the run text ("Run 4 · best 6") stays next to the marks.
 A further journey from the same moment builds another thing on the
 **first journey's ladder**, starting at version 1; at most three things
 stand at a place (`THINGS_PER_PLACE`), a fourth journey builds none.
-There are no surroundings. The place piece's room for stacked things
-(second and third behind the first, slightly smaller, in the far depth
-band) is its own issue.
+There are no surroundings. The second and third stand behind the first
+([the place piece](#the-place-piece-the-valley-127), #151).
 
 Decided by the owner on 2026-11-12[^42]: a journey builds **one thing**,
 whole at every stage, and every stage makes it a larger version. A
@@ -424,6 +423,25 @@ the day, and the scene's width and height, and returns:
   scene's edge (8) to 15 from the centre line: two lines of 14 on 18 at
   most, then an ellipsis; the block hugs the path (`align`), its lines
   start left (Chromium drops the ellipsis of right-aligned clamped text);
+- per place **every thing's box**, front to back (`things`; the input
+  `things` gives how many stand at each place, one to three, #151): the
+  first is the slot and never moves for the ones behind. The second and
+  third stand **behind** it in a row, higher on the ground (their base
+  lines 72 and 78 build units above the first's, so their feet stand
+  above the roof of the first's tallest version and a small growing
+  version and its marker stay in view), smaller (0.64 of the first,
+  the far band), the second at the edge of the first's box away from
+  the path, the third at the other edge a little higher, partly hidden
+  by the second; where the path comes nearer than `clearance` the third
+  slides away from it, and where it would then show less than half its
+  width beside the second, both are drawn smaller (`besideShare`). The
+  doorstep and the lantern belong to the first. The first things keep
+  the size they have without the ones behind; where the band above a
+  place is taken (the scene's top, another place's name or plot) the
+  scene grows there by what the things behind need, so six places with
+  several things scroll a little. Owner's choice to judge: the things
+  behind are only a little hidden by the first, since a growing one is
+  usually small and must stay in view;
 - **joints** where the path crosses the piece's upper and lower edge and
   the path within the piece, so a single piece can be drawn large as the
   setting of the place screen.
@@ -441,9 +459,19 @@ without a use, no water, no bridge; nothing crosses the path.
 12 places with the things alternating from either side, every choice of
 sides up to six places and the scene at 720 wide: no plot and no name box
 comes nearer than 15 to the centre line or leaves the scene, every slot
-lies in its plot, no two boxes overlap, a name box holds at least 5.5 characters, every bay stays on its
+lies in its plot, no two boxes overlap, a name box holds at least 5.5 characters and two lines, every bay stays on its
 side of the centre line at every height and reaches the slot's far side,
-the doorstep lies on the bay, the path runs edge to edge. The palette
+the doorstep lies on the bay, the path runs edge to edge. With one to
+three things at each place (#151; every count and mix for 1 to 12
+places from either side, every choice of sides up to six, at 720, 480
+and one place's 230 high, and at 720 wide): every thing behind stays in
+the scene, 15 from the centre line and clear of every other place,
+stands higher and smaller than the one in front and overlaps it, the
+third shows at least half its width beside the second, none covers the
+doorstep or the lantern's room, and every thing's marker band (its box's
+lowest 20 build units) stays in the scene, clear of the lantern's room,
+the name and every other place. The marker is drawn in front of every
+thing, so nothing hides it. The palette
 check (`art-palette.ts`) requires the hosts' text on every hue's `tint`,
 and where two hues' tints blend, at 4.5 : 1, light and dark, on every
 host card; the tint itself is decorative and not tested.
@@ -457,6 +485,23 @@ colours, light left, dark right; example words and hues):
 ![The Valley with three places](screenshots/valley-3.png)
 
 ![The Valley with six places](screenshots/valley-6.png)
+
+Six places with two and three things (#151), and one place with one,
+two and three things as its page draws it (230 high; light above, dark
+below):
+
+![The Valley with six places, some with two or three things](screenshots/valley-stacked-6.png)
+
+![Home with one, two and three things](screenshots/valley-place-stacked-home.png)
+
+![Garden with one, two and three things](screenshots/valley-place-stacked-garden.png)
+
+In the plugin (demos `place-home-1` … `place-garden-3`, the last journey
+growing, its marker in view): [Home](screenshots/valley-place-home-things-phone.png)
+and [Garden](screenshots/valley-place-garden-things-phone.png) at 360 × 720,
+[Home](screenshots/valley-place-home-3-desktop.png) and
+[Garden](screenshots/valley-place-garden-3-desktop.png) with three things
+at 1000 × 700.
 
 The same scenes drawn at 720 wide in a 1280 wide window:
 [one](screenshots/valley-desktop-1.png),

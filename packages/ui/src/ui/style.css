@@ -959,8 +959,16 @@
 .qa-place-edit {
   position: absolute;
   top: var(--s-half, 4px);
-  inset-inline-end: var(--s-half, 4px);
   background: color-mix(in srgb, var(--bg-lighter, #fff) 80%, transparent);
+}
+
+/* on the free side of the path, clear of the things behind the first (#151) */
+.qa-place-edit[data-free='left'] {
+  left: var(--s-half, 4px);
+}
+
+.qa-place-edit[data-free='right'] {
+  right: var(--s-half, 4px);
 }
 
 .qa-place {

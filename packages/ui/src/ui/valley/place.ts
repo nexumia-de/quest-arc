@@ -68,6 +68,7 @@ export const placePiece = (
           'button',
           {
             class: 'qa-icon-btn qa-place-edit',
+            'data-free': place.side === 'right' ? 'left' : 'right',
             type: 'button',
             title: t('ui.moment.change'),
             'aria-label': t('ui.moment.change'),
