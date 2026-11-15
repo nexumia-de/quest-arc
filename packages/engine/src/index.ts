@@ -21,6 +21,8 @@ export type {
   StationRun,
   StationState,
   StationView,
+  ValleyPlace,
+  ValleyThing,
   WeeklyAnswers,
 } from './types/view';
 export type { GameEvent } from './diff';
@@ -36,11 +38,14 @@ export {
   callItAPause,
   carryOn,
   chooseBuild,
+  choosePlaceHue,
+  choosePlaceSide,
   confirmAnchor,
   continueJourney,
   endJourney,
   graduate,
   graduateLater,
+  movePlace,
   nameAnchor,
   pairStage,
   pauseJourney,
@@ -54,6 +59,7 @@ export {
   stepBack,
   undoSkip,
   withdraw,
+  withdrawPlace,
 } from './actions';
 export type { RecordChanges } from './actions';
 export { guardWrite } from './guard';
@@ -91,6 +97,9 @@ export { journeyProblems, languageProblems, TEXT_LIMITS } from './content-check'
 export type { Problem } from './content-check';
 export { isScheduled, isSupported } from './schedule';
 export { LADDERS, markerFits, resolveBuild } from './ladders';
+export { SURROUNDINGS_STEPS } from './valley';
+export { DAYPARTS } from './types/journey';
+export type { Daypart } from './types/journey';
 export type { BuildChoice, Ladder, LadderList } from './ladders';
 export { isoWeek } from './days';
 export { cubicPathData, pathPoints, VALLEY, valleyLayout } from './valley-layout';
@@ -102,6 +111,6 @@ export type {
   Side,
   ValleyInput,
   ValleyLayout,
-  ValleyPlace,
+  ValleyPiece,
 } from './valley-layout';
 export { valleyProblems } from './art-valley-check';

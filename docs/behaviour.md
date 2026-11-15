@@ -226,7 +226,9 @@ as their own page from **What you build** in the journey's menu
   disabled and says "Only on land"; a marker that no longer fits after
   changing the ladder falls back to the ladder's own.
 - **Colour**: the eight hues of the palette, each a swatch with its name
-  (the name carries it, not the colour).
+  (the name carries it, not the colour). The engine no longer reads a
+  run's hue: it belongs to the place ([game rules](game-rules.md) §8,
+  #126); the picker moves to the place with the Valley's screens.
 - On screen 3 the choice is written with **Start**; from the menu each
   change is written at once (`chooseBuild`). Only what the user picked
   is stored; the rest follows the journey. Changing later loses nothing:

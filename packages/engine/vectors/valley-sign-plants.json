@@ -1,0 +1,166 @@
+{
+  "name": "A step still followed puts plants at the place; a step that runs by itself puts the lantern only when none is still followed",
+  "rule": "game rules \u00a78, the Valley; issue #126",
+  "kind": "evaluate",
+  "input": {
+    "day": {
+      "todayStr": "2026-11-11",
+      "startOfNextDayDiffMs": 0,
+      "timeZone": "Europe/Berlin"
+    },
+    "tasks": [],
+    "repeatCfgs": [
+      {
+        "id": "cfgC",
+        "repeatCycle": "DAILY",
+        "repeatEvery": 1,
+        "startDate": "2026-09-01"
+      }
+    ],
+    "choices": {
+      "anchor:m1": {
+        "kind": "routine",
+        "words": "getting up"
+      },
+      "run:r1": {
+        "journeyId": "test-daily",
+        "journeyVersion": 1,
+        "startDay": "2026-08-01"
+      },
+      "run-anchor:r1": {
+        "anchorId": "m1"
+      },
+      "stage:r1:a": {
+        "acceptedDay": "2026-08-01"
+      },
+      "stage-done:r1:a": {
+        "day": "2026-08-15",
+        "dataFormat": 2
+      },
+      "stage:r1:b": {
+        "acceptedDay": "2026-08-15"
+      },
+      "stage-done:r1:b": {
+        "day": "2026-09-01",
+        "dataFormat": 2
+      },
+      "stage:r1:c": {
+        "acceptedDay": "2026-09-01"
+      },
+      "stage-done:r1:c": {
+        "day": "2026-10-01",
+        "dataFormat": 2
+      },
+      "run-end:r1": {
+        "day": "2026-10-01",
+        "reason": "finished"
+      },
+      "binding:r1:c": {
+        "taskId": "rpt_cfgC_2026-09-01",
+        "repeatCfgId": "cfgC",
+        "day": "2026-09-01"
+      },
+      "graduation:r1:c:2026-10-28": {
+        "choice": "keep",
+        "until": "2026-11-10"
+      },
+      "anchor:m2": {
+        "kind": "routine",
+        "words": "lunch"
+      },
+      "run:r2": {
+        "journeyId": "test-morning",
+        "journeyVersion": 1,
+        "startDay": "2026-08-02"
+      },
+      "run-anchor:r2": {
+        "anchorId": "m2"
+      },
+      "stage:r2:a": {
+        "acceptedDay": "2026-08-02"
+      },
+      "stage-done:r2:a": {
+        "day": "2026-08-15",
+        "dataFormat": 2
+      },
+      "stage:r2:b": {
+        "acceptedDay": "2026-08-15"
+      },
+      "stage-done:r2:b": {
+        "day": "2026-09-01",
+        "dataFormat": 2
+      },
+      "stage:r2:c": {
+        "acceptedDay": "2026-09-01"
+      },
+      "stage-done:r2:c": {
+        "day": "2026-10-01",
+        "dataFormat": 2
+      },
+      "run-end:r2": {
+        "day": "2026-10-01",
+        "reason": "finished"
+      },
+      "binding:r2:c": {
+        "taskId": "rpt_cfgC_2026-09-01",
+        "repeatCfgId": "cfgC",
+        "day": "2026-09-01"
+      },
+      "graduation:r2:c:2026-10-28": {
+        "choice": "end"
+      },
+      "run:r3": {
+        "journeyId": "test-build",
+        "journeyVersion": 1,
+        "startDay": "2026-09-02"
+      },
+      "run-anchor:r3": {
+        "anchorId": "m2"
+      },
+      "stage:r3:a": {
+        "acceptedDay": "2026-09-02"
+      },
+      "stage-done:r3:a": {
+        "day": "2026-09-10",
+        "dataFormat": 2
+      },
+      "stage:r3:b": {
+        "acceptedDay": "2026-09-10"
+      },
+      "stage-done:r3:b": {
+        "day": "2026-09-20",
+        "dataFormat": 2
+      },
+      "stage:r3:c": {
+        "acceptedDay": "2026-09-20"
+      },
+      "stage-done:r3:c": {
+        "day": "2026-09-30",
+        "dataFormat": 2
+      },
+      "run-end:r3": {
+        "day": "2026-09-30",
+        "reason": "finished"
+      },
+      "binding:r3:c": {
+        "taskId": "rpt_cfgD_2026-09-20",
+        "repeatCfgId": "cfgD",
+        "day": "2026-09-20"
+      }
+    },
+    "journeys": ["$test-daily", "$test-build", "$test-morning", "$test-night"]
+  },
+  "expect": {
+    "valley": [
+      {
+        "anchorId": "m2",
+        "sign": "lantern"
+      },
+      {
+        "anchorId": "m1",
+        "sign": "plants"
+      }
+    ],
+    "problems": []
+  }
+}

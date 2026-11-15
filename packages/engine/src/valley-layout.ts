@@ -50,7 +50,7 @@ export interface Ellipse {
   ry: number;
 }
 
-export interface ValleyPlace {
+export interface ValleyPiece {
   side: Side;
   /** The band of the scene this place owns, full width, from joint to joint. */
   piece: Box;
@@ -80,7 +80,7 @@ export interface ValleyLayout {
   pathWidth: number;
   /** The whole centre line, top edge to bottom edge. */
   path: Cubic[];
-  places: ValleyPlace[];
+  places: ValleyPiece[];
 }
 
 /** The rule's numbers, for a scene 360 wide. */
@@ -295,7 +295,7 @@ export const valleyLayout = ({
     sides.every((side, i) => slotAt(points, bends[i] as Point, side, s, scene, true)),
   );
 
-  const places = sides.map((side, i): ValleyPlace => {
+  const places = sides.map((side, i): ValleyPiece => {
     const bend = bends[i] as Point;
     const half = pieces[i] as [Cubic, Cubic];
     const slot = slotAt(points, bend, side, scale, scene, true) ?? {

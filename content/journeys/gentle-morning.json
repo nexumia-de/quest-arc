@@ -11,7 +11,8 @@
   },
   "anchor": {
     "moment": "gentle-morning.moment",
-    "example": "gentle-morning.anchor"
+    "example": "gentle-morning.anchor",
+    "daypart": "morning"
   },
   "stages": [
     {

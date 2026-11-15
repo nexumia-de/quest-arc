@@ -1,3 +1,7 @@
+/** The kinds of moment in a day, from morning to night (docs/story-format.md, Anchor). */
+export const DAYPARTS = ['morning', 'midday', 'afternoon', 'evening', 'night'] as const;
+export type Daypart = (typeof DAYPARTS)[number];
+
 /** A journey in story format 3 (docs/story-format.md). */
 export interface Journey {
   readonly format: 3;
@@ -25,6 +29,8 @@ export interface Journey {
     readonly example: string;
     /** Suggests a fixed time instead of a routine, "HH:MM". */
     readonly time?: string;
+    /** When in the day the moment usually falls: its default place on the Valley's path. */
+    readonly daypart?: Daypart;
   };
   /** Texts by language, then text key; `en` is required in content files. */
   readonly texts?: Texts;
