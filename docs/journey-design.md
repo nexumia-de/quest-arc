@@ -119,7 +119,13 @@ including the marker's; the setting is `setting-<kind>.svg`. Checked by
 `ladderProblems` (`packages/engine/src/art-ladder-check.ts`) in
 `npm run journeys`. The coordinates of every ladder come from
 `scripts/draw-ladders.mjs`: change the numbers there and run it, never
-edit the generated files by hand.
+edit the generated files by hand. Outlines, cut-outs and stonework are
+built with a geometry library (`scripts/ladder-geometry.mjs`), and the
+script measures every version before it writes
+(`scripts/ladder-checks.mjs`): the thing inside its box, at least 5 % more
+area than the version before, the threshold stone free; a ladder that
+breaks one is not written, and `npm run journeys` measures the committed
+pictures the same way ([decision](decisions/ladder-geometry.md)).
 
 **Rules for drawing a ladder** (a new ladder comes by pull request like a
 journey):

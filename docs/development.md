@@ -176,7 +176,7 @@ itself has the demos `build`, `build-ready` and `build-crossing`
 `preview.tick()` in the console ticks today off, to see new marker
 elements grow in. The plugin bundles only the pictures of the ladders
 (`esbuildLadderArt` in `packages/ui/art.mjs`); the preview pages have all of them. The ladders' files
-come from `node scripts/draw-ladders.mjs`. Day Planner's demo draws the same parts
+come from `node scripts/draw-ladders.mjs`, which measures every version before it writes and stops with the broken rule ([decision](decisions/ladder-geometry.md)). Day Planner's demo draws the same parts
 (`tests/art_demo.py sizes|sequence-<ladder>|journey-<ladder>|palette` in
 nexumia-de/pensum, through phosh-toolkit's `screenshot.sh -c light|dark`).
 
