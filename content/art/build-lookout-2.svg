@@ -7,5 +7,5 @@
   <path class="bg" d="M38 55.6L35 72.2L33.6 71.9L36.6 55.3ZM86.4 71.9L85 72.2L82 55.6L83.4 55.3Z"/>
   <rect class="fg" x="34.7" y="48" width="50.6" height="6"/>
   <rect class="accent" x="36.7" y="50" width="46.6" height="2"/>
-  <path class="fg" d="M72.3 54H74.1V74H72.3ZM81.3 54H83.1V74H81.3ZM72.3 70H83.1V71.6H72.3ZM72.3 64H83.1V65.6H72.3Z"/>
+  <path class="fg" d="M72.3 54H74.1V74H72.3ZM81.3 54H83.1V74H81.3ZM72.3 70H83.1V71.6H72.3ZM72.3 64H83.1V65.6H72.3ZM72.3 58H83.1V59.6H72.3Z"/>
 </svg>

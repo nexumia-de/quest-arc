@@ -7,7 +7,7 @@
   <path class="bg" d="M42.4 31.6L39.6 46.7L38.3 46.4L41 31.3ZM81.7 46.4L80.4 46.7L77.6 31.6L79 31.3Z"/>
   <rect class="fg" x="39.1" y="24" width="41.8" height="6"/>
   <rect class="accent" x="41.1" y="26" width="37.8" height="2"/>
-  <path class="fg" d="M44 30H45.8V48H44ZM53 30H54.8V48H53ZM44 44H54.8V45.6H44ZM44 38H54.8V39.6H44ZM42.1 16H45.1V24H42.1ZM74.9 16H77.9V24H74.9Z"/>
+  <path class="fg" d="M44 30H45.8V48H44ZM53 30H54.8V48H53ZM44 44H54.8V45.6H44ZM44 38H54.8V39.6H44ZM44 32H54.8V33.6H44ZM42.1 16H45.1V24H42.1ZM74.9 16H77.9V24H74.9Z"/>
   <path class="bg" d="M43.5 17.4H43.7V22.6H43.5ZM76.3 17.4H76.5V22.6H76.3Z"/>
   <polygon class="fg" points="60,9 86.9,17 33.1,17"/>
   <polygon class="bg" points="73.2,15 46.8,15 60,11.1"/>
@@ -15,5 +15,5 @@
   <path class="bg" d="M38 55.6L35 72.2L33.6 71.9L36.6 55.3ZM86.4 71.9L85 72.2L82 55.6L83.4 55.3Z"/>
   <rect class="fg" x="34.7" y="48" width="50.6" height="6"/>
   <rect class="bg" x="36.7" y="50" width="46.6" height="2"/>
-  <path class="fg" d="M72.3 54H74.1V74H72.3ZM81.3 54H83.1V74H81.3ZM72.3 70H83.1V71.6H72.3ZM72.3 64H83.1V65.6H72.3Z"/>
+  <path class="fg" d="M72.3 54H74.1V74H72.3ZM81.3 54H83.1V74H81.3ZM72.3 70H83.1V71.6H72.3ZM72.3 64H83.1V65.6H72.3ZM72.3 58H83.1V59.6H72.3Z"/>
 </svg>

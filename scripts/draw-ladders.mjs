@@ -731,7 +731,8 @@ const lookout = (v) => {
   const ladder = (x, top, bottom) => [
     rect('fg', x, top, 1.8, bottom - top),
     rect('fg', x + 9, top, 1.8, bottom - top),
-    ...Array.from({ length: Math.floor((bottom - top - 3) / 6) }, (_, i) =>
+    // rungs every 6 from the foot up to just under the deck
+    ...Array.from({ length: Math.floor((bottom - 4 - top - 1) / 6) + 1 }, (_, i) =>
       rect('fg', x, bottom - 4 - i * 6, 10.8, 1.6),
     ),
   ];
