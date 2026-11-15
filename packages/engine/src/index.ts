@@ -111,6 +111,6 @@ export type {
   Side,
   ValleyInput,
   ValleyLayout,
-  ValleyPlace,
+  ValleyPiece,
 } from './valley-layout';
 export { valleyProblems } from './art-valley-check';
