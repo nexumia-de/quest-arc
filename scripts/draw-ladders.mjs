@@ -510,8 +510,7 @@ build('garden-5', 'An orchard around a greenhouse', [
 // Well: a hole dug for water that grows into a well house, in front of the
 // same threshold stone as Home's. Size and form both grow, step by step in
 // how water is drawn: a water hole, a well sweep, a round well with a
-// winch, the well under a roof, a stone well house over it with a hand
-// pump in front. Water is `tint-strong`; the
+// winch, the well under a roof, a stone well house over it. Water is `tint-strong`; the
 // accent is the bucket.
 const WELL_WAYS = HOME_WAYS;
 const rock = (cx, cy, rx, ry) => ellipseO(cx, cy, rx, ry, 1.6);
@@ -636,8 +635,6 @@ build('well-4', 'A well under a roof', [
 // The well house: the well stands inside, under a tall arch: the shade
 // inside the arch, a smaller well set back on its floor, then the front
 // wall with the arch cut out over it, so the wall's edges cover the well's.
-// The next technique joins it instead of replacing it: a cast-iron hand
-// pump with a trough in front of the wall, beside the threshold.
 const ARCH = [[26, 74], ...dome(60, 60, 34, 28), [94, 74]];
 /** Where the arch and its outline cut a course at height y: [left, right], or none above it. */
 const archAt = (y) => {
@@ -653,7 +650,7 @@ const FRONT = [
   [112, 74],
   [8, 74],
 ];
-build('well-5', 'A well house with a pump', [
+build('well-5', 'A well house', [
   yard(),
   ...polyO(
     [
@@ -675,18 +672,7 @@ build('well-5', 'A well house with a pump', [
     ring(inset(FRONT, T)) + ring(inset(ARCH, -T).map(([x, y]) => [x, Math.min(y, 74 - T)])),
     true,
   ),
-  // no joints behind the pump, so it stands clear against the wall
-  masonry(10, 30, 110, 73, 7, 9, (y) => {
-    const gap = archAt(y);
-    return y > 37 && gap ? [gap[0], 120] : gap;
-  }),
-  // the next technique joins what stands: a hand pump with its trough
-  ...polyO(bar(99, 45, 84, 34, 4), 1.4),
-  ...boxO(95, 43, 9, 31, T),
-  ...boxO(93, 39, 13, 6, T, 2),
-  ...boxO(103, 48, 11, 5, T),
-  ...boxO(103, 61, 16, 13, T),
-  rect('tint-strong', 105, 63, 12, 3),
+  masonry(10, 30, 110, 73, 7, 9, archAt),
 ]);
 
 // ---- markers: drawn once for every ladder (32 × 32) ---------------------
@@ -1191,7 +1177,7 @@ ladder(
       { art: 'build-well-2', title: 'A well sweep' },
       { art: 'build-well-3', title: 'A well with a winch' },
       { art: 'build-well-4', title: 'A roofed well' },
-      { art: 'build-well-5', title: 'A well house with a pump' },
+      { art: 'build-well-5', title: 'A well house' },
     ],
   },
   groundOf('green'),
