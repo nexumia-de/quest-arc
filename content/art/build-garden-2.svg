@@ -1,0 +1,53 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 80">
+  <title>A garden in rows</title>
+  <ellipse class="tint-strong" cx="60" cy="75" rx="54" ry="4.6"/>
+  <rect class="fg" x="53" y="74" width="14" height="3.5" rx="1"/>
+  <rect class="bg" x="54.4" y="75.4" width="11.2" height="0.7"/>
+  <rect class="fg" x="59" y="28" width="2" height="30"/>
+  <ellipse class="fg" cx="55.5" cy="46" rx="4.5" ry="2.4"/>
+  <ellipse class="bg" cx="55.5" cy="46" rx="3.1" ry="1"/>
+  <ellipse class="fg" cx="64.5" cy="40" rx="4.5" ry="2.4"/>
+  <ellipse class="bg" cx="64.5" cy="40" rx="3.1" ry="1"/>
+  <ellipse class="fg" cx="60" cy="28" rx="6.5" ry="6.5"/>
+  <ellipse class="accent" cx="60" cy="28" rx="4.7" ry="4.7"/>
+  <ellipse class="fg" cx="60" cy="28" rx="2" ry="2"/>
+  <ellipse class="fg" cx="34" cy="55.2" rx="7" ry="6.3"/>
+  <ellipse class="bg" cx="34" cy="55.2" rx="5.4" ry="4.7"/>
+  <rect class="fg" x="33.2" y="50.3" width="1.6" height="7.7"/>
+  <ellipse class="fg" cx="46" cy="55.2" rx="7" ry="6.3"/>
+  <ellipse class="bg" cx="46" cy="55.2" rx="5.4" ry="4.7"/>
+  <rect class="fg" x="45.2" y="50.3" width="1.6" height="7.7"/>
+  <ellipse class="fg" cx="74" cy="55.2" rx="7" ry="6.3"/>
+  <ellipse class="bg" cx="74" cy="55.2" rx="5.4" ry="4.7"/>
+  <rect class="fg" x="73.2" y="50.3" width="1.6" height="7.7"/>
+  <ellipse class="fg" cx="86" cy="55.2" rx="7" ry="6.3"/>
+  <ellipse class="bg" cx="86" cy="55.2" rx="5.4" ry="4.7"/>
+  <rect class="fg" x="85.2" y="50.3" width="1.6" height="7.7"/>
+  <rect class="fg" x="26" y="58" width="68" height="16" rx="1"/>
+  <rect class="bg" x="28" y="60" width="64" height="12"/>
+  <rect class="fg" x="26" y="65.2" width="68" height="1.6"/>
+  <ellipse class="fg" cx="23" cy="63.8" rx="5.5" ry="5"/>
+  <ellipse class="bg" cx="23" cy="63.8" rx="3.9" ry="3.4"/>
+  <rect class="fg" x="22.2" y="60" width="1.6" height="6.1"/>
+  <ellipse class="fg" cx="34" cy="63.8" rx="5.5" ry="5"/>
+  <ellipse class="bg" cx="34" cy="63.8" rx="3.9" ry="3.4"/>
+  <rect class="fg" x="33.2" y="60" width="1.6" height="6.1"/>
+  <ellipse class="fg" cx="45" cy="63.8" rx="5.5" ry="5"/>
+  <ellipse class="bg" cx="45" cy="63.8" rx="3.9" ry="3.4"/>
+  <rect class="fg" x="44.2" y="60" width="1.6" height="6.1"/>
+  <ellipse class="fg" cx="75" cy="63.8" rx="5.5" ry="5"/>
+  <ellipse class="bg" cx="75" cy="63.8" rx="3.9" ry="3.4"/>
+  <rect class="fg" x="74.2" y="60" width="1.6" height="6.1"/>
+  <ellipse class="fg" cx="86" cy="63.8" rx="5.5" ry="5"/>
+  <ellipse class="bg" cx="86" cy="63.8" rx="3.9" ry="3.4"/>
+  <rect class="fg" x="85.2" y="60" width="1.6" height="6.1"/>
+  <ellipse class="fg" cx="97" cy="63.8" rx="5.5" ry="5"/>
+  <ellipse class="bg" cx="97" cy="63.8" rx="3.9" ry="3.4"/>
+  <rect class="fg" x="96.2" y="60" width="1.6" height="6.1"/>
+  <rect class="fg" x="16" y="66" width="36" height="8" rx="1"/>
+  <rect class="bg" x="18" y="68" width="32" height="4"/>
+  <rect class="fg" x="16" y="69.2" width="36" height="1.6"/>
+  <rect class="fg" x="68" y="66" width="36" height="8" rx="1"/>
+  <rect class="bg" x="70" y="68" width="32" height="4"/>
+  <rect class="fg" x="68" y="69.2" width="36" height="1.6"/>
+</svg>

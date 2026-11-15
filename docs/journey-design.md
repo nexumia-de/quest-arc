@@ -67,7 +67,8 @@ Decided by the owner on 2026-11-12[^42]: a journey builds **one thing**,
 whole at every stage, and every stage makes it a larger version. A
 **ladder** is that thing drawn once in five versions and used by every
 journey that picks it. The first two ladders, Crossing (with lanterns
-and with pennants) and Home (with pennants and with flowers); plugin
+and with pennants) and Home (with pennants and with flowers), then Garden
+(with flowers, #128); plugin
 light above, Day Planner dark below (scale 2). Each version, then its
 marker growing element by element (every element for the first stage, a
 few sampled steps for the others), ready, then the next version:
@@ -79,6 +80,16 @@ few sampled steps for the others), ready, then the next version:
 ![Home with pennants](screenshots/ladder-home.png)
 
 ![Home with flowers](screenshots/ladder-home-flowers.png)
+
+![Garden with flowers](screenshots/ladder-garden.png)
+
+Garden's five versions at the journey screen's size (360 px wide) and the
+row of versions at 60 × 40 px, plugin light above, dark below, and the
+journey mock at 360 × 720 (mid-way and ready, light and dark):
+
+![Garden, versions and row](screenshots/ladder-garden-versions.png)
+
+![Garden, journey mock](screenshots/ladder-garden-journey.png)
 
 The journey screen as a static mock (plugin and Day Planner side by side;
 Crossing above, Home below; first mid-way, posts up and two elements
@@ -97,7 +108,7 @@ title), optionally the part of every version the row of versions shows
 (`row`), the way points (`ways`) and the setting with its places,
 including the marker's; the setting is `setting-<kind>.svg`. Checked by
 `ladderProblems` (`packages/engine/src/art-ladder-check.ts`) in
-`npm run journeys`. The coordinates of both ladders come from
+`npm run journeys`. The coordinates of every ladder come from
 `scripts/draw-ladders.mjs`: change the numbers there and run it, never
 edit the generated files by hand.
 
@@ -116,8 +127,9 @@ journey):
    way points: its walking surface runs from x = 14 to x = 106 at
    y = 57–64 in every version, and the setting's path ends exactly there
    on both banks, as thick as the surface. A build the way leads to (a
-   home) has one: the threshold stone (x = 53–67, y = 74–77.5) in front
-   of the fire, the tent's opening and each door, where the path ends.
+   home or a garden) has one: the threshold stone (x = 53–67,
+   y = 74–77.5) in front of the fire, the tent's opening and each door,
+   or of the garden's bed and the greenhouse door, where the path ends.
    `ways` lists them; the checker requires a corner of every version and
    of the setting's path at each way point.
 4. **Water runs through.** Water in a setting runs from edge to edge (the
@@ -141,9 +153,12 @@ journey):
    before and also different in form, so the row reads as a story: Home
    is a fire in a ring of single stones, a tent, a hut under a round
    thatch, a cottage with a pitched roof and chimney, a house of two
-   storeys.
+   storeys. Garden is one raised bed with a sunflower, two rows of beds,
+   the rows before a hedge with a fruit tree, a greenhouse between hedges
+   and trees, an orchard of five fruit trees around the greenhouse.
 8. **Look.** Outlined in `fg` with a `bg` fill, one `accent` detail (the
-   flame, a glowing door or window, the keystone, a rail cap), water and
+   flame, a glowing door or window, the keystone, a rail cap, the
+   sunflower, the fruit), water and
    the yard in `tint-strong` of the region's hue. The setting is quiet:
    ground and far trees in `tint`, a few reused plants (tuft, reeds, bush,
    flowers, far trees) in the [depth bands](#look-and-depth-bands).
@@ -182,7 +197,7 @@ bridge is ready" while it is met.
 **Marker kinds** (`content/art/markers.json`), each drawn once and used
 with every ladder and setting; what hangs is the user's choice per
 journey, the ladder only gives the default (`marker`: Crossing lanterns,
-Home pennants):
+Home pennants, Garden flowers):
 
 - **lanterns**: small lanterns, outlined; ready filled with a flame, a
   halo and rays.
@@ -207,8 +222,8 @@ path meets the build:
   bank and one line across the water in front of the bridge, sagging
   gently.
 - `sides`: two short lines, left and right, with a gap in the middle
-  (four posts, two on each side). For a way leading to the build (Home:
-  the path to the door) or a build on water (a boat: the gap is the
+  (four posts, two on each side). For a way leading to the build (Home
+  and Garden: the path to the threshold) or a build on water (a boat: the gap is the
   waterway).
 - **Choosing**: the gap is wherever the user's way or view to the build
   passes. If nothing passes in front of the build, `span`; otherwise
@@ -268,7 +283,7 @@ on its own screen as below, and the hue belongs to the run.
 hues, a light and a dark value each); `fg`, `bg` and `dim` stay the
 host's, and the path, card and controls keep the host's accent. The
 setting's kind sets the default (river: water blue; clearing: meadow
-green). Each hue is checked by computation (WCAG relative luminance) in
+green; Garden's open fields: moss). Each hue is checked by computation (WCAG relative luminance) in
 both repositories: `accent` at least 3 : 1 against every host card (WCAG
 1.4.11, non-text), `tint-strong` at least 1.5 : 1 (decorative, but the
 water must show) and the outline `fg` at least 3 : 1 on `tint-strong`;

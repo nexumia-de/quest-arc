@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 180">
+  <title>Open fields</title>
+  <path class="tint" d="M0 58C40 44 80 42 120 50C160 58 200 40 250 38C285 37 305 44 320 50V180H0Z"/>
+  <path class="tint-strong" d="M0 150C26 142 60 150 80 180H0Z"/>
+  <path class="tint-strong" d="M320 146C296 146 280 158 268 180H320Z"/>
+  <path class="bg" d="M128 180L130.5 176C139 163 146 155 147.8 146.1H172.3C174 155 181 163 189.5 176L192 180Z"/>
+</svg>

@@ -1,6 +1,7 @@
 // Named imports, so the bundles keep only these fields and none of the
 // pictures' coordinates (the plugin's view has a size limit).
 import * as crossing from '../../../content/art/crossing.ladder.json';
+import * as garden from '../../../content/art/garden.ladder.json';
 import * as home from '../../../content/art/home.ladder.json';
 import markers from '../../../content/art/markers.json';
 import palette from '../../../content/art/palette.json';
@@ -31,6 +32,12 @@ const SOURCES: Readonly<Record<string, LadderFile>> = {
     water: crossing.water,
     marker: crossing.marker,
     hue: crossing.hue,
+  },
+  garden: {
+    versions: garden.versions,
+    water: garden.water,
+    marker: garden.marker,
+    hue: garden.hue,
   },
 };
 
