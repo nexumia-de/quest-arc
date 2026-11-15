@@ -507,10 +507,10 @@ build('garden-5', 'An orchard around a greenhouse', [
   ...greenhouse(),
 ]);
 
-// Well: a spring that grows into a well house, in front of the same
-// threshold stone as Home's. Size and form both grow: a basin of stones
-// under a spring, a trough fed by the spring, a round well with a winch, the
-// well under a roof, a stone well house over it. Water is `tint-strong`; the
+// Well: a hole dug for water that grows into a well house, in front of the
+// same threshold stone as Home's. Size and form both grow, step by step in
+// how water is drawn: a water hole, a well sweep, a round well with a
+// winch, the well under a roof, a stone well house over it. Water is `tint-strong`; the
 // accent is the bucket.
 const WELL_WAYS = HOME_WAYS;
 const rock = (cx, cy, rx, ry) => ellipseO(cx, cy, rx, ry, 1.6);
@@ -528,8 +528,6 @@ const bucket = (cx, top, w = 10, h = 10) => {
     rect('fg', cx - w / 2, top + h * 0.35, w, 1.4),
   ];
 };
-/** Falling water: a band from (x, top) down to `bottom`. */
-const fall = (x, top, bottom, w = 3) => rect('tint-strong', x, top, w, bottom - top);
 /**
  * Masonry: courses of stones from (x0, y0) to (x1, y1), each course `h`
  * high, the joints of every second course shifted by half a stone `w`;
@@ -577,89 +575,44 @@ const winch = (x, w, top) => [
   ...bucket(60, 40, 11, 9),
 ];
 
-build('well-1', 'A spring in a basin of stones', [
+// The water hole: a pit dug down to the water, its earth heaped behind it
+// with the spade still in it.
+build('well-1', 'A water hole', [
   yard(),
-  ...polyO(
-    [
-      [40, 66],
-      [42, 57],
-      [50, 50],
-      [61, 52],
-      [70, 47],
-      [79, 55],
-      [80, 66],
-    ],
-    T,
-  ),
-  ...boxO(55, 55, 10, 5, 1.6),
-  fall(57.5, 60, 66, 5),
-  ellipse('tint-strong', 60, 66.5, 17, 3.5),
-  ...[40, 50, 60, 70, 80].flatMap((cx) => rock(cx, 69.5, 5.8, 4.6)),
-  ...bucket(93, 63),
+  ...boxO(84.2, 30, 2.6, 26, 1.3),
+  ...boxO(79.5, 29, 12, 3, 1.3, 1.5),
+  ...polyO(dome(85, 66, 21, 15, 12), T),
+  ...[
+    [78, 58],
+    [92, 60],
+  ].map(([x, y]) => rect('fg', x, y, 5, 1.6, 0.8)),
+  ellipse('fg', 60, 67, 28, 7),
+  ellipse('tint-strong', 60, 67, 25, 4.6),
+  ...[40, 80].flatMap((cx) => rock(cx, 72, 6, 2.8)),
+  ...bucket(25, 62),
 ]);
 
-// The trough is fed from the spring, not pumped: the spring's rock behind,
-// a wooden channel on a forked post, the water falling into a plank
-// trough. Simpler than the dug well that follows.
-build('well-2', 'A trough fed by a spring', [
+/** A bar from (x1, y1) to (x2, y2), `w` thick, as a polygon. */
+const bar = (x1, y1, x2, y2, w) => {
+  const len = Math.hypot(x2 - x1, y2 - y1);
+  const [nx, ny] = [(-(y2 - y1) / len) * (w / 2), ((x2 - x1) / len) * (w / 2)];
+  return [
+    [x1 + nx, y1 + ny],
+    [x2 + nx, y2 + ny],
+    [x2 - nx, y2 - ny],
+    [x1 - nx, y1 - ny],
+  ];
+};
+// The well sweep: a beam on a forked post, a stone at its short end, the
+// bucket on a pole from its long end over a low stone curb.
+build('well-2', 'A well sweep', [
   yard(),
-  ...polyO(
-    [
-      [10, 74],
-      [11, 61],
-      [17, 53],
-      [24, 51],
-      [30, 42],
-      [39, 45],
-      [45, 52],
-      [47, 74],
-    ],
-    T,
-  ),
-  rect('fg', 22, 60, 9, 1.6),
-  rect('fg', 33, 51, 1.6, 7),
-  rect('fg', 55.2, 41, 1.8, 15),
-  poly('fg', [
-    [51, 37],
-    [52.8, 37],
-    [57, 43],
-    [55.2, 43],
-  ]),
-  poly('fg', [
-    [61, 37],
-    [59.2, 37],
-    [55, 43],
-    [56.8, 43],
-  ]),
-  ...polyO(
-    [
-      [36, 36],
-      [70, 40],
-      [70, 45],
-      [36, 41],
-    ],
-    1.8,
-  ),
-  poly('tint-strong', [
-    [38, 38.1],
-    [68.2, 41.6],
-    [68.2, 42.6],
-    [38, 39.1],
-  ]),
-  fall(65, 45, 58, 3.5),
-  ...polyO(
-    [
-      [32, 56],
-      [92, 56],
-      [89, 74],
-      [35, 74],
-    ],
-    T,
-  ),
-  rect('tint-strong', 34, 58, 56, 3.5),
-  rect('fg', 34, 65.2, 56, 1.6),
-  ...[50, 74].map((x) => rect('fg', x - 0.8, 61, 1.6, 13)),
-  ...bucket(100, 64),
+  ...boxO(24, 42, 6, 32, T),
+  ...polyO(bar(10, 50, 66, 24, 4.5), 1.6),
+  ...boxO(3, 49, 12, 10, T, 2.5),
+  rect('fg', 63.2, 25, 1.6, 22),
+  ...bucket(64, 46, 10, 9),
+  ...wellWall(40, 40, 62),
 ]);
 
 build('well-3', 'A well with a winch', [yard(), ...winch(30, 60, 22), ...wellWall(26, 68)]);
@@ -1220,8 +1173,8 @@ ladder(
     ways: WELL_WAYS,
     ...markerOf(MARKER_LAYOUTS.green),
     versions: [
-      { art: 'build-well-1', title: 'A spring' },
-      { art: 'build-well-2', title: 'A trough' },
+      { art: 'build-well-1', title: 'A water hole' },
+      { art: 'build-well-2', title: 'A well sweep' },
       { art: 'build-well-3', title: 'A well with a winch' },
       { art: 'build-well-4', title: 'A roofed well' },
       { art: 'build-well-5', title: 'A well house' },

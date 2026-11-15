@@ -138,8 +138,8 @@ journey):
    on both banks, as thick as the surface. A build the way leads to (a
    home or a garden) has one: the threshold stone (x = 53–67,
    y = 74–77.5) in front of the fire, the tent's opening and each door,
-   of the garden's bed and the greenhouse door, or of the spring, the
-   trough, the well and the well house, where the path ends.
+   of the garden's bed and the greenhouse door, or of the water hole and
+   each well, where the path ends.
    `ways` lists them; the checker requires a corner of every version and
    of the setting's path at each way point.
 4. **Water runs through.** Water in a setting runs from edge to edge (the
@@ -166,10 +166,12 @@ journey):
    storeys. Garden is one raised bed with a sunflower, two rows of beds,
    the rows before a hedge with a fruit tree, a greenhouse between hedges
    and trees, an orchard of five fruit trees around the greenhouse. Well
-   is a spring from a rock into a basin of stones, a trough fed by the spring through a wooden channel,
-   a round well with a winch, the well under a roof, a stone well
-   house with the well inside, under its arch (owner: a fountain is another use,
-   not a well).
+   follows how water is drawn: a water hole dug down to the water (its
+   earth heaped behind with the spade in it), a well sweep (a beam on a
+   forked post with a stone and the bucket on a pole) over a low stone
+   curb, a round well with a winch, the well under a roof, a stone well
+   house with the well inside, under its arch (owner: a spring and a pump
+   break the line, a fountain is another use).
 8. **Look.** Outlined in `fg` with a `bg` fill, one `accent` detail (the
    flame, a glowing door or window, the keystone, a rail cap, the
    sunflower, the fruit, the bucket), water and

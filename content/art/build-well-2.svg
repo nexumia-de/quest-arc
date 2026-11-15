@@ -1,26 +1,21 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 80">
-  <title>A trough fed by a spring</title>
+  <title>A well sweep</title>
   <ellipse class="tint-strong" cx="60" cy="75" rx="54" ry="4.6"/>
   <rect class="fg" x="53" y="74" width="14" height="3.5" rx="1"/>
   <rect class="bg" x="54.4" y="75.4" width="11.2" height="0.7"/>
-  <polygon class="fg" points="10,74 11,61 17,53 24,51 30,42 39,45 45,52 47,74"/>
-  <polygon class="bg" points="12.2,72 12.9,61.7 18.2,54.7 25.3,52.7 30.8,44.4 37.8,46.7 43.1,52.8 44.8,72"/>
-  <rect class="fg" x="22" y="60" width="9" height="1.6"/>
-  <rect class="fg" x="33" y="51" width="1.6" height="7"/>
-  <rect class="fg" x="55.2" y="41" width="1.8" height="15"/>
-  <polygon class="fg" points="51,37 52.8,37 57,43 55.2,43"/>
-  <polygon class="fg" points="61,37 59.2,37 55,43 56.8,43"/>
-  <polygon class="fg" points="36,36 70,40 70,45 36,41"/>
-  <polygon class="bg" points="37.8,38 68.2,41.6 68.2,43 37.8,39.4"/>
-  <polygon class="tint-strong" points="38,38.1 68.2,41.6 68.2,42.6 38,39.1"/>
-  <rect class="tint-strong" x="65" y="45" width="3.5" height="13"/>
-  <polygon class="fg" points="32,56 92,56 89,74 35,74"/>
-  <polygon class="bg" points="34.4,58 89.6,58 87.3,72 36.7,72"/>
-  <rect class="tint-strong" x="34" y="58" width="56" height="3.5"/>
-  <rect class="fg" x="34" y="65.2" width="56" height="1.6"/>
-  <rect class="fg" x="49.2" y="61" width="1.6" height="13"/>
-  <rect class="fg" x="73.2" y="61" width="1.6" height="13"/>
-  <polygon class="fg" points="95,64 105,64 103.8,74 96.2,74"/>
-  <polygon class="accent" points="96.8,65.6 103.2,65.6 102.4,72.4 97.6,72.4"/>
-  <rect class="fg" x="95" y="67.5" width="10" height="1.4"/>
+  <rect class="fg" x="24" y="42" width="6" height="32"/>
+  <rect class="bg" x="26" y="44" width="2" height="28"/>
+  <polygon class="fg" points="10.9,52 66.9,26 65.1,22 9.1,48"/>
+  <polygon class="bg" points="11.7,49.9 64.8,25.3 64.3,24.1 11.2,48.7"/>
+  <rect class="fg" x="3" y="49" width="12" height="10" rx="2.5"/>
+  <rect class="bg" x="5" y="51" width="8" height="6" rx="0.5"/>
+  <rect class="fg" x="63.2" y="25" width="1.6" height="22"/>
+  <polygon class="fg" points="59,46 69,46 67.8,55 60.2,55"/>
+  <polygon class="accent" points="60.8,47.6 67.2,47.6 66.4,53.4 61.6,53.4"/>
+  <rect class="fg" x="59" y="49.2" width="10" height="1.4"/>
+  <rect class="fg" x="42" y="62" width="36" height="12" rx="3"/>
+  <rect class="bg" x="44" y="64" width="32" height="8" rx="1"/>
+  <path class="fg" d="M50.2 66h1.6v4h-1.6ZM58.2 66h1.6v4h-1.6ZM66.2 66h1.6v4h-1.6ZM43 69.2h34v1.6h-34ZM46.2 70h1.6v3h-1.6ZM54.2 70h1.6v3h-1.6ZM62.2 70h1.6v3h-1.6ZM70.2 70h1.6v3h-1.6Z"/>
+  <ellipse class="fg" cx="60" cy="62" rx="20" ry="5.5"/>
+  <ellipse class="tint-strong" cx="60" cy="62" rx="17" ry="3"/>
 </svg>
