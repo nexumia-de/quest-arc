@@ -17,11 +17,7 @@
   <rect class="fg" x="54.5" y="43.2" width="11" height="1.4"/>
   <rect class="fg" x="28" y="52" width="64" height="22" rx="3"/>
   <rect class="bg" x="30" y="54" width="60" height="18" rx="1"/>
-  <rect class="fg" x="28" y="59.9" width="64" height="1.6"/>
-  <rect class="fg" x="28" y="66.5" width="64" height="1.6"/>
-  <rect class="fg" x="42.2" y="61.5" width="1.6" height="5.1"/>
-  <rect class="fg" x="65.2" y="61.5" width="1.6" height="5.1"/>
-  <rect class="fg" x="76.2" y="61.5" width="1.6" height="5.1"/>
+  <path class="fg" d="M41.8 56h1.6v6h-1.6ZM55.4 56h1.6v6h-1.6ZM69 56h1.6v6h-1.6ZM82.6 56h1.6v6h-1.6ZM29 61.2h62v1.6h-62ZM35 62h1.6v6h-1.6ZM48.6 62h1.6v6h-1.6ZM62.2 62h1.6v6h-1.6ZM75.8 62h1.6v6h-1.6ZM29 67.2h62v1.6h-62ZM41.8 68h1.6v5h-1.6ZM55.4 68h1.6v5h-1.6ZM69 68h1.6v5h-1.6ZM82.6 68h1.6v5h-1.6Z"/>
   <ellipse class="fg" cx="60" cy="52" rx="34" ry="5.5"/>
   <ellipse class="tint-strong" cx="60" cy="52" rx="31" ry="3"/>
 </svg>

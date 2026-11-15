@@ -14,19 +14,11 @@
   <rect class="fg" x="55" y="48.8" width="10" height="1.4"/>
   <rect class="fg" x="40" y="58" width="40" height="16" rx="3"/>
   <rect class="bg" x="42" y="60" width="36" height="12" rx="1"/>
-  <rect class="fg" x="40" y="63.8" width="40" height="1.6"/>
-  <rect class="fg" x="40" y="68.6" width="40" height="1.6"/>
-  <rect class="fg" x="48.2" y="64.9" width="1.6" height="3.7"/>
-  <rect class="fg" x="65.2" y="64.9" width="1.6" height="3.7"/>
-  <rect class="fg" x="70.2" y="64.9" width="1.6" height="3.7"/>
+  <path class="fg" d="M49 62h1.6v6h-1.6ZM57.8 62h1.6v6h-1.6ZM66.6 62h1.6v6h-1.6ZM75.4 62h1.6v6h-1.6ZM41 67.2h38v1.6h-38ZM44.6 68h1.6v5h-1.6ZM53.4 68h1.6v5h-1.6ZM62.2 68h1.6v5h-1.6ZM71 68h1.6v5h-1.6Z"/>
   <ellipse class="fg" cx="60" cy="58" rx="22" ry="5.5"/>
   <ellipse class="tint-strong" cx="60" cy="58" rx="19" ry="3"/>
   <path class="fg" d="M8 28L112 28L112 74L8 74ZM26 74L26 60L30.3 54.3L34.5 49.2L38.8 44.6L43 40.6L47.3 37.3L51.5 34.7L55.8 32.8L60 32L64.3 32.8L68.5 34.7L72.8 37.3L77 40.6L81.3 44.6L85.5 49.2L89.8 54.3L94 60L94 74Z" fill-rule="evenodd"/>
   <path class="bg" d="M10 30L110 30L110 72L10 72ZM24 72L24 59.3L28.7 53.1L33 47.9L37.3 43.2L41.7 39.1L46.1 35.6L50.6 32.9L55.2 30.9L60 30L64.8 30.9L69.4 32.9L73.9 35.6L78.3 39.1L82.7 43.2L87 47.9L91.3 53.1L96 59.3L96 72Z" fill-rule="evenodd"/>
-  <rect class="fg" x="8" y="42" width="16" height="1.6"/>
-  <rect class="fg" x="96" y="42" width="16" height="1.6"/>
-  <rect class="fg" x="8" y="56" width="16" height="1.6"/>
-  <rect class="fg" x="96" y="56" width="16" height="1.6"/>
-  <rect class="fg" x="15.2" y="43.6" width="1.6" height="12.4"/>
-  <rect class="fg" x="103.2" y="43.6" width="1.6" height="12.4"/>
+  <path class="fg" d="M17.2 30h1.6v7h-1.6ZM10 36.2h15v1.6h-15ZM13.2 37h1.6v7h-1.6ZM21.2 37h1.6v7h-1.6ZM10 43.2h15v1.6h-15ZM17.2 44h1.6v7h-1.6ZM10 50.2h15v1.6h-15ZM13.2 51h1.6v7h-1.6ZM21.2 51h1.6v7h-1.6ZM10 57.2h15v1.6h-15ZM17.2 58h1.6v7h-1.6ZM10 64.2h15v1.6h-15ZM13.2 65h1.6v7h-1.6ZM21.2 65h1.6v7h-1.6ZM10 71.2h15v1.6h-15ZM17.2 72h1.6v1h-1.6Z"/>
+  <path class="fg" d="M102.2 30h1.6v7h-1.6ZM95 36.2h15v1.6h-15ZM98.2 37h1.6v7h-1.6ZM106.2 37h1.6v7h-1.6ZM95 43.2h15v1.6h-15ZM102.2 44h1.6v7h-1.6ZM95 50.2h15v1.6h-15ZM98.2 51h1.6v7h-1.6ZM106.2 51h1.6v7h-1.6ZM95 57.2h15v1.6h-15ZM102.2 58h1.6v7h-1.6ZM95 64.2h15v1.6h-15ZM98.2 65h1.6v7h-1.6ZM106.2 65h1.6v7h-1.6ZM95 71.2h15v1.6h-15ZM102.2 72h1.6v1h-1.6Z"/>
 </svg>

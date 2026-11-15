@@ -530,19 +530,25 @@ const bucket = (cx, top, w = 10, h = 10) => {
 };
 /** Falling water: a band from (x, top) down to `bottom`. */
 const fall = (x, top, bottom, w = 3) => rect('tint-strong', x, top, w, bottom - top);
-/** The round well seen from the front: stone wall with joints, its rim an ellipse round the water. */
+/**
+ * Masonry: courses of stones from (x0, y0) to (x1, y1), each course `h`
+ * high, the joints of every second course shifted by half a stone `w`;
+ * one path, so a wall of many stones stays a small file.
+ */
+const masonry = (x0, y0, x1, y1, h, w) => {
+  let d = '';
+  const joint = (x, y, jw, jh) => `M${n(x)} ${n(y)}h${n(jw)}v${n(jh)}h${n(-jw)}Z`;
+  for (let k = 0, y = y0; y < y1 - 0.5; k += 1, y += h) {
+    if (k > 0) d += joint(x0, y - 0.8, x1 - x0, 1.6);
+    for (let x = x0 + w * (k % 2 ? 0.5 : 1); x < x1 - 2; x += w)
+      d += joint(x - 0.8, y, 1.6, Math.min(h, y1 - y));
+  }
+  return path('fg', d);
+};
+/** The round well seen from the front: a wall of stones, its rim an ellipse round the water. */
 const wellWall = (x, w, top = 52) => [
   ...boxO(x + 2, top, w - 4, 74 - top, T, 3),
-  ...[0.36, 0.66].map((t) => rect('fg', x + 2, top + (74 - top) * t, w - 4, 1.6)),
-  ...[0.25, 0.5, 0.75].map((t, i) =>
-    rect(
-      'fg',
-      x + w * t - 0.8 + (i === 1 ? 6 : 0),
-      top + (74 - top) * 0.43,
-      1.6,
-      (74 - top) * 0.23,
-    ),
-  ),
+  masonry(x + 3, top + 4, x + w - 3, 73, (74 - top - 4) / (top < 56 ? 3 : 2), w / 5),
   ellipse('fg', 60, top, w / 2, 5.5),
   ellipse('tint-strong', 60, top, w / 2 - 3, 3),
 ];
@@ -649,8 +655,8 @@ build('well-5', 'A well house', [
     ring(inset(FRONT, T)) + ring(inset(ARCH, -T).map(([x, y]) => [x, Math.min(y, 74 - T)])),
     true,
   ),
-  ...[42, 56].flatMap((y) => [rect('fg', 8, y, 16, 1.6), rect('fg', 96, y, 16, 1.6)]),
-  ...[16, 104].map((x) => rect('fg', x - 0.8, 43.6, 1.6, 12.4)),
+  masonry(10, 30, 25, 73, 7, 8),
+  masonry(95, 30, 110, 73, 7, 8),
 ]);
 
 // ---- markers: drawn once for every ladder (32 × 32) ---------------------
