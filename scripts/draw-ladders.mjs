@@ -376,6 +376,137 @@ build('home-5', 'A house of two storeys', [
   ...window4(84, 36, 14, 11),
 ]);
 
+// Garden: everything grows from one bed in front of the threshold stone at
+// x = 53–67, the same stone and way as Home's. Size and form both grow:
+// one raised bed, rows of beds, rows behind a hedge with a fruit tree, a
+// greenhouse, an orchard around it. The accent is the sunflower, then the
+// fruit.
+const GARDEN_WAYS = HOME_WAYS;
+/** A raised bed of boards from x to x + w, its top at y. */
+const bed = (x, w, y = 64) => [
+  ...boxO(x, y, w, 74 - y, T, 1),
+  rect('fg', x, (y + 74) / 2 - 0.8, w, 1.6),
+];
+/** A leafy plant in a bed: a mound with a middle vein; the bed hides its foot. */
+const plant = (cx, base, r) => [
+  ...ellipseO(cx, base - r * 0.4, r, r * 0.9, 1.6),
+  rect('fg', cx - 0.8, base - r * 1.1, 1.6, r * 1.1),
+];
+/** The sunflower: a stem from `base` with two leaves, the bloom in the accent. */
+const sunflower = (cx, base, top) => [
+  rect('fg', cx - 1, top, 2, base - top),
+  ...ellipseO(cx - 4.5, top + (base - top) * 0.6, 4.5, 2.4, 1.4),
+  ...ellipseO(cx + 4.5, top + (base - top) * 0.4, 4.5, 2.4, 1.4),
+  ellipse('fg', cx, top, 6.5, 6.5),
+  ellipse('accent', cx, top, 4.7, 4.7),
+  ellipse('fg', cx, top, 2, 2),
+];
+/** A hedge from x to x + w: a row of round bushes grown into one, its top at y. */
+const hedge = (x, w, top, base = 66) => {
+  const bumps = Math.round(w / 16);
+  const r = w / bumps / 2;
+  const cy = top + r * 0.8;
+  const cxs = Array.from({ length: bumps }, (_, i) => x + r + i * 2 * r);
+  return [
+    ...cxs.map((cx) => ellipse('fg', cx, cy, r + 1, r * 0.8)),
+    rect('fg', x, cy, w, base - cy, 2),
+    ...cxs.map((cx) => ellipse('bg', cx, cy, r + 1 - T, r * 0.8 - T)),
+    rect('bg', x + T, cy, w - 2 * T, base - cy - T),
+  ];
+};
+/** A fruit tree: trunk (unless hidden), round crown, fruits in the accent. */
+const FRUIT = [
+  [-0.45, -0.05],
+  [0.4, -0.35],
+  [0.15, 0.4],
+];
+const fruitTree = (cx, cy, r, trunk = true, fruits = FRUIT) => [
+  ...(trunk ? boxO(cx - 3.5, cy, 7, 74 - cy, T) : []),
+  ...ellipseO(cx, cy, r, r * 0.92, T),
+  ...fruits.map(([dx, dy]) => ellipse('accent', cx + dx * r, cy + dy * r, 2.8, 2.8)),
+];
+/** The greenhouse: glass walls and roof in panes on a low wall, its door on the threshold. */
+const GLASS = [
+  [32, 74],
+  [32, 46],
+  [60, 22],
+  [88, 46],
+  [88, 74],
+];
+const greenhouse = () => [
+  ...polyO(GLASS, T),
+  rect('fg', 32, 45, 56, 2),
+  ...[44, 76].map((x) => rect('fg', x - 0.8, 46, 1.6, 20)),
+  poly('fg', [
+    [45, 46],
+    [47, 46],
+    [61, 24.5],
+    [59, 24.5],
+  ]),
+  poly('fg', [
+    [73, 46],
+    [75, 46],
+    [61, 24.5],
+    [59, 24.5],
+  ]),
+  ...plant(39, 66, 5),
+  ...plant(81, 66, 5),
+  ...boxO(32, 65, 56, 9, T),
+  ...boxO(52, 50, 16, 24, T, 1),
+  rect('fg', 59.2, 50, 1.6, 24),
+];
+
+build('garden-1', 'A garden bed', [
+  yard(),
+  ...sunflower(60, 62, 36),
+  ...plant(46, 62, 8),
+  ...plant(74, 62, 8),
+  ...bed(32, 56, 62),
+]);
+
+build('garden-2', 'A garden in rows', [
+  yard(),
+  ...sunflower(60, 58, 28),
+  ...[34, 46, 74, 86].flatMap((x) => plant(x, 58, 7)),
+  ...bed(26, 68, 58),
+  ...[23, 34, 45, 75, 86, 97].flatMap((x) => plant(x, 66, 5.5)),
+  ...bed(16, 36, 66),
+  ...bed(68, 36, 66),
+]);
+
+build('garden-3', 'A garden with a fruit tree', [
+  yard(),
+  ...hedge(6, 108, 42, 60),
+  ...fruitTree(92, 28, 16),
+  ...[28, 40, 52].flatMap((x) => plant(x, 58, 7)),
+  ...bed(20, 46, 58),
+  ...[19, 30, 41, 79, 90, 101].flatMap((x) => plant(x, 66, 5.5)),
+  ...bed(12, 40, 66),
+  ...bed(68, 40, 66),
+]);
+
+build('garden-4', 'A garden with a greenhouse', [
+  yard(),
+  ...fruitTree(102, 27, 15, false),
+  ...fruitTree(18, 27, 15, false),
+  ...hedge(4, 112, 40, 60),
+  ...greenhouse(),
+  ...[12, 22, 98, 108].flatMap((x) => plant(x, 66, 5)),
+  ...bed(6, 24, 66),
+  ...bed(90, 24, 66),
+]);
+
+build('garden-5', 'An orchard around a greenhouse', [
+  yard(),
+  ...fruitTree(60, 18, 15, false, FRUIT.slice(0, 2)),
+  ...fruitTree(34, 19, 16, false),
+  ...fruitTree(86, 19, 16, false),
+  ...fruitTree(13, 30, 13, false),
+  ...fruitTree(107, 30, 13, false),
+  ...hedge(0, 120, 42, 62),
+  ...greenhouse(),
+]);
+
 // ---- markers: drawn once for every ladder (32 × 32) ---------------------
 // While a stage runs, a small festive marker grows in the foreground, one
 // element at a time (owner, 2026-11-12, #42): first the posts, one after
@@ -556,17 +687,28 @@ const forest = () => {
   }
   return `${d}V180H0Z`;
 };
-setting('clearing', 'Clearing in a wood', [
-  path('tint', forest()),
-  path('tint-strong', 'M0 146C30 140 62 152 84 180H0Z'),
-  path('tint-strong', 'M320 150C300 148 282 160 270 180H320Z'),
+/** The path from the near edge to the threshold stone (Home, Garden). */
+const pathToThreshold = () =>
   path(
     'bg',
     `M128 180L130.5 176C139 163 146 155 ${HOME_WAYS[0]
       .map((p) => toScene(p).map(n).join(' '))
       .join('H')
       .replace(/ [\d.]+$/, '')}C174 155 181 163 189.5 176L192 180Z`,
-  ),
+  );
+setting('clearing', 'Clearing in a wood', [
+  path('tint', forest()),
+  path('tint-strong', 'M0 146C30 140 62 152 84 180H0Z'),
+  path('tint-strong', 'M320 150C300 148 282 160 270 180H320Z'),
+  pathToThreshold(),
+]);
+// Open land for a garden: low rolling hills far away instead of a wood,
+// no water.
+setting('field', 'Open fields', [
+  path('tint', 'M0 58C40 44 80 42 120 50C160 58 200 40 250 38C285 37 305 44 320 50V180H0Z'),
+  path('tint-strong', 'M0 150C26 142 60 150 80 180H0Z'),
+  path('tint-strong', 'M320 146C296 146 280 158 268 180H320Z'),
+  pathToThreshold(),
 ]);
 
 // ---- the marker's posts: per setting (320 × 180) ------------------------
@@ -679,6 +821,8 @@ const MARKER_LAYOUTS = {
     beads: 6,
   },
 };
+// The field has the clearing's path, so its marker stands where Home's does.
+MARKER_LAYOUTS.field = MARKER_LAYOUTS.clearing;
 const markerOf = ({ layout, posts }) => ({ layout, posts });
 
 // Where a setting has water: polygons in setting units, so the checker can
@@ -799,6 +943,35 @@ ladder(
     at('bush', 'near', -22, 179, 48),
     at('tuft', 'near', 236, 178, 20),
     ...markerPlaces('clearing', MARKER_LAYOUTS.clearing),
+  ],
+);
+
+ladder(
+  'garden',
+  {
+    title: 'Garden',
+    hue: 'moss',
+    water: false,
+    marker: 'flowers',
+    ways: GARDEN_WAYS,
+    ...markerOf(MARKER_LAYOUTS.field),
+    versions: [
+      { art: 'build-garden-1', title: 'A garden bed' },
+      { art: 'build-garden-2', title: 'A garden in rows' },
+      { art: 'build-garden-3', title: 'A garden with a fruit tree' },
+      { art: 'build-garden-4', title: 'A greenhouse' },
+      { art: 'build-garden-5', title: 'An orchard' },
+    ],
+  },
+  groundOf('field'),
+  [
+    at('tree', 'far', 30, 44, 20),
+    at('tree', 'far', 270, 40, 20),
+    slot('build', { band: 'middle', ...SLOT }),
+    lanternAtPost(MARKER_LAYOUTS.field),
+    at('bush', 'near', 296, 179, 48),
+    at('tuft', 'near', 70, 178, 20),
+    ...markerPlaces('field', MARKER_LAYOUTS.field),
   ],
 );
 

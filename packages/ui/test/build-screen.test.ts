@@ -2,6 +2,7 @@ import { LADDERS } from '@questarc/engine';
 import { describe, expect, it } from 'vitest';
 
 import crossing from '../../../content/art/crossing.ladder.json';
+import garden from '../../../content/art/garden.ladder.json';
 import home from '../../../content/art/home.ladder.json';
 import markers from '../../../content/art/markers.json';
 import palette from '../../../content/art/palette.json';
@@ -13,6 +14,7 @@ import { ladderArt } from '../art.mjs';
 // (npm run journeys) requires it.
 const ladders: Record<string, { versions: { art: string }[]; water: boolean }> = {
   crossing,
+  garden,
   home,
 };
 const kinds: Record<string, { landOnly: boolean }> = markers;
