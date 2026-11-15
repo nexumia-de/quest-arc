@@ -60,7 +60,9 @@ format[^spike].
    table. The shared texts module gets no host switch.
 5. **Packages and releases** (owner, 2026-11-12[^issue91]): a PWA on
    GitHub Pages first, then an APK (GitHub releases, F-Droid, Google
-   Play). **No Flatpak**: Day Planner is the Flatpak home of the
+   Play). GitHub releases and F-Droid are free, Google Play is paid,
+   with the same code and content everywhere (owner, 2026-11-15,
+   [funding](funding.md)). **No Flatpak**: Day Planner is the Flatpak home of the
    journeys, and Linux desktop users can install the PWA. The app is
    released on its own tags, apart from the plugin's `v<version>`; the
    tag pattern is fixed with the first release.

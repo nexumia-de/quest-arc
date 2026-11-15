@@ -189,7 +189,11 @@ this repository ([decision](decisions/standalone-app.md)). Then, as the
 plan lists (#91): the screens and the adapter core in one shared
 package with the plugin unchanged for users; the store proven against a
 real Super Productivity; Today by moments and the PWA on GitHub Pages;
-the APK with reminders.
+the APK with reminders. Then the stores, as the owner decided on
+2026-11-15 ([funding](decisions/funding.md), #118): free on GitHub
+releases and F-Droid (#122), paid on Google Play (#123), with the store
+texts (#121) and the privacy statement (#120); the support link is in
+Settings (#119).
 
 # Backlog
 

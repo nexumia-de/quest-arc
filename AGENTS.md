@@ -62,6 +62,13 @@ rules and is never announced before it is earned; no random rewards, login bonus
 neutral gap, never red, never blamed; autonomy-supportive texts; no
 generic motivational quotes; no promised number of days.
 
+## Funding
+
+Everything is free and open; only the Google Play build costs money, with
+the same code and content ([decision](docs/decisions/funding.md)). No
+build gets a feature another lacks. Support is named only in the About
+card of Settings, the README and store texts, never in another screen.
+
 ## Before committing
 
 1. `npm run check` (format, lint, typecheck, tests, build) passes.

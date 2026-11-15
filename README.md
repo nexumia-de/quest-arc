@@ -105,6 +105,13 @@ Details in [development](docs/development.md).
 Work items are [issues](https://github.com/nexumia-de/quest-arc/issues) in
 [milestones](https://github.com/nexumia-de/quest-arc/milestones).
 
+## Support
+
+QuestArc is free, with everything in it: the plugin, the app, the
+journeys and the pictures ([decision](docs/decisions/funding.md)). If it
+helps you, you can support development at
+[liberapay.com/suitably](https://liberapay.com/suitably).
+
 ## Licence
 
 QuestArc is free software under the GNU Affero General Public License,
