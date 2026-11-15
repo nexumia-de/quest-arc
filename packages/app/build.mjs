@@ -45,12 +45,19 @@ const style = [
 const { code: css } = await transform(style, { loader: 'css', minify: true });
 writeFileSync(join(out, 'app.css'), css);
 
-for (const file of ['index.html', 'manifest.webmanifest', 'icon.svg']) {
+for (const file of ['index.html', 'privacy.html', 'manifest.webmanifest', 'icon.svg']) {
   copyFileSync(join('src', file), join(out, file));
 }
 
 // The cache is named after the files' content: a changed build replaces it.
-const files = ['index.html', 'app.js', 'app.css', 'manifest.webmanifest', 'icon.svg'];
+const files = [
+  'index.html',
+  'privacy.html',
+  'app.js',
+  'app.css',
+  'manifest.webmanifest',
+  'icon.svg',
+];
 const hash = createHash('sha256');
 for (const file of files) hash.update(readFileSync(join(out, file)));
 await build({
