@@ -20,9 +20,18 @@ describe('pictures in content/art', () => {
     expect(pictures.length).toBeGreaterThan(2);
   });
 
-  it('are pictures, ladders, the markers and the palette only', () => {
+  it('are pictures, ladders, the markers, the palette and the place only', () => {
     const known = (f: string) => f.endsWith('.svg') || f.endsWith('.ladder.json');
-    expect(files.filter((f) => !known(f))).toEqual(['markers.json', 'palette.json']);
+    expect(files.filter((f) => !known(f))).toEqual(['markers.json', 'palette.json', 'place.json']);
+  });
+
+  it('have the place: a lit lantern for each side of the path', () => {
+    // the Valley's scene (packages/ui/src/ui/valley/scene.ts) draws them by these names
+    expect(read('place.json')).toMatchObject({
+      lantern: { left: 'place-lantern-left', right: 'place-lantern-right' },
+    });
+    for (const name of ['place-lantern-left', 'place-lantern-right'])
+      expect(pictures).toContain(name);
   });
 
   it('have the markers lanterns, bunting and flowers, each with its pictures', () => {

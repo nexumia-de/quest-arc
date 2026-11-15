@@ -11,8 +11,13 @@
 //
 // It writes docs/screenshots/valley-<n>.png (360 × 720, light and dark side
 // by side) and valley-desktop-<n>.png (the same scene drawn at 720 wide in
-// a 1280 wide window) for one, three and six places. Nothing here is drawn
-// by hand: change the rule's numbers in valley-layout.ts and run it again.
+// a 1280 wide window) for one, three and six places, with signs and
+// the lit lantern at some (#131); valley-place-<thing>.png (one place in each
+// state at 360 × 720, light above, dark below) and valley-place-row.png
+// (every ladder's first and fifth version in every state, the build's box at
+// 60 × 40). Nothing here is drawn by hand: change the rule's numbers in
+// valley-layout.ts or the place's pictures in draw-ladders.mjs and run it
+// again.
 // Own work, CC BY-SA 4.0 like content/.
 import { readFileSync } from 'node:fs';
 import { join } from 'node:path';
@@ -23,6 +28,7 @@ const root = join(import.meta.dirname, '..');
 const art = join(root, 'content', 'art');
 const shots = join(root, 'docs', 'screenshots');
 const palette = JSON.parse(readFileSync(join(art, 'palette.json'), 'utf8'));
+const placeArt = JSON.parse(readFileSync(join(art, 'place.json'), 'utf8'));
 
 /** Super Productivity's card and text colours (art-palette.ts, HOST_CARDS and HOST_TEXT). */
 const THEMES = {
@@ -34,15 +40,25 @@ const THEMES = {
 const DAYS = {
   1: [{ name: 'After I pour my morning coffee', hue: 'meadow', build: 'home-3' }],
   3: [
-    { name: 'After I pour my morning coffee', hue: 'sand', build: 'home-4' },
+    {
+      name: 'After I pour my morning coffee',
+      hue: 'sand',
+      build: 'home-4',
+      sign: 'lantern',
+    },
     { name: 'When I sit down at my desk', hue: 'meadow', build: 'garden-3' },
     { name: 'After brushing my teeth at night', hue: 'heather', build: 'well-3' },
   ],
   6: [
-    { name: 'After I pour my morning coffee', hue: 'sand', build: 'home-4' },
+    {
+      name: 'After I pour my morning coffee',
+      hue: 'sand',
+      build: 'home-5',
+      sign: 'lantern',
+    },
     { name: 'When I sit down at my desk', hue: 'meadow', build: 'garden-3' },
     { name: 'After lunch', hue: 'water', build: 'lookout-2' },
-    { name: 'When I get home', hue: 'moss', build: 'well-4' },
+    { name: 'When I get home', hue: 'moss', build: 'well-5', sign: 'lantern' },
     { name: 'After dinner', hue: 'rust', build: 'garden-5' },
     { name: 'After brushing my teeth at night', hue: 'heather', build: 'home-2' },
   ],
@@ -51,15 +67,24 @@ const DAYS = {
 const n1 = (v) => String(Math.round(v * 10) / 10);
 const escape = (text) =>
   text.replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' })[c]);
-/** A build's shapes, without its svg element and title. */
-const buildShapes = (name) =>
-  readFileSync(join(art, `build-${name}.svg`), 'utf8')
+/** A picture's shapes, without its svg element and title. */
+const shapesOf = (file) =>
+  readFileSync(join(art, `${file}.svg`), 'utf8')
     .replace(/^[\s\S]*?<\/title>/, '')
     .replace(/<\/svg>\s*$/, '');
+const buildShapes = (name) => shapesOf(`build-${name}`);
+/** The picture of a place's sign, as the Valley's scene draws it (packages/ui/src/ui/valley/scene.ts). */
+const placeSigns = (place) =>
+  place.sign === 'lantern' ? [{ layer: 'lantern', art: placeArt.lantern[place.side] }] : [];
+/** A sign drawn in the thing's box, reaching beyond it. */
+const signSvg = (sign, box, hue) =>
+  `<svg class="thing" style="--hue:${hue}" x="${n1(box.x)}" y="${n1(box.y)}" width="${n1(box.width)}" height="${n1(box.height)}" viewBox="0 0 120 80" overflow="visible">${shapesOf(sign.art)}</svg>`;
 
 /** The scene: ground, path, bays, things, names; all in the layout's units. */
 const scene = (places, theme) => {
-  const layout = valleyLayout({ sides: places.map((_, i) => (i % 2 === 0 ? 'right' : 'left')) });
+  const layout = valleyLayout({
+    sides: places.map((p, i) => p.side ?? (i % 2 === 0 ? 'right' : 'left')),
+  });
   const { width, height } = layout;
   const hueOf = (p) => palette[p.hue][theme];
   // the ground: each place's tint over the middle of its piece, blending
@@ -71,10 +96,21 @@ const scene = (places, theme) => {
       (at) => `<stop offset="${n1((100 * at) / height)}%" style="stop-color:${tint}"/>`,
     );
   });
+  const signs = layout.places.map((place, i) => placeSigns({ ...places[i], side: place.side }));
   const things = layout.places.map((place, i) => {
     const { x, y, width: w, height: h } = place.slot;
-    return `<svg class="thing" style="--hue:${hueOf(places[i])}" x="${n1(x)}" y="${n1(y)}" width="${n1(w)}" height="${n1(h)}" viewBox="0 0 120 80">${buildShapes(places[i].build)}</svg>`;
+    const hue = hueOf(places[i]);
+    return [
+      places[i].build
+        ? `<svg class="thing" style="--hue:${hue}" x="${n1(x)}" y="${n1(y)}" width="${n1(w)}" height="${n1(h)}" viewBox="0 0 120 80">${buildShapes(places[i].build)}</svg>`
+        : '',
+    ].join('');
   });
+  const fronts = signs.flatMap((list, i) =>
+    list
+      .filter((sign) => sign.layer === 'lantern')
+      .map((sign) => signSvg(sign, layout.places[i].slot, hueOf(places[i]))),
+  );
   const bays = layout.places.map(
     ({ bay }) =>
       `<ellipse class="bg" cx="${n1(bay.cx)}" cy="${n1(bay.cy)}" rx="${n1(bay.rx)}" ry="${n1(bay.ry)}"/>`,
@@ -101,6 +137,7 @@ const scene = (places, theme) => {
 <path class="way" d="${cubicPathData(layout.path)}" stroke-width="${layout.pathWidth}"/>
 ${bays.join('')}
 ${things.join('')}
+${fronts.join('')}
 </svg>${names.join('')}</div>`,
   };
 };
@@ -162,4 +199,57 @@ for (const count of [1, 3, 6]) {
     `valley-desktop-${count}.png`,
   );
 }
+
+// A place in each state (#131): plain and with its lantern lit; one place at
+// 360 × 720, light above, dark below.
+const STATES = [{ label: 'plain' }, { label: 'lantern', sign: 'lantern' }];
+const NAME = 'After I pour my morning coffee';
+for (const [build, hue, side] of [
+  ['home-5', 'meadow', 'right'],
+  ['garden-5', 'moss', 'left'],
+]) {
+  const rows = ['light', 'dark'].map((theme) =>
+    STATES.map((state) => {
+      const s = scene([{ name: NAME, hue, build, side, ...state }], theme);
+      return `<iframe style="border:0;width:${s.width}px;height:${s.height}px;margin:0 ${GAP}px ${GAP}px 0" srcdoc="${escape(page(s.html, theme))}"></iframe>`;
+    }).join(''),
+  );
+  await shoot(
+    page(rows.map((r) => `<div style="display:flex">${r}</div>`).join(''), 'light'),
+    STATES.length * (360 + GAP),
+    2 * (720 + GAP),
+    `valley-place-${build.split('-')[0]}.png`,
+  );
+}
+
+// The same states for every thing small: the build's box at 60 × 40 with
+// the room of its plot towards the path (7) and 6 below, light left, dark
+// right.
+const thumb = (build, state, theme) => {
+  const hue = palette.meadow[theme];
+  const signs = placeSigns({ ...state, side: 'right' });
+  const box = { x: 7, y: 0, width: 60, height: 40 };
+  const drawn = (layer) =>
+    signs
+      .filter((sign) => sign.layer === layer)
+      .map((sign) => signSvg(sign, box, hue))
+      .join('');
+  return `<svg width="67" height="46" viewBox="0 0 67 46" style="margin:4px;background:color-mix(in srgb, ${hue} 16%, var(--bg))"><svg class="thing" style="--hue:${hue}" x="7" y="0" width="60" height="40" viewBox="0 0 120 80">${buildShapes(build)}</svg>${drawn('lantern')}</svg>`;
+};
+const THINGS = ['home', 'garden', 'well', 'lookout'].flatMap((l) => [`${l}-1`, `${l}-5`]);
+const sheet = ['light', 'dark']
+  .map(
+    (theme) =>
+      `<div style="background:var(--bg);padding:8px;--bg:${THEMES[theme].bg};--fg:${THEMES[theme].fg}">${THINGS.map(
+        (build) =>
+          `<div style="display:flex">${STATES.map((state) => thumb(build, state, theme)).join('')}</div>`,
+      ).join('')}</div>`,
+  )
+  .join('');
+await shoot(
+  page(`<div style="display:flex">${sheet}</div>`, 'light'),
+  2 * (STATES.length * 75 + 16),
+  THINGS.length * 54 + 16,
+  'valley-place-row.png',
+);
 await browser.close();

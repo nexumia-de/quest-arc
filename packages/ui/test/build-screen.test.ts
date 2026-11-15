@@ -7,6 +7,7 @@ import lookout from '../../../content/art/lookout.ladder.json';
 import well from '../../../content/art/well.ladder.json';
 import markers from '../../../content/art/markers.json';
 import palette from '../../../content/art/palette.json';
+import place from '../../../content/art/place.json';
 // @ts-expect-error: a plain build script without types
 import { ladderArt } from '../art.mjs';
 
@@ -22,7 +23,7 @@ const ladders: Record<string, { versions: { art: string }[]; water: boolean }> =
 const kinds: Record<string, { landOnly: boolean }> = markers;
 
 describe('the plugin bundles only the pictures of the build', () => {
-  const kept: Set<string> = ladderArt({ ladders, markers });
+  const kept: Set<string> = ladderArt({ ladders, markers, place });
 
   it('keeps every picture a ladder scene, the row or the chooser draws', () => {
     for (const ladder of Object.values(ladders))
@@ -31,6 +32,11 @@ describe('the plugin bundles only the pictures of the build', () => {
       for (const part of ['post', 'bead', 'bead-lit'])
         expect(kept).toContain(`marker-${kind}-${part}`);
     expect(kept).toContain('lantern');
+  });
+
+  it('keeps the lantern of a place for each side of the path (#131)', () => {
+    expect(kept).toContain(place.lantern.left);
+    expect(kept).toContain(place.lantern.right);
   });
 
   it('leaves out pictures the journey screen does not draw', () => {

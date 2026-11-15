@@ -4,7 +4,8 @@ import { pathPoints, VALLEY, type Box, type Point, type ValleyLayout } from './v
 /**
  * Checks on the Valley's layout (#127, docs/journey-design.md "The place
  * piece"), measured on what valleyLayout returned: nothing may cross the
- * path (owner, 2026-11-15), every slot and name stays in the scene, the
+ * path (owner, 2026-11-15), every plot (a slot with its room) and name
+ * stays in the scene, every slot lies in its plot, the
  * bays stay on their thing's side, the doorstep lies on the bay, and no
  * two boxes overlap. `npm run journeys` runs it for 1 to 12 places on
  * both sides.
@@ -59,10 +60,17 @@ export const valleyProblems = (layout: ValleyLayout): Problem[] => {
   const boxes: { at: string; box: Box }[] = [];
   layout.places.forEach((place, i) => {
     const at = `place ${i + 1}`;
-    const { slot, name, bay, doorstep, side } = place;
+    const { slot, plot, name, bay, doorstep, side } = place;
     if (!(slot.scale > 0)) error(at, 'the slot has no room');
+    // the plot holds the slot and the room beside it towards the path (the lantern)
+    if (
+      slot.x < plot.x - EPS ||
+      slot.x + slot.width > plot.x + plot.width + EPS ||
+      Math.abs(slot.y - plot.y) > EPS
+    )
+      error(`${at} slot`, 'lies outside its plot');
     for (const [what, box] of [
-      ['slot', slot],
+      ['plot', plot],
       ['name', name],
     ] as const) {
       if (!inside(box, layout)) error(`${at} ${what}`, 'leaves the scene');

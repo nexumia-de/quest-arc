@@ -27,12 +27,20 @@ const read = () => {
   );
   const palette = JSON.parse(readFileSync(join(dir, 'palette.json'), 'utf8'));
   const markers = JSON.parse(readFileSync(join(dir, 'markers.json'), 'utf8'));
-  return { pictures, ladders, palette, markers };
+  const place = JSON.parse(readFileSync(join(dir, 'place.json'), 'utf8'));
+  return { pictures, ladders, palette, markers, place };
 };
 
-/** The names of the pictures the journey screen and the build page draw. */
-export const ladderArt = ({ ladders, markers }) => {
+/**
+ * The names of the pictures the journey screen, the build page and the
+ * Valley draw (with a place's lantern, #131).
+ */
+export const ladderArt = ({ ladders, markers, place }) => {
   const names = new Set(['lantern']);
+  if (place) {
+    names.add(place.lantern.left);
+    names.add(place.lantern.right);
+  }
   for (const ladder of Object.values(ladders)) {
     for (const version of ladder.versions) names.add(version.art);
     for (const place of ladder.pictures) if (place.art) names.add(place.art);

@@ -102,8 +102,15 @@ three, game rules §8) follow with the place piece._
   and where no journey stands yet the place is plain land with its name.
   Nothing marks a place as free, nothing is announced, nothing is counted.
 - **The scene is built in layers**, back to front: ground, path and bay,
-  plants, thing, marker, lantern, name. Plants and lantern (the place's
-  sign, from the view) are filled in by #131; until their pictures exist nothing is drawn for them.
+  thing, marker, lantern, name.
+- **The sign** (#131), in the Valley and on the place: the lit lantern,
+  about as high as the thing's door, apart from the thing beside the
+  doorstep towards the path, when the routine there runs by itself. It
+  is the place's only sign; it appears when earned, never before, and
+  nothing on the screen names what is still to come. For screen readers
+  the place's words say it: "The lantern is lit: the routine runs by
+  itself." (pictures and layers in
+  [journey design](journey-design.md#the-sign-of-a-place-the-valley-131)).
 - **Tapping a place** opens it: the journey (screen 4) for the growing
   place; for any other the place (screen 0b), also where nothing stands
   yet. "Change this moment" (screen 0a) is reached from the place by its
@@ -223,8 +230,8 @@ journey (screen 4), which draws the same piece.
 
 ![Desktop, light](screenshots/place-rest-desktop-light.png)
 
-_Screenshots from demo data; the sign (flowers, lantern) is drawn
-with #131._
+_Screenshots from demo data: the place's routine runs by itself, so its
+lantern is lit beside the doorstep (#131)._
 
 - Title: the place's name (the moment's name, else "After getting up").
   Back leads to the Valley.

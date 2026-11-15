@@ -1,0 +1,7 @@
+{
+  "frame": [-14, 0, 148, 80],
+  "lantern": {
+    "right": "place-lantern-right",
+    "left": "place-lantern-left"
+  }
+}

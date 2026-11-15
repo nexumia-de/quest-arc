@@ -50,7 +50,7 @@ const journeys = [] as readonly Journey[];
 
 describe('the Valley model', () => {
   const places = [
-    place('a', { growing: true, things: [thing(3)], sign: 'plants' }),
+    place('a', { growing: true, things: [thing(3)] }),
     place('b', { side: 'left', things: [thing(2, 'garden')], sign: 'lantern' }),
     place('c'),
   ];
@@ -82,7 +82,7 @@ describe('the Valley model', () => {
     expect(a).toContain('After getting up');
     expect(a).toContain('version 3 of 5');
     expect(a).toContain('Growing here.');
-    expect(a).toContain('Plants grow here');
+    expect(a).not.toContain('lantern');
     expect(b).toContain('version 2 of 5');
     expect(b).toContain('The lantern is lit');
     expect(b).not.toContain('Growing here.');

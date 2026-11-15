@@ -73,12 +73,24 @@ describe('valleyLayout', () => {
     }
   });
 
+  it('keeps room beside every slot towards the path, for the lantern', () => {
+    for (const place of valleyLayout({ sides: ['right', 'left', 'left'] }).places) {
+      const { slot, plot, side } = place;
+      const s = slot.scale;
+      expect(plot.width).toBeCloseTo((VALLEY.plotNear + 120) * s, 9);
+      expect(plot.y).toBeCloseTo(slot.y, 9);
+      const near = side === 'right' ? slot.x - plot.x : plot.x + plot.width - slot.x - slot.width;
+      expect(near).toBeCloseTo(VALLEY.plotNear * s, 9);
+    }
+  });
+
   it('draws things large with few places and one size for all', () => {
     const scale = (n: number) =>
       valleyLayout({ sides: alternating(n, 'right') }).places[0]?.slot.scale ?? 0;
     expect(scale(1)).toBeGreaterThan(scale(3));
     expect(scale(3)).toBeGreaterThan(scale(6));
-    expect(scale(6)).toBeGreaterThan(1);
+    // with the room beside every slot (#131) six places draw a thing at 0.85
+    expect(scale(6)).toBeGreaterThan(0.8);
     expect(scale(12)).toBeCloseTo(scale(6), 9);
     const scales = valleyLayout({ sides: alternating(6, 'right') }).places.map((p) => p.slot.scale);
     expect(new Set(scales).size).toBe(1);
@@ -130,13 +142,14 @@ describe('valleyProblems', () => {
     const layout = valleyLayout({ sides: alternating(3, 'right') });
     const [first, second] = layout.places;
     if (!first || !second) throw new Error('three places');
-    first.slot = { ...first.slot, x: first.bend.x - 10 };
+    first.plot = { ...first.plot, x: first.bend.x - 10 };
     second.name = { ...second.name, x: -20 };
     second.bay = { ...second.bay, cx: second.bend.x + second.bay.rx };
     const at = valleyProblems(layout).map((p) => `${p.at}: ${p.message}`);
     expect(at).toEqual(
       expect.arrayContaining([
-        expect.stringMatching(/^place 1 slot: .* from the path's centre line/),
+        expect.stringMatching(/^place 1 plot: .* from the path's centre line/),
+        'place 1 slot: lies outside its plot',
         'place 2 name: leaves the scene',
         expect.stringMatching(/^place 2 bay: crosses the centre line/),
       ]),
@@ -148,12 +161,12 @@ describe('valleyProblems', () => {
     const [first, second] = layout.places;
     if (!first || !second) throw new Error('two places');
     first.name = { ...first.name, width: 30 };
-    second.slot = { ...first.slot };
+    second.plot = { ...first.plot };
     const at = valleyProblems(layout).map((p) => `${p.at}: ${p.message}`);
     expect(at).toEqual(
       expect.arrayContaining([
         expect.stringMatching(/^place 1 name: 30 wide/),
-        'place 1 slot: overlaps place 2 slot',
+        'place 1 plot: overlaps place 2 plot',
       ]),
     );
   });

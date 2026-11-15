@@ -3,8 +3,9 @@
 // shown beside the build while the next version is on its way
 // (`marker-<kind>-post|bead[-lit].svg`, 32 × 32, and `markers.json`), the
 // settings (`setting-<name>.svg`, 320 × 180) with their marker cords
-// (`setting-<name>-cord-<n>.svg`) and the ladder files
-// (`<ladder>.ladder.json`) that place them.
+// (`setting-<name>-cord-<n>.svg`), the ladder files
+// (`<ladder>.ladder.json`) that place them, and what a place in the Valley
+// gains around its thing (`place-…svg`, `lantern.svg`, `place.json`, #131).
 // Shapes and places come from the numbers here, so a picture is changed by
 // changing this file and running it again:
 //
@@ -15,7 +16,8 @@
 import { readdirSync, rmSync, writeFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { box, grow, minus, within } from './ladder-geometry.mjs';
-import { ladderGeometryProblems, RETIRING } from './ladder-checks.mjs';
+import { valleyLayout } from '../packages/engine/src/valley-layout.ts';
+import { ladderGeometryProblems, placeProblems, RETIRING } from './ladder-checks.mjs';
 
 const out = join(import.meta.dirname, '..', 'content', 'art');
 const n = (v) => String(Math.round(v * 10) / 10);
@@ -1110,6 +1112,82 @@ ladder(
   ],
 );
 
+// ---- the place: its sign -----------------------------------------------------
+// What a place shows after its thing (#114 decision 5, #131; owner,
+// 2026-11-15): the lit lantern when its routine runs by itself, the place's
+// only sign. It is drawn at the thing's scale and line weight in the
+// build's units, in the place's plot (valley-layout.ts): the slot with 14
+// units of room on the path's side, where the lantern stands apart from the
+// thing. One frame for both sides (the build's box with 14 units on either
+// side), and a lantern picture for each side, so a host draws it in the
+// thing's box and mirrors nothing. It stands in front of the thing and its
+// marker and overlaps neither, nor the doorstep or the path: measured by
+// placeProblems (ladder-checks.mjs) for every thing and every layout.
+// The pictures share the build's view box, so a host draws them in the
+// thing's own box; they reach beyond it into the frame (overflow visible).
+const PLACE_FRAME = [-14, 0, 148, 80];
+const place = (name, title, shapes) => write(`${name}.svg`, svg('0 0 120 80', title, shapes));
+
+// The lit lantern (graduation), the place's only sign (owner, 2026-11-15):
+// a lantern on a short post, about as high as the thing's door, its glass
+// filled with the light and a flame in it, a calm halo behind it (a soft
+// filled shape, no rays). The unlit lantern (the marker's) is an empty
+// outlined lantern without halo or flame, so the two differ in shape, not
+// only in colour. Drawn once around its foot (0, 0), in build units; the
+// 32 × 32 picture of the journey screen's `lantern` slot is the same
+// lantern scaled.
+const LIT_LANTERN = [
+  ellipse('tint-strong', 0, -15.4, 7, 13.4),
+  rect('fg', -1, -9, 2, 9),
+  rect('fg', -3.5, -1.6, 7, 1.6, 0.8),
+  rect('fg', -0.6, -25.6, 1.2, 1.8),
+  poly('fg', [
+    [-4.8, -20.8],
+    [4.8, -20.8],
+    [0, -24.2],
+  ]),
+  rect('fg', -3.8, -21, 7.6, 12.4, 1.4),
+  rect('accent', -2.4, -19.6, 4.8, 9.6, 0.6),
+  ellipse('bg', 0, -14.6, 1.1, 2.4),
+  rect('fg', -3, -9.4, 6, 1.6, 0.6),
+];
+/** Plain shapes (rect, ellipse, polygon) scaled by k and moved by dx, dy. */
+const moved = (elements, k, dx, dy) =>
+  elements.map((element) =>
+    element
+      .replace(/ (x|cx)="([-\d.]+)"/g, (_, a, v) => ` ${a}="${n(dx + k * Number(v))}"`)
+      .replace(/ (y|cy)="([-\d.]+)"/g, (_, a, v) => ` ${a}="${n(dy + k * Number(v))}"`)
+      .replace(/ (width|height|rx|ry)="([-\d.]+)"/g, (_, a, v) => ` ${a}="${n(k * Number(v))}"`)
+      .replace(
+        /points="([^"]+)"/,
+        (_, list) =>
+          `points="${pts(
+            list
+              .split(' ')
+              .map((q) => q.split(',').map(Number))
+              .map(([x, y]) => [dx + k * x, dy + k * y]),
+          )}"`,
+      ),
+  );
+write('lantern.svg', svg('0 0 32 32', 'Lit lantern', moved(LIT_LANTERN, 1.15, 16, 30.4)));
+// In the place it stands on the bay's edge, its foot on y = 78, its centre 7
+// units from the thing's box towards the path: left of the box for a thing
+// on the right of the path, right of it for one on the left.
+place('place-lantern-right', 'Lit lantern', moved(LIT_LANTERN, 1, -7, 78));
+place('place-lantern-left', 'Lit lantern', moved(LIT_LANTERN, 1, 127, 78));
+
+write(
+  'place.json',
+  `${JSON.stringify(
+    {
+      frame: PLACE_FRAME,
+      lantern: { right: 'place-lantern-right', left: 'place-lantern-left' },
+    },
+    null,
+    2,
+  )}\n`,
+);
+
 write(
   'markers.json',
   `${JSON.stringify(
@@ -1135,6 +1213,20 @@ for (const [name, text] of files) {
     refused ||= !RETIRING.has(ladder);
   }
 }
+const ladderFiles = Object.fromEntries(
+  [...files]
+    .filter(([name]) => name.endsWith('.ladder.json'))
+    .map(([name, text]) => [name.slice(0, -'.ladder.json'.length), JSON.parse(text)]),
+);
+for (const problem of placeProblems(
+  JSON.parse(files.get('place.json')),
+  pictures,
+  ladderFiles,
+  valleyLayout,
+)) {
+  console.error(`error: ${problem}`);
+  refused = true;
+}
 if (refused) {
   console.error('Nothing written: fix the numbers above (docs/journey-design.md, rules).');
   process.exit(1);
@@ -1148,7 +1240,7 @@ for (const [name, text] of files)
     name.endsWith('.json') ? await format(text, { parser: 'json' }) : text,
   );
 // Generated pictures this run no longer writes are removed.
-const generated = /^(build-|marker-|setting-[a-z]+-cord-)/;
+const generated = /^(build-|marker-|place-|setting-[a-z]+-cord-)/;
 for (const name of readdirSync(out))
   if (generated.test(name) && !files.has(name)) rmSync(join(out, name));
 console.log(`Wrote ${files.size} files to content/art/`);

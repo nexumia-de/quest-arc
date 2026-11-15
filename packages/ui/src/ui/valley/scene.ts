@@ -13,13 +13,12 @@ import { grownSince, placeHue, type PlaceModel, type ValleyModel } from './model
  * placed by hand here.
  *
  * The scene is built in **layers**, back to front, each a named slot with
- * one group per place, so the signs (#131) are filled
- * in without touching the rest: `fillLayer(scene, 'plants', i)` returns
- * place i's group in a layer. The names are HTML on top (`name`), then the
- * places' tap areas.
+ * one group per place: the place's sign (#131) fills `lantern`, and `slot(layer, i)` returns place i's
+ * group in a layer. The names are HTML on top (`name`), then the places'
+ * tap areas.
  */
 
-export const LAYERS = ['ground', 'path', 'plants', 'thing', 'marker', 'lantern'] as const;
+export const LAYERS = ['ground', 'path', 'thing', 'marker', 'lantern'] as const;
 export type Layer = (typeof LAYERS)[number];
 
 const SVG_NS = 'http://www.w3.org/2000/svg';
@@ -164,16 +163,19 @@ export const valleyScene = (
     );
   });
 
-  // The things.
-  model.places.forEach((place, i) => {
-    const source = place.art && art().pictures[place.art];
-    if (!source) return;
-    const { x, y, width: w, height: ht } = place.piece.slot;
-    const thing = part(source, { x, y, width: w, height: ht }, placeHue(place.view));
-    const slot = layers.get('thing')?.[i];
-    if (!slot) return;
-    if (grown.has(place.view.anchorId)) slot.setAttribute('class', 'qa-grow');
-    slot.append(thing);
+  // The things, and the sign (#131): the lit lantern, drawn in the thing's
+  // box and reaching beyond it towards the path (one picture per side), in
+  // front of the marker (docs/journey-design.md, "The sign of a place").
+  model.places.forEach(({ piece, view, art: thing }, i) => {
+    const draw = (layer: Layer, name?: string) => {
+      const source = name && art().pictures[name];
+      const slot = layers.get(layer)?.[i];
+      if (source) slot?.append(part(source, piece.slot, placeHue(view)));
+      return slot;
+    };
+    const slot = draw('thing', thing);
+    if (thing && grown.has(view.anchorId)) slot?.setAttribute('class', 'qa-grow');
+    if (view.sign === 'lantern') draw('lantern', `place-lantern-${view.side}`);
   });
 
   // The marker in front of the thing; its new elements grow in, as on the journey screen.
