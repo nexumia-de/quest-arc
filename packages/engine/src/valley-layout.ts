@@ -62,6 +62,12 @@ export interface ValleyPiece {
   path: [Cubic, Cubic];
   /** The build's box (view box 0 0 120 80, base line y = 74) in scene units. */
   slot: Box & { scale: number };
+  /**
+   * The thing's ground: the slot with room beside it, `plotNear` build units
+   * on the path's side (the lit lantern) and `plotFar` on the far side (the
+   * surroundings), as high as the slot.
+   */
+  plot: Box;
   /** The path widening on the thing's side: from the centre line to the slot's far side. */
   bay: Ellipse;
   /** Where the thing's threshold (x = 60, y = 74 of the build) meets the bay. */
@@ -100,6 +106,13 @@ export const VALLEY = {
   smooth: 0.5,
   /** Space kept free at the scene's sides. */
   edge: 8,
+  /**
+   * Room beside the slot, in build units: on the path's side for the lit
+   * lantern, on the far side for the surroundings (#131, owner
+   * 2026-11-15: they stand in free ground beside the thing, at its scale).
+   */
+  plotNear: 14,
+  plotFar: 32,
   /** The largest slot, in scene units per build unit (as the setting's slot). */
   maxScale: 1.75,
   /** The bay's half height and the base line's drop below the bend, in build units. */
@@ -182,7 +195,10 @@ const reach = (points: readonly Point[], y0: number, y1: number, gap: number, si
   return limit;
 };
 
-/** The slot of a place at a scale, hugging the path, or null if it does not fit. */
+/**
+ * The slot of a place at a scale, with its plot (the slot and the room beside
+ * it) hugging the path, or null if it does not fit.
+ */
 const slotAt = (
   points: readonly Point[],
   bend: Point,
@@ -190,17 +206,21 @@ const slotAt = (
   scale: number,
   scene: { width: number; height: number; unit: number },
   vertical: boolean,
-): Box | null => {
+): { slot: Box; plot: Box } | null => {
   const width = BUILD.width * scale;
   const height = BUILD.height * scale;
+  const near = VALLEY.plotNear * scale;
+  const far = VALLEY.plotFar * scale;
   const y = bend.y + VALLEY.baseDrop * scale - BUILD.base * scale;
   const gap = VALLEY.clearance * scene.unit;
   const edge = VALLEY.edge * scene.unit;
-  const near = reach(points, y, y + height, gap, side);
-  const x = side === 'right' ? near : near - width;
-  if (x < edge || x + width > scene.width - edge) return null;
+  const reached = reach(points, y, y + height, gap, side);
+  const plotWidth = near + width + far;
+  const px = side === 'right' ? reached : reached - plotWidth;
+  if (px < edge || px + plotWidth > scene.width - edge) return null;
   if (vertical && (y < 0 || y + height > scene.height)) return null;
-  return { x, y, width, height };
+  const x = side === 'right' ? px + near : px + far;
+  return { slot: { x, y, width, height }, plot: { x: px, y, width: plotWidth, height } };
 };
 
 const bendOf = (side: Side, n: number, width: number, unit: number, y: number): Point => {
@@ -298,11 +318,10 @@ export const valleyLayout = ({
   const places = sides.map((side, i): ValleyPiece => {
     const bend = bends[i] as Point;
     const half = pieces[i] as [Cubic, Cubic];
-    const slot = slotAt(points, bend, side, scale, scene, true) ?? {
-      x: bend.x,
-      y: bend.y,
-      width: 0,
-      height: 0,
+    const none = { x: bend.x, y: bend.y, width: 0, height: 0 };
+    const { slot, plot } = slotAt(points, bend, side, scale, scene, true) ?? {
+      slot: none,
+      plot: none,
     };
     const far = side === 'right' ? slot.x + slot.width : slot.x;
     const bay: Ellipse = {
@@ -327,6 +346,7 @@ export const valleyLayout = ({
       joints: { top, bottom },
       path: half,
       slot: { ...slot, scale },
+      plot,
       bay,
       doorstep: { x: slot.x + BUILD.door * scale, y: slot.y + BUILD.base * scale },
       name: {

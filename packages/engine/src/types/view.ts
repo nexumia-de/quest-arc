@@ -102,9 +102,9 @@ export interface ValleyPlace {
   readonly hue: string;
   /** The one thing; absent where no journey stands yet (plain land). */
   readonly thing?: ValleyThing;
-  /** `plants`: a step here is still followed; `lantern`: a step runs by itself. */
-  readonly sign?: 'plants' | 'lantern';
-  /** Steps of the surroundings (fence, tree, bench, gate): 0 to SURROUNDINGS_STEPS. */
+  /** `flowers`: a step here is still followed; `lantern`: a step runs by itself. */
+  readonly sign?: 'flowers' | 'lantern';
+  /** Steps of the surroundings (a low hedge, a bench, a tree, a butterfly): 0 to SURROUNDINGS_STEPS. */
   readonly surroundings: number;
   /** The active journey grows here (the anchor's `state` is `growing`). */
   readonly growing: boolean;

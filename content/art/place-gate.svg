@@ -1,8 +1,0 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 -20 120 120">
-  <title>A gate</title>
-  <rect class="fg" x="87" y="82.4" width="4" height="13.6"/>
-  <rect class="bg" x="88.4" y="83.8" width="1.2" height="10.8"/>
-  <rect class="fg" x="91" y="85.6" width="10" height="9.4"/>
-  <rect class="bg" x="92.4" y="87" width="7.2" height="6.6"/>
-  <polygon class="fg" points="91.8,94.2 93.8,94.2 100.2,86.4 98.2,86.4"/>
-</svg>

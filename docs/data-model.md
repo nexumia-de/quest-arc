@@ -437,7 +437,7 @@ interface ValleyPlace {
   side: 'left' | 'right'; // the user's, else alternating from the right
   hue: string; // the user's, else by position in the palette's order; neighbours differ
   thing?: ValleyThing; // the first journey's build; absent: plain land
-  sign?: 'plants' | 'lantern'; // a step is maintained / graduated
+  sign?: 'flowers' | 'lantern'; // a step is maintained / graduated
   surroundings: number; // 0..4 steps from further journeys' finished stations
   growing: boolean; // the active journey starts from here
   chosen: { position?: number; side?: 'left' | 'right'; hue?: string }; // `place:<anchorId>`

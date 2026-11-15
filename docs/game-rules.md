@@ -656,15 +656,17 @@ picked. Nothing here changes what is counted (§1 to §7).
   version standing and its marker as it was (§7), and a journey ended
   early leaves its version standing without a marker, as §7 says.
   Where no journey stands, there is no thing: plain land.
-- **Sign.** `plants` when a step at the place is `maintained` (a habit
-  still followed and ticked off); else `lantern` when a step is
-  `graduated` (it runs by itself, after which nothing is counted); else
-  none. A step waiting for a task (`unbound`, `unsupported-repeat`)
+- **Sign.** `flowers` when a step at the place is `maintained` (a habit
+  still followed and ticked off; flowers at the thing's foot, owner
+  2026-11-15, #131); else `lantern` when a step is `graduated` (it runs
+  by itself, after which nothing is counted; the flowers stay drawn);
+  else none. A step waiting for a task (`unbound`, `unsupported-repeat`)
   gives no sign.
 - **Surroundings.** A further journey from the same anchor builds no
   thing. Its finished stations (stages with a checkpoint, and skipped
   ones, like the version of §7) each add one step to the place's
-  surroundings (fence, tree, bench, gate), at most `SURROUNDINGS_STEPS`
+  surroundings (a low hedge, a bench, a tree, a butterfly; owner
+  2026-11-15, #131), at most `SURROUNDINGS_STEPS`
   = 4 in all. What a waiting or an early ended journey finished stays
   counted; nothing is taken away. The first journey's own stations are
   the thing's versions and add nothing.

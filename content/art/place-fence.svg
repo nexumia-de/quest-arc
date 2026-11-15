@@ -1,9 +1,0 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 -20 120 120">
-  <title>A low fence</title>
-  <rect class="fg" x="101" y="86.4" width="19" height="3"/>
-  <rect class="bg" x="102.4" y="87.8" width="16.2" height="0.2"/>
-  <rect class="fg" x="101" y="91.4" width="19" height="3"/>
-  <rect class="bg" x="102.4" y="92.8" width="16.2" height="0.2"/>
-  <path class="fg" d="M102.4 96L102.4 85L104.9 82.4L107.4 85L107.4 96ZM108.6 96L108.6 85L111.1 82.4L113.6 85L113.6 96ZM114.8 96L114.8 85L117.3 82.4L119.8 85L119.8 96Z"/>
-  <path class="bg" d="M106 85.6L106 94.6L103.8 94.6L103.8 85.6L104.9 84.4ZM112.2 85.6L112.2 94.6L110 94.6L110 85.6L111.1 84.4ZM118.4 85.6L118.4 94.6L116.2 94.6L116.2 85.6L117.3 84.4Z"/>
-</svg>

@@ -197,14 +197,16 @@ const LAYOUT_SIDES = (() => {
       all.push(Array.from({ length: n }, (_, i) => ((i + first) % 2 ? 'left' : 'right')));
   return all;
 })();
-/** The doorstep's zone in the frame: nothing but the thing and the lantern in front of it. */
+/** The doorstep's zone in the frame: nothing in front of it. */
 const DOORSTEP = box(50, 74, 20, 26);
+/** The thing's box; the surroundings stand beside it. */
+const BUILD_BOX = box(0, 0, 120, 80);
 /** The threshold stone, which the lantern leaves free. */
 const STONE = box(53, 74, 14, 3.5);
 /** Room kept between a place's pictures and the edge of the path. */
 const PATH_GAP = 2;
 const ROLES = {
-  plants: new Set(['tint-strong']),
+  flowers: new Set(['fg', 'bg', 'tint-strong', 'accent']),
   surroundings: new Set(['fg', 'bg', 'tint-strong']),
 };
 
@@ -242,7 +244,7 @@ export const placeProblems = (place, pictures, ladders, valleyLayout) => {
     shape: s.shape.map((ring) => ring.map(([x, y]) => [lx + (x * lw) / 32, ly + (y * lh) / 32])),
   }));
   const layers = [
-    { name: place.plants, kind: 'plants', shapes: shapesNamed(place.plants) },
+    { name: place.flowers, kind: 'flowers', shapes: shapesNamed(place.flowers) },
     ...place.surroundings.map(({ art }) => ({
       name: art,
       kind: 'surroundings',
@@ -252,6 +254,22 @@ export const placeProblems = (place, pictures, ladders, valleyLayout) => {
   const lanternShape = union(...lantern.map((s) => s.shape));
   if (area(minus(lanternShape, frame)) > EPS) problems.push('lantern: outside the frame');
   if (area(within(lanternShape, STONE)) > EPS) problems.push('lantern: covers the threshold stone');
+  if (area(within(lanternShape, DOORSTEP)) > EPS)
+    problems.push('lantern: in front of the doorstep');
+  // nothing overlaps the thing, whichever version of whichever ladder stands
+  const things = Object.values(ladders).flatMap((ladder) =>
+    ladder.versions
+      .filter(({ art }) => pictures[art] !== undefined)
+      .map(({ art }) => ({ art, shape: silhouette(shapesOf(pictures[art])) })),
+  );
+  const clearOfThings = (name, shape) => {
+    for (const { art, shape: thing } of things)
+      if (area(within(shape, thing)) > EPS) {
+        problems.push(`${name}: overlaps ${art}`);
+        return;
+      }
+  };
+  clearOfThings('lantern', lanternShape);
   for (const { name, kind, shapes } of layers) {
     const all = union(...shapes.map((s) => s.shape));
     const wrong = shapes.filter((s) => !ROLES[kind].has(s.role)).map((s) => s.role);
@@ -260,6 +278,9 @@ export const placeProblems = (place, pictures, ladders, valleyLayout) => {
     if (area(minus(all, frame)) > EPS)
       problems.push(`${name}: outside the frame ${fx} ${fy} ${fw} ${fh}`);
     if (area(within(all, DOORSTEP)) > EPS) problems.push(`${name}: in front of the doorstep`);
+    clearOfThings(name, all);
+    if (kind === 'surroundings' && area(within(all, BUILD_BOX)) > EPS)
+      problems.push(`${name}: not beside the thing's box`);
   }
   // nothing hides the marker: the lantern, drawn over it, leaves every
   // marker place of every ladder free (setting units → build units)

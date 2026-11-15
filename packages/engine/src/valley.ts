@@ -10,7 +10,7 @@ import type { AnchorView, RunView, ValleyPlace, ValleyThing } from './types/view
  * and the `place` records; nothing is counted or stored here.
  */
 
-/** Steps of the surroundings that are drawn (fence, tree, bench, gate). */
+/** Steps of the surroundings that are drawn (a low hedge, a bench, a tree, a butterfly). */
 export const SURROUNDINGS_STEPS = 4;
 
 const NO_RUN = '9999-99-99';
@@ -128,7 +128,7 @@ export const valleyView = (
       hue: hue ?? '',
       ...(thing ? { thing } : {}),
       ...(habits.includes('maintained')
-        ? { sign: 'plants' as const }
+        ? { sign: 'flowers' as const }
         : habits.includes('graduated')
           ? { sign: 'lantern' as const }
           : {}),

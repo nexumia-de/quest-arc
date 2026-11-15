@@ -26,13 +26,13 @@ describe('pictures in content/art', () => {
     expect(files.filter((f) => !known(f))).toEqual(['markers.json', 'palette.json', 'place.json']);
   });
 
-  it('have the place: plants, the lit lantern and one picture per step of the surroundings', () => {
+  it('have the place: flowers, the lit lantern and one picture per step of the surroundings', () => {
     const place = read('place.json') as {
-      plants: string;
+      flowers: string;
       lantern: { art: string };
       surroundings: { art: string; title: string }[];
     };
-    expect(pictures).toContain(place.plants);
+    expect(pictures).toContain(place.flowers);
     expect(pictures).toContain(place.lantern.art);
     expect(place.surroundings).toHaveLength(SURROUNDINGS_STEPS);
     for (const step of place.surroundings) {

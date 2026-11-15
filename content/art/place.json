@@ -1,30 +1,34 @@
 {
-  "viewBox": [0, -20, 120, 120],
+  "viewBox": [-14, 0, 166, 92],
   "far": "right",
-  "plants": "place-plants",
+  "flowers": "place-flowers",
   "lantern": {
     "art": "lantern",
-    "x": 63,
-    "y": 50.8,
-    "width": 28,
-    "height": 28
+    "x": -17,
+    "y": 59.25,
+    "width": 20,
+    "height": 20
   },
   "surroundings": [
     {
-      "art": "place-fence",
-      "title": "A low fence"
-    },
-    {
-      "art": "place-tree",
-      "title": "A tree"
+      "art": "place-hedge",
+      "title": "A low hedge",
+      "z": 2
     },
     {
       "art": "place-bench",
-      "title": "A bench"
+      "title": "A bench",
+      "z": 3
     },
     {
-      "art": "place-gate",
-      "title": "A gate"
+      "art": "place-tree",
+      "title": "A tree",
+      "z": 1
+    },
+    {
+      "art": "place-butterfly",
+      "title": "A butterfly",
+      "z": 4
     }
   ]
 }

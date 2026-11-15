@@ -399,11 +399,15 @@ the day, and the scene's width and height, and returns:
   bends sit a little below the middle of their spacing (by at most a
   quarter of it), because a thing stands above its bay.
 - per place the **slot**, the build's box (`0 0 120 80`, base line
-  y = 74) wholly on the thing's side, its near edge at least 15 from the
-  path's centre line wherever the path comes nearest; one scale for every
-  thing, the largest at which each slot fits the scene (at most 1.75, the
-  journey screen's): 1.51 with one place, 1.40 with three, 1.04 with six
-  and more;
+  y = 74) wholly on the thing's side, and its **plot**: the slot with
+  room beside it, 14 build units towards the path (the lit lantern) and
+  32 beyond (the surroundings), as high as the slot (#131, owner
+  2026-11-15: they stand in free ground beside the thing). The plot's
+  near edge stays at least 15 from the path's centre line wherever the
+  path comes nearest; one scale for every thing, the largest at which
+  each plot fits the scene (at most 1.75, the journey screen's): 1.10
+  with one place, 1.08 with three, 0.85 with six and more (1.51, 1.40
+  and 1.04 before the room was kept);
 - the **bay**: an ellipse in the path's colour from the centre line at
   the bend to the slot's far side, 14 build units high on each side of
   the bend, on the thing's side only; the build's own yard lies on it;
@@ -426,9 +430,9 @@ without a use, no water, no bridge; nothing crosses the path.
 **Checks** in `npm run journeys`: `valleyProblems`
 (`packages/engine/src/art-valley-check.ts`) measures the layout for 1 to
 12 places with the things alternating from either side, every choice of
-sides up to six places and the scene at 720 wide: no slot and no name box
-comes nearer than 15 to the centre line or leaves the scene, no two boxes
-overlap, a name box holds at least 5.5 characters, every bay stays on its
+sides up to six places and the scene at 720 wide: no plot and no name box
+comes nearer than 15 to the centre line or leaves the scene, every slot
+lies in its plot, no two boxes overlap, a name box holds at least 5.5 characters, every bay stays on its
 side of the centre line at every height and reaches the slot's far side,
 the doorstep lies on the bay, the path runs edge to edge. The palette
 check (`art-palette.ts`) requires the hosts' text on every hue's `tint`,
@@ -453,78 +457,96 @@ The same scenes drawn at 720 wide in a 1280 wide window:
 ## Signs and surroundings of a place (the Valley, #131)
 
 What a place gains after its thing[^131] ([#114](https://github.com/nexumia-de/quest-arc/issues/114),
-decision 5), drawn once and fitting every thing, from the engine's
-`valley` view ([game rules](game-rules.md) §8): `sign` and
-`surroundings` per place. Nothing is shown before it is earned, and no
-screen lists what is still to come.
+decision 5, as the owner changed it on 2026-11-15 after the first
+pictures: small icons squeezed under the thing, a pale tree floating
+behind it and a lantern stuck onto the house did not belong to the
+scene), drawn once and fitting every thing, from the engine's `valley`
+view ([game rules](game-rules.md) §8): `sign` and `surroundings` per
+place. Nothing is shown before it is earned, and no screen lists what is
+still to come.
 
-- **Plants** while a step at the place is still followed (`plants`): a
-  fixed arrangement in the place's `tint-strong`: a bush at each back
-  corner of the yard, half behind the thing, and low shrubs and tufts in
-  front of the yard on the side of the path. Never in front of the
-  doorstep, and not on the yard itself (the yard is `tint-strong` too, so
-  they would not show). They stay as they are once the lantern is lit.
+- **Flowers** while a step at the place is still followed (`flowers`):
+  four clumps of leaves at the thing's foot along the front of the yard,
+  two on each side of the doorstep, each with an open blossom (`bg`
+  with an `accent` centre, the marker's blossom), the large ones with
+  buds. They stay when the routine graduates.
 - **The lit lantern** when the routine runs by itself (`lantern`): the
-  `lantern` picture, a lantern on a post beside the doorstep on the far
-  side, clear of the threshold stone. Lit, its glass is filled with the
-  flame, with a halo behind it and six rays; the unlit lantern (the
-  marker's) is an empty outlined lantern without halo, flame or rays, so
-  the two differ in shape, not only in colour. The same picture stands in
-  a ladder's `lantern` slot on the journey screen. After it nothing is
-  counted or changed any more.
+  `lantern` picture, a lantern on a post, standing apart from the thing
+  on the bay's edge beside the doorstep, towards the path, in the plot's
+  room on the path's side. Lit, its glass is filled with the flame, with
+  a halo behind it and rays; the unlit lantern (the marker's) is an empty
+  outlined lantern without halo, flame or rays, so the two differ in
+  shape, not only in colour. The same picture stands in a ladder's
+  `lantern` slot on the journey screen. After it nothing is counted or
+  changed any more.
 - **Surroundings** in fixed steps, one per station a further journey at
-  the same moment has finished (`surroundings`, at most 4, as the engine
-  caps them; #131 suggested a second tree as a fifth step, which was not
-  drawn, so engine, rules and pictures agree): a low fence, a tree, a
-  bench, a gate. Each step is whole and is drawn over the ones before;
-  nothing moves, shrinks or disappears. The tree stands behind the
-  thing in the far corner, its crown above every version's shoulder; the
-  fence, its gate and the bench stand on the ground in front of the far
-  corner, below the bay. Built things are outlined in `fg` with a `bg`
-  fill, the tree is growth in `tint-strong`; none has an accent (the
-  thing keeps its one).
+  the same moment has finished (`surroundings`, at most 4 as the engine
+  caps them): a low hedge, a bench, a tree, a butterfly. Fence and gate
+  (the first pictures) are dropped. Each step is whole and nothing moves,
+  shrinks or disappears. They stand in the plot's room beyond the thing:
+  the hedge a little behind its ground line, the tree behind the hedge,
+  the bench a little in front of it, the butterfly in the air beside the
+  tree, so they are drawn tree, hedge, bench, butterfly (`z` in
+  `place.json`) whatever order they were earned in. The hedge is three
+  round shrubs grown into one, filled in `tint-strong`, so it does not
+  read as Garden's white-filled hedge beside a garden.
 
-**Where they go.** The place piece's slot reaches the scene's edge in
-every layout (8 from it), so there is no ground beyond the slot, and the
-fifth versions fill the build's box: inside the box a bench or a fence
-would vanish behind a house or a walled garden. So the pictures use the
-ground the layout leaves free on the thing's side: behind the thing
-above its box, and in front of the far corner below the bay. They are
-drawn in the build's units over its slot, in one frame: the build's view
-box made 20 higher and 20 deeper (`0 -20 120 120`, pictures named
-`place-…`), for a thing on the right of the path, so the far side, away
-from the path, is x = 120. A host mirrors the frame for a thing on the
-left; the lantern keeps its form and moves to the other side of the
-doorstep. `content/art/place.json` names the frame, the far side, the
-plants, the lantern's place in the frame and the four steps with their
-titles.
+**Look.** Everything is drawn at the thing's scale and line weight
+(outlines 2 build units, 1.3–1.6 for small parts), standing on the
+ground line, in the free ground of the thing's side, never in a corner
+as icons. Built things (the bench, the lantern's post) are outlined in
+`fg` with a `bg` fill; growth (the hedge, the tree's crown, the flowers'
+leaves) is outlined too, filled in `tint-strong`; the tree is outlined
+like everything else. The flowers' blossoms and the lantern are the only
+`accent` besides the thing's own.
 
-**Layers**, back to front: ground, path and bay, surroundings (steps 1
-to n in order), plants, the thing, the marker, the lantern, the name.
-`placeLayers` (`packages/ui/src/ui/valley-place.ts`, pure, no imports)
-gives the pictures behind the thing (`back`) and in front of it
-(`front`) from the slot and the view; `placeSignWords`
-(`valley-place-words.ts`) says sign and surroundings in words for screen
-readers ("plants grow around it and its lantern is lit; around it: a low
-fence and a tree"). The plugin bundles the place's pictures with the
-ladders' (`ladderArt`), and `place.json` travels in the art pack.
+**Where they go.** The place piece keeps room beside every slot (the
+plot, [above](#the-place-piece-the-valley-127)): 14 build units towards
+the path for the lantern, 32 beyond for the surroundings. That makes
+every thing smaller (0.85 instead of 1.04 with six places) and is kept
+whether or not a place has anything there, so nothing jumps when a step
+is earned. The pictures are drawn in the build's units over the plot, in
+one frame (`-14 0 166 92`: the plot, 12 deeper for the flowers' clumps;
+pictures named `place-…`), for a thing on the right of the path, so the
+far side is x > 120. A host mirrors the frame about the thing's centre
+(x = 60) for a thing on the left; the lantern keeps its form and stands
+on the other side, again towards the path. `content/art/place.json`
+names the frame, the far side, the flowers, the lantern's place in the
+frame and the four steps with their titles and drawing order.
+
+**Layers**, back to front: ground, path and bay, surroundings (by `z`),
+flowers, the thing, the marker, the lantern, the name. `placeLayers`
+(`packages/ui/src/ui/valley-place.ts`, pure, no imports) gives the
+pictures behind the thing (`back`) and in front of it (`front`) from the
+slot and the view; `placeSignWords` (`valley-place-words.ts`) says sign
+and surroundings in words for screen readers ("flowers grow at its foot
+and its lantern is lit; beside it: a low hedge and a bench"). The plugin
+bundles the place's pictures with the ladders' (`ladderArt`) in
+`plugin.js`, and `place.json` travels in the art pack; the view's
+`index.html` carries none of them.
 
 **Checks.** `scripts/draw-ladders.mjs` writes nothing while
 `placeProblems` (`scripts/ladder-checks.mjs`) finds one, and
 `packages/engine/test/art-geometry.test.ts` measures the committed
-pictures the same way: every picture inside the frame and at most 4 KB;
-plants only `tint-strong`, surroundings only `fg`, `bg` and
-`tint-strong`; nothing but the lantern in front of the doorstep (x 50–70
-below the base line); the lantern clear of the threshold stone and of
-every marker element of every ladder (nothing hides the marker); and in
-the Valley's layout (`valleyLayout`) for one to six places on every
-choice of sides and seven to twelve alternating, at 360 and 720 wide,
-every place with all its pictures inside the scene, off the path (its
-stroke and 2 more on each side) and clear of every other place's slot,
-name and pictures, and of its own name (nothing hides the lantern).
+pictures the same way:
+
+- every picture inside the frame and at most 4 KB; flowers only `fg`,
+  `bg`, `tint-strong` and `accent`, surroundings only `fg`, `bg` and
+  `tint-strong`;
+- nothing in front of the doorstep (x 50–70 below the base line), the
+  lantern clear of the threshold stone and of every marker element of
+  every ladder (nothing hides the marker);
+- the lantern, the flowers and every step clear of every version of
+  every ladder (nothing overlaps the thing), and the surroundings wholly
+  beside the thing's box;
+- in the Valley's layout (`valleyLayout`) for one to six places on every
+  choice of sides and seven to twelve alternating, at 360 and 720 wide:
+  every place with all its pictures inside the scene, off the path (its
+  stroke and 2 more on each side) and clear of every other place's slot,
+  name and pictures, and of its own name (nothing hides the lantern).
 
 **Pictures** from `scripts/draw-valley.mjs`, one place at 360 × 720 in
-each state: plain, plants, the lantern lit, then the lantern with one to
+each state: plain, flowers, the lantern lit, then the lantern with one to
 four steps of surroundings; light above, dark below. Home's house on the
 right of the path, and the walled garden on the left (the frame
 mirrored):
@@ -534,14 +556,19 @@ mirrored):
 ![A place in each state, Garden on the left](screenshots/valley-place-garden.png)
 
 The same states for every ladder's first and fifth version, the build's
-box at 60 × 40 (the frame reaches 20 above and below it), light left,
-dark right:
+box at 60 × 40 with its plot's room beside it, light left, dark right:
 
 ![Every thing in every state, small](screenshots/valley-place-row.png)
 
 The Valley pictures above show signs and surroundings at some places
-(three places: lantern and two steps, plants; six places: lantern and
-four steps, plants, lantern and one step, plants and three steps).
+(three places: lantern and two steps, flowers; six places: lantern and
+four steps, flowers, lantern and one step, flowers and three steps).
+
+**Rounds.** The first pictures (#146, round 1) drew plants as pale tufts
+around the thing, the lantern in front of the house beside the door, and
+a fence, a tree, a bench and a gate in the corners above and below the
+slot, because the layout then kept no room beside it. The owner kept
+the bench and the lantern and decided the rest as above.
 
 ## The journey screen with the build
 

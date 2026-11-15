@@ -38,7 +38,7 @@ const read = () => {
 export const ladderArt = ({ ladders, markers, place }) => {
   const names = new Set(['lantern']);
   if (place) {
-    names.add(place.plants);
+    names.add(place.flowers);
     names.add(place.lantern.art);
     for (const step of place.surroundings) names.add(step.art);
   }

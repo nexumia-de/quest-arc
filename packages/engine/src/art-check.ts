@@ -16,13 +16,13 @@ export const ART_MAX_BYTES = 4096;
 /**
  * The view boxes: a ladder's setting (`setting-…`), a version of a build (`build-…`, larger than an icon so a
  * bridge or a house reads as the subject of a screen), what a place in the
- * Valley gains around its thing (`place-…`: the build's box, 20 higher and
- * 20 deeper) and every other picture.
+ * Valley gains around its thing (`place-…`: the build's box with the room
+ * beside it, 14 towards the path and 32 beyond, and 12 deeper) and every other picture.
  */
 export const ART_VIEW_BOX = {
   setting: '0 0 320 180',
   build: '0 0 120 80',
-  place: '0 -20 120 120',
+  place: '-14 0 166 92',
   picture: '0 0 32 32',
 } as const;
 
