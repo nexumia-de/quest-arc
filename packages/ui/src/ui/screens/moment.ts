@@ -73,6 +73,18 @@ export const momentScreen = (ctx: Context, anchorId: string, journeyId?: string)
         h('p', { id: 'qa-moment-name-hint', class: 'qa-muted qa-small' }, t('ui.moment.name.hint')),
       ),
       h('p', { class: 'qa-muted' }, t('ui.moment.tasks')),
+      // The home has no button for it any more: a moment where no journey grows can be extended here.
+      !journeyId && !(anchor.growing && view.active)
+        ? h(
+            'button',
+            {
+              class: 'qa-btn qa-btn-secondary',
+              type: 'button',
+              onclick: () => ctx.go({ name: 'choose', anchorId }),
+            },
+            t('ui.anchor.extend'),
+          )
+        : null,
       Object.keys(removal).length > 0
         ? h(
             'div',

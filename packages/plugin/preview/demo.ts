@@ -4,6 +4,7 @@ import { isoWeek } from '@questarc/engine';
 
 import { habitDemo, isHabitScenario, type HabitScenario } from './demo-habits';
 import { isMomentScenario, momentsDemo, type MomentScenario } from './demo-moments';
+import { isValleyScenario, valleyDemo, type ValleyScenario } from './demo-valley';
 import { own } from './demo-words';
 
 /**
@@ -57,6 +58,7 @@ export type Scenario =
   | 'build'
   | 'build-ready'
   | 'build-lookout'
+  | ValleyScenario
   | HabitScenario;
 
 const DAY_MS = 86_400_000;
@@ -75,6 +77,7 @@ export const demoData = (scenario: Scenario, today: string): DemoData => {
   if (scenario === 'welcome') return { tasks, repeatCfgs, data };
   if (isHabitScenario(scenario)) return habitDemo(scenario, today);
   if (isMomentScenario(scenario)) return momentsDemo(scenario, today);
+  if (isValleyScenario(scenario)) return valleyDemo(scenario, today);
   const build = scenario.startsWith('build');
 
   const todayMs = Date.parse(`${today}T12:00:00Z`);

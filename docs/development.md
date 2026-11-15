@@ -172,7 +172,9 @@ art:sequence-lookout,art:journey-home,art:palette 2` writes the
 sequences and the palette as one full page 1400 px wide and the mock at
 phone size (`art:sequence-lookout@slate` for a hue). The journey screen
 itself has the demos `build`, `build-ready` and `build-lookout`
-(`node screenshots.mjs build,build-ready,build-lookout 2`);
+(`node screenshots.mjs build,build-ready,build-lookout 2`); the Valley as
+the home (#129) has `valley-1`, `valley-3` and `valley-6`
+(`node screenshots.mjs valley-1,valley-3,valley-6 2`);
 `preview.tick()` in the console ticks today off, to see new marker
 elements grow in. The plugin bundles only the pictures of the ladders
 (`esbuildLadderArt` in `packages/ui/art.mjs`); the preview pages have all of them. The ladders' files

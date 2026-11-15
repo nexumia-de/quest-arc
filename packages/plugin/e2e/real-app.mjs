@@ -55,7 +55,7 @@ try {
   await page.goto(`${BASE}#/plugins/questarc/index`);
   await page.waitForTimeout(3000);
   // The home is the moments (#96); the growing step opens the journey.
-  const moment = await view().locator('.qa-anchor').first().innerText();
+  const moment = await view().locator('.qa-home').innerText();
   expect(
     moment.includes('After getting up') && moment.includes('1 of 5 days'),
     `the home shows the moment with its growing step (${moment})`,
