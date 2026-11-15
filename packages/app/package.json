@@ -9,12 +9,12 @@
     "build": "node build.mjs",
     "typecheck": "tsc --noEmit -p .",
     "test": "vitest run",
-    "e2e": "node e2e/walk.mjs 360 720 && node e2e/walk.mjs 1200 800",
-    "e2e:import": "node e2e/sp-import.mjs"
+    "e2e": "node e2e/walk.mjs 360 720 && node e2e/walk.mjs 1200 800 && node e2e/walk-day-start.mjs 360 720",
+    "e2e:import": "node e2e/sp-import.mjs && node e2e/sp-roundtrip.mjs dist/walk/sp-export-360.json && node e2e/sp-import.mjs dist/walk/backup-daystart-360.json && node e2e/sp-roundtrip.mjs dist/walk/sp-export-daystart-360.json"
   },
   "dependencies": {
     "@questarc/engine": "*",
-    "@questarc/plugin": "*"
+    "@questarc/ui": "*"
   },
   "devDependencies": {
     "@super-productivity/plugin-api": "20.0.0"

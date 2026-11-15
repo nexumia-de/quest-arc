@@ -277,6 +277,8 @@ defaults, `packages/app/src/store/dataset.ts`.)
 - Not tried: a large imported Super Productivity dataset (the app would
   show and create its supported recurring tasks, and ignore the rest),
   and the round trip back from Super Productivity into the app.
+  (The round trip was tried later, with the small dataset: it holds
+  against 19.3.1, [log](../log.md) of 2026-11-14.)
 
 ## Open product question: several habits, one journey
 

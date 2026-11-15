@@ -64,7 +64,7 @@ journey checker ([story format](story-format.md#the-journey-checker)).
 `packages/plugin/build.mjs` uses esbuild:
 
 - Journeys come from the module `virtual:questarc-journeys`, which
-  `packages/plugin/journeys.mjs` builds from every file in
+  `packages/ui/journeys.mjs` builds from every file in
   `content/journeys/` (for esbuild in `build.mjs` and `preview.mjs`, for
   Vitest in `vitest.config.ts`).
 
@@ -111,7 +111,8 @@ the real adapter on demo data (`preview/demo.ts`, never real tasks) with
 a fake plugin API, and loads the built view in an iframe that talks to it
 the way Super Productivity's bridge does, and registers the same hooks
 plugin.js does. Theme variables for light and
-dark are transcribed from Super Productivity's styles (`preview/theme.ts`).
+dark are transcribed from Super Productivity's styles
+(`packages/ui/src/ui/theme.ts`, the shared package's default theme).
 
 ```sh
 npm run screenshots -w @questarc/plugin
@@ -174,7 +175,7 @@ itself has the demos `build`, `build-ready` and `build-crossing`
 (`node screenshots.mjs build,build-ready,build-crossing 2`);
 `preview.tick()` in the console ticks today off, to see new marker
 elements grow in. The plugin bundles only the pictures of the ladders
-(`esbuildLadderArt` in `art.mjs`); the preview pages have all of them. The ladders' files
+(`esbuildLadderArt` in `packages/ui/art.mjs`); the preview pages have all of them. The ladders' files
 come from `node scripts/draw-ladders.mjs`. Day Planner's demo draws the same parts
 (`tests/art_demo.py sizes|sequence-<ladder>|journey-<ladder>|palette` in
 nexumia-de/pensum, through phosh-toolkit's `screenshot.sh -c light|dark`).
@@ -259,12 +260,29 @@ The image stays on the oldest supported version (`minSupVersion`
 proposes only minor and patch updates. When the pinned version changes,
 check the [facts](super-productivity-facts.md) §10.
 
-## Standalone app (spike)
+## Shared package
 
-`packages/app` (#93) is the plugin's adapter and screens on a second
-host: its own dataset in Super Productivity's backup format, kept in
-IndexedDB, with a Today screen, export and import. It imports the
-plugin's and the engine's sources and copies none. What it showed and
+`packages/ui` (`@questarc/ui`, [decision](decisions/standalone-app.md))
+holds what both hosts in this repository use: the screens with their
+style and default theme (`src/ui/`), the host-independent adapter core
+(`src/adapter/`: brain, records, hooks, day, messages in words, the
+pictures' pack), the texts and the protocol (`src/shared/`), a fake
+plugin API for tests (`src/testing/`) and the build's virtual modules
+for journeys and pictures (`journeys.mjs`, `art.mjs`). It is imported by
+path (`@questarc/ui/adapter/brain`), has no build of its own and never
+imports from `packages/plugin` or `packages/app`. The screens get their
+host passed in: `createApp(root, client, host)` with `ViewHost`
+(`src/ui/view-host.ts`); no shared code reads the global `PluginAPI`.
+
+## Standalone app
+
+`packages/app` (#91, spike #93) is the shared screens and adapter core
+on a second host: its own dataset in Super Productivity's backup format,
+kept in IndexedDB, with a Today screen, export and import. Its host
+offers `createHabit`, so "Create the task" makes the recurring task with
+the stage's schedule and binds it at once. Texts that name the host are
+replaced by the app's own (`src/host-texts.ts`; a test keeps keys and
+placeholders equal to `content/i18n`). What it showed and
 what has to change before it becomes a product:
 [decision](decisions/standalone-app-spike.md). It is private and not
 released.
@@ -288,18 +306,42 @@ npm run e2e -w @questarc/app
 walks the built app at 360 × 720 and 1200 × 800 (`e2e/walk.mjs`, served
 by `e2e/serve.mjs` on a free port): a journey from start over three
 logical days, offline after the first day, export and import; it prints
-the start time with the CPU slowed four times. Screenshots and the
-exported backup go to `packages/app/dist/walk/`.
+the start time with the CPU slowed four times. Then `e2e/walk-day-start.mjs`
+sets the day start to 04:00 on the Data screen and checks that a tick at
+01:30 counts for the day before and that the stored configuration is
+whole. Screenshots and the exported backups (`backup-360.json`,
+`backup-daystart-360.json`, each with an `expect-….json`) go to
+`packages/app/dist/walk/`; a build empties `dist/`, so the walk runs
+again after it.
 
 ```sh
 QUESTARC_SP_URL=http://localhost:8080/ npm run e2e:import -w @questarc/app
 ```
 
-imports that backup into Super Productivity (the same image and variable
-as [in the real app](#in-the-real-app); without the variable the live web
-app) and fails on a validation failure, a repair or a dialog, then
-installs the plugin ZIP and compares the journey. It needs `npm run
-build` and the walk first. Where Playwright's own Chromium is not
+imports both backups into Super Productivity (`e2e/sp-import.mjs`; the
+same image and variable as [in the real app](#in-the-real-app); without
+the variable the live web app) and fails on a validation failure, a
+repair or a dialog, then installs the plugin ZIP and compares the
+journey, and saves Super Productivity's own export. After each import
+`e2e/sp-roundtrip.mjs` takes that export into a fresh profile of the
+app through its Data screen: the journey, the day start and Today are as
+before, and a second export has every slice the app does not own equal
+to Super Productivity's. It needs `npm run build` and the walk first.
+On 2026-11-14 the cloud environment could reach neither the live web
+app nor Docker, so the import and Super Productivity's export ran only
+in CI (job `standalone-app`); the round trip's app side was tried
+locally on the app's backups with slices and fields added.
+
+The dataset carries Super Productivity's whole default configuration
+(`src/store/sp-default-config.json`, the transcription Pensum uses, from
+Super Productivity 19.3.1 at commit `590178d7`, MIT;
+`src/store/global-config.ts`): Super Productivity takes a missing
+`globalConfig` but repairs a partial one, so a day start other than
+midnight needs all of it. Setting the day start fills the sections an
+older or imported dataset lacks and overwrites nothing else. Once a
+habit exists the app asks the browser to keep its data
+(`navigator.storage.persist()`, `src/store/persist.ts`); a site that is
+not installed can otherwise lose its IndexedDB. Where Playwright's own Chromium is not
 installed, `QUESTARC_CHROMIUM` names the binary for both scripts (in the
 cloud image
 `/opt/pw-browsers/chromium_headless_shell-1243/chrome-headless-shell-linux64/chrome-headless-shell`).
@@ -429,23 +471,23 @@ hosts again on 2026-11-14. "Refused by site" means the proxy lets the
 request through and the site itself answers automated requests with
 403; "blocked" means the proxy refuses the host.
 
-| Host                                                                                                                                                                                                                                                    | For                                                                                                                                                                                                                                     | State              |
-| ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------ |
-| `github.com`                                                                                                                                                                                                                                            | Git, Super Productivity source for the facts and API types                                                                                                                                                                              | allowed            |
-| `dl.flathub.org`                                                                                                                                                                                                                                        | GNOME runtime for the gjs check                                                                                                                                                                                                         | allowed            |
-| `www.ebi.ac.uk`, `eutils.ncbi.nlm.nih.gov`, `www.ncbi.nlm.nih.gov`, `pubmed.ncbi.nlm.nih.gov`, `pmc.ncbi.nlm.nih.gov`                                                                                                                                   | Research: Europe PMC REST API (search by DOI, abstracts, full-text XML of open articles), NCBI E-utilities (PubMed abstracts, PMC XML), PMC article pages for articles whose publisher forbids the XML; a generic client name is enough | allowed            |
-| `api.openalex.org`, `api.unpaywall.org`, `api.semanticscholar.org`                                                                                                                                                                                      | Research: where an open copy of a paper is; Unpaywall wants an `email` parameter                                                                                                                                                        | allowed            |
-| `journals.plos.org`, `www.frontiersin.org`, `trialsjournal.biomedcentral.com`, `www.who.int`                                                                                                                                                            | Research: open-access publishers and WHO pages (the WHO guideline documents are on `iris.who.int`, blocked)                                                                                                                             | allowed            |
-| `link.springer.com`, `www.nature.com`                                                                                                                                                                                                                   | Research: allowed, but article pages and PDFs redirect to `idp.springer.com` and `idp.nature.com`, which are blocked, so no article can be read                                                                                         | allowed, of no use |
-| `doi.org`, `api.crossref.org`                                                                                                                                                                                                                           | Research: DOI metadata from Crossref                                                                                                                                                                                                    | allowed            |
-| `refubium.fu-berlin.de`, `kops.uni-konstanz.de`, `www.selfdeterminationtheory.org`                                                                                                                                                                      | Research: open full texts in university and author repositories                                                                                                                                                                         | allowed            |
-| `www.europarl.europa.eu`                                                                                                                                                                                                                                | Research: status of EU legislation (Digital Fairness Act)                                                                                                                                                                               | allowed            |
-| `dl.acm.org`, `www.sciencedirect.com`, `informahealthcare.com`, `europepmc.org`, `academic.oup.com`, `www.pnas.org`, `journals.sagepub.com`, `onlinelibrary.wiley.com`, `psycnet.apa.org`                                                               | Research: reachable, but the sites refuse automated requests (403); use the Europe PMC API on `www.ebi.ac.uk`, Crossref and open copies instead                                                                                         | refused by site    |
-| `app.super-productivity.com`                                                                                                                                                                                                                            | Trying the plugin ZIP in the real app (current release, 19.3.1 on 2026-11-06) with throwaway data                                                                                                                                       | allowed            |
-| `raw.githubusercontent.com`                                                                                                                                                                                                                             | SPDX licence texts (`content/LICENSE` is SPDX's CC-BY-SA-4.0 text, license-list-data v3.27.0)                                                                                                                                           | allowed            |
-| `www.interruptions.net`, `hbr.org`                                                                                                                                                                                                                      | Research: author PDFs of interruption studies (index `literature.htm`), HBR article text                                                                                                                                                | allowed            |
-| `www.hbs.edu`                                                                                                                                                                                                                                           | Research: HBS working papers; reachable, but HBS answers automated requests with 403                                                                                                                                                    | refused by site    |
-| `creativecommons.org`, `papers.ssrn.com`, `www.ics.uci.edu`                                                                                                                                                                                             | Licence texts; research for First Things First (tested 2026-11-06; `creativecommons.org` and `papers.ssrn.com` again on 2026-11-14)                                                                                                     | blocked            |
-| `registry-1.docker.io`, `auth.docker.io`, `production.cloudflare.docker.com`                                                                                                                                                                            | Super Productivity's Docker image for the pinned real-app test                                                                                                                                                                          | allowed            |
-| `test-app.super-productivity.com`                                                                                                                                                                                                                       | Super Productivity's test build; it ran 18.1.0 on 2026-11-06, older than the plugin needs                                                                                                                                               | allowed            |
-| `idp.springer.com`, `idp.nature.com`, `www.science.org`, `www.thelancet.com`, `bjsm.bmj.com`, `www.sleephealthjournal.org`, `clutejournals.com`, `osf.io`, `lirias.kuleuven.be`, `dspace.lboro.ac.uk`, `figshare.com`, `hdl.handle.net`, `iris.who.int` | Research for the journeys of 2026-11-13: publisher logins and the repositories that hold the open copies of the sources still marked abstract-only or unverified in [research](research.md)                                             | blocked            |
+| Host                                                                                                                                                                                                                                                    | For                                                                                                                                                                                                                                     | State                                                           |
+| ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------- |
+| `github.com`                                                                                                                                                                                                                                            | Git, Super Productivity source for the facts and API types                                                                                                                                                                              | allowed                                                         |
+| `dl.flathub.org`                                                                                                                                                                                                                                        | GNOME runtime for the gjs check                                                                                                                                                                                                         | allowed                                                         |
+| `www.ebi.ac.uk`, `eutils.ncbi.nlm.nih.gov`, `www.ncbi.nlm.nih.gov`, `pubmed.ncbi.nlm.nih.gov`, `pmc.ncbi.nlm.nih.gov`                                                                                                                                   | Research: Europe PMC REST API (search by DOI, abstracts, full-text XML of open articles), NCBI E-utilities (PubMed abstracts, PMC XML), PMC article pages for articles whose publisher forbids the XML; a generic client name is enough | allowed                                                         |
+| `api.openalex.org`, `api.unpaywall.org`, `api.semanticscholar.org`                                                                                                                                                                                      | Research: where an open copy of a paper is; Unpaywall wants an `email` parameter                                                                                                                                                        | allowed                                                         |
+| `journals.plos.org`, `www.frontiersin.org`, `trialsjournal.biomedcentral.com`, `www.who.int`                                                                                                                                                            | Research: open-access publishers and WHO pages (the WHO guideline documents are on `iris.who.int`, blocked)                                                                                                                             | allowed                                                         |
+| `link.springer.com`, `www.nature.com`                                                                                                                                                                                                                   | Research: allowed, but article pages and PDFs redirect to `idp.springer.com` and `idp.nature.com`, which are blocked, so no article can be read                                                                                         | allowed, of no use                                              |
+| `doi.org`, `api.crossref.org`                                                                                                                                                                                                                           | Research: DOI metadata from Crossref                                                                                                                                                                                                    | allowed                                                         |
+| `refubium.fu-berlin.de`, `kops.uni-konstanz.de`, `www.selfdeterminationtheory.org`                                                                                                                                                                      | Research: open full texts in university and author repositories                                                                                                                                                                         | allowed                                                         |
+| `www.europarl.europa.eu`                                                                                                                                                                                                                                | Research: status of EU legislation (Digital Fairness Act)                                                                                                                                                                               | allowed                                                         |
+| `dl.acm.org`, `www.sciencedirect.com`, `informahealthcare.com`, `europepmc.org`, `academic.oup.com`, `www.pnas.org`, `journals.sagepub.com`, `onlinelibrary.wiley.com`, `psycnet.apa.org`                                                               | Research: reachable, but the sites refuse automated requests (403); use the Europe PMC API on `www.ebi.ac.uk`, Crossref and open copies instead                                                                                         | refused by site                                                 |
+| `app.super-productivity.com`                                                                                                                                                                                                                            | Trying the plugin ZIP in the real app (current release, 19.3.1 on 2026-11-06) with throwaway data; needed again for `e2e:import` of the standalone app                                                                                  | allowed until 2026-11-13; **blocked on 2026-11-14** (proxy 403) |
+| `raw.githubusercontent.com`                                                                                                                                                                                                                             | SPDX licence texts (`content/LICENSE` is SPDX's CC-BY-SA-4.0 text, license-list-data v3.27.0)                                                                                                                                           | allowed                                                         |
+| `www.interruptions.net`, `hbr.org`                                                                                                                                                                                                                      | Research: author PDFs of interruption studies (index `literature.htm`), HBR article text                                                                                                                                                | allowed                                                         |
+| `www.hbs.edu`                                                                                                                                                                                                                                           | Research: HBS working papers; reachable, but HBS answers automated requests with 403                                                                                                                                                    | refused by site                                                 |
+| `creativecommons.org`, `papers.ssrn.com`, `www.ics.uci.edu`                                                                                                                                                                                             | Licence texts; research for First Things First (tested 2026-11-06; `creativecommons.org` and `papers.ssrn.com` again on 2026-11-14)                                                                                                     | blocked                                                         |
+| `registry-1.docker.io`, `auth.docker.io`, `production.cloudflare.docker.com`                                                                                                                                                                            | Super Productivity's Docker image for the pinned real-app test                                                                                                                                                                          | allowed                                                         |
+| `test-app.super-productivity.com`                                                                                                                                                                                                                       | Super Productivity's test build; it ran 18.1.0 on 2026-11-06, older than the plugin needs                                                                                                                                               | allowed                                                         |
+| `idp.springer.com`, `idp.nature.com`, `www.science.org`, `www.thelancet.com`, `bjsm.bmj.com`, `www.sleephealthjournal.org`, `clutejournals.com`, `osf.io`, `lirias.kuleuven.be`, `dspace.lboro.ac.uk`, `figshare.com`, `hdl.handle.net`, `iris.who.int` | Research for the journeys of 2026-11-13: publisher logins and the repositories that hold the open copies of the sources still marked abstract-only or unverified in [research](research.md)                                             | blocked                                                         |
