@@ -1,0 +1,203 @@
+import { cubicPathData } from '@questarc/engine';
+
+import { art } from '../art-store';
+import { part } from '../art';
+import { h } from '../dom';
+import { grownSince, placeHue, type PlaceModel, type ValleyModel } from './model';
+
+/**
+ * The Valley's picture (docs/behaviour.md screen 0): the ground in the
+ * places' hues, the path and the bays in the host's background, per place
+ * its thing in its current version, and the names. All numbers come from
+ * the engine's layout (`valleyLayout`, via `valleyModel`); nothing is
+ * placed by hand here.
+ *
+ * The scene is built in **layers**, back to front, each a named slot with
+ * one group per place, so the signs and the surroundings (#131) are filled
+ * in without touching the rest: `fillLayer(scene, 'plants', i)` returns
+ * place i's group in a layer. The names are HTML on top (`name`), then the
+ * places' tap areas.
+ */
+
+export const LAYERS = [
+  'ground',
+  'path',
+  'surroundings',
+  'plants',
+  'thing',
+  'marker',
+  'lantern',
+] as const;
+export type Layer = (typeof LAYERS)[number];
+
+const SVG_NS = 'http://www.w3.org/2000/svg';
+const svgEl = (tag: string, attrs: Record<string, string | number> = {}): SVGElement => {
+  const el = document.createElementNS(SVG_NS, tag);
+  for (const [name, value] of Object.entries(attrs)) el.setAttribute(name, String(value));
+  return el;
+};
+const n1 = (v: number): string => String(Math.round(v * 10) / 10);
+
+/** What this view drew last (version per thing), to let a new version appear. Lives as long as the view. */
+let drawn: Map<string, number> | undefined;
+
+/** Forget the last draw (tests, a new view). */
+export const forgetValley = (): void => {
+  drawn = undefined;
+};
+
+/** The surface the scene stands on: the host's card, as for every picture. */
+const SURFACE = 'var(--bg-lighter, #fff)';
+/** A place's hue, light or dark as the theme is (as `.qa-art-hue` in style.css). */
+const HUE =
+  'color-mix(in srgb, var(--qa-hue-dark) calc(var(--is-dark-theme, 0) * 100%), var(--qa-hue-light))';
+
+export interface ValleyScene {
+  readonly element: HTMLElement;
+  /** Place `index`'s group in a layer, for what grows there. */
+  readonly slot: (layer: Layer, index: number) => SVGElement | undefined;
+}
+
+export const valleyScene = (
+  model: ValleyModel,
+  open: (place: PlaceModel) => void,
+  label: string,
+): ValleyScene => {
+  const { geometry } = model;
+  const { width, height } = geometry;
+  const { grown, versions } = grownSince(drawn, model);
+  drawn = versions;
+
+  const layers = new Map<Layer, SVGElement[]>();
+  const svg = svgEl('svg', {
+    viewBox: `0 0 ${width} ${height}`,
+    'aria-hidden': 'true',
+    focusable: 'false',
+    class: 'qa-valley-svg',
+  });
+  for (const layer of LAYERS) {
+    const g = svgEl('g', { 'data-layer': layer });
+    layers.set(
+      layer,
+      model.places.map((place) => {
+        const slot = svgEl('g', { 'data-place': place.view.anchorId });
+        g.append(slot);
+        return slot;
+      }),
+    );
+    svg.append(g);
+  }
+  const group = (layer: Layer) => svg.querySelector(`[data-layer="${layer}"]`) as SVGElement;
+
+  // Ground: each place's hue lightly mixed into the surface, passing into the next one around the joint.
+  const stops = model.places.flatMap(({ view, piece }) => {
+    const hue = placeHue(view);
+    const { y, height: span } = piece.piece;
+    const tint = hue ? `color-mix(in srgb, ${HUE} 16%, ${SURFACE})` : SURFACE;
+    return [y + span * 0.3, y + span * 0.7].map((at) => {
+      const stop = svgEl('stop', { offset: `${n1((100 * at) / height)}%` });
+      stop.setAttribute(
+        'style',
+        `stop-color:${tint};--qa-hue-light:${hue?.light ?? 'transparent'};--qa-hue-dark:${hue?.dark ?? 'transparent'}`,
+      );
+      return stop;
+    });
+  });
+  const defs = svgEl('defs');
+  const gradient = svgEl('linearGradient', { id: 'qa-valley-ground', x1: 0, y1: 0, x2: 0, y2: 1 });
+  gradient.append(...stops);
+  defs.append(gradient);
+  svg.prepend(defs);
+  group('ground').prepend(
+    svgEl('rect', {
+      width,
+      height,
+      // plain land where there is no place
+      style: `fill:${stops.length > 0 ? 'url(#qa-valley-ground)' : SURFACE}`,
+    }),
+  );
+
+  // Path and bays: the host's background.
+  const way = svgEl('path', {
+    d: cubicPathData(geometry.path),
+    class: 'qa-valley-way',
+    'stroke-width': geometry.pathWidth,
+  });
+  group('path').prepend(way);
+  model.places.forEach(({ piece }, i) => {
+    const { bay } = piece;
+    layers.get('path')?.[i]?.append(
+      svgEl('ellipse', {
+        cx: n1(bay.cx),
+        cy: n1(bay.cy),
+        rx: n1(bay.rx),
+        ry: n1(bay.ry),
+        class: 'qa-valley-bay',
+      }),
+    );
+  });
+
+  // The things.
+  model.places.forEach((place, i) => {
+    const source = place.art && art().pictures[place.art];
+    if (!source) return;
+    const { x, y, width: w, height: ht } = place.piece.slot;
+    const thing = part(source, { x, y, width: w, height: ht }, placeHue(place.view));
+    const slot = layers.get('thing')?.[i];
+    if (!slot) return;
+    if (grown.has(place.view.anchorId)) slot.setAttribute('class', 'qa-grow');
+    slot.append(thing);
+  });
+
+  // The names, in HTML over the picture; sizes follow the scene's width.
+  const names = model.places.map(({ piece, title, view }) => {
+    const { name } = piece;
+    const style = [
+      `left:${n1((100 * name.x) / width)}%`,
+      `top:${n1((100 * name.y) / height)}%`,
+      `width:${n1((100 * name.width) / width)}%`,
+      `height:${n1((100 * name.height) / height)}%`,
+      `font-size:calc(100cqw * ${name.size / width})`,
+      `line-height:${n1((100 * name.lineHeight) / name.size)}%`,
+      `justify-content:${name.align === 'right' ? 'flex-end' : 'flex-start'}`,
+    ].join(';');
+    return h(
+      'div',
+      {
+        class: `qa-valley-name${view.growing ? ' qa-valley-growing' : ''}`,
+        style,
+        'aria-hidden': 'true',
+      },
+      h('span', {}, title),
+    );
+  });
+
+  // The tap areas: one real button per place, the place in words.
+  const taps = model.places.map((place) =>
+    h('button', {
+      type: 'button',
+      class: 'qa-valley-place',
+      style: [
+        `left:${n1((100 * place.hit.x) / width)}%`,
+        `top:${n1((100 * place.hit.y) / height)}%`,
+        `width:${n1((100 * place.hit.width) / width)}%`,
+        `height:${n1((100 * place.hit.height) / height)}%`,
+      ].join(';'),
+      'aria-label': place.label,
+      onclick: () => open(place),
+    }),
+  );
+
+  const element = h(
+    'section',
+    {
+      class: 'qa-valley',
+      'aria-label': label,
+      style: `aspect-ratio:${width} / ${height}`,
+    },
+    svg,
+    ...names,
+    ...taps,
+  ) as HTMLElement;
+  return { element, slot: (layer, index) => layers.get(layer)?.[index] };
+};
