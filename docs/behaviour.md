@@ -88,8 +88,9 @@ piece"); the screen places nothing by hand.
 With [one](screenshots/valley-home-1-phone-light.png) and
 [six](screenshots/valley-home-6-phone-light.png) places, and
 [dark](screenshots/valley-home-6-desktop-dark.png) on the desktop.
-_Screenshots from demo data at 360 × 720 and 1000 × 700; the signs and the
-surroundings follow with #131._
+_Screenshots from demo data at 360 × 720 and 1000 × 700; the signs
+follow with #131; a place draws its first thing, the further things (up to
+three, game rules §8) follow with the place piece._
 
 - **The scene** is the page's picture. Per place, from the layout: the
   ground in the place's hue, blending into the next place's; the path and
@@ -101,9 +102,8 @@ surroundings follow with #131._
   and where no journey stands yet the place is plain land with its name.
   Nothing marks a place as free, nothing is announced, nothing is counted.
 - **The scene is built in layers**, back to front: ground, path and bay,
-  surroundings, plants, thing, marker, lantern, name. Plants, lantern and
-  surroundings (the place's sign and steps, from the view) are filled in
-  by #131; until their pictures exist nothing is drawn for them.
+  plants, thing, marker, lantern, name. Plants and lantern (the place's
+  sign, from the view) are filled in by #131; until their pictures exist nothing is drawn for them.
 - **Tapping a place** opens it: the journey (screen 4) for the growing
   place; for any other the moment (screen 0a, which offers **Extend This
   Moment** while no journey grows there) until the place has its own page

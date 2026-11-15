@@ -13,21 +13,13 @@ import { grownSince, placeHue, type PlaceModel, type ValleyModel } from './model
  * placed by hand here.
  *
  * The scene is built in **layers**, back to front, each a named slot with
- * one group per place, so the signs and the surroundings (#131) are filled
+ * one group per place, so the signs (#131) are filled
  * in without touching the rest: `fillLayer(scene, 'plants', i)` returns
  * place i's group in a layer. The names are HTML on top (`name`), then the
  * places' tap areas.
  */
 
-export const LAYERS = [
-  'ground',
-  'path',
-  'surroundings',
-  'plants',
-  'thing',
-  'marker',
-  'lantern',
-] as const;
+export const LAYERS = ['ground', 'path', 'plants', 'thing', 'marker', 'lantern'] as const;
 export type Layer = (typeof LAYERS)[number];
 
 const SVG_NS = 'http://www.w3.org/2000/svg';
