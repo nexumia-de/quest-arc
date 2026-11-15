@@ -1,6 +1,6 @@
 // The journey screen with the build in the real app (#100):
 // start "A gentle morning" with another ladder (Home instead of its
-// Well), tick the task off and see the first marker element from the
+// Well), tick the task off and see the first flowers in bud from the
 // message's Show action, tick it off on four more days until the stage is
 // ready, continue and see the next version. The days pass with
 // Playwright's clock (the app is reloaded on each new day, so Super
@@ -69,10 +69,10 @@ try {
   await view().locator('.qa-build').waitFor();
   await page.waitForTimeout(1500);
   const one = await label();
-  expect(/marker: [12] of 4 posts and 0 of 6/.test(one ?? ''), `Show opens the build: ${one}`);
-  await name('2-first-post');
+  expect(/; [12] of 6 flowers, in bud;/.test(one ?? ''), `Show opens the build: ${one}`);
+  await name('2-first-flowers');
 
-  // Days 2 to 5: the marker grows; on day 5 the stage is ready.
+  // Days 2 to 5: the flowers grow; on day 5 the stage is ready and they open.
   for (let day = 1; day <= 4; day += 1) {
     await page.clock.setSystemTime(new Date(first.getTime() + day * DAY_MS));
     await page.reload({ waitUntil: 'networkidle' });
@@ -81,7 +81,7 @@ try {
   }
   await questArc();
   const ready = await label();
-  expect(/; ready$/.test(ready ?? ''), `ready after five days: ${ready}`);
+  expect(/; 6 of 6 flowers, open; ready$/.test(ready ?? ''), `ready after five days: ${ready}`);
   expect(
     (await view().locator('.qa-build-state').innerText()).includes('a tent is ready'),
     'the line says the tent is ready',
@@ -100,7 +100,7 @@ try {
   expect(/; ready$/.test((await label()) ?? ''), 'staying keeps the build ready');
   await name('3a-staying');
 
-  // Continue: the next version stands, the marker is gone. Flow C ends
+  // Continue: the next version stands, the flowers are gone. Flow C ends
   // on "Set up the task" for the next stage; back leads to the journey.
   await view().getByRole('button', { name: 'Continue' }).click();
   await view()
