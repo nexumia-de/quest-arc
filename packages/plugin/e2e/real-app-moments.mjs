@@ -236,14 +236,14 @@ try {
   await view().getByRole('button', { name: 'Change this moment' }).click();
   await view().getByRole('button', { name: 'Move Later' }).click();
   await view().getByRole('radio', { name: 'Rose' }).check();
-  await view().getByRole('radio', { name: 'Left' }).check();
+  await view().getByRole('radio', { name: 'Right' }).check();
   await page.waitForTimeout(1500);
   await name('8-place-choices');
   const placed = Object.entries((await request({ type: 'questarc:get' })).records).filter(([key]) =>
     key.startsWith('place:'),
   );
   expect(
-    placed.some(([, value]) => value.hue === 'rose' && value.side === 'left') &&
+    placed.some(([, value]) => value.hue === 'rose' && value.side === 'right') &&
       placed.some(([, value]) => value.position === 1),
     `the choices are written as place records (${JSON.stringify(placed)})`,
   );

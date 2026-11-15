@@ -214,8 +214,8 @@ journey (screen 4), which draws the same piece.
 
 ![Desktop, light](screenshots/place-rest-desktop-light.png)
 
-_Screenshots from demo data; the sign (plants, lantern) and the
-surroundings are drawn with #131._
+_Screenshots from demo data; the sign (flowers, lantern) is drawn
+with #131._
 
 - Title: the place's name (the moment's name, else "After getting up").
   Back leads to the Valley.
@@ -223,7 +223,7 @@ surroundings are drawn with #131._
   [journey design](journey-design.md#the-place-piece-the-valley-127), 230
   units high): the ground in the place's hue, the path and the bay, the
   thing in the version that stands and its hue, the name; the place's
-  sign and surroundings in the layers of the Valley's scene (#131). The
+  sign (flowers, the lit lantern) in the layers of the Valley's scene (#131). The
   **pencil** at its top right (44 × 44) opens "Change this moment"
   (screen 0a). Where nothing stands yet the piece is plain land with the
   name.
@@ -304,9 +304,9 @@ surroundings are drawn with #131._
   ("You build: Home · pennants"), and **Change**, which
   opens screen 3a. Nothing is shown of the versions to come. For a
   further journey at a moment that already has its thing (#130) there is
-  nothing to choose and no **Change**: "This journey builds out the
-  surroundings of what stands here." (what the surroundings are: #131);
-  nothing is written for the build.
+  nothing to choose and no **Change**: "This journey grows the thing that
+  stands at this moment." (#114, decision 5: a further journey continues
+  the same thing, engine rule #148); nothing is written for the build.
 - Main action: **Start**. Then the flow "Set up the task" (flow B) for
   the first stage. A changed build is written with the start, as one
   `build:<runId>` record ([data model](data-model.md)); an unchanged one
@@ -375,8 +375,9 @@ Opened from the growing step of a moment (screen 0); back leads there.
   moment" (screen 0a). A journey from before anchors has no place yet:
   it stands on a place made from its own build, with no pencil. A
   further journey at a moment that already has its thing (#130) builds
-  out the surroundings: it shows the place only, without the row of
-  versions and the line of state, and its menu has no **What you
+  on the thing at the place (#148): until the engine's rule for the
+  versions across journeys lands, it shows the place only, without the
+  row of versions and the line of state, and its menu has no **What you
   build**.
 
   | ![Phone, light](screenshots/place-journey-phone-light.png) | ![Phone, dark](screenshots/place-journey-phone-dark.png) |

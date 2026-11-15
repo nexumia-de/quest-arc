@@ -52,7 +52,7 @@ export const startScreen = (ctx: Context, journeyId: string, anchorId?: string):
       h('span', { class: 'qa-option-title' }, label),
     );
 
-  // A further journey at a moment that has its thing builds out the surroundings: nothing to choose.
+  // A further journey at a moment that has its thing grows the thing that stands here: nothing to choose.
   const further = () =>
     view.valley.some(
       (p) => p.anchorId === ((ctx.draft.anchor as string | undefined) ?? anchorId) && p.thing,
@@ -146,7 +146,7 @@ export const startScreen = (ctx: Context, journeyId: string, anchorId?: string):
             'section',
             { class: 'qa-fieldset' },
             h('h2', { class: 'qa-section-title' }, t('ui.build.title')),
-            h('p', { class: 'qa-muted' }, t('ui.start.surroundings')),
+            h('p', { class: 'qa-muted' }, t('ui.start.grows-on')),
           )
         : buildPart(ctx, journey, build),
       active
