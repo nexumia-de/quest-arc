@@ -88,12 +88,12 @@ the ladders in `content/art/` (`<name>.ladder.json`, `markers.json`); pictures a
 
 | Field    | Required | Meaning                                                                                        |
 | -------- | -------- | ---------------------------------------------------------------------------------------------- |
-| `ladder` | yes      | A ladder from the list (`home`, `crossing`, …)                                                 |
+| `ladder` | yes      | A ladder from the list (`home`, `garden`, `well`, `lookout`)                                   |
 | `marker` | no       | What hangs on the marker: `lanterns`, `bunting` or `flowers`; the ladder's default if left out |
 | `names`  | no       | Text keys naming the versions in the journey's own words, version 1 first (at most 40 chars)   |
 
 ```json
-"build": { "ladder": "crossing", "names": ["first-things-first.build.v1"] }
+"build": { "ladder": "well", "names": ["first-things-first.build.v1"] }
 ```
 
 The user may choose another ladder, marker and hue when starting; the

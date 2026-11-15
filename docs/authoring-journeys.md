@@ -180,7 +180,7 @@ same.
 
 A journey builds one thing, a larger whole version after
 every stage ([game rules](game-rules.md) §7). Name a ladder from
-`content/art/` (`home`, `crossing`: the `<name>.ladder.json` files) in `build`. You may name
+`content/art/` (`home`, `garden`, `well`, `lookout`: the `<name>.ladder.json` files) in `build`. You may name
 what hangs on its marker (`lanterns`, `bunting`, or `flowers` where the
 ladder's setting has no water) and give the versions names in your own
 words (`names`, text keys, at most 40 characters). A journey with more

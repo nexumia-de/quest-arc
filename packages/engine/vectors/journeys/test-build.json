@@ -4,7 +4,7 @@
   "version": 1,
   "title": "test-build.title",
   "description": "test-build.description",
-  "build": { "ladder": "crossing" },
+  "build": { "ladder": "well" },
   "stages": [
     {
       "id": "a",

@@ -217,7 +217,7 @@ The same choices on screen 3, where **Change** opens them in place, and
 as their own page from **What you build** in the journey's menu
 (screen 4).
 
-- **What grows**: one option per ladder (Home, Crossing, …), each with
+- **What grows**: one option per ladder (Home, Garden, Well, Lookout), each with
   its first version as a small picture and its name in words; the
   journey's suggestion says "Suggested by the journey".
 - **What hangs**: lanterns, pennants, flowers, each with its plain
@@ -264,11 +264,11 @@ Opened from the growing step of a moment (screen 0); back leads there.
   elements, all hanging elements "on" while ready. Below it the row of
   versions (the standing ones as small pictures with their number, the
   next one as a plain step without a picture, nothing further), then one
-  line of state in words ("A plank bridge stands · a stone bridge is on
+  line of state in words ("A hut stands · a cottage is on
   its way", "… is ready", or only "A hut stands" before the stage's first
   counting completion; the journey's own version names only while the run's ladder is the journey's own, else the ladder's titles, #115), then the card. The picture's text for
-  screen readers says the same and the marker in words: "A plank bridge,
-  version 3 of 5; marker: 2 of 2 posts and 3 of 6 lanterns; not ready
+  screen readers says the same and the marker in words: "A hut,
+  version 3 of 5; marker: 4 of 4 posts and 3 of 6 pennants; not ready
   yet". At 720 px and wider the build is on the left and the card on the
   right. There is no drawn path any more: the stations are a list
   (**Stations** in the menu), each opening its details (screen 5).

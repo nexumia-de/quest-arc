@@ -164,157 +164,8 @@ const build = (name, title, shapes) => write(`build-${name}.svg`, svg('0 0 120 8
 // line on y = 140 of the setting (the front of the middle band).
 const S = 1.75;
 const SLOT = { x: 55, y: 10.5, width: 120 * S, height: 80 * S };
-const toBuild = ([x, y]) => [(x - SLOT.x) / S, (y - SLOT.y) / S];
-
-// The way: a crossing carries the path over the river. Every version's
-// walking surface runs from the left way point to the right one, at the
-// same height and as thick as the path where it meets them (build units);
-// the setting's path ends exactly there. WAYS goes into the ladder file and
-// the ladder checker compares both.
-const DECK = { top: 57, bottom: 64, left: 14, right: 106 };
-const CROSSING_WAYS = [
-  [
-    [DECK.left, DECK.top],
-    [DECK.left, DECK.bottom],
-  ],
-  [
-    [DECK.right, DECK.top],
-    [DECK.right, DECK.bottom],
-  ],
-];
+/** A point of a build in setting units. */
 const toScene = ([x, y]) => [SLOT.x + x * S, SLOT.y + y * S];
-
-// The river runs from the near edge of the setting under the crossing and
-// bends away to the left edge behind it: water never stops in the scene.
-// Its banks are straight lines between y = 112 and the build's base, so the
-// build's own strip of water lies exactly on it.
-const riverLeft = (y) => 116 - (y - 140) * 0.4;
-const riverRight = (y) => 205 + (y - 140) * 0.45;
-const waterStrip = () => {
-  const top = SLOT.y + DECK.bottom * S; // under the deck
-  const bottom = SLOT.y + 80 * S;
-  return poly('tint-strong', [
-    toBuild([riverLeft(top), top]),
-    toBuild([riverRight(top), top]),
-    toBuild([riverRight(bottom), bottom]),
-    toBuild([riverLeft(bottom), bottom]),
-  ]);
-};
-/** The walking surface every crossing shows: a band from way point to way point. */
-const surface = () => boxO(DECK.left, DECK.top, DECK.right - DECK.left, DECK.bottom - DECK.top, T);
-
-// Where the deck ends, the bank holds it: every crossing stands on two
-// stone abutments at its way points, so no deck floats at the banks. Their
-// inner faces slope down into the water strip.
-const abutments = () =>
-  [10, 88].flatMap((x) => [
-    ...boxO(x, 63.5, 22, 9.5, T),
-    rect('fg', x, 67.6, 22, 1.5),
-    rect('fg', x + 10.2, 63.5, 1.6, 4.5),
-    rect('fg', x + 5, 68.5, 1.6, 4.5),
-    rect('fg', x + 15.4, 68.5, 1.6, 4.5),
-  ]);
-
-// Stepping stones: two landing slabs at the way points, four boulders
-// between, each with a flat top face, so they read as stones, not dots.
-const boulder = (cx, top, w, h) => [
-  rect('fg', cx - w / 2, top, w, h, h / 2.2),
-  rect('bg', cx - w / 2 + T, top + T, w - 2 * T, h - 2 * T, h / 2.2 - T),
-  path('bg', `M${n(cx - w / 2 - 2)} ${n(top + h + 1.5)}h${n(w + 4)}v1.4h${n(-w - 4)}Z`),
-];
-build('crossing-1', 'Stepping stones across a river', [
-  waterStrip(),
-  ...abutments(),
-  ...boxO(DECK.left, DECK.top, 16, DECK.bottom - DECK.top, T, 1.5),
-  ...boxO(DECK.right - 16, DECK.top, 16, DECK.bottom - DECK.top, T, 1.5),
-  ...[
-    [40, 56.5, 13, 10],
-    [53, 58, 11, 9],
-    [66, 56, 13, 11],
-    [79.5, 58, 11, 9],
-  ].flatMap(([cx, top, w, h]) => boulder(cx, top, w, h)),
-]);
-
-// The log: a round trunk from bank to bank, as thick as two path widths,
-// with bark lines and its cut end showing rings. Its outline keeps corners
-// at the way points.
-const LOG = [
-  [DECK.left, DECK.top],
-  [DECK.left, DECK.bottom],
-  [16, 67],
-  [21, 68.5],
-  [99, 68.5],
-  [104, 67],
-  [DECK.right, DECK.bottom],
-  [DECK.right, DECK.top],
-  [104, 54],
-  [99, 52.5],
-  [21, 52.5],
-  [16, 54],
-];
-build('crossing-2', 'A log across a river', [
-  waterStrip(),
-  ...abutments(),
-  ...polyO(LOG, T),
-  rect('fg', 24, 57, 22, 1.8, 0.9),
-  rect('fg', 52, 62.5, 26, 1.8, 0.9),
-  rect('fg', 32, 64, 12, 1.6, 0.8),
-  rect('fg', 70, 56.5, 16, 1.6, 0.8),
-  ...ellipseO(101, 60.5, 5.5, 8, 1.8),
-  ...ellipseO(101, 60.5, 2.6, 4.2, 1.4),
-  rect('fg', 46, 51, 3, 3, 1),
-  rect('fg', 47, 48.5, 1.6, 3.5),
-]);
-
-build('crossing-3', 'A plank bridge across a river', [
-  waterStrip(),
-  ...abutments(),
-  rect('fg', 42, 62, 3.4, 16), // trestles in the water
-  rect('fg', 75, 62, 3.4, 16),
-  rect('fg', 42, 69, 36.4, 2.4),
-  ...surface(),
-  ...[16, 38, 59, 80, 101.4].map((x) => rect('fg', x, 44, 2.6, 13)),
-  rect('fg', DECK.left, 43, DECK.right - DECK.left, 3, 1.5),
-  rect('accent', 57.5, 40.5, 5.6, 5.6, 1.5),
-]);
-
-// The stone bridge: one arch from bank to bank, the crossing's heaviest step;
-// its masonry reaches down into both banks.
-const archBridge = () => [
-  path('fg', 'M12 80V62H108V80H90C90 74 77 70 60 70C43 70 30 74 30 80Z'),
-  path('bg', 'M14 78V64H106V78H92C91 72 78 68 60 68C42 68 29 72 28 78Z'),
-  path(
-    'fg',
-    'M27 80C27 71 42 65.5 60 65.5C78 65.5 93 71 93 80H89C89 73 76 69.5 60 69.5C44 69.5 31 73 31 80Z',
-  ),
-  rect('fg', 14, 71, 12, 1.6),
-  rect('fg', 94, 71, 12, 1.6),
-  rect('accent', 56.5, 64.5, 7, 6, 1),
-  ...surface(),
-];
-const parapet = () => [
-  ...boxO(DECK.left, 49, DECK.right - DECK.left, 8, T, 1.5),
-  ...[34, 52, 70, 88].map((x) => rect('fg', x, 49, 2, 8)),
-];
-build('crossing-4', 'A stone bridge across a river', [waterStrip(), ...archBridge(), ...parapet()]);
-
-build('crossing-5', 'A covered bridge across a river', [
-  waterStrip(),
-  ...archBridge(),
-  ...boxO(18, 34, 84, 23, T),
-  ...[26, 45, 64, 83].map((x) => rect('fg', x, 39, 11, 8, 1)),
-  ...[26, 45, 64, 83].map((x) => rect('bg', x + 2, 41, 7, 4)),
-  ...polyO(
-    [
-      [10, 36],
-      [24, 18],
-      [96, 18],
-      [110, 36],
-    ],
-    T,
-  ),
-  rect('fg', 8, 34, 104, 4, 2),
-]);
 
 // Home: everything grows around the fire at x = 60; its light stays the
 // accent (flame, glowing door, lit window). The yard is the same in all.
@@ -937,36 +788,6 @@ markerSet('flowers', { bead: 'A vine in bud on a line', beadLit: 'A vine in bloo
 
 const setting = (name, title, shapes) =>
   write(`setting-${name}.svg`, svg('0 0 320 180', title, shapes));
-const wave = (x, y, w) =>
-  path(
-    'bg',
-    `M${n(x)} ${n(y)}C${n(x + w / 3)} ${n(y - 2.4)} ${n(x + (2 * w) / 3)} ${n(y - 2.4)} ${n(x + w)} ${n(y)}C${n(x + (2 * w) / 3)} ${n(y - 1.2)} ${n(x + w / 3)} ${n(y - 1.2)} ${n(x)} ${n(y + 1.2)}Z`,
-  );
-
-const [wayLeftTop, wayLeftBottom, wayRightTop, wayRightBottom] = CROSSING_WAYS.flat().map(toScene);
-setting('river', 'River bank', [
-  path('tint', 'M0 48C40 36 90 32 140 40C180 46 220 32 270 34C295 35 310 40 320 44V180H0Z'),
-  path(
-    'tint-strong',
-    `M0 72C120 74 ${n(riverRight(112) - 0.45 * 18)} 94 ${n(riverRight(112))} 112L${n(riverRight(150.5))} 150.5C${n(riverRight(150.5) + 4.5)} 160.5 218 170 214 180H84C92 170 ${n(riverLeft(150.5) - 4)} 160.5 ${n(riverLeft(150.5))} 150.5L${n(riverLeft(112))} 112C${n(riverLeft(112) + 3.2)} 104 80 96 0 96Z`,
-  ),
-  // the way on both banks, ending exactly at the crossing's way points
-  path(
-    'bg',
-    `M0 106C30 106 56 ${n(wayLeftTop[1])} ${n(wayLeftTop[0])} ${n(wayLeftTop[1])}V${n(wayLeftBottom[1])}C56 ${n(wayLeftBottom[1])} 30 124 0 125Z`,
-  ),
-  path(
-    'bg',
-    `M${n(wayRightTop[0])} ${n(wayRightTop[1])}C270 ${n(wayRightTop[1])} 300 106 320 104V117C300 119 270 ${n(wayRightBottom[1])} ${n(wayRightBottom[0])} ${n(wayRightBottom[1])}Z`,
-  ),
-  wave(136, 158, 14),
-  wave(170, 168, 16),
-  wave(112, 175, 12),
-  wave(184, 150, 10),
-  wave(40, 86, 12),
-  wave(110, 90, 10),
-]);
-
 const forest = () => {
   // The edge of the wood around the clearing, low in the middle.
   let d = 'M0 34';
@@ -1033,7 +854,7 @@ setting('heights', 'Heights', [
 // in the near band (`marker` in the ladder file), like it declares where
 // the path meets the build. `span`: one continuous line over all posts,
 // where it can run in front of the build without crossing the way or the
-// view (Crossing: along the near edge, in front of the bridge). `sides`:
+// view (for a later ladder whose way runs across the scene). `sides`:
 // two short lines, left and right, with a gap in the middle where the way
 // or the view to the build passes (Home: the path to the door; a boat on
 // water: the waterway). The lines hang below the build's base line, so
@@ -1119,14 +940,6 @@ const markerPlaces = (settingName, { layout, posts, beads }) => {
   return places;
 };
 const MARKER_LAYOUTS = {
-  river: {
-    layout: 'span',
-    posts: [
-      [52, 172],
-      [262, 172],
-    ],
-    beads: 6,
-  },
   clearing: {
     layout: 'sides',
     posts: [
@@ -1144,26 +957,6 @@ MARKER_LAYOUTS.green = MARKER_LAYOUTS.clearing;
 MARKER_LAYOUTS.heights = MARKER_LAYOUTS.clearing;
 const markerOf = ({ layout, posts }) => ({ layout, posts });
 
-// Where a setting has water: polygons in setting units, so the checker can
-// refuse a post point on water (no post stands in water). They follow the
-// river's outline in setting-river.svg closely enough for post points.
-const RIVER_WATER = [
-  [
-    [0, 72],
-    [120, 74],
-    [riverRight(112) - 8, 94],
-    [riverRight(112), 112],
-    [riverRight(150.5), 150.5],
-    [218, 170],
-    [214, 180],
-    [84, 180],
-    [92, 170],
-    [riverLeft(150.5), 150.5],
-    [riverLeft(112), 112],
-    [80, 96],
-    [0, 96],
-  ].map(([x, y]) => [Math.round(x * 10) / 10, y]),
-];
 /** The graduation lantern stands where the marker's first post stood. */
 const lanternAtPost = ({ posts: [[x, feet]] }) => ({
   ...at('', 'near', x - 17, feet, 34),
@@ -1199,41 +992,6 @@ const ladder = (name, data, ground, places) =>
   );
 const groundOf = (name) => ({ art: `setting-${name}`, x: 0, y: 0, width: 320, height: 180 });
 const slot = (name, extra = {}) => ({ slot: name, ...extra });
-
-ladder(
-  'crossing',
-  {
-    title: 'Crossing',
-    hue: 'water',
-    water: true,
-    marker: 'lanterns',
-    // the row of versions shows the middle of the crossing, zoomed, so the
-    // stones and the log read at 60 × 40 px
-    row: [30, 38, 60, 40],
-    ways: CROSSING_WAYS,
-    ...markerOf(MARKER_LAYOUTS.river),
-    waterAreas: RIVER_WATER,
-    versions: [
-      { art: 'build-crossing-1', title: 'Stepping stones' },
-      { art: 'build-crossing-2', title: 'A log' },
-      { art: 'build-crossing-3', title: 'A plank bridge' },
-      { art: 'build-crossing-4', title: 'A stone bridge' },
-      { art: 'build-crossing-5', title: 'A covered bridge' },
-    ],
-  },
-  groundOf('river'),
-  [
-    at('tree', 'far', 246, 40, 20),
-    at('tree', 'far', 26, 45, 20),
-    at('tuft', 'middle', 290, 92, 14),
-    slot('build', { band: 'middle', ...SLOT }),
-    at('reeds', 'near', 84, 166, 34),
-    at('tuft', 'near', 296, 174, 20),
-    lanternAtPost(MARKER_LAYOUTS.river),
-    at('bush', 'near', -24, 179, 48),
-    ...markerPlaces('river', MARKER_LAYOUTS.river),
-  ],
-);
 
 ladder(
   'home',

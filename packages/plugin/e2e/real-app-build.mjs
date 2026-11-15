@@ -1,6 +1,6 @@
 // The journey screen with the build in the real app (#100):
-// start "A gentle morning" with another ladder (Crossing instead of its
-// Home), tick the task off and see the first marker element from the
+// start "A gentle morning" with another ladder (Home instead of its
+// Well), tick the task off and see the first marker element from the
 // message's Show action, tick it off on four more days until the stage is
 // ready, continue and see the next version. The days pass with
 // Playwright's clock (the app is reloaded on each new day, so Super
@@ -43,13 +43,11 @@ try {
   await view().locator('.qa-build-pick').waitFor({ timeout: 15_000 });
   const startText = await view().locator('.qa-build-pick').innerText();
   expect(
-    startText.includes('You build: Home'),
-    `the start page suggests the journey’s Home (${startText})`,
+    startText.includes('You build: Well'),
+    `the start page suggests the journey’s Well (${startText})`,
   );
   await view().getByRole('button', { name: 'Change' }).click();
-  await view()
-    .getByRole('radio', { name: /Crossing/ })
-    .check();
+  await view().getByRole('radio', { name: /Home/ }).check();
   await name('1-start');
   await view().getByRole('button', { name: 'Start', exact: true }).click();
   await view().getByRole('button', { name: 'Create the task' }).click();
@@ -57,8 +55,8 @@ try {
   await makeRecurring(page);
   await questArc();
   expect(
-    (await label())?.startsWith('Stepping stones, version 1 of 5; nothing on its way yet'),
-    `the Crossing stands, nothing on its way (${await label()})`,
+    (await label())?.startsWith('A fireplace, version 1 of 5; nothing on its way yet'),
+    `the Home stands, nothing on its way (${await label()})`,
   );
 
   // Day 1: the first tick, its message opens the build.
@@ -71,7 +69,7 @@ try {
   await view().locator('.qa-build').waitFor();
   await page.waitForTimeout(1500);
   const one = await label();
-  expect(/marker: [12] of 2 posts and 0 of 6/.test(one ?? ''), `Show opens the build: ${one}`);
+  expect(/marker: [12] of 4 posts and 0 of 6/.test(one ?? ''), `Show opens the build: ${one}`);
   await name('2-first-post');
 
   // Days 2 to 5: the marker grows; on day 5 the stage is ready.
@@ -85,8 +83,8 @@ try {
   const ready = await label();
   expect(/; ready$/.test(ready ?? ''), `ready after five days: ${ready}`);
   expect(
-    (await view().locator('.qa-build-state').innerText()).includes('a log is ready'),
-    'the line says the log is ready',
+    (await view().locator('.qa-build-state').innerText()).includes('a tent is ready'),
+    'the line says the tent is ready',
   );
   await name('3-ready');
 
@@ -115,7 +113,7 @@ try {
   await page.waitForTimeout(1000);
   const next = await label();
   expect(
-    next?.startsWith('A log, version 2 of 5; nothing on its way yet'),
+    next?.startsWith('A tent, version 2 of 5; nothing on its way yet'),
     `the next version stands: ${next}`,
   );
   expect(

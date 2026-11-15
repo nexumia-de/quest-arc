@@ -72,9 +72,9 @@ describe('artProblems', () => {
   });
 
   it('wants the view box of a setting and of a build', () => {
-    expect(messages('setting-river', good).join('\n')).toMatch(/0 0 320 180/);
-    expect(messages('build-crossing-1', good).join('\n')).toMatch(/0 0 120 80/);
-    expect(messages('build-crossing-1', good.replace('0 0 32 32', '0 0 120 80'))).toEqual([]);
+    expect(messages('setting-green', good).join('\n')).toMatch(/0 0 320 180/);
+    expect(messages('build-well-1', good).join('\n')).toMatch(/0 0 120 80/);
+    expect(messages('build-well-1', good.replace('0 0 32 32', '0 0 120 80'))).toEqual([]);
   });
 
   it('wants a lower-case name', () => {

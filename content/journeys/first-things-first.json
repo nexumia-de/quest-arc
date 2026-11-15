@@ -2,12 +2,12 @@
   "$schema": "../schema/journey.schema.json",
   "format": 3,
   "id": "first-things-first",
-  "version": 4,
+  "version": 5,
   "title": "first-things-first.title",
   "description": "first-things-first.description",
   "why": "first-things-first.why",
   "build": {
-    "ladder": "crossing"
+    "ladder": "well"
   },
   "anchor": {
     "moment": "first-things-first.moment",

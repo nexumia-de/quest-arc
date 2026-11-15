@@ -12,10 +12,13 @@ import { area, bounds, box, minus, oval, union, within } from './ladder-geometry
  * it looks).
  */
 export const GROWTH = 1.05;
-/** The build's box; a crossing reaches into its water down to the edge (rule 6). */
+/** The build's box; a build on water reaches into it down to the edge (rule 6). */
 const BOX = { left: 0, top: 4, right: 120, base: 74, water: 80 };
-/** Ladders measured but not held to the checks: Crossing is retired by #128. */
-export const RETIRING = new Set(['crossing']);
+/**
+ * Ladders measured but not held to the checks while they are being retired
+ * (their problems print as warnings). Empty: Crossing was retired by #128.
+ */
+export const RETIRING = new Set();
 const EPS = 0.05;
 /** The picture checker's limit (ART_MAX_BYTES in packages/engine/src/art-check.ts). */
 const MAX_BYTES = 4096;

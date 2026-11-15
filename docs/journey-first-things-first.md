@@ -28,18 +28,19 @@ All stages on Monday to Friday; anchor "sitting down at my desk".
 | `focus-mail` | write down my one task, give it 45 quiet minutes, then check email and chat in one block | 8 of 10 days |
 | `look-back`  | note what moved forward yesterday, write down my one task and give it 45 quiet minutes   | 8 of 10 days |
 
-The journey builds a **Crossing**
+The journey builds a **Well**
 ([game rules](game-rules.md) §7), with lanterns on the marker (the ladder's default): the
-journey is about getting across to the one task before the stream of
-email and chat, and each stage makes that way over sturdier, from
-stepping stones to a covered bridge. Five stages need six versions and
-the ladder has five, so the covered bridge gains one fixed addition for
+journey is about drawing on the day's best attention for the one task
+before the stream of email and chat, and each stage makes that source
+easier to reach, from a water hole to a well house. It uses the
+ladder's own version titles. Until #128 retired the Crossing (the
+Valley has no water) the journey built a Crossing; it moved to the Well
+in version 5. Five stages need six versions and
+the ladder has five, so the well house gains one fixed addition for
 the last stage (the checker's warning is expected). The checker also
 warns that the second stage asks for 15 minutes: a user who skips the
 first stage (#81) starts there; whether to put a smaller stage in
-between is open. Home was the other
-candidate; a home fits a morning routine better, and the two built-in
-journeys then build different things.
+between is open.
 
 ## How it follows the evidence and the design rules
 

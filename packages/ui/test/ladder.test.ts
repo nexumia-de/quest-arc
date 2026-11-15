@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
-import file from '../../../content/art/crossing.ladder.json';
 import homeFile from '../../../content/art/home.ladder.json';
+import wellFile from '../../../content/art/well.ladder.json';
 import type { BuildView, Journey } from '@questarc/engine';
 import '../src/shared/languages';
 import { buildState } from '../src/ui/journey/build';
@@ -20,29 +20,86 @@ import {
 // The scene of a ladder (docs/journey-design.md, "Builds and ladders"):
 // the slots filled by state, never a count. Day Planner's `ladder_scene`
 // composes the same (nexumia-de/pensum tests/test_art.py).
-const crossing = file as unknown as Ladder;
 const home = homeFile as unknown as Ladder;
-const arts = (version: number, state: BuildState = {}, ladder = crossing) =>
+const well = wellFile as unknown as Ladder;
+// No ladder of the Valley has water, one line over its posts (`span`), a
+// zoomed row or a plural version title since Crossing was retired (#128);
+// the rules stay, so a synthetic ladder on Well's setting keeps them
+// tested: 2 posts, one line, 6 hanging elements.
+const SPAN_POSTS = [35, 245].map((x, i) => ({
+  slot: 'marker' as const,
+  part: 'post' as const,
+  order: i + 1,
+  x,
+  y: 140,
+  width: 34,
+  height: 34,
+}));
+const SPAN_LINE = {
+  slot: 'marker' as const,
+  part: 'cord' as const,
+  order: 2,
+  art: 'setting-span-cord-1',
+  x: 0,
+  y: 0,
+  width: 320,
+  height: 180,
+};
+const SPAN_BEADS = [70, 100, 130, 160, 190, 220].map((x, i) => ({
+  slot: 'marker' as const,
+  part: 'bead' as const,
+  order: i + 3,
+  x,
+  y: 160,
+  width: 24,
+  height: 24,
+}));
+const span: Ladder = {
+  ...well,
+  title: 'Span',
+  water: true,
+  marker: 'lanterns',
+  layout: 'span',
+  posts: [
+    [52, 172],
+    [262, 172],
+  ],
+  row: [30, 38, 60, 40],
+  versions: [
+    'Stepping stones',
+    'A log',
+    'A plank bridge',
+    'A stone bridge',
+    'A covered bridge',
+  ].map((title, i) => ({ art: `build-span-${i + 1}`, title })),
+  pictures: [
+    ...well.pictures.filter((p) => p.slot !== 'marker'),
+    ...SPAN_POSTS,
+    SPAN_LINE,
+    ...SPAN_BEADS,
+  ],
+};
+const arts = (version: number, state: BuildState = {}, ladder = span) =>
   ladderScene(ladder, version, state).pictures.map((p) => p.art);
-const marks = (version: number, state: BuildState, ladder = crossing) =>
+const marks = (version: number, state: BuildState, ladder = span) =>
   arts(version, state, ladder).filter((a) => a.startsWith('marker-'));
 
 describe('ladderScene', () => {
   it('puts the standing version in the build slot, the setting first', () => {
-    const scene = ladderScene(crossing, 3);
-    expect(scene.pictures[0]?.art).toBe('setting-river');
-    expect(arts(3).filter((a) => a.startsWith('build-'))).toEqual(['build-crossing-3']);
-    expect(marks(3, {})).toEqual([]);
-    expect(scene.title).toBe('A plank bridge stands');
+    const scene = ladderScene(well, 3);
+    expect(scene.pictures[0]?.art).toBe('setting-green');
+    expect(arts(3, {}, well).filter((a) => a.startsWith('build-'))).toEqual(['build-well-3']);
+    expect(marks(3, {}, well)).toEqual([]);
+    expect(scene.title).toBe('A well with a winch stands');
   });
 
   it('counts the elements: posts, then hanging ones (span 2 + 6, sides 4 + 6)', () => {
-    expect(markerElements(crossing)).toBe(8);
+    expect(markerElements(span)).toBe(8);
     expect(markerElements(home)).toBe(10);
-    expect(elementsShown(crossing, 0)).toBe(0);
-    expect(elementsShown(crossing, 0.01)).toBe(1);
-    expect(elementsShown(crossing, 3 / 8)).toBe(3);
-    expect(elementsShown(crossing, 1)).toBe(8);
+    expect(elementsShown(span, 0)).toBe(0);
+    expect(elementsShown(span, 0.01)).toBe(1);
+    expect(elementsShown(span, 3 / 8)).toBe(3);
+    expect(elementsShown(span, 1)).toBe(8);
     // a days stage of 5 and a count stage of 20 fill the same marker
     expect(elementsShown(home, 3 / 5)).toBe(elementsShown(home, 12 / 20));
   });
@@ -54,7 +111,7 @@ describe('ladderScene', () => {
     expect(two.filter((a) => a.includes('-cord-'))).toHaveLength(1);
     expect(marks(3, { progress: 3 / 8 })).toHaveLength(3);
     expect(marks(3, { progress: 4 / 8 }).filter((a) => a.includes('-bead'))).toHaveLength(2);
-    expect(ladderScene(crossing, 3, { progress: 0.5 }).title).toBe(
+    expect(ladderScene(span, 3, { progress: 0.5 }).title).toBe(
       'A plank bridge stands, a stone bridge is on its way',
     );
   });
@@ -69,7 +126,7 @@ describe('ladderScene', () => {
     expect(on).toHaveLength(8);
     expect(on.filter((a) => a.endsWith('-bead-lit'))).toHaveLength(6);
     expect(on.filter((a) => a === 'marker-lanterns-post')).toHaveLength(2);
-    expect(ladderScene(crossing, 3, { ready: true }).title).toBe(
+    expect(ladderScene(span, 3, { ready: true }).title).toBe(
       'A plank bridge stands, a stone bridge is ready',
     );
   });
@@ -86,7 +143,7 @@ describe('ladderScene', () => {
   });
 
   it('says the state in words, never a building site', () => {
-    expect(buildWords(crossing, 1, { progress: 0.1 })).toBe(
+    expect(buildWords(span, 1, { progress: 0.1 })).toBe(
       'Stepping stones stand · a log is on its way',
     );
     expect(buildWords(home, 3, { ready: true })).toBe('A hut stands · a cottage is ready');
@@ -94,7 +151,7 @@ describe('ladderScene', () => {
   });
 
   it('zooms the row of versions where the ladder says so', () => {
-    expect(rowViewBox(crossing)).toBe('30 38 60 40');
+    expect(rowViewBox(span)).toBe('30 38 60 40');
     expect(rowViewBox(home)).toBe('0 0 120 80');
   });
 });
@@ -103,15 +160,15 @@ describe('ladderScene', () => {
 // readers, the journey's own version count and what appears at the tick.
 describe('the build on the journey screen', () => {
   it('says the state in words, with the journey own names where given', () => {
-    expect(buildWords(crossing, 3, { progress: 0.5 })).toBe(
+    expect(buildWords(span, 3, { progress: 0.5 })).toBe(
       'A plank bridge stands · a stone bridge is on its way',
     );
-    expect(buildWords(crossing, 1, { progress: 0.5 })).toBe(
+    expect(buildWords(span, 1, { progress: 0.5 })).toBe(
       'Stepping stones stand · a log is on its way',
     );
-    expect(buildWords(crossing, 3, { progress: 0 })).toBe('A plank bridge stands');
+    expect(buildWords(span, 3, { progress: 0 })).toBe('A plank bridge stands');
     expect(
-      buildWords(crossing, 3, {
+      buildWords(span, 3, {
         ready: true,
         names: [undefined, undefined, 'The Morning Bridge', 'The Stone Way'],
       }),
@@ -120,18 +177,18 @@ describe('the build on the journey screen', () => {
 
   it("shows the journey's names only on the journey's own ladder (#115)", () => {
     const journey = {
-      build: { ladder: 'crossing', names: ['ui.build.given'] },
+      build: { ladder: 'well', names: ['ui.build.given'] },
     } as unknown as Journey;
     const view = (ladder: string) =>
       ({ ladder, markerProgress: 0, ready: false, marker: 'lanterns', versions: 5 }) as BuildView;
-    expect(buildState(view('crossing'), journey).names).toHaveLength(1);
+    expect(buildState(view('well'), journey).names).toHaveLength(1);
     const other = buildState(view('home'), journey);
     expect(other.names).toBeUndefined();
     expect(buildWords(home, 1, other)).toBe(buildWords(home, 1, { progress: 0 }));
   });
 
   it('names the marker in numbers for screen readers', () => {
-    expect(buildLabel(crossing, 3, { progress: 5 / 8 }, 'Lanterns')).toBe(
+    expect(buildLabel(span, 3, { progress: 5 / 8 }, 'Lanterns')).toBe(
       'A plank bridge, version 3 of 5; marker: 2 of 2 posts and 3 of 6 lanterns; not ready yet',
     );
     expect(buildLabel(home, 2, { progress: 0.2 }, 'Pennants')).toBe(
@@ -150,16 +207,16 @@ describe('the build on the journey screen', () => {
 
   it('follows the journey version count: more versions than pictures reuse the last', () => {
     const six = { versions: 6, progress: 0.5 };
-    expect(arts(6, six).filter((a) => a.startsWith('build-'))).toEqual(['build-crossing-5']);
-    expect(marks(5, six).length).toBeGreaterThan(0);
-    expect(marks(6, six)).toEqual([]);
-    expect(markerCount(crossing, 5, six).hangingShown).toBe(2);
+    expect(arts(6, six, well).filter((a) => a.startsWith('build-'))).toEqual(['build-well-5']);
+    expect(marks(5, six, well).length).toBeGreaterThan(0);
+    expect(marks(6, six, well)).toEqual([]);
+    expect(markerCount(well, 5, six).hangingShown).toBe(1);
     // a journey with fewer stages ends earlier: no marker on its last version
-    expect(marks(3, { versions: 3, progress: 0.5 })).toEqual([]);
+    expect(marks(3, { versions: 3, progress: 0.5 }, well)).toEqual([]);
   });
 
   it('lets only what is new appear, and nothing on the first draw', () => {
-    const at = (version: number, shown: number, key = 'r/crossing/lanterns') => ({
+    const at = (version: number, shown: number, key = 'r/well/lanterns') => ({
       key,
       version,
       shown,

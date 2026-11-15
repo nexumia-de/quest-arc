@@ -129,7 +129,7 @@ writes `…-de.png` in German, and the preview takes `?lang=de` (or
 `journey`, `reminder` (a reminder on the task and two weekly answers
 of 5 or more, #60), `paired`, `hard-week`, `met`, `stayed`, `skipped`, `comeback`
 (the card after a long break, #82), `smaller` (after starting smaller),
-`unbound`, `newer`, `build`, `build-ready`, `build-crossing`,
+`unbound`, `newer`, `build`, `build-ready`, `build-lookout`,
 `before-anchors` (a journey from before #96: the home asks once whether
 its moment is the user's), the home with several moments
 (`preview/demo-moments.ts`: `moments`, `moments-chain`, `moments-rest`),
@@ -168,11 +168,11 @@ the device scale. The ladders (#42): `sequence-<ladder>[-<marker>]`
 lantern, the row of versions), `journey-<ladder>[-ready]` (a static mock
 of the journey screen, mid-way or ready) and `palette`; `&hue=<name>`
 picks a palette hue. `node screenshots.mjs
-art:sequence-crossing,art:journey-home,art:palette 2` writes the
+art:sequence-lookout,art:journey-home,art:palette 2` writes the
 sequences and the palette as one full page 1400 px wide and the mock at
-phone size (`art:sequence-crossing@slate` for a hue). The journey screen
-itself has the demos `build`, `build-ready` and `build-crossing`
-(`node screenshots.mjs build,build-ready,build-crossing 2`);
+phone size (`art:sequence-lookout@slate` for a hue). The journey screen
+itself has the demos `build`, `build-ready` and `build-lookout`
+(`node screenshots.mjs build,build-ready,build-lookout 2`);
 `preview.tick()` in the console ticks today off, to see new marker
 elements grow in. The plugin bundles only the pictures of the ladders
 (`esbuildLadderArt` in `packages/ui/art.mjs`); the preview pages have all of them. The ladders' files
@@ -188,7 +188,7 @@ profile with throwaway data: install and enable, start "A gentle
 morning", create the task, make it recurring in Super Productivity's own
 dialog, tick it off, check the message and the journey.
 `e2e/real-app-build.mjs` walks the journey screen with the build (#100):
-start with another ladder (Crossing), tick, open the build
+start with another ladder (Home instead of the journey's Well), tick, open the build
 from the message's **Show**, see the first marker element, tick on four
 more days (Playwright's clock moves the date; the app is reloaded each
 day) until the stage is ready, stay a while, continue and see the next
