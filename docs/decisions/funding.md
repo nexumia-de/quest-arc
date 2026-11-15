@@ -1,6 +1,6 @@
 ---
 type: Decision Record
-title: Everything stays free and open; money comes from a paid Google Play build and donations
+title: Everything stays free and open; a paid Google Play build and a support link
 description: QuestArc's code stays AGPL and its journeys and pictures CC BY-SA, all of them free. The standalone app is free on GitHub releases and F-Droid and paid on Google Play with the same code and content; a quiet support link leads to Liberapay. A shop for journeys, paid sync and a paid editor were rejected.
 tags: [decision, funding, licence, stores, donations, standalone-app]
 generated: { by: claude-code/2.1.325, at: 2026-11-15 }
@@ -13,32 +13,30 @@ sources:
     url: https://github.com/nexumia-de/phosh-toolkit/blob/main/docs/support.md
 ---
 
-# Everything stays free and open; money comes from a paid Google Play build and donations
+# Everything stays free and open; a paid Google Play build and a support link
 
 ## Context
 
 QuestArc is free software (AGPL-3.0-or-later) with free content
 (CC BY-SA 4.0, [journeys by pull request](journeys-by-pull-request.md),
 [shared pictures](shared-pictures.md)). The owner wants it to stay a
-thing for everyone and still earn something for the work. The AGPL does
-not forbid selling; it requires that whoever receives the software can
-get its source. On 2026-11-15 nobody but the owner held copyright in the
-code, so every option was open[^issue118].
+thing for everyone, and those who like it should have a way to support
+the work[^issue118].
 
 ## Decision
 
-Money comes from convenience and from support, never from the product
-itself (owner, 2026-11-15[^issue118]).
+Nothing in QuestArc is held back for payment. Who wants to support the
+work can buy the app on Google Play or donate (owner,
+2026-11-15[^issue118]).
 
-| Thing                                                         | How it is offered                                                                     |
-| ------------------------------------------------------------- | ------------------------------------------------------------------------------------- |
-| Code: engine, UI, plugin, app, later the journey editor (#89) | AGPL-3.0-or-later, as before                                                          |
-| Journeys and pictures (`content/`)                            | CC BY-SA 4.0, as before; all of them free                                             |
-| Plugin for Super Productivity                                 | free, on GitHub releases                                                              |
-| Standalone app: PWA, APK on GitHub releases, F-Droid (#122)   | free                                                                                  |
-| Standalone app on Google Play (#123)                          | **paid** once at download; the same code and content as the free builds               |
-| Donations                                                     | `https://liberapay.com/suitably`, the link the nexumia-de Phosh apps use[^support]    |
-| Journeys or builds made for others on request                 | possible as paid work; published under the same free licences unless agreed otherwise |
+| Thing                                                         | How it is offered                                                                  |
+| ------------------------------------------------------------- | ---------------------------------------------------------------------------------- |
+| Code: engine, UI, plugin, app, later the journey editor (#89) | AGPL-3.0-or-later, as before                                                       |
+| Journeys and pictures (`content/`)                            | CC BY-SA 4.0, as before; all of them free                                          |
+| Plugin for Super Productivity                                 | free, on GitHub releases                                                           |
+| Standalone app: PWA, APK on GitHub releases, F-Droid (#122)   | free                                                                               |
+| Standalone app on Google Play (#123)                          | **paid** once at download; the same code and content as the free builds            |
+| Donations                                                     | `https://liberapay.com/suitably`, the link the nexumia-de Phosh apps use[^support] |
 
 ## Rules that follow
 
@@ -56,24 +54,23 @@ itself (owner, 2026-11-15[^issue118]).
 4. **Copyright of contributions.** A journey sent by pull request stays
    its author's under CC BY-SA 4.0. Before the first code contribution
    from outside is merged, the owner decides whether a contributor
-   agreement is wanted; without one, a separate commercial licence for
-   the engine is no longer possible.
+   agreement is wanted.
 
 ## Rejected
 
 - **A shop for journeys or builds.** A person works on two to four
   habits at a time and a journey runs for weeks or months, so each user
-  needs few journeys and the catalogue has a natural end (#124). The
-  income would be a small one-off amount per user, against a licence
-  split for content, a payment setup and content kept outside this
-  repository. With AGPL code a licence check could be removed by anyone.
+  needs few journeys and the catalogue has a natural end (#124). A shop
+  would need a licence split for content, a payment setup and content
+  kept outside this repository, against the wish to keep everything
+  open.
 - **Paid sync.** The data is Super Productivity's backup format and sync
   is planned along Super Productivity's own sync (#91, step 8). A
   service of our own would be a second sync or the hosting of someone
   else's server, with the duties of a data processor for personal habit
   data, and it would break the no-network rule.
 - **A paid editor.** The editor (#89) is what lets others write
-  journeys; a price on it would cost journeys and earn little.
+  journeys.
 - **What the [design rules](../psychology.md) forbid**: paid streak
   repair, random rewards, premium prompts, ads, telemetry.
 
@@ -83,13 +80,8 @@ itself (owner, 2026-11-15[^issue118]).
   releases and F-Droid free, Google Play paid.
 - A [privacy statement](../privacy.md) is needed for the store listings
   (#120).
-- The paid listing needs the owner: a developer account, a price, and
-  the tax and legal questions of selling from Germany (#123). They are
-  not answered here.
-- The income to expect is small until the app has users; this decision
-  does not plan for QuestArc paying a living. If that changes, the
-  options kept open are paid work on request and, while rule 4 holds, a
-  commercial licence for the engine.
+- The paid listing needs the owner: a developer account and a price
+  (#123).
 
 [^issue118]: Funding: decision record (#118), https://github.com/nexumia-de/quest-arc/issues/118
 

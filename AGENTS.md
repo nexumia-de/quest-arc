@@ -62,9 +62,9 @@ rules and is never announced before it is earned; no random rewards, login bonus
 neutral gap, never red, never blamed; autonomy-supportive texts; no
 generic motivational quotes; no promised number of days.
 
-## Funding
+## Free everywhere
 
-Everything is free and open; only the Google Play build costs money, with
+Everything is free and open; only the Google Play build has a price, with
 the same code and content ([decision](docs/decisions/funding.md)). No
 build gets a feature another lacks. Support is named only in the About
 card of Settings, the README and store texts, never in another screen.

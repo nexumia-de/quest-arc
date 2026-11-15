@@ -2,7 +2,7 @@
 
 ## 2026-11-15
 
-- **Decision** (owner, 2026-11-15, #118): everything stays free and open ([funding](decisions/funding.md)): code AGPL, journeys and pictures CC BY-SA; the standalone app free on GitHub releases and F-Droid (#122) and paid on Google Play (#123) with the same code and content; donations by a support link to Liberapay. A shop for journeys, paid sync and a paid editor were rejected. [Standalone app](decisions/standalone-app.md) point 5 and the [roadmap](roadmap.md) name the stores; the README has a Support section and `.github/FUNDING.yml` the Sponsor button. Open: store texts (#121), how many built-in journeys (#124).
+- **Decision** (owner, 2026-11-15, #118): everything stays free and open ([funding](decisions/funding.md)): code AGPL, journeys and pictures CC BY-SA; the standalone app free on GitHub releases and F-Droid (#122) and paid on Google Play (#123) with the same code and content; a support link to Liberapay. No shop for journeys, no paid sync, no paid editor. [Standalone app](decisions/standalone-app.md) point 5 and the [roadmap](roadmap.md) name the stores; the README has a Support section and `.github/FUNDING.yml` the Sponsor button. Open: store texts (#121), how many built-in journeys (#124).
 - **Creation** (#120): [privacy](privacy.md), written from the code: the dataset in IndexedDB, no network request by app, plugin or screens, export and import as files, the plugin's permissions; the user-facing text in English and German is `packages/app/src/privacy.html`, built into the PWA and its offline cache. Open: the public URL (the PWA is not deployed yet) and the owner's contact.
 
 ## 2026-11-14
