@@ -7,6 +7,7 @@ export type Route =
   | { readonly name: 'welcome' }
   | { readonly name: 'home' }
   | { readonly name: 'journey' }
+  | { readonly name: 'place'; readonly anchorId: string }
   | { readonly name: 'moment'; readonly anchorId: string; readonly journeyId?: string }
   | { readonly name: 'choose'; readonly anchorId?: string }
   | { readonly name: 'preview'; readonly journeyId: string; readonly anchorId?: string }

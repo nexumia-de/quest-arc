@@ -449,6 +449,17 @@ The same scenes drawn at 720 wide in a 1280 wide window:
 
 ## The journey screen with the build
 
+**Since #130 the setting is the place piece** ([behaviour](behaviour.md),
+screens 0b and 4): the journey screen draws the place piece above, large
+(`valleyLayout` for one place, 230 units high) in the place's hue instead
+of the ladder's own setting. The marker (`ladderScene`'s posts, cords and
+beads) is mapped from the ladder's setting onto the thing's slot: the
+posts' span fills the slot's width and the feet stand on its lower edge,
+so it stands in front of the thing and, like everything in the piece, never
+crosses the path. The older text of this section describes the ladder's
+own scene and stays valid for the versions, the marker's growth and the
+words.
+
 Issue #100, for every journey since #110. The
 engine's `build` view ([game rules](game-rules.md) §7) gives the ladder,
 the version, the versions the journey uses, the marker kind, the hue,

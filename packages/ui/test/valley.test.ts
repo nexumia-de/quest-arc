@@ -153,3 +153,52 @@ describe('a new version appears, the first draw animates nothing', () => {
     expect(grownSince(new Map(), at(2)).grown.size).toBe(0);
   });
 });
+
+describe('the place piece drawn large (#130)', () => {
+  const growing = (progress: number, ready = false) =>
+    valleyModel(
+      [place('a', { growing: true, thing: { ...thing(2), markerProgress: progress, ready } })],
+      [],
+      journeys,
+      pack,
+      { height: 300, marker: true },
+    ).places[0];
+
+  it('is as high as asked, one place filling it', () => {
+    const model = valleyModel([place('a')], [], journeys, pack, { height: 300 });
+    expect(model.geometry.height).toBe(300);
+  });
+
+  it('draws the marker only where asked and only while its journey grows', () => {
+    const plain = valleyModel([place('a', { thing: thing(2) })], [], journeys, pack);
+    expect(plain.places[0]?.marker).toBeUndefined();
+    const resting = valleyModel(
+      [place('a', { thing: { ...thing(2), state: 'finished' } })],
+      [],
+      journeys,
+      pack,
+      { marker: true },
+    );
+    expect(resting.places[0]?.marker).toBeUndefined();
+    expect(growing(0.5)?.marker?.length).toBeGreaterThan(0);
+  });
+
+  it('stands the marker in front of the thing, inside its slot and never across the path', () => {
+    const piece = growing(1, true);
+    const slot = piece?.piece.slot;
+    expect(slot).toBeDefined();
+    for (const m of piece?.marker ?? []) {
+      if (m.art.includes('cord')) continue;
+      expect(m.x).toBeGreaterThanOrEqual((slot?.x ?? 0) - 0.01);
+      expect(m.x + m.width).toBeLessThanOrEqual((slot?.x ?? 0) + (slot?.width ?? 0) + 0.01);
+      expect(m.y + m.height).toBeLessThanOrEqual((slot?.y ?? 0) + (slot?.height ?? 0) + 0.01);
+    }
+  });
+
+  it('shows more elements as the stage progresses and none beyond its order', () => {
+    const few = growing(0.2)?.marker ?? [];
+    const all = growing(1)?.marker ?? [];
+    expect(all.length).toBeGreaterThan(few.length);
+    expect(Math.max(...few.map((m) => m.order))).toBeLessThan(Math.max(...all.map((m) => m.order)));
+  });
+});

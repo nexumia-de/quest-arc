@@ -17,7 +17,7 @@ const first = new Date('2026-11-16T08:00:00');
 const { browser, page, view, shot } = await open(width, height, { clock: first });
 const name = (n) => shot('build-', n);
 const TASK = 'Getting up: drink a glass of water';
-const label = () => view().locator('.qa-build svg.qa-art').first().getAttribute('aria-label');
+const label = () => view().locator('.qa-build .qa-valley').getAttribute('aria-label');
 const questArc = async () => {
   await page.goto(`${BASE}#/plugins/questarc/index`);
   await view().locator('.qa-header').first().waitFor();

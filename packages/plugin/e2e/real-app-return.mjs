@@ -18,7 +18,7 @@ const name = (n) => shot('return-', n);
 // The second station's task title begins like the first one's.
 const SMALL = /drink a glass of water(?! and)/;
 const LARGER = /stretch for one minute/;
-const label = () => view().locator('.qa-build svg.qa-art').first().getAttribute('aria-label');
+const label = () => view().locator('.qa-build .qa-valley').getAttribute('aria-label');
 const questArc = async () => {
   await reopen(page, view);
   // The home is the moments (#96); the growing step opens the journey.

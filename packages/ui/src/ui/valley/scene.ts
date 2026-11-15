@@ -40,10 +40,13 @@ const n1 = (v: number): string => String(Math.round(v * 10) / 10);
 
 /** What this view drew last (version per thing), to let a new version appear. Lives as long as the view. */
 let drawn: Map<string, number> | undefined;
+/** How many marker elements each growing thing showed at the last draw. */
+let shown = new Map<string, number>();
 
 /** Forget the last draw (tests, a new view). */
 export const forgetValley = (): void => {
   drawn = undefined;
+  shown = new Map();
 };
 
 /** The surface the scene stands on: the host's card, as for every picture. */
@@ -58,9 +61,10 @@ export interface ValleyScene {
   readonly slot: (layer: Layer, index: number) => SVGElement | undefined;
 }
 
+/** Without `open` the scene is a picture only (the place's own pages), with no tap areas. */
 export const valleyScene = (
   model: ValleyModel,
-  open: (place: PlaceModel) => void,
+  open: ((place: PlaceModel) => void) | undefined,
   label: string,
 ): ValleyScene => {
   const { geometry } = model;
@@ -149,6 +153,27 @@ export const valleyScene = (
     slot.append(thing);
   });
 
+  // The marker in front of the thing; its new elements grow in, as on the journey screen.
+  const before = shown;
+  shown = new Map();
+  model.places.forEach(({ marker, view }, i) => {
+    const slot = layers.get('marker')?.[i];
+    if (!marker || !slot || !view.thing) return;
+    const key = view.thing.runId;
+    shown.set(key, Math.max(0, ...marker.map((m) => m.order)));
+    const was = before.get(key);
+    for (const picture of marker) {
+      const source = art().pictures[picture.art];
+      if (!source) continue;
+      const el = part(source, picture, placeHue(view));
+      if (was !== undefined && picture.order > was) {
+        const g = svgEl('g', { class: 'qa-grow' });
+        g.append(el);
+        slot.append(g);
+      } else slot.append(el);
+    }
+  });
+
   // The names, in HTML over the picture; sizes follow the scene's width.
   const names = model.places.map(({ piece, title, view }) => {
     const { name } = piece;
@@ -173,7 +198,7 @@ export const valleyScene = (
   });
 
   // The tap areas: one real button per place, the place in words.
-  const taps = model.places.map((place) =>
+  const taps = (open ? model.places : []).map((place) =>
     h('button', {
       type: 'button',
       class: 'qa-valley-place',
@@ -184,7 +209,7 @@ export const valleyScene = (
         `height:${n1((100 * place.hit.height) / height)}%`,
       ].join(';'),
       'aria-label': place.label,
-      onclick: () => open(place),
+      onclick: () => open?.(place),
     }),
   );
 

@@ -214,7 +214,7 @@ describe('German sentences', () => {
     expect(buildLabel(well, 3, { progress: 5 / 8 }, 'Laternen')).toBe(
       'Ein Brunnen mit Winde, Stufe 3 von 5; Schmuck: 4 von 4 Pfosten und 3 von 6 Laternen; noch nicht bereit',
     );
-    expect(buildSummary(walk as never, {})).toBe('Ausguck · Wimpel · Rost');
+    expect(buildSummary(walk as never, {})).toBe('Ausguck · Wimpel');
   });
 
   it('keeps the English build words', () => {
@@ -223,6 +223,6 @@ describe('German sentences', () => {
     expect(buildWords(well, 1, { progress: 0.5 })).toBe(
       'A water hole stands · a well sweep is on its way',
     );
-    expect(buildSummary(walk as never, {})).toBe('Lookout · pennants · rust');
+    expect(buildSummary(walk as never, {})).toBe('Lookout · pennants');
   });
 });

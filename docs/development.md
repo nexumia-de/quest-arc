@@ -72,7 +72,8 @@ journey checker ([story format](story-format.md#the-journey-checker)).
   `new Function`, so it must not contain `import`.
 - `index.html` with the view's script and `start.css` inlined: iframe
   plugins get no other files from the ZIP. Both are built without
-  whitespace (`minifyWhitespace`; names stay readable), because
+  whitespace and with shorter syntax (`minifyWhitespace`, `minifySyntax`;
+  names stay readable), because
   Super Productivity 19.3 installs an `index.html` of at most 100 KB; the
   build fails above it. `plugin.js` stays as it is (limit 5 MB).
 - What is data and not code is not in `index.html`: the UI texts

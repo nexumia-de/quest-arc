@@ -67,7 +67,7 @@ for (const demo of shots) {
     ? [['wide', 1400, 900]]
     : part.startsWith('journey-')
       ? sizes.slice(0, 1)
-      : demo.startsWith('valley-')
+      : demo.startsWith('valley-') && (!demo.includes(':') || demo.endsWith('Change this moment'))
         ? [
             ['phone', 360, 1180],
             ['desktop', 1000, 1100],

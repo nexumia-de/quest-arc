@@ -52,6 +52,11 @@ export const startScreen = (ctx: Context, journeyId: string, anchorId?: string):
       h('span', { class: 'qa-option-title' }, label),
     );
 
+  // A further journey at a moment that has its thing builds out the surroundings: nothing to choose.
+  const further = () =>
+    view.valley.some(
+      (p) => p.anchorId === ((ctx.draft.anchor as string | undefined) ?? anchorId) && p.thing,
+    );
   const build = (ctx.draft.build as BuildChoice | undefined) ?? {};
   const check = (ctx.draft.check ??= {}) as Record<string, string | undefined>;
 
@@ -59,7 +64,7 @@ export const startScreen = (ctx: Context, journeyId: string, anchorId?: string):
     const moment = chosenMoment(ctx, anchorId);
     if (!moment) return;
     const runId = newRunId();
-    const chosen = Object.keys(build).length > 0 ? chooseBuild(runId, build) : {};
+    const chosen = Object.keys(build).length > 0 && !further() ? chooseBuild(runId, build) : {};
     const planned = checkPlan(runId, check);
     await ctx.write({
       ...moment.records,
@@ -136,7 +141,14 @@ export const startScreen = (ctx: Context, journeyId: string, anchorId?: string):
         h('summary', { class: 'qa-section-title' }, t('ui.check.summary')),
         h('div', { class: 'qa-stack' }, ...planCheckFields(check)),
       ),
-      buildPart(ctx, journey, build),
+      further()
+        ? h(
+            'section',
+            { class: 'qa-fieldset' },
+            h('h2', { class: 'qa-section-title' }, t('ui.build.title')),
+            h('p', { class: 'qa-muted' }, t('ui.start.surroundings')),
+          )
+        : buildPart(ctx, journey, build),
       active
         ? h('p', { class: 'qa-callout' }, t('ui.start.pauses', { title: t(active.title) }))
         : null,

@@ -36,6 +36,8 @@ const view = await build({
   entryPoints: ['src/ui/main.ts'],
   write: false,
   minifyWhitespace: true,
+  // shorter syntax only (no renaming), to keep room under the 100 KB limit
+  minifySyntax: true,
 });
 const script = view.outputFiles[0].text.replaceAll('</script', '<\\/script');
 const { code: style } = await transform(

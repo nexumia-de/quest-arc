@@ -104,10 +104,19 @@ try {
 
   // A name for the moment.
   await questArc();
+  await view().locator('.qa-valley-place').click();
+  await view().locator('.qa-station-card').waitFor();
+  expect(
+    (await view().locator('.qa-place-piece').count()) === 1,
+    'the journey screen draws the place piece',
+  );
+  await name('2a-journey-place');
   await view().getByRole('button', { name: 'Change this moment' }).click();
   await view().locator('#qa-moment-name').fill('Morning');
   await name('2-moment');
   await view().getByRole('button', { name: 'Save' }).click();
+  await view().locator('.qa-station-card').waitFor();
+  await view().getByRole('button', { name: 'Back' }).click();
   await view().locator('.qa-valley').waitFor();
   expect(
     (await view().locator('.qa-valley-name').innerText()) === 'Morning',
@@ -145,9 +154,17 @@ try {
   );
   await name('3-runs-by-itself');
 
-  // Home → place → back: a place at rest opens its moment; back leads to the Valley.
+  // Home → place → back: a place at rest opens its own page; back leads to the Valley.
   await view().locator('.qa-valley-place').click();
-  await view().locator('#qa-moment-name').waitFor();
+  await view().locator('.qa-place').waitFor();
+  const routine = await view().locator('.qa-place').innerText();
+  expect(
+    routine.includes('Your routine here') &&
+      routine.includes('Runs by itself') &&
+      routine.includes('Nothing is ticked or counted for it any more.'),
+    `the place says what runs by itself (${routine})`,
+  );
+  await name('3a-place');
   await view().getByRole('button', { name: 'Back' }).click();
   await view().locator('.qa-valley').waitFor();
 
@@ -210,6 +227,40 @@ try {
   );
   expect((await view().locator('.qa-valley-place').count()) === 2, 'the journey has its own place');
   await name('7-confirmed');
+
+  // Placing is choice records: move a place later, give it a colour, take it back.
+  const names = () => view().locator('.qa-valley-name').allInnerTexts();
+  const before = await names();
+  expect(before.length === 2 && before[0] === 'Morning', `Morning comes first (${before})`);
+  await view().locator('.qa-valley-place').first().click();
+  await view().getByRole('button', { name: 'Change this moment' }).click();
+  await view().getByRole('button', { name: 'Move Later' }).click();
+  await view().getByRole('radio', { name: 'Rose' }).check();
+  await view().getByRole('radio', { name: 'Left' }).check();
+  await page.waitForTimeout(1500);
+  await name('8-place-choices');
+  const placed = Object.entries((await request({ type: 'questarc:get' })).records).filter(([key]) =>
+    key.startsWith('place:'),
+  );
+  expect(
+    placed.some(([, value]) => value.hue === 'rose' && value.side === 'left') &&
+      placed.some(([, value]) => value.position === 1),
+    `the choices are written as place records (${JSON.stringify(placed)})`,
+  );
+  await view().getByRole('button', { name: 'Back' }).click();
+  await view().getByRole('button', { name: 'Back' }).click();
+  await view().locator('.qa-valley').waitFor();
+  const after = await names();
+  expect(after[1] === 'Morning', `Morning moved later (${after})`);
+  await name('9-moved');
+  await view().locator('.qa-valley-place').nth(1).click();
+  await view().getByRole('button', { name: 'Change this moment' }).click();
+  await view().getByRole('button', { name: 'Use the suggestion' }).click();
+  await page.waitForTimeout(1500);
+  const taken = Object.values((await request({ type: 'questarc:get' })).records).filter(
+    (value) => value?.hue === 'rose',
+  );
+  expect(taken.length === 0, 'the suggestion gives the place back to the rules');
 } catch (error) {
   await shot('failed-', 'page').catch(() => undefined);
   throw error;
