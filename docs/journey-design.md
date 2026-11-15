@@ -391,22 +391,27 @@ the day, and the scene's width and height, and returns:
 - per place **every thing's box**, front to back (`things`; the input
   `things` gives how many stand at each place, one to three, #151): the
   first is the slot and never moves for the ones behind. The second and
-  third stand **behind** it in a row, higher on the ground (their base
-  lines 72 and 78 build units above the first's, so their feet stand
-  above the roof of the first's tallest version and a small growing
-  version and its marker stay in view), smaller (0.64 of the first,
-  the far band), the second at the edge of the first's box away from
-  the path, the third at the other edge a little higher, partly hidden
-  by the second; where the path comes nearer than `clearance` the third
-  slides away from it, and where it would then show less than half its
-  width beside the second, both are drawn smaller (`besideShare`). The
+  third stand **behind** it, side by side in a row (owner, round 2):
+  higher on the ground (their base lines 72 build units above the
+  first's, so their feet stand above the roof of the first's tallest
+  version and a small growing version and its flowers stay in view),
+  about two thirds of the first (0.64, the far band), the second at the
+  edge of the first's box away from the path, the third right beside it
+  towards the path (4 build units apart, `besideGap`), reaching across
+  the first's inner edge above the lantern. Neither covers the other:
+  where the path comes nearer than `clearance`, both are drawn smaller
+  until they fit side by side. Measured, the room beside the path is
+  about 1.12 of the first's width (the first and the lantern's room), so
+  with three things the two behind are 0.40 to 0.54 of the first; a
+  second thing alone keeps 0.64. Each thing behind stands on its own
+  **ground patch** (`patches`), drawn like the bay in the same colour:
+  an ellipse under its base line, as wide as the thing and 14 of its
+  build units high on each side, never on or across the path. The
   doorstep and the lantern belong to the first. The first things keep
   the size they have without the ones behind; where the band above a
   place is taken (the scene's top, another place's name or plot) the
   scene grows there by what the things behind need, so six places with
-  several things scroll a little. Owner's choice to judge: the things
-  behind are only a little hidden by the first, since a growing one is
-  usually small and must stay in view;
+  several things scroll a little;
 - **joints** where the path crosses the piece's upper and lower edge and
   the path within the piece, so a single piece can be drawn large as the
   setting of the place screen.
@@ -431,12 +436,14 @@ three things at each place (#151; every count and mix for 1 to 12
 places from either side, every choice of sides up to six, at 720, 480
 and one place's 230 high, and at 720 wide): every thing behind stays in
 the scene, 15 from the centre line and clear of every other place,
-stands higher and smaller than the one in front and overlaps it, the
-third shows at least half its width beside the second, none covers the
-doorstep or the lantern's room, and every thing's marker band (its box's
-lowest 20 build units) stays in the scene, clear of the lantern's room,
-the name and every other place. The marker is drawn in front of every
-thing, so nothing hides it. The palette
+stands higher and smaller than the first and overlaps its box, covers no
+other thing behind, stands on its own patch under its base line that
+keeps 3 from the path's edge, stays in the scene and overlaps no other
+patch; none covers the doorstep or the lantern's room (the plot beside
+the slot from the lantern's top, 48 build units, down), and every thing's
+flower band (its box's lowest 20 build units) stays in the scene, clear
+of the lantern's room, the name and every other place. The flowers are
+drawn in front of every thing, so nothing hides it. The palette
 check (`art-palette.ts`) requires the hosts' text on every hue's `tint`,
 and where two hues' tints blend, at 4.5 : 1, light and dark, on every
 host card; the tint itself is decorative and not tested.

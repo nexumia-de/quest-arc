@@ -129,9 +129,12 @@ const scene = (places, theme, sceneHeight) => {
       .filter((sign) => sign.layer === 'lantern')
       .map((sign) => signSvg(sign, layout.places[i].slot, hueOf(places[i]))),
   );
-  const bays = layout.places.map(
-    ({ bay }) =>
-      `<ellipse class="bg" cx="${n1(bay.cx)}" cy="${n1(bay.cy)}" rx="${n1(bay.rx)}" ry="${n1(bay.ry)}"/>`,
+  // the bays, and a ground patch like them under each thing behind the first (#151)
+  const bays = layout.places.flatMap(({ bay, patches }) =>
+    [bay, ...patches].map(
+      (e) =>
+        `<ellipse class="bg" cx="${n1(e.cx)}" cy="${n1(e.cy)}" rx="${n1(e.rx)}" ry="${n1(e.ry)}"/>`,
+    ),
   );
   const names = layout.places.map(({ name }, i) => {
     const style = [

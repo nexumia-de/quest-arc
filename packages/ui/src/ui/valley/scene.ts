@@ -148,19 +148,20 @@ export const valleyScene = (
       style: `stroke:${wayStops.length > 0 ? 'url(#qa-valley-way)' : SURFACE}`,
     }),
   );
+  // The bay, and a ground patch drawn like it under each thing behind the first (#151).
   model.places.forEach(({ piece, view }, i) => {
-    const { bay } = piece;
     const hue = placeHue(view);
-    layers.get('path')?.[i]?.append(
-      svgEl('ellipse', {
-        cx: n1(bay.cx),
-        cy: n1(bay.cy),
-        rx: n1(bay.rx),
-        ry: n1(bay.ry),
-        class: 'qa-valley-bay',
-        style: `fill:${hue ? WAY(HUE) : SURFACE};${hueVars(hue)}`,
-      }),
-    );
+    for (const ground of [piece.bay, ...piece.patches])
+      layers.get('path')?.[i]?.append(
+        svgEl('ellipse', {
+          cx: n1(ground.cx),
+          cy: n1(ground.cy),
+          rx: n1(ground.rx),
+          ry: n1(ground.ry),
+          class: 'qa-valley-bay',
+          style: `fill:${hue ? WAY(HUE) : SURFACE};${hueVars(hue)}`,
+        }),
+      );
   });
 
   // The things, back to front, each in its own box: the second and third

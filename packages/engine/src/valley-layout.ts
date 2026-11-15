@@ -74,6 +74,8 @@ export interface ValleyPiece {
    * the side away from the path, partly hidden by the ones in front.
    */
   things: (Box & { scale: number })[];
+  /** The ground patch under each thing behind the first (`things[1]` on), drawn like the bay. */
+  patches: Ellipse[];
   /**
    * The thing's ground: the slot with `plotNear` build units of room beside
    * it towards the path (the lit lantern), as high as the slot.
@@ -132,20 +134,38 @@ export const VALLEY = {
    * size, how far their base line rises above the first's, and the edge of
    * the first's box they keep to (`outer`, away from the path, or `inner`;
    * an inner one slides outwards where the path comes nearer than
-   * `clearance`). They stand in a row behind the first, their feet above
-   * its highest version's roof, so a small growing version and its marker
-   * stay in view: the second at the outer edge, the third a little higher
-   * towards the other edge, partly hidden by the second.
+   * `clearance`). They stand side by side in a row behind the first, their
+   * feet above its highest version's roof, so a small growing version and
+   * its flowers stay in view: the second at the outer edge, the third at
+   * the other edge (owner, round 2: about two thirds of the first, side by
+   * side, neither covering the other).
    */
   behind: [
     { scale: 0.64, rise: 72, edge: 'outer' },
-    { scale: 0.64, rise: 78, edge: 'inner' },
+    { scale: 0.64, rise: 72, edge: 'inner' },
   ],
   /**
-   * The third shows at least this share of its width beside the second;
-   * where the path leaves less room, the two are drawn smaller.
+   * Free room between the second and third, in the first's build units;
+   * where the path leaves less than two things and this, both are drawn
+   * smaller.
    */
-  besideShare: 0.5,
+  besideGap: 4,
+  /**
+   * Each thing behind stands on its own ground patch, drawn like the bay
+   * (owner, round 2): an ellipse under its base line, this share of its
+   * box's width across and `patchHalfHeight` of its own build units high on
+   * each side.
+   */
+  patchWidth: 1,
+  patchHalfHeight: 14,
+  /** The patches keep this much room from the path's edge, in scene units at 360 wide. */
+  patchGap: 3,
+  /**
+   * The lit lantern stands from this height of the build's box down (build
+   * units): the lantern's room beside the slot, kept free of the things
+   * behind.
+   */
+  lanternTop: 48,
   /** At most this many things at a place (game rules §8, THINGS_PER_PLACE). */
   things: 3,
   /** The marker stands in this many build units at the foot of a thing's box. */
@@ -336,27 +356,37 @@ const behindBoxes = (
     const height = BUILD.height * scale * k;
     return { width, height, y: slot.y + slot.height - rise * scale - height };
   };
-  // Where the path comes nearer, the row of two gets smaller, so that the
-  // third still shows at least `besideShare` of its width beside the second.
-  let k = Math.min(...rows.map((r) => r.scale));
-  if (rows.length > 1)
-    for (let round = 0; round < 8; round += 1) {
-      const { y, height } = boxAt(k, Math.max(...rows.map((r) => r.rise)));
+  const place = (k: number) =>
+    rows.map(({ rise, edge }) => {
+      const { width, height, y } = boxAt(k, rise);
+      // the second at the outer edge, the third right beside it towards the
+      // path: across the first's inner edge, above the lantern, if room allows
+      const outer = edge === 'outer';
+      const step = width + VALLEY.besideGap * scale;
+      let x =
+        side === 'right' ? outerEdge - width - (outer ? 0 : step) : outerEdge + (outer ? 0 : step);
       const reached = reach(points, y, y + height, gap, side);
-      const room = Math.abs(outerEdge - reached);
-      const fit = room / ((2 - VALLEY.besideShare) * BUILD.width * scale);
-      if (fit >= k - 1e-9) break;
-      k = Math.max(0, fit);
-    }
-  return rows.map(({ rise, edge }) => {
-    const { width, height, y } = boxAt(k, rise);
-    const outer = (edge === 'outer') === (side === 'right');
-    let x = outer ? slot.x + slot.width - width : slot.x;
-    const reached = reach(points, y, y + height, gap, side);
-    x = side === 'right' ? Math.max(x, reached) : Math.min(x, reached - width);
-    return { x, y, width, height, scale: scale * k };
-  });
+      x = side === 'right' ? Math.max(x, reached) : Math.min(x, reached - width);
+      return { x, y, width, height, scale: scale * k };
+    });
+  // Where the path comes nearer, both get smaller, so that they stand side
+  // by side, neither covering the other: the largest size up to the rule's.
+  const apart = (k: number) => {
+    const [a, b] = place(k);
+    if (!a || !b) return true;
+    const gapScene = VALLEY.besideGap * scale - 1e-6;
+    return side === 'right' ? b.x + b.width <= a.x - gapScene : a.x + a.width <= b.x - gapScene;
+  };
+  return place(largest(Math.min(...rows.map((r) => r.scale)), apart));
 };
+
+/** The ground patch a thing behind stands on: an ellipse under its base line, like the bay. */
+const patchOf = (box: Box & { scale: number }): Ellipse => ({
+  cx: box.x + box.width / 2,
+  cy: box.y + (BUILD.base / BUILD.height) * box.height,
+  rx: (VALLEY.patchWidth * box.width) / 2,
+  ry: VALLEY.patchHalfHeight * box.scale,
+});
 
 /** Every box a place puts on the ground, for making room above the things behind. */
 const groundOf = (p: ValleyPiece): Box[] => [p.plot, p.name, ...p.things.slice(1)];
@@ -427,6 +457,7 @@ const compose = (
     const bottom = half[1].to;
     const first = { ...slot, scale };
     const count = Math.min(Math.max(1, Math.round(counts[i] ?? 1)), VALLEY.things);
+    const behind = behindBoxes(points, slot, scale, side, count, unit);
     return {
       side,
       piece: { x: 0, y: top.y, width, height: bottom.y - top.y },
@@ -434,7 +465,8 @@ const compose = (
       joints: { top, bottom },
       path: half,
       slot: first,
-      things: [first, ...behindBoxes(points, slot, scale, side, count, unit)],
+      things: [first, ...behind],
+      patches: behind.map(patchOf),
       plot,
       bay,
       doorstep: { x: slot.x + BUILD.door * scale, y: slot.y + BUILD.base * scale },

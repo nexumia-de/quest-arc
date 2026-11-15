@@ -90,7 +90,8 @@ With [one](screenshots/valley-home-1-phone-light.png) and
 [dark](screenshots/valley-home-6-desktop-dark.png) on the desktop.
 _Screenshots from demo data at 360 × 720 and 1000 × 700._ A place draws
 every thing that stands there (up to three, game rules §8): the second
-and third behind the first (#151, [journey
+and third side by side behind the first, each on its own ground patch
+(#151, [journey
 design](journey-design.md#the-place-piece-the-valley-127)); demo
 `valley-6-stacked`, [phone](screenshots/valley-home-stacked-phone.png) and
 [desktop](screenshots/valley-home-stacked-desktop.png), light and dark.
@@ -242,7 +243,8 @@ lantern is lit beside the doorstep (#131)._
   [journey design](journey-design.md#the-place-piece-the-valley-127), 230
   units high): the ground in the place's hue, the path and the bay, every
   thing at the place in the version that stands and its hue (the second
-  and third behind the first, #151), the name; the place's sign (the lit
+  and third side by side behind the first on their own ground patches,
+  #151), the name; the place's sign (the lit
   lantern) in the layers of the Valley's scene (#131). The **pencil** at
   its top corner on the free side of the path (44 × 44), clear of the
   things behind, opens "Change this moment" (screen 0a). Where nothing stands yet the piece is plain land with the
@@ -252,8 +254,8 @@ lantern is lit beside the doorstep (#131)._
   stage says "already yours"), and the line of state ("A well house
   stands"), once per thing: where the place holds more than one (up to
   three, game rules §8) each row is headed by the title of the journey
-  that grows it. The piece draws the first thing until the layout
-  stacks the others (#151). Journeys beyond three build no thing and
+  that grows it. The piece draws every thing, the second and third
+  behind the first (#151). Journeys beyond three build no thing and
   have no row.
 - **One card, "Your routine here"**: the routine's steps in words, each
   with **Still followed** or **Runs by itself**, and what waits with

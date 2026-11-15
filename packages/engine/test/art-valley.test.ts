@@ -90,7 +90,7 @@ describe('valleyLayout with things behind the first', () => {
     expect(stacked.height).toBeGreaterThan(one.height);
   });
 
-  it('stands the second and third higher, smaller, the second on the side away from the path', () => {
+  it('stands the second and third higher, smaller, side by side, the second away from the path', () => {
     for (const side of ['right', 'left'] as const) {
       const [place] = valleyLayout({ sides: [side], things: [3] }).places;
       if (!place) throw new Error('one place');
@@ -98,10 +98,33 @@ describe('valleyLayout with things behind the first', () => {
       if (!first || !second || !third) throw new Error('three things');
       expect(first).toEqual(place.slot);
       expect(second.y + second.height).toBeLessThan(first.y + first.height);
-      expect(third.y + third.height).toBeLessThan(second.y + second.height);
-      expect(second.scale).toBeCloseTo(first.scale * VALLEY.behind[0].scale, 9);
+      expect(third.y).toBeCloseTo(second.y, 9);
+      // at most about two thirds of the first, smaller where two must fit side by side
+      expect(second.scale).toBeLessThanOrEqual(first.scale * VALLEY.behind[0].scale + 1e-9);
+      expect(second.scale).toBeGreaterThan(first.scale * 0.5);
+      expect(third.scale).toBeCloseTo(second.scale, 9);
       const outer = (b: typeof first) => (side === 'right' ? b.x + b.width : b.x);
       expect(outer(second)).toBeCloseTo(outer(first), 9);
+      // side by side, neither covering the other, the third towards the path
+      const [a, b] = side === 'right' ? [third, second] : [second, third];
+      expect(a.x + a.width).toBeLessThanOrEqual(b.x + 1e-9);
+      // each on its own ground patch under its base line
+      expect(place.patches).toHaveLength(2);
+      place.patches.forEach((patch, k) => {
+        const box = place.things[k + 1];
+        expect(patch.cx).toBeCloseTo((box?.x ?? 0) + (box?.width ?? 0) / 2, 9);
+        expect(patch.cy).toBeCloseTo((box?.y ?? 0) + (74 / 80) * (box?.height ?? 0), 9);
+      });
+    }
+  });
+
+  it('keeps two thirds of the first for a second thing alone', () => {
+    for (const side of ['right', 'left'] as const) {
+      const [place] = valleyLayout({ sides: [side], things: [2] }).places;
+      expect(place?.things[1]?.scale).toBeCloseTo(
+        (place?.slot.scale ?? 0) * VALLEY.behind[0].scale,
+        9,
+      );
     }
   });
 
@@ -251,22 +274,25 @@ describe('valleyProblems', () => {
     );
   });
 
-  it('finds a thing behind moved onto the path, over the doorstep or in front, and a name of one line', () => {
-    const layout = valleyLayout({ sides: alternating(2, 'right'), things: [3, 2] });
+  it('finds a thing behind moved onto the path, over the doorstep or covering another, a patch on the path, and a name of one line', () => {
+    const layout = valleyLayout({ sides: alternating(2, 'right'), things: [3, 3] });
     const [first, second] = layout.places;
     const behind = first?.things[1];
-    const back = second?.things[1];
-    if (!first || !second || !behind || !back) throw new Error('things behind');
+    const back = second?.things[2];
+    const patch = second?.patches[0];
+    if (!first || !second || !behind || !back || !patch) throw new Error('things behind');
     first.things[2] = { ...behind, x: first.bend.x - 5 };
-    second.things[1] = { ...back, y: second.slot.y + second.slot.height - back.height + 4 };
     first.things[1] = { ...behind, x: first.doorstep.x - 5, y: first.doorstep.y - 5 };
+    second.things[2] = { ...back, x: second.things[1]?.x ?? 0 };
+    second.patches[0] = { ...patch, cx: second.bend.x };
     second.name = { ...second.name, height: second.name.lineHeight };
     const at = valleyProblems(layout).map((p) => `${p.at}: ${p.message}`);
     expect(at).toEqual(
       expect.arrayContaining([
         expect.stringMatching(/^place 1 thing 3: .* from the path's centre line/),
         'place 1 thing 2: covers the doorstep',
-        'place 2 thing 2: does not stand behind the one in front',
+        'place 2 thing 3: covers thing 2',
+        expect.stringMatching(/^place 2 thing 2 patch: .* from the path's centre line/),
         'place 2 name: holds fewer than two lines',
       ]),
     );
