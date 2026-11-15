@@ -16,9 +16,6 @@ import { rowViewBox, versionName, type BuildState, type Ladder } from '../ladder
 export const hueOf = (name: string, ladder?: Ladder): Hue | undefined =>
   art().palette[name] ?? (ladder ? art().palette[ladder.hue] : undefined);
 
-/** The marker kind's plural title, from its pictures' list. */
-export const markerTitle = (kind: string): string => art().markers[kind]?.title ?? kind;
-
 /**
  * The state the scene is drawn in, from the engine's view and the journey's
  * names. The names were written for the journey's own ladder: on another
@@ -27,7 +24,6 @@ export const markerTitle = (kind: string): string => art().markers[kind]?.title 
 export const buildState = (build: BuildView, journey?: Journey): BuildState => ({
   progress: build.markerProgress,
   ready: build.ready,
-  marker: build.marker,
   versions: build.versions,
   names:
     journey && build.ladder === (journey.build?.ladder ?? 'home')

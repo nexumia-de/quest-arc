@@ -321,7 +321,7 @@ lantern is lit beside the doorstep (#131)._
   is written. Nothing is shown, counted or built for answering.
 - **What you build** (#100): the journey's suggested
   build in words and as its first version, which stands from the start
-  ("You build: Home · pennants"), and **Change**, which
+  ("You build: Home"), and **Change**, which
   opens screen 3a. Nothing is shown of the versions to come. For a
   further journey at a moment that already has its thing (#130) there is
   nothing to choose and no **Change**: "This journey builds another thing
@@ -348,11 +348,9 @@ as their own page from **What you build** in the journey's menu
   "Suggested by the journey". Under the heading: "This is the kind of thing
   this moment builds. Later journeys here build more of the same kind."
   (#114 decision 5).
-- **What hangs**: lanterns, pennants, flowers, each with its plain
-  element as a small picture (the "on" form is earned, never shown ahead)
-  and its name. Flowers need ground: with a ladder on water the option is
-  disabled and says "Only on land"; a marker that no longer fits after
-  changing the ladder falls back to the ladder's own.
+- There is **no choice of what hangs** (#152): the marker is always
+  flowers growing in the thing's yard ([journey design](journey-design.md)),
+  so "What hangs" is gone.
 - There is **no colour choice** here any more: the colour is the
   place's hue, chosen in "Change this moment" (screen 0a). The engine
   does not read a run's hue ([game rules](game-rules.md) §8, #126). The
@@ -416,9 +414,9 @@ Opened from the growing step of a moment (screen 0); back leads there.
   line of state in words ("A hut stands · a cottage is on
   its way", "… is ready", or only "A hut stands" before the stage's first
   counting completion; the journey's own version names only while the run's ladder is the journey's own, else the ladder's titles, #115), then the card. The picture's text for
-  screen readers says the same and the marker in words: "A hut,
-  version 3 of 5; marker: 4 of 4 posts and 3 of 6 pennants; not ready
-  yet". At 720 px and wider the build is on the left and the card on the
+  screen readers says the same and the flowers in words: "A hut,
+  version 3 of 5; 3 of 6 flowers, in bud; not ready yet" ("6 of 6
+  flowers, open; ready" while the stage is met). At 720 px and wider the build is on the left and the card on the
   right. There is no drawn path any more: the stations are a list
   (**Stations** in the menu), each opening its details (screen 5).
 

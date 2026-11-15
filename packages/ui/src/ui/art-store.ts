@@ -7,7 +7,7 @@ import type { ArtPack } from '../shared/protocol';
  * (docs/super-productivity-facts.md §1). Without them the build is not
  * drawn and the journey screen shows the path.
  */
-const empty: ArtPack = { pictures: {}, ladders: {}, palette: {}, markers: {} };
+const empty: ArtPack = { pictures: {}, ladders: {}, palette: {} };
 let pack: ArtPack = empty;
 
 export const setArt = (next: ArtPack): void => {

@@ -16,8 +16,6 @@ import type { BuildView, RunView } from './types/view';
  */
 export const placeBuilds = (
   runs: readonly RunView[],
-  /** The marker a run hangs on the place's ladder (its own choice, else the ladder's). */
-  markerOf: (run: RunView, ladder: string) => string,
   ladders: LadderList = LADDERS,
 ): Map<string, BuildView> => {
   const groups = new Map<string, RunView[]>();
@@ -40,7 +38,6 @@ export const placeBuilds = (
       result.set(run.runId, {
         ...run.build,
         ladder,
-        marker: markerOf(run, ladder),
         hue: own?.hue ?? run.build.hue,
       });
     }

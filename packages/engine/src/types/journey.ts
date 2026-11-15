@@ -17,7 +17,6 @@ export interface Journey {
   /** What the journey builds (docs/story-format.md, Build). */
   readonly build?: {
     readonly ladder: string;
-    readonly marker?: string;
     /** Text keys naming the versions, version 1 first. */
     readonly names?: readonly string[];
   };

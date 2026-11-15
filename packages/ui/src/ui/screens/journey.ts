@@ -4,7 +4,7 @@ import { banners } from '../banners';
 import { h } from '../dom';
 import { habitBanners } from '../habit-banners';
 import { art } from '../art-store';
-import { buildState, markerTitle } from '../journey/build';
+import { buildState } from '../journey/build';
 import { stationCard } from '../journey/card';
 import { anchorTitle } from '../journey/moment';
 import { buildLabel } from '../ladder';
@@ -38,8 +38,7 @@ export const journeyScreen = (ctx: Context): Screen => {
   const place = placeOfRun(ctx, run);
   const ladder = art().ladders[run.build.ladder];
   const state = buildState(run.build, journey);
-  const label =
-    ladder && buildLabel(ladder, run.build.version, state, markerTitle(run.build.marker));
+  const label = ladder && buildLabel(ladder, run.build.version, state);
   const build = placeSection(ctx, place, label, run.runId);
   const anchor = view.anchors.find((a) => a.id !== undefined && a.id === place.anchorId);
 

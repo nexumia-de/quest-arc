@@ -29,7 +29,7 @@ All stages on Monday to Friday; anchor "sitting down at my desk".
 | `look-back`  | note what moved forward yesterday, write down my one task and give it 45 quiet minutes   | 8 of 10 days |
 
 The journey builds a **Well**
-([game rules](game-rules.md) §7), with lanterns on the marker (the ladder's default): the
+([game rules](game-rules.md) §7), with flowers growing as its marker (as for every thing, #152): the
 journey is about drawing on the day's best attention for the one task
 before the stream of email and chat, and each stage makes that source
 easier to reach, from a water hole to a well house. It uses the

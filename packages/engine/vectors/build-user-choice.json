@@ -1,5 +1,5 @@
 {
-  "name": "The user's choice of ladder and marker wins over the journey's; the hue of a build record is no longer read (the hue is the place's)",
+  "name": "The user's choice of ladder wins over the journey's; a marker in the record is ignored (#152); the hue of a build record is no longer read (the hue is the place's)",
   "rule": "game-rules §7",
   "kind": "evaluate",
   "input": {
@@ -42,7 +42,7 @@
     "active": {
       "build": {
         "ladder": "home",
-        "marker": "flowers",
+        "marker": null,
         "hue": "meadow",
         "version": 1
       }

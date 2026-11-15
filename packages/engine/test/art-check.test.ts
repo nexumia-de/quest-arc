@@ -71,10 +71,11 @@ describe('artProblems', () => {
     expect(messages('stone', big).join('\n')).toMatch(/bytes/);
   });
 
-  it('wants the view box of a setting and of a build', () => {
+  it("wants the view box of a setting and of a build, also for the marker's flowers", () => {
     expect(messages('setting-green', good).join('\n')).toMatch(/0 0 320 180/);
     expect(messages('build-well-1', good).join('\n')).toMatch(/0 0 120 80/);
     expect(messages('build-well-1', good.replace('0 0 32 32', '0 0 120 80'))).toEqual([]);
+    expect(messages('marker-flower-1', good).join('\n')).toMatch(/0 0 120 80/);
   });
 
   it('wants a lower-case name', () => {

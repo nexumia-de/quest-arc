@@ -1,7 +1,7 @@
 ---
 type: Concept
 title: Journey design
-description: How the journey is drawn in both hosts: the journey's build above the current station's card, the last seven due days, the rules for colours, shapes and accessibility, the builds and ladders of the Valley (one thing whole at every stage, a festive marker growing in front of the build, way points, a hue per region), the Valley's place piece laid out by rule, the sign of a place and the older scene rules for a region; with mockups.
+description: How the journey is drawn in both hosts: the journey's build above the current station's card, the last seven due days, the rules for colours, shapes and accessibility, the builds and ladders of the Valley (one thing whole at every stage, flowers growing in the thing's yard as its marker, way points, a hue per region), the Valley's place piece laid out by rule, the sign of a place and the older scene rules for a region; with mockups.
 tags: [design, ui, journey, mockups, pictures, valley]
 generated: { by: claude-code/2.1.318, at: 2026-11-05 }
 sources:
@@ -76,9 +76,11 @@ band) is its own issue.
 Decided by the owner on 2026-11-12[^42]: a journey builds **one thing**,
 whole at every stage, and every stage makes it a larger version. A
 **ladder** is that thing drawn once in five versions and used by every
-journey that picks it. The ladders are Home (with pennants and with
-flowers), Garden (with flowers), Well (with lanterns) and Lookout (with
-pennants, #128); plugin light above, Day Planner dark below (scale 2).
+journey that picks it. The ladders are Home, Garden, Well and Lookout
+(#128). The sequences below were taken before #152 with the retired
+markers (pennants, lanterns, vines on posts); the flowers that replace
+them are under "Markers" below. Plugin light above, Day Planner dark
+below (scale 2).
 The first ladder, Crossing (a river: stepping stones to a covered
 bridge), was retired by #128: the Valley has no water (owner,
 2026-11-15). Each version, then its marker growing element by element
@@ -126,12 +128,11 @@ versions below it, the state in words, the card unchanged.
 | ![Journey screen, light](screenshots/ladder-journey-light.png) | ![Journey screen, dark](screenshots/ladder-journey-dark.png) |
 
 **Files.** A ladder is `content/art/<ladder>.ladder.json` with its title,
-the default hue, whether its setting is water (`water`), its default
-marker kind (`marker`), the marker's layout and post points (`layout`,
-`posts`), where its setting has water (`waterAreas`), the versions (`build-<ladder>-<n>.svg`, each with a
+the default hue, whether its setting is water (`water`: a build on water
+reaches its box's lower edge), the versions (`build-<ladder>-<n>.svg`, each with a
 title), optionally the part of every version the row of versions shows
 (`row`), the way points (`ways`) and the setting with its places,
-including the marker's; the setting is `setting-<kind>.svg`. Checked by
+including the marker's flowers; the setting is `setting-<kind>.svg`. Checked by
 `ladderProblems` (`packages/engine/src/art-ladder-check.ts`) in
 `npm run journeys`. The coordinates of every ladder come from
 `scripts/draw-ladders.mjs`: change the numbers there and run it, never
@@ -225,30 +226,48 @@ journey):
    ground and far trees in `tint`, a few reused plants (tuft, bush,
    flowers, far trees) in the [depth bands](#look-and-depth-bands).
 
-**Markers: a stage on its way** (owner, 2026-11-12; replacing the
-scaffold, which looked like a permanent building site over a thing that
-is meant to be whole, and later drafts with a ring around the build and
-with fixed phases, which could not be read in order). While a stage runs,
-a small festive **marker** grows in the foreground, in front of the
-build, never on it, behind it or across it:
+**Markers: a stage on its way.** While a stage runs, **flowers** grow on
+the thing's own ground (owner, 2026-11-15, #114 "Signs and markers,
+simplified", #152). They replace the earlier markers (pennants, lanterns
+and vines on a line between posts, 2026-11-12, which replaced a scaffold
+and a ring around the build): with one marker left there is nothing to
+choose, and a lantern means only "runs by itself" (game rules §8).
 
-- **Element by element.** A marker has E elements in a fixed order: first
-  the posts, one after the other, then the hanging elements, one after
-  the other along the line from the first post. The line between two
-  neighbouring posts shows once both stand. The hosts show the first
-  ceil(p × E) elements, p (0 … 1) the best progress reached in the
-  stage's condition; p = 1 means all stand. So a `days` stage (5 of 7)
-  and a `count` stage (20) fill the same marker, and since p is the best
-  progress, never the current one, the marker never loses an element.
-- **Ready** while the condition is met now: every hanging element takes
-  its "on" form, different in shape, not only in colour: lanterns filled,
-  with a flame and rays; pennants solid with a second tail; flowers open
-  instead of in bud. It reads without telling the accent apart.
-- **Posts carry nothing on top.** They are plain (a post with a rounded
-  top); everything decorative hangs from the line.
-- After the last version nothing is on its way: no marker. On Continue
-  the next version stands and the marker is gone until the next stage's
-  first counting completion.
+The place screen at 360 × 720 (scale 2, shown halved): Home, Garden,
+Well and Lookout at version 3 with half the flowers in bud, then Well
+ready with every flower open; light above, dark below:
+
+![The flowers on each thing, light and dark](screenshots/valley-flowers.png)
+
+Each thing at 60 × 40 px (versions 1, 3 and 5; three flowers in bud,
+then all six open), light above, dark below:
+
+![The flowers at 60 × 40](screenshots/valley-flowers-row.png)
+
+- **Flower by flower.** The marker has E = 6 flowers in a fixed order.
+  The hosts show the first ceil(p × E), p (0 … 1) the best progress
+  reached in the stage's condition; p = 1 means all stand. So a `days`
+  stage (5 of 7) and a `count` stage (20) fill the same marker, and since
+  p is the best progress, never the current one, a flower never goes
+  again.
+- **Bud, then blossom.** A flower is a stem with two leaves and a closed
+  bud, its folded petals in the accent. **Ready** (while the condition is
+  met now) every bud is an open blossom: five white petals outlined in
+  `fg` around an accent centre, different in shape, not only in colour.
+  Outlined in `fg` like the thing, leaves in `tint-strong`; the accent is
+  the one detail (the bud's petals, the blossom's centre).
+- **Where they stand.** On the front of the yard (the thing's ground,
+  the ellipse every version stands on, on the bay), three on each side
+  of the threshold stone, never in front of the doorstep, at different
+  heights, inside the build's box, so never on the path. They grow from
+  the doorstep outwards, one side then the other. Drawn once for every
+  ladder: each flower is a picture in the build's view box
+  (`marker-flower-<k>.svg`, open `marker-flower-<k>-open.svg`), so a host
+  draws it in the thing's own box, in front of the thing; nothing moves
+  or shrinks, a bud only opens.
+- After the last version nothing is on its way: no flowers. On Continue
+  the next version stands and the flowers are gone until the next
+  stage's first counting completion.
 
 Counts stay where they are exact: the progress bar, the words ("3 of 5
 days") and the seven day marks in the card. Under the row of versions
@@ -256,76 +275,22 @@ the state is said in words, never as a building site: "A hut
 stands · a cottage is on its way" while the stage runs, "… · a cottage
 is ready" while it is met.
 
-**Marker kinds** (`content/art/markers.json`), each drawn once and used
-with every ladder and setting; what hangs is the user's choice per
-journey, the ladder only gives the default (`marker`: Home pennants,
-Garden flowers, Well lanterns, Lookout pennants):
+**Measured** by `flowerProblems` (`scripts/ladder-checks.mjs`) before
+`scripts/draw-ladders.mjs` writes anything: every flower's feet on the
+yard, both forms inside the build's box and clear of the doorstep's
+column (x 51–69), no two flowers overlapping in either form, each
+picture within 4 KB, the order from the doorstep outwards. In the ladder
+file each flower is a `marker` place filling the build's slot, listed
+right after the build, with its `order` (1 … E); `ladderProblems`
+requires at least two, in order, with both pictures. A ladder on water
+(none since #128) needs no rule of its own: the flowers stand in the
+thing's own yard.
 
-- **lanterns**: small lanterns, outlined; ready filled with a flame, a
-  halo and rays.
-- **pennants** (`bunting`): pale outlined pennants; ready solid in the
-  accent with a second tail.
-- **flowers**: vines with closed buds; ready open blossoms. Land only:
-  the checker refuses flowers for a ladder whose setting is water
-  (`"water": true`). All current ladders are land, so flowers fit each.
-
-Each kind has three pictures (view box 32 × 32): `marker-<kind>-post`
-stands on y = 30 and the line is tied on at (16, 15); `marker-<kind>-bead`
-hangs from the line at (16, 2); `marker-<kind>-bead-lit` is its ready
-form.
-
-**Layouts and post points.** A setting declares its marker's layout and
-an ordered list of post points in the near band, as it declares where the
-path meets the build:
-
-- `span`: one continuous line over all posts (at least two). For a
-  setting where the line can run in front of the build without crossing
-  the way or the view, such as a later ladder whose way runs across the
-  scene (the retired Crossing: two posts, one on the near ground of each
-  bank, and one line across the water in front of the bridge, sagging
-  gently). No current ladder uses it.
-- `sides`: two short lines, left and right, with a gap in the middle
-  (four posts, two on each side). For a way leading to the build (Home
-  Garden, Well and Lookout: the path to the threshold) or a build on water (a boat: the gap is the
-  waterway).
-- **Choosing**: the gap is wherever the user's way or view to the build
-  passes. If nothing passes in front of the build, `span`; otherwise
-  `sides` with the gap there.
-- **No post stands in water.** A setting with water marks it
-  (`waterAreas`, polygons in setting units, in the ladder file); a post
-  point inside one is refused. A line may cross water; a long line is
-  drawn a little thicker and sags more (by its length), it never gets an
-  extra post.
-
-The lines are pictures of the setting (`setting-<kind>-cord-<n>.svg`, the
-same for every kind); the hanging elements sit at fixed points along
-them, spread evenly, in order from the first post (Home, Garden, Well and
-Lookout: 4 posts and 6 elements). All numbers come from
-`MARKER_LAYOUTS` in `scripts/draw-ladders.mjs`. Every marker place in the
-ladder file has its `order` (1 … E); a line has the order of its second
-post.
-
-The checker (`ladderProblems`, `markerProblems`) requires: a known marker
-kind with its three pictures and a title; flowers not on water; a layout
-of `span` (at least two post points) or `sides` (four); post points in
-the near band, left to right, none in a marked water area; one post on each point, in order, tied on below the
-build's base line; one line per pair of neighbours (`sides`: none across
-the gap), each shown with its second post; at least two hanging elements
-after the posts, in order, each under a line and below the build; nothing
-of the marker over a way point.
-
-**A new marker kind** comes by pull request like a ladder: add it to
-`MARKERS` in `scripts/draw-ladders.mjs` with its three pictures (a plain
-post, the hanging element and its ready form, different in shape), set
-`landOnly` if it needs ground, run the script, and show it with every
-ladder in both hosts (`sequence-<ladder>-<kind>`) light and dark at
-360 px. A new setting declares its layout and post points by the rule
-above.
-
-**Slots** in a ladder's setting, filled by the hosts: `build`, `lantern`
-(after graduation, lit, where the marker's first post stood: the
-marker's lasting form) and the `marker` places above. In the Valley the
-lit lantern stands apart from the thing beside the doorstep instead
+**Slots** in a ladder's setting, filled by the hosts: `build` and
+`lantern` (after graduation, lit, on the near ground on the left, where
+the marker's first post stood before #152); the `marker` places above
+name their pictures. In the Valley the lit lantern stands apart from the
+thing beside the doorstep instead
 ([the sign of a place](#the-sign-of-a-place-the-valley-131)).
 
 **Row of versions.** Below the build: the standing versions as small
@@ -382,7 +347,7 @@ element by element, `span` and `sides`: the posts looked like
 stanchions, and the scenery flowers read as a hanging element;
 [m5](screenshots/ladder-markers-round-5.png) slimmer posts, larger
 elements; then the owner asked for plain posts with nothing on top and
-ready only on the hanging elements; [m6](screenshots/ladder-markers-round-6.png) plain posts, but the `span` middle post stood in the water: now two posts, one on each bank, and one line across: the final images above.
+ready only on the hanging elements; [m6](screenshots/ladder-markers-round-6.png) plain posts, but the `span` middle post stood in the water: now two posts, one on each bank, and one line across: the sequences above. Posts, lines and hanging elements were retired by #152 (flowers in the yard).
 
 ## The place piece (the Valley, #127)
 
@@ -478,11 +443,10 @@ the thing's door at the thing's scale and line weight, standing clearly
 apart from the thing on the bay's edge beside the doorstep, towards the
 path. Lit, its glass is filled with the light (`accent`) with a flame in
 it (`bg`), and a calm halo stands behind it: a soft filled shape in
-`tint-strong`, no rays or dots. The unlit lantern (the marker's) is an
-empty outlined lantern without halo or flame, so the two differ in shape,
-not only in colour. The same lantern, scaled, stands in a ladder's
+`tint-strong`, no rays or dots. (The unlit lantern of the marker is
+retired with #152, so a lantern only ever means this.) The same lantern, scaled, stands in a ladder's
 `lantern` slot on the journey screen. A routine still followed shows no
-sign (flowers become the marker's one kind, in an issue of their own).
+sign (flowers are the marker's one kind, #152).
 
 **Where it goes.** The place piece keeps 14 build units of room towards
 the path beside every slot (the plot,
@@ -514,8 +478,8 @@ pictures the same way:
 - every picture inside the frame and at most 4 KB;
 - each lantern beside the box towards the path, clear of the doorstep
   and the threshold stone, of every version of every ladder (nothing
-  overlaps the thing), and of every marker element as the place's pages
-  draw it (nothing hides the marker);
+  overlaps the thing), and of every flower, in bud and open, in the
+  thing's box (nothing hides the marker);
 - in the Valley's layout (`valleyLayout`) for one to six places on every
   choice of sides and seven to twelve alternating, at 360 and 720 wide:
   every lantern inside the scene, off the path (its stroke and 2 more on
@@ -567,17 +531,15 @@ kept the lantern alone, larger, with a calm halo instead of rays.
 **Since #130 the setting is the place piece** ([behaviour](behaviour.md),
 screens 0b and 4): the journey screen draws the place piece above, large
 (`valleyLayout` for one place, 230 units high) in the place's hue instead
-of the ladder's own setting. The marker (`ladderScene`'s posts, cords and
-beads) is mapped from the ladder's setting onto the thing's slot: the
-posts' span fills the slot's width and the feet stand on its lower edge,
-so it stands in front of the thing and, like everything in the piece, never
-crosses the path. The older text of this section describes the ladder's
+of the ladder's own setting. The flowers (`ladderScene`'s `marker` places) are pictures
+in the build's box, so they are drawn in the thing's slot, in front of
+the thing, and like everything in the piece never cross the path (#152). The older text of this section describes the ladder's
 own scene and stays valid for the versions, the marker's growth and the
 words.
 
 Issue #100, for every journey since #110. The
 engine's `build` view ([game rules](game-rules.md) §7) gives the ladder,
-the version, the versions the journey uses, the marker kind, the hue,
+the version, the versions the journey uses, the hue,
 the marker progress and whether the stage is ready; the screen draws it
 with the ladder's scene of "Builds and ladders" above.
 
@@ -620,10 +582,10 @@ stations list and Settings with the side panel switch:
   titles. Before the stage's first counting completion only "A hut
   stands"; after the last stage only what stands.
 - **For screen readers** the picture's label is the same in words with
-  the marker counted: "A plank bridge, version 3 of 5; marker: 2 of 2
-  posts and 3 of 6 lanterns; not ready yet" (or "ready", or "nothing on
-  its way yet"). The row is a list ("Versions: 1, 2 and 3 stand; 4 is
-  next"). The marker's counts in the label are the only place where
+  the flowers counted: "A hut, version 3 of 5; 3 of 6 flowers, in bud;
+  not ready yet" (or "6 of 6 flowers, open; ready", or "nothing on its
+  way yet"). The row is a list ("Versions: 1, 2 and 3 stand; 4 is
+  next"). The flowers counted in the label are the only place where
   elements are counted; the card keeps the exact stage counts.
 - **The moment of the tick:** the screen remembers, for as long as it is
   open, which run, version and number of elements it last drew. When a
@@ -639,9 +601,8 @@ stations list and Settings with the side panel switch:
   view while ticking off ([facts](super-productivity-facts.md) §7: a
   plugin cannot draw anywhere smaller or closer to the task list).
 - **Bundle:** the plugin carries only what this screen and the start
-  page draw: per ladder its setting, the lines of the marker, the
-  versions; the three pictures of each marker kind; the lantern; the
-  palette. Pictures no screen draws yet stay preview-only
+  page draw: per ladder its setting and the versions; the six flowers
+  in bud and open; the lantern; the palette. Pictures no screen draws yet stay preview-only
   (`ladderArt` in `packages/ui/art.mjs`, checked by a test). They
   travel in `plugin.js` and reach the view once at start (message
   `questarc:content`, with the texts and the style, #102). The
@@ -655,11 +616,9 @@ stations list and Settings with the side panel switch:
 - **Picture polish** with the build at its real size (issue #100's
   review): lit lanterns get an opaque halo in `tint-strong` larger than
   the lantern, so they glow in light style too; open blossoms are white
-  (`bg`) with an accent centre instead of green on green, buds white
-  with an accent tip; the line between posts is `dim` and thinner and
-  the posts shorter (tied on at y = 15), so the first steps no longer
-  read as a rope fence; the fire has a light core. The pennants' ready
-  form is unchanged (the solid fill carries it).
+  (`bg`) with an accent centre instead of green on green; the fire has a
+  light core. (The posts, lines and pennants of that review are retired
+  with #152.)
 
 ## Look and depth bands
 

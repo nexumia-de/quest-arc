@@ -123,7 +123,6 @@ export const valleyView = (
         version: run.build.version,
         skipped: run.build.skipped,
         versions: run.build.versions,
-        marker: run.build.marker,
         markerProgress: run.build.markerProgress,
         ready: run.build.ready,
       }));

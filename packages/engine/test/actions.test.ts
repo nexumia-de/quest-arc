@@ -258,8 +258,8 @@ describe('actions', () => {
   });
 
   it("write the user's build choice as one record, empty choice withdraws it", () => {
-    expect(chooseBuild('r', { ladder: 'home', marker: 'flowers', hue: '' })).toEqual({
-      'build:r': { ladder: 'home', marker: 'flowers' },
+    expect(chooseBuild('r', { ladder: 'home', hue: '' })).toEqual({
+      'build:r': { ladder: 'home' },
     });
     expect(chooseBuild('r', {})).toEqual({ 'build:r': '' });
   });

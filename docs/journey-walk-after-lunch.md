@@ -36,7 +36,7 @@ All stages daily; anchor "lunch".
 | `walk-20` | walk for 20 minutes, a round I like                       | 8 of 10 days |
 
 The journey builds a **Lookout** ([game rules](game-rules.md) §7) with
-pennants on the marker (the ladder's default): a walk leads out to a
+flowers growing as its marker (as for every thing, #152): a walk leads out to a
 place with a view, and the lookout grows the way the walk does, from a
 low platform to a tower with a roof for any weather. Four stages use all
 five versions, so the checker has no warning. Until #128 retired the

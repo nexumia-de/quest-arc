@@ -1,7 +1,0 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">
-  <title>A small lantern on a line</title>
-  <path class="fg" d="M15.2 1H16.8V5H15.2ZM16 3.1L23 8L9 8Z"/>
-  <rect class="fg" x="10" y="7" width="12" height="14" rx="2.6"/>
-  <rect class="bg" x="11.6" y="8.6" width="8.8" height="10.8" rx="1"/>
-  <rect class="fg" x="12.4" y="20.6" width="7.2" height="2" rx="0.8"/>
-</svg>

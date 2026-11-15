@@ -35,9 +35,6 @@ export interface ArtPack {
   readonly pictures: Readonly<Record<string, string>>;
   readonly ladders: Readonly<Record<string, Ladder>>;
   readonly palette: Readonly<Record<string, Hue>>;
-  readonly markers: Readonly<
-    Record<string, { readonly title: string; readonly landOnly: boolean }>
-  >;
 }
 
 /**

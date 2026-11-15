@@ -7,8 +7,7 @@
   "description": "example-walking.description",
   "why": "example-walking.why",
   "build": {
-    "ladder": "home",
-    "marker": "flowers"
+    "ladder": "home"
   },
   "anchor": {
     "moment": "example-walking.moment",

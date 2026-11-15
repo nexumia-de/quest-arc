@@ -373,17 +373,17 @@ export const bringBack = (run: RunView, today: string): RecordChanges => {
 };
 
 /**
- * The user's choice of what a run builds, what hangs on its marker and
- * its hue (game rules §7), one record per run; names come from
+ * The user's choice of what a run builds and its hue (game rules §7), one
+ * record per run; names come from
  * content/art/. Choosing nothing withdraws the record, so the
  * journey's suggestion applies again.
  */
 export const chooseBuild = (
   runId: string,
-  choice: { ladder?: string; marker?: string; hue?: string },
+  choice: { ladder?: string; hue?: string },
 ): RecordChanges => {
   const value = Object.fromEntries(
-    (['ladder', 'marker', 'hue'] as const)
+    (['ladder', 'hue'] as const)
       .filter((field) => typeof choice[field] === 'string' && choice[field] !== '')
       .map((field) => [field, choice[field]]),
   );

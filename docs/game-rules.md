@@ -457,10 +457,8 @@ the engine gives only names and numbers.
 
 - **Ladder.** A journey names a ladder (story format, `build`): one
   thing drawn in several whole versions. The ladders are the picture
-  files `content/art/<name>.ladder.json` (#95): their versions, whether
-  their setting has `water`, their default `marker` and `hue`; the
-  markers are in `markers.json` (`landOnly`), the hues in
-  `palette.json`. The engine reads these names and numbers and nothing
+  files `content/art/<name>.ladder.json` (#95): their versions and
+  default `hue`; the hues are in `palette.json`. The engine reads these names and numbers and nothing
   else of the pictures. The user may choose another ladder for a run
   (a `build` record, [data model](data-model.md) §2). A ladder the engine
   does not know, or a journey without `build`, gets the default
@@ -493,17 +491,16 @@ the engine gives only names and numbers.
   never stored ([decision](decisions/marker-progress.md)): undoing a
   completion takes back what it added, and so does deleting a done
   instance, deleting the repeat config or binding another task, as they
-  do for progress. A host shows the first `ceil(p × E)` of a
-  marker's `E` elements, so "5 of 7 days" and "20 times" fill the same
+  do for progress. A host shows the first `ceil(p × E)` of the
+  marker's `E` flowers, so "5 of 7 days" and "20 times" fill the same
   marker.
 - **Ready:** the current stage is met now (§4, state `met`). It follows
   the present: when a met stage falls below its condition, ready goes,
   the marker progress stays.
-- **Marker:** what hangs on the marker (lanterns, bunting (pennants), flowers): the
-  user's choice, else the journey's, else the ladder's default. A land-only
-  marker (flowers) never hangs over water; a marker that does not fit the
-  ladder's setting, or is not in the list, gives way to the next in that
-  order. **Hue:** the ladder's default. The hue of a place belongs to its
+- **Marker:** always flowers, the same for every ladder (#152, owner,
+  2026-11-15); the view names no marker kind, there is nothing to choose,
+  and a `marker` in an older `build` record or journey is ignored. The
+  marker progress rule above is unchanged. **Hue:** the ladder's default. The hue of a place belongs to its
   anchor, no longer to the run (§8, the Valley): `build:<runId>.hue` is
   not read (there are no users with one yet).
 - **Continue:** the next version stands and the marker starts again at
@@ -656,10 +653,8 @@ picked. Nothing here changes what is counted (§1 to §7).
   second and then a third thing **on the same ladder as the first**,
   whatever ladder it names itself or the user chose for it. Each thing
   starts at version 1 and follows its own journey as §7 computes it:
-  version, `skipped` ("already yours"), marker kind, marker progress
-  and `ready`; each keeps its own marker kind (the user's choice, else
-  the journey's, else the ladder's default; a kind that does not fit the
-  place's ladder is skipped). `state` says whether the thing's journey
+  version, `skipped` ("already yours"), marker progress and `ready`;
+  every thing's marker is flowers (#152). `state` says whether the thing's journey
   grows (`growing`), waits (`paused`), is finished (`finished`) or was
   ended early (`ended`). A thing never passes to another journey: a
   paused journey keeps its version standing and its marker as it was

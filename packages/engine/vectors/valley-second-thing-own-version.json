@@ -1,5 +1,5 @@
 {
-  "name": "Without a choice the second thing's marker is the ladder's default on the place's ladder (Home: bunting, not Well's lanterns); its version is its own, 2 after one finished stage",
+  "name": "The second thing stands on the place's ladder (Home, not Well) and names no marker (always flowers, #152); its version is its own, 2 after one finished stage",
   "rule": "game rules \u00a78, the Valley; issue #148",
   "kind": "evaluate",
   "input": {
@@ -60,14 +60,14 @@
             "runId": "r1",
             "state": "paused",
             "version": 1,
-            "marker": "bunting"
+            "marker": null
           },
           {
             "runId": "r2",
             "state": "growing",
             "ladder": "home",
             "version": 2,
-            "marker": "bunting"
+            "marker": null
           }
         ]
       }

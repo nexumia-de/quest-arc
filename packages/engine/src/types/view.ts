@@ -320,8 +320,9 @@ export interface ContinueOffer {
 
 /**
  * The build of a run in names and numbers; the hosts find the pictures by
- * these names. A host shows the first ceil(markerProgress × E) of a
- * marker's E elements, all in their "on" form while `ready`.
+ * these names. A host shows the first ceil(markerProgress × E) of the
+ * marker's E flowers (the same marker for every ladder, #152), all open
+ * while `ready`.
  */
 export interface BuildView {
   /** A ladder in content/art/ (<name>.ladder.json). */
@@ -332,8 +333,6 @@ export interface BuildView {
   readonly skipped: readonly number[];
   /** The versions this journey uses: its stages + 1. */
   readonly versions: number;
-  /** What hangs on the marker: lanterns, bunting or flowers (content/art/markers.json). */
-  readonly marker: string;
   /** A hue name from content/art/palette.json. */
   readonly hue: string;
   /** The current stage's highest condition progress since it was accepted, 0..1. */

@@ -1,9 +1,8 @@
 // Draws the ladders of the Valley (#42) into content/art/: the versions of
-// each build (`build-<ladder>-<n>.svg`, view box 120 × 80), the markers
-// shown beside the build while the next version is on its way
-// (`marker-<kind>-post|bead[-lit].svg`, 32 × 32, and `markers.json`), the
-// settings (`setting-<name>.svg`, 320 × 180) with their marker cords
-// (`setting-<name>-cord-<n>.svg`), the ladder files
+// each build (`build-<ladder>-<n>.svg`, view box 120 × 80), the marker's
+// flowers that grow in the thing's yard while the next version is on its
+// way (`marker-flower-<k>[-open].svg`, in the build's view box), the
+// settings (`setting-<name>.svg`, 320 × 180), the ladder files
 // (`<ladder>.ladder.json`) that place them, and what a place in the Valley
 // gains around its thing (`place-…svg`, `lantern.svg`, `place.json`, #131).
 // Shapes and places come from the numbers here, so a picture is changed by
@@ -17,7 +16,12 @@ import { readdirSync, rmSync, writeFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { box, grow, minus, within } from './ladder-geometry.mjs';
 import { valleyLayout } from '../packages/engine/src/valley-layout.ts';
-import { ladderGeometryProblems, placeProblems, RETIRING } from './ladder-checks.mjs';
+import {
+  flowerProblems,
+  ladderGeometryProblems,
+  placeProblems,
+  RETIRING,
+} from './ladder-checks.mjs';
 
 const out = join(import.meta.dirname, '..', 'content', 'art');
 const n = (v) => String(Math.round(v * 10) / 10);
@@ -181,7 +185,9 @@ const HOME_WAYS = [
     [67, 77.5],
   ],
 ];
-const yard = () => [ellipse('tint-strong', 60, 75, 54, 4.6), ...boxO(53, 74, 14, 3.5, 1.4, 1)];
+/** The thing's own ground: [cx, cy, rx, ry]; the marker's flowers stand on it. */
+const YARD = [60, 75, 54, 4.6];
+const yard = () => [ellipse('tint-strong', ...YARD), ...boxO(53, 74, 14, 3.5, 1.4, 1)];
 const seat = (x = 82) => [
   rect('fg', x, 67, 18, 7, 3.5),
   rect('bg', x + 2, 69, 14, 3, 1.5),
@@ -650,141 +656,96 @@ const lookout = (v) => {
   'A tower with a roof',
 ].forEach((title, i) => build(`lookout-${i + 1}`, title, lookout(i + 1)));
 
-// ---- markers: drawn once for every ladder (32 × 32) ---------------------
-// While a stage runs, a small festive marker grows in the foreground, one
-// element at a time (owner, 2026-11-12, #42): first the posts, one after
-// the other, then the hanging elements along the line, from the first post
-// on. A marker has E elements in this fixed order; the hosts show the first
-// ceil(p × E), p (0…1) the best progress reached in the stage's condition,
-// so it never loses one. The line between two neighbouring posts shows
-// once both stand. Ready (while the condition holds) every element takes
-// its "on" form, different in shape: lanterns filled with rays, pennants
-// solid with a second tail, flowers open. Posts carry nothing on top:
-// they are plain, everything decorative hangs from the line.
-// Each kind has three pictures: `marker-<kind>-post` stands on y = 30 with
-// the line tied on at MARKER_TIE, `marker-<kind>-bead` hangs from the line
-// at its top centre (16, 2) and `marker-<kind>-bead-lit` is its form for
-// ready. The lines belong to the setting (`setting-<name>-cord-<n>.svg`).
-const MARKER_TIE = [16, 15];
-const MARKERS = {
-  lanterns: { title: 'Lanterns', landOnly: false },
-  bunting: { title: 'Pennants', landOnly: false },
-  flowers: { title: 'Flowers', landOnly: true },
+// ---- the marker: flowers growing in the thing's yard ---------------------
+// While a stage runs, flowers grow on the thing's own ground, one flower
+// per element (owner, 2026-11-15, #152; replacing pennants, lanterns and
+// vines on posts): the hosts show the first ceil(p × E), p (0…1) the best
+// progress reached in the stage's condition, so a flower never goes again.
+// Each flower is a stem with two leaves and a closed bud, its folded
+// petals in the accent; ready (while the condition holds) every bud is an
+// open blossom, its centre the one accent detail. They stand on the front of the yard (`flowerFeet`), three
+// on each side of the threshold stone and never in front of it, at
+// different heights, inside the build's box, so on the bay and never on
+// the path. They grow from the doorstep outwards, one side then the other.
+// A flower is a picture in the build's view box (`marker-flower-<k>`, its
+// open form `marker-flower-<k>-open`), so a host draws it in the thing's
+// own box, in front of the thing. Measured by flowerProblems
+// (ladder-checks.mjs) before anything is written.
+/** Where a flower at x stands: on the yard, a little inside its front edge. */
+const flowerFeet = (x) => {
+  const [cx, cy, rx, ry] = YARD;
+  return cy + 0.85 * ry * Math.sqrt(1 - ((x - cx) / rx) ** 2);
 };
-const marker = (name, title, shapes) =>
-  write(`marker-${name}.svg`, svg('0 0 32 32', title, shapes));
-const ray = (cx, cy, degrees, r0, r1, w) => {
-  const a = (degrees * Math.PI) / 180;
-  const [dx, dy] = [Math.cos(a), Math.sin(a)];
-  const [nx, ny] = [(-dy * w) / 2, (dx * w) / 2];
-  return poly('accent', [
-    [cx + dx * r0 + nx, cy + dy * r0 + ny],
-    [cx + dx * r1 + nx, cy + dy * r1 + ny],
-    [cx + dx * r1 - nx, cy + dy * r1 - ny],
-    [cx + dx * r0 - nx, cy + dy * r0 - ny],
-  ]);
-};
-/** A plain post from the tie point down to y = 30, its top rounded. */
-const post = () => [
-  rect('fg', 15, MARKER_TIE[1] - 1.8, 2, 32 - MARKER_TIE[1], 1),
-  rect('fg', 13.6, 28.9, 4.8, 1.1, 0.55),
+/** x of the stem and height of the bud's centre above the feet, in the order they grow. */
+const FLOWERS = [
+  [43, 11],
+  [77, 13.5],
+  [29, 14.5],
+  [91, 10.5],
+  [15, 12],
+  [105, 13],
 ];
-const markerSet = (kind, words, bead) => {
-  marker(`${kind}-post`, 'A post', post());
-  marker(`${kind}-bead`, words.bead, bead(false));
-  marker(`${kind}-bead-lit`, words.beadLit, bead(true));
-};
-
-// Lanterns: small lanterns on the line; ready they are filled, with a
-// flame, a halo and rays.
-// The halo is opaque `tint-strong`, drawn first and clearly larger than the
-// lantern, so a lit lantern glows in light style too (#100's review).
-const lantern = (cx, top, w, h, lit, rays = []) => [
-  ...(lit ? [ellipse('tint-strong', cx, top + h / 2, w * 1.05, w * 1.05)] : []),
-  poly('fg', [
-    [cx - w / 2 - 1, top + 1],
-    [cx + w / 2 + 1, top + 1],
-    [cx, top - h * 0.28],
-  ]),
-  rect('fg', cx - w / 2, top, w, h, w * 0.22),
-  rect(lit ? 'accent' : 'bg', cx - w / 2 + 1.6, top + 1.6, w - 3.2, h - 3.2, 1),
-  ...(lit ? [ellipse('bg', cx, top + h * 0.55, w * 0.12, h * 0.17)] : []),
-  rect('fg', cx - w * 0.3, top + h - 0.4, w * 0.6, 2, 0.8),
-  ...(lit ? rays.map((d) => ray(cx, top + h / 2, d, w * 0.8, w * 1.2, 1.6)) : []),
-];
-markerSet(
-  'lanterns',
-  { bead: 'A small lantern on a line', beadLit: 'A small lit lantern' },
-  (lit) => [rect('fg', 15.2, 1, 1.6, 4), ...lantern(16, 7, 12, 14, lit, [0, 180, 35, 145])],
-);
-
-// Pennants: pale outlined pennants on the line; ready they are solid in
-// the accent with a second tail beside them.
-markerSet(
-  'bunting',
-  { bead: 'A pale pennant on a line', beadLit: 'A bright pennant with a second tail' },
-  (lit) =>
-    lit
-      ? [
-          ...polyO(
-            [
-              [6, 2],
-              [24, 2],
-              [15, 27],
-            ],
-            1.8,
-            'accent',
-          ),
-          poly('accent', [
-            [24, 2],
-            [27.5, 2],
-            [30, 16],
-            [27, 14],
-          ]),
-        ]
-      : polyO(
-          [
-            [8, 2],
-            [24, 2],
-            [16, 24],
-          ],
-          1.8,
-        ),
-);
-
-// Flowers: vines with closed buds on the line; ready the buds open.
-const leaf = (x, y, dir) =>
-  poly('tint-strong', [
-    [x, y],
-    [x + dir * 3, y - 2.6],
-    [x + dir * 6.5, y - 1.6],
-    [x + dir * 3.4, y + 1],
-  ]);
-const bud = (cx, cy, s = 1) => [
-  ellipse('fg', cx, cy, 2.4 * s, 3.2 * s),
-  ellipse('bg', cx, cy, 1.4 * s, 2.2 * s),
-  ellipse('accent', cx, cy + 1.4 * s, 0.9 * s, 0.7 * s),
-];
-// An open blossom: petals outlined in `fg` with a `bg` fill and an accent
-// centre, so it never sits green on green in the meadow hue (#100's review).
-const blossom = (cx, cy, r = 2.2) => {
+/** A leaf on the stem at height y, pointing up and out (dir −1 left, 1 right). */
+const flowerLeaf = (x, y, dir) =>
+  polyO(
+    [
+      [x, y],
+      [x + dir * 3.6, y - 3.6],
+      [x + dir * 7.4, y - 4.4],
+      [x + dir * 5.2, y - 0.8],
+    ],
+    1.1,
+    'tint-strong',
+  );
+// An open blossom: five petals outlined in `fg` with a `bg` fill and an
+// accent centre, so it never sits green on green in the meadow hue.
+const blossom = (cx, cy, r) => {
   const petals = [0, 72, 144, 216, 288].map((d) => {
     const a = ((d - 90) * Math.PI) / 180;
     return [cx + Math.cos(a) * r, cy + Math.sin(a) * r];
   });
   return [
-    ...petals.map(([x, y]) => ellipse('fg', x, y, r * 0.95 + 1.4, r * 0.95 + 1.4)),
+    ...petals.map(([x, y]) => ellipse('fg', x, y, r * 0.95 + 1.2, r * 0.95 + 1.2)),
     ...petals.map(([x, y]) => ellipse('bg', x, y, r * 0.95, r * 0.95)),
-    ellipse('fg', cx, cy, r * 0.62 + 1.2, r * 0.62 + 1.2),
+    ellipse('fg', cx, cy, r * 0.62 + 1.1, r * 0.62 + 1.1),
     ellipse('accent', cx, cy, r * 0.62, r * 0.62),
   ];
 };
-markerSet('flowers', { bead: 'A vine in bud on a line', beadLit: 'A vine in bloom' }, (lit) => [
-  rect('tint-strong', 14.8, 2, 2.4, 10),
-  leaf(15, 6, -1.5),
-  leaf(17, 9, 1.5),
-  ...(lit ? blossom(16, 18, 4.4) : bud(16, 16.5, 2.1)),
-]);
+/** A closed bud: a drop outlined in `fg`, its folded petals in the accent showing. */
+const flowerBud = (cx, cy) => [
+  poly('fg', [
+    [cx, cy - 6],
+    [cx + 3.6, cy - 1],
+    [cx + 2.4, cy + 3],
+    [cx - 2.4, cy + 3],
+    [cx - 3.6, cy - 1],
+  ]),
+  poly('accent', [
+    [cx, cy - 3.8],
+    [cx + 2.2, cy - 0.8],
+    [cx + 1.3, cy + 1.6],
+    [cx - 1.3, cy + 1.6],
+    [cx - 2.2, cy - 0.8],
+  ]),
+];
+const flower = ([x, high], open) => {
+  const feet = flowerFeet(x);
+  const top = feet - high;
+  const out = x < 60 ? -1 : 1;
+  return [
+    rect('fg', x - 0.8, top, 1.6, high),
+    ...flowerLeaf(x, feet - high * 0.3, out),
+    ...flowerLeaf(x, feet - high * 0.58, -out),
+    ...(open ? blossom(x, top, 2.6) : flowerBud(x, top)),
+  ];
+};
+FLOWERS.forEach((spot, i) => {
+  write(`marker-flower-${i + 1}.svg`, svg('0 0 120 80', 'A flower in bud', flower(spot, false)));
+  write(
+    `marker-flower-${i + 1}-open.svg`,
+    svg('0 0 120 80', 'A flower in bloom', flower(spot, true)),
+  );
+});
 
 // ---- settings: 320 × 180 --------------------------------------------------
 
@@ -851,117 +812,22 @@ setting('heights', 'Heights', [
   pathToThreshold(),
 ]);
 
-// ---- the marker's posts: per setting (320 × 180) ------------------------
-// A setting declares its marker layout and an ordered list of post points
-// in the near band (`marker` in the ladder file), like it declares where
-// the path meets the build. `span`: one continuous line over all posts,
-// where it can run in front of the build without crossing the way or the
-// view (for a later ladder whose way runs across the scene). `sides`:
-// two short lines, left and right, with a gap in the middle where the way
-// or the view to the build passes (Home: the path to the door; a boat on
-// water: the waterway). The lines hang below the build's base line, so
-// they never cross the build. The hanging elements are spread evenly over
-// the lines, in order from the first post.
-// A light line, and short posts (the tie at y = 15): the first steps must not read as a rope
-// fence (#100's review).
-const MARKER_POST = 34; // near band (fixed size)
-const BEAD = 24;
-// A line sags gently, more the longer it is; it is a little thicker than
-// an outline so a long one still reads.
-const sagOf = (a, b) => Math.max(3.5, Math.hypot(b[0] - a[0], b[1] - a[1]) * 0.045);
-const CORD = 1.6;
-const tieAt = ([x, feet]) => [x, feet - (MARKER_POST * (30 - MARKER_TIE[1])) / 32];
-
-/** A point on the line from a to b, sagging by `sag` in the middle. */
-const cordAt = (a, b, sag, t) => {
-  const c = [(a[0] + b[0]) / 2, (a[1] + b[1]) / 2 + 2 * sag];
-  const u = 1 - t;
-  return [
-    u * u * a[0] + 2 * u * t * c[0] + t * t * b[0],
-    u * u * a[1] + 2 * u * t * c[1] + t * t * b[1],
-  ];
-};
-/** The pairs of neighbouring posts a line joins in a layout. */
-const segmentsOf = (layout, count) =>
-  Array.from({ length: count - 1 }, (_, i) => [i, i + 1]).filter(
-    ([i]) => layout === 'span' || i !== count / 2 - 1,
-  );
-const markerPlaces = (settingName, { layout, posts, beads }) => {
-  const places = posts.map(([x, feet], i) => ({
+// ---- the marker and the lantern in a setting (320 × 180) ----------------
+// The flowers are pictures in the build's box, so in a setting each fills
+// the build's slot, listed right after the build (in front of it), in the
+// order they grow (`order`, 1 … E). The graduation lantern stands on the
+// near ground on the left, where the marker's first post stood before #152.
+const flowerPlaces = () =>
+  FLOWERS.map((_, i) => ({
     slot: 'marker',
-    part: 'post',
     order: i + 1,
-    band: 'near',
-    x: x - MARKER_POST / 2,
-    y: feet - (MARKER_POST * 30) / 32,
-    width: MARKER_POST,
-    height: MARKER_POST,
-    feet,
+    art: `marker-flower-${i + 1}`,
+    band: 'middle',
+    ...SLOT,
+    feet: BUILD_FEET + 0.01 * (i + 1),
   }));
-  const segments = segmentsOf(layout, posts.length);
-  const perSegment = beads / segments.length;
-  let order = posts.length;
-  segments.forEach(([i, j], k) => {
-    const [a, b] = [tieAt(posts[i]), tieAt(posts[j])];
-    const name = `setting-${settingName}-cord-${k + 1}`;
-    const SAG = sagOf(a, b);
-    const top = Array.from({ length: 25 }, (_, s) => cordAt(a, b, SAG, s / 24));
-    const bottom = top.map(([x, y]) => [x, y + CORD]).reverse();
-    write(
-      `${name}.svg`,
-      svg('0 0 320 180', 'A line between two posts', [poly('dim', [...top, ...bottom])]),
-    );
-    const feet = Math.max(posts[i][1], posts[j][1]) + 0.1;
-    places.push({
-      slot: 'marker',
-      part: 'cord',
-      order: j + 1,
-      art: name,
-      x: 0,
-      y: 0,
-      width: 320,
-      height: 180,
-      feet,
-    });
-    for (let s = 0; s < perSegment; s += 1) {
-      const [px, py] = cordAt(a, b, SAG, (s + 1) / (perSegment + 1));
-      order += 1;
-      places.push({
-        slot: 'marker',
-        part: 'bead',
-        order,
-        band: 'near',
-        x: px - BEAD / 2,
-        y: py + CORD / 2 - (BEAD * 2) / 32,
-        width: BEAD,
-        height: BEAD,
-        feet: feet + 0.01 * order,
-      });
-    }
-  });
-  return places;
-};
-const MARKER_LAYOUTS = {
-  clearing: {
-    layout: 'sides',
-    posts: [
-      [34, 170],
-      [116, 173],
-      [204, 173],
-      [286, 170],
-    ],
-    beads: 6,
-  },
-};
-// The field and the green have the clearing's path, so their markers stand where Home's does.
-MARKER_LAYOUTS.field = MARKER_LAYOUTS.clearing;
-MARKER_LAYOUTS.green = MARKER_LAYOUTS.clearing;
-MARKER_LAYOUTS.heights = MARKER_LAYOUTS.clearing;
-const markerOf = ({ layout, posts }) => ({ layout, posts });
-
-/** The graduation lantern stands where the marker's first post stood. */
-const lanternAtPost = ({ posts: [[x, feet]] }) => ({
-  ...at('', 'near', x - 17, feet, 34),
+const lanternSlot = () => ({
+  ...at('', 'near', 34 - 17, 170, 34),
   art: undefined,
   slot: 'lantern',
 });
@@ -1001,9 +867,7 @@ ladder(
     title: 'Home',
     hue: 'meadow',
     water: false,
-    marker: 'bunting',
     ways: HOME_WAYS,
-    ...markerOf(MARKER_LAYOUTS.clearing),
     versions: [
       { art: 'build-home-1', title: 'A fireplace' },
       { art: 'build-home-2', title: 'A tent' },
@@ -1018,10 +882,10 @@ ladder(
     at('tree', 'far', 284, 41, 20),
     slot('build', { band: 'middle', ...SLOT }),
     at('flowers', 'middle', 36, 132, 24),
-    lanternAtPost(MARKER_LAYOUTS.clearing),
+    lanternSlot(),
     at('bush', 'near', -22, 179, 48),
     at('tuft', 'near', 236, 178, 20),
-    ...markerPlaces('clearing', MARKER_LAYOUTS.clearing),
+    ...flowerPlaces(),
   ],
 );
 
@@ -1031,9 +895,7 @@ ladder(
     title: 'Garden',
     hue: 'moss',
     water: false,
-    marker: 'flowers',
     ways: GARDEN_WAYS,
-    ...markerOf(MARKER_LAYOUTS.field),
     versions: [
       { art: 'build-garden-1', title: 'A garden bed' },
       { art: 'build-garden-2', title: 'A row of beds' },
@@ -1047,10 +909,10 @@ ladder(
     at('tree', 'far', 30, 44, 20),
     at('tree', 'far', 270, 40, 20),
     slot('build', { band: 'middle', ...SLOT }),
-    lanternAtPost(MARKER_LAYOUTS.field),
+    lanternSlot(),
     at('bush', 'near', 296, 179, 48),
     at('tuft', 'near', 70, 178, 20),
-    ...markerPlaces('field', MARKER_LAYOUTS.field),
+    ...flowerPlaces(),
   ],
 );
 
@@ -1060,9 +922,7 @@ ladder(
     title: 'Well',
     hue: 'water',
     water: false,
-    marker: 'lanterns',
     ways: WELL_WAYS,
-    ...markerOf(MARKER_LAYOUTS.green),
     versions: [
       { art: 'build-well-1', title: 'A water hole' },
       { art: 'build-well-2', title: 'A well sweep' },
@@ -1076,10 +936,10 @@ ladder(
     at('tree', 'far', 250, 42, 20),
     slot('build', { band: 'middle', ...SLOT }),
     at('tuft', 'middle', 290, 132, 14),
-    lanternAtPost(MARKER_LAYOUTS.green),
+    lanternSlot(),
     at('bush', 'near', -22, 179, 48),
     at('tuft', 'near', 236, 178, 20),
-    ...markerPlaces('green', MARKER_LAYOUTS.green),
+    ...flowerPlaces(),
   ],
 );
 
@@ -1089,9 +949,7 @@ ladder(
     title: 'Lookout',
     hue: 'rust',
     water: false,
-    marker: 'bunting',
     ways: LOOKOUT_WAYS,
-    ...markerOf(MARKER_LAYOUTS.heights),
     versions: [
       { art: 'build-lookout-1', title: 'A lookout' },
       { art: 'build-lookout-2', title: 'A lookout with a railing' },
@@ -1105,10 +963,10 @@ ladder(
     at('tree', 'far', 28, 46, 20),
     slot('build', { band: 'middle', ...SLOT }),
     at('tuft', 'middle', 286, 132, 14),
-    lanternAtPost(MARKER_LAYOUTS.heights),
+    lanternSlot(),
     at('bush', 'near', -22, 179, 48),
     at('tuft', 'near', 236, 178, 20),
-    ...markerPlaces('heights', MARKER_LAYOUTS.heights),
+    ...flowerPlaces(),
   ],
 );
 
@@ -1121,7 +979,7 @@ ladder(
 // thing. One frame for both sides (the build's box with 14 units on either
 // side), and a lantern picture for each side, so a host draws it in the
 // thing's box and mirrors nothing. It stands in front of the thing and its
-// marker and overlaps neither, nor the doorstep or the path: measured by
+// flowers and overlaps neither, nor the doorstep or the path: measured by
 // placeProblems (ladder-checks.mjs) for every thing and every layout.
 // The pictures share the build's view box, so a host draws them in the
 // thing's own box; they reach beyond it into the frame (overflow visible).
@@ -1131,9 +989,7 @@ const place = (name, title, shapes) => write(`${name}.svg`, svg('0 0 120 80', ti
 // The lit lantern (graduation), the place's only sign (owner, 2026-11-15):
 // a lantern on a short post, about as high as the thing's door, its glass
 // filled with the light and a flame in it, a calm halo behind it (a soft
-// filled shape, no rays). The unlit lantern (the marker's) is an empty
-// outlined lantern without halo or flame, so the two differ in shape, not
-// only in colour. Drawn once around its foot (0, 0), in build units; the
+// filled shape, no rays). Drawn once around its foot (0, 0), in build units; the
 // 32 × 32 picture of the journey screen's `lantern` slot is the same
 // lantern scaled.
 const LIT_LANTERN = [
@@ -1188,15 +1044,6 @@ write(
   )}\n`,
 );
 
-write(
-  'markers.json',
-  `${JSON.stringify(
-    Object.fromEntries(Object.entries(MARKERS).map(([k, v]) => [k, { ...v, tie: MARKER_TIE }])),
-    null,
-    2,
-  )}\n`,
-);
-
 // The measured rules (ladder-checks.mjs) before anything is written: a
 // ladder that breaks one is not written at all.
 const pictures = Object.fromEntries(
@@ -1212,6 +1059,14 @@ for (const [name, text] of files) {
     console.error(`${RETIRING.has(ladder) ? 'warning' : 'error'}: ${problem}`);
     refused ||= !RETIRING.has(ladder);
   }
+}
+for (const problem of flowerProblems(
+  FLOWERS.map(([x]) => [x, flowerFeet(x)]),
+  YARD,
+  pictures,
+)) {
+  console.error(`error: ${problem}`);
+  refused = true;
 }
 const ladderFiles = Object.fromEntries(
   [...files]

@@ -30,11 +30,11 @@ import { own } from './demo-words';
  * - smaller: the same, and the user started smaller three days ago
  * - unbound: the current stage has no recurring task yet
  * - newer: the journey was continued by a newer QuestArc (read-only)
- * - build: stage 3 under way: the hut stands, the marker has its
- *   posts and two pennants (#100); `preview.tick()` ticks today off
- * - build-ready: stage 3 met: every pennant on
- * - build-lookout: stage 3 under way, the user picked the
- *   Lookout with lanterns in sand
+ * - build: stage 3 under way: the thing stands, some of its flowers in
+ *   bud (#100, #152); `preview.tick()` ticks today off
+ * - build-ready: stage 3 met: every flower open
+ * - build-home, build-garden, build-lookout: stage 3 under way, the user
+ *   picked that thing (the plain `build` is the journey's Well)
  * - habit, graduate, graduated, not-really, brought-back: the habit a
  *   finished journey leaves (demo-habits.ts, flow F)
  */
@@ -57,6 +57,8 @@ export type Scenario =
   | 'newer'
   | 'build'
   | 'build-ready'
+  | 'build-home'
+  | 'build-garden'
   | 'build-lookout'
   | ValleyScenario
   | HabitScenario;
@@ -208,8 +210,9 @@ export const demoData = (scenario: Scenario, today: string): DemoData => {
       plan: own('If I reach for the phone, then I will put it down and fill the glass'),
     });
   if (scenario === 'stayed') record(`stay:demo:${stage}`, { day: day(1) });
-  if (scenario === 'build-lookout')
-    record('build:demo', { ladder: 'lookout', marker: 'lanterns', hue: 'sand' });
+  if (scenario === 'build-lookout') record('build:demo', { ladder: 'lookout', hue: 'sand' });
+  if (scenario === 'build-home') record('build:demo', { ladder: 'home' });
+  if (scenario === 'build-garden') record('build:demo', { ladder: 'garden' });
   if (scenario === 'newer') record(`graduation:demo:${stage}`, { dataFormat: 5, day: day(1) });
   return { tasks, repeatCfgs, data };
 };

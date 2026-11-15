@@ -22,48 +22,13 @@ import {
 // composes the same (nexumia-de/pensum tests/test_art.py).
 const home = homeFile as unknown as Ladder;
 const well = wellFile as unknown as Ladder;
-// No ladder of the Valley has water, one line over its posts (`span`), a
-// zoomed row or a plural version title since Crossing was retired (#128);
-// the rules stay, so a synthetic ladder on Well's setting keeps them
-// tested: 2 posts, one line, 6 hanging elements.
-const SPAN_POSTS = [35, 245].map((x, i) => ({
-  slot: 'marker' as const,
-  part: 'post' as const,
-  order: i + 1,
-  x,
-  y: 140,
-  width: 34,
-  height: 34,
-}));
-const SPAN_LINE = {
-  slot: 'marker' as const,
-  part: 'cord' as const,
-  order: 2,
-  art: 'setting-span-cord-1',
-  x: 0,
-  y: 0,
-  width: 320,
-  height: 180,
-};
-const SPAN_BEADS = [70, 100, 130, 160, 190, 220].map((x, i) => ({
-  slot: 'marker' as const,
-  part: 'bead' as const,
-  order: i + 3,
-  x,
-  y: 160,
-  width: 24,
-  height: 24,
-}));
+// No ladder of the Valley has water, a zoomed row or a plural version
+// title since Crossing was retired (#128); the rules stay, so a synthetic
+// ladder on Well's setting keeps them tested, with Well's six flowers.
 const span: Ladder = {
   ...well,
   title: 'Span',
   water: true,
-  marker: 'lanterns',
-  layout: 'span',
-  posts: [
-    [52, 172],
-    [262, 172],
-  ],
   row: [30, 38, 60, 40],
   versions: [
     'Stepping stones',
@@ -72,12 +37,6 @@ const span: Ladder = {
     'A stone bridge',
     'A covered bridge',
   ].map((title, i) => ({ art: `build-span-${i + 1}`, title })),
-  pictures: [
-    ...well.pictures.filter((p) => p.slot !== 'marker'),
-    ...SPAN_POSTS,
-    SPAN_LINE,
-    ...SPAN_BEADS,
-  ],
 };
 const arts = (version: number, state: BuildState = {}, ladder = span) =>
   ladderScene(ladder, version, state).pictures.map((p) => p.art);
@@ -93,51 +52,49 @@ describe('ladderScene', () => {
     expect(scene.title).toBe('A well with a winch stands');
   });
 
-  it('counts the elements: posts, then hanging ones (span 2 + 6, sides 4 + 6)', () => {
-    expect(markerElements(span)).toBe(8);
-    expect(markerElements(home)).toBe(10);
-    expect(elementsShown(span, 0)).toBe(0);
-    expect(elementsShown(span, 0.01)).toBe(1);
-    expect(elementsShown(span, 3 / 8)).toBe(3);
-    expect(elementsShown(span, 1)).toBe(8);
+  it('counts the flowers: six for every ladder (#152)', () => {
+    expect(markerElements(home)).toBe(6);
+    expect(markerElements(well)).toBe(6);
+    expect(elementsShown(home, 0)).toBe(0);
+    expect(elementsShown(home, 0.01)).toBe(1);
+    expect(elementsShown(home, 3 / 6)).toBe(3);
+    expect(elementsShown(home, 1)).toBe(6);
     // a days stage of 5 and a count stage of 20 fill the same marker
     expect(elementsShown(home, 3 / 5)).toBe(elementsShown(home, 12 / 20));
   });
 
-  it('grows element by element: posts first, a line once both its posts stand', () => {
-    expect(marks(3, { progress: 1 / 8 })).toEqual(['marker-lanterns-post']);
-    const two = arts(3, { progress: 2 / 8 });
-    expect(two.filter((a) => a.includes('-post'))).toHaveLength(2);
-    expect(two.filter((a) => a.includes('-cord-'))).toHaveLength(1);
-    expect(marks(3, { progress: 3 / 8 })).toHaveLength(3);
-    expect(marks(3, { progress: 4 / 8 }).filter((a) => a.includes('-bead'))).toHaveLength(2);
+  it('grows flower by flower, in bud, each in the thing own box', () => {
+    expect(marks(3, { progress: 1 / 6 }, home)).toEqual(['marker-flower-1']);
+    expect(marks(3, { progress: 3 / 6 }, home)).toEqual([
+      'marker-flower-1',
+      'marker-flower-2',
+      'marker-flower-3',
+    ]);
+    const scene = ladderScene(home, 3, { progress: 1 / 6 });
+    const at = (art: string) => scene.pictures.findIndex((p) => p.art === art);
+    const box = (i: number) => {
+      const p = scene.pictures[i];
+      return p && [p.x, p.y, p.width, p.height];
+    };
+    expect(box(at('marker-flower-1'))).toEqual(box(at('build-home-3')));
+    // in front of the thing: drawn after it
+    expect(at('marker-flower-1')).toBeGreaterThan(at('build-home-3'));
     expect(ladderScene(span, 3, { progress: 0.5 }).title).toBe(
       'A plank bridge stands, a stone bridge is on its way',
     );
   });
 
-  it('leaves the middle open in the sides layout: two lines, never three', () => {
-    const lines = arts(3, { progress: 4 / 10 }, home).filter((a) => a.includes('-cord-'));
-    expect(lines).toEqual(['setting-clearing-cord-1', 'setting-clearing-cord-2']);
-  });
-
-  it('shows every hanging element in its on form when ready, the posts plain', () => {
-    const on = marks(3, { ready: true, progress: 0.5 });
-    expect(on).toHaveLength(8);
-    expect(on.filter((a) => a.endsWith('-bead-lit'))).toHaveLength(6);
-    expect(on.filter((a) => a === 'marker-lanterns-post')).toHaveLength(2);
+  it('opens every flower when ready', () => {
+    const on = marks(3, { ready: true, progress: 0.5 }, home);
+    expect(on).toHaveLength(6);
+    expect(on.every((a) => a.endsWith('-open'))).toBe(true);
     expect(ladderScene(span, 3, { ready: true }).title).toBe(
       'A plank bridge stands, a stone bridge is ready',
     );
   });
 
-  it('takes the ladder default marker or another one', () => {
-    expect(marks(3, { progress: 0.1 }, home)).toEqual(['marker-bunting-post']);
-    expect(marks(3, { progress: 0.1, marker: 'flowers' }, home)).toEqual(['marker-flowers-post']);
-  });
-
   it('shows no marker after the last version and lights the lantern', () => {
-    const list = arts(5, { ready: true, graduated: true });
+    const list = arts(5, { ready: true, graduated: true }, home);
     expect(list.filter((a) => a.startsWith('marker-'))).toEqual([]);
     expect(list.filter((a) => a === 'lantern')).toHaveLength(1);
   });
@@ -180,27 +137,22 @@ describe('the build on the journey screen', () => {
       build: { ladder: 'well', names: ['ui.build.given'] },
     } as unknown as Journey;
     const view = (ladder: string) =>
-      ({ ladder, markerProgress: 0, ready: false, marker: 'lanterns', versions: 5 }) as BuildView;
+      ({ ladder, markerProgress: 0, ready: false, versions: 5 }) as unknown as BuildView;
     expect(buildState(view('well'), journey).names).toHaveLength(1);
     const other = buildState(view('home'), journey);
     expect(other.names).toBeUndefined();
     expect(buildWords(home, 1, other)).toBe(buildWords(home, 1, { progress: 0 }));
   });
 
-  it('names the marker in numbers for screen readers', () => {
-    expect(buildLabel(span, 3, { progress: 5 / 8 }, 'Lanterns')).toBe(
-      'A plank bridge, version 3 of 5; marker: 2 of 2 posts and 3 of 6 lanterns; not ready yet',
+  it('names the flowers in numbers for screen readers', () => {
+    expect(buildLabel(span, 3, { progress: 3 / 6 })).toBe(
+      'A plank bridge, version 3 of 5; 3 of 6 flowers, in bud; not ready yet',
     );
-    expect(buildLabel(home, 2, { progress: 0.2 }, 'Pennants')).toBe(
-      'A tent, version 2 of 5; marker: 2 of 4 posts and 0 of 6 pennants; not ready yet',
+    expect(buildLabel(home, 2, { ready: true })).toBe(
+      'A tent, version 2 of 5; 6 of 6 flowers, open; ready',
     );
-    expect(buildLabel(home, 2, { ready: true }, 'Pennants')).toBe(
-      'A tent, version 2 of 5; marker: 4 of 4 posts and 6 of 6 pennants; ready',
-    );
-    expect(buildLabel(home, 2, {}, 'Pennants')).toBe(
-      'A tent, version 2 of 5; nothing on its way yet',
-    );
-    expect(buildLabel(home, 5, { progress: 1 }, 'Pennants')).toBe(
+    expect(buildLabel(home, 2, {})).toBe('A tent, version 2 of 5; nothing on its way yet');
+    expect(buildLabel(home, 5, { progress: 1 })).toBe(
       'A house, version 5 of 5; all versions stand',
     );
   });
@@ -210,13 +162,13 @@ describe('the build on the journey screen', () => {
     expect(arts(6, six, well).filter((a) => a.startsWith('build-'))).toEqual(['build-well-5']);
     expect(marks(5, six, well).length).toBeGreaterThan(0);
     expect(marks(6, six, well)).toEqual([]);
-    expect(markerCount(well, 5, six).hangingShown).toBe(1);
+    expect(markerCount(well, 5, six)).toEqual({ flowers: 6, shown: 3 });
     // a journey with fewer stages ends earlier: no marker on its last version
     expect(marks(3, { versions: 3, progress: 0.5 }, well)).toEqual([]);
   });
 
   it('lets only what is new appear, and nothing on the first draw', () => {
-    const at = (version: number, shown: number, key = 'r/well/lanterns') => ({
+    const at = (version: number, shown: number, key = 'r/well') => ({
       key,
       version,
       shown,
@@ -225,7 +177,7 @@ describe('the build on the journey screen', () => {
     expect(appearing(at(3, 4), at(3, 4))).toEqual({ version: false, fromOrder: Infinity });
     expect(appearing(at(3, 4), at(3, 6))).toEqual({ version: false, fromOrder: 5 });
     expect(appearing(at(3, 8), at(4, 0))).toEqual({ version: true, fromOrder: 1 });
-    expect(appearing(at(3, 4), at(3, 6, 'r/home/pennants'))).toEqual({
+    expect(appearing(at(3, 4), at(3, 6, 'r/home'))).toEqual({
       version: false,
       fromOrder: Infinity,
     });

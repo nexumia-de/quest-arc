@@ -6,15 +6,15 @@ import { hasVertex, type Point } from './art-vertices';
  * The ladder checker (docs/journey-design.md, "Builds and ladders"): a
  * ladder (`content/art/<name>.ladder.json`) is one build in its versions,
  * each whole, standing in the same slot of the same setting; while a stage
- * runs a marker (lanterns, bunting, flowers: `markers.json`) stands as a
- * gate across the path in the foreground: in phases 1–3, and ready (lit,
- * with a centrepiece) while the stage's condition is met. The hosts fill
- * the slots (`build`, `lantern`, and the `marker` places: the
- * first post, the second post, the line, its elements and the centre) and
- * place everything else as the file says. Where the setting's path meets
- * the build (`ways`), every version and the setting have a corner at the
- * same points; the gate's posts stand on corners of the setting's path
- * (`gate`), and nothing of the marker covers a way point.
+ * runs the marker's flowers grow in the thing's yard one by one, in bud,
+ * and open while the stage's condition is met (#152). The hosts fill the
+ * slots (`build`, `lantern`) and draw the `marker` places (the flowers,
+ * each a picture in the build's box) as the file says, like everything
+ * else. Where the setting's path meets the build (`ways`), every version
+ * and the setting have a corner at the same points. What can only be
+ * measured on the shapes (the flowers on the yard, clear of the doorstep,
+ * apart from each other) is checked when they are drawn
+ * (scripts/ladder-checks.mjs).
  */
 
 /** The size of a setting: taller than a region, the build is the subject. */
@@ -43,41 +43,11 @@ export const WAY_TOLERANCE = 1;
 
 const SLOTS = ['build', 'lantern'] as const;
 type Slot = (typeof SLOTS)[number] | 'marker';
-/** The marker's parts: posts, the lines between them, the hanging elements. */
-const MARKER_PARTS = ['post', 'cord', 'bead'] as const;
-/** The layouts: one line over all posts, or two lines with a gap between. */
-export const MARKER_LAYOUTS = ['span', 'sides'] as const;
-/** The pictures every marker kind has (`marker-<kind>-<part>`). */
-export const MARKER_PICTURES = ['post', 'bead', 'bead-lit'] as const;
-/** A post's line is tied on at y = 12 of its 32 grid. */
-const TIE = 12 / 32;
-/** Hanging elements: near band sizes, or 24 between the two smaller ones. */
-const HANG_SIZES = [...BAND_SIZES.near, 24];
-
-/** A marker kind in `content/art/markers.json`. */
-export interface MarkerKind {
-  readonly title: string;
-  /** Only for settings on land (flowers), refused where `water` is true. */
-  readonly landOnly: boolean;
-}
-
-/** Problems of `markers.json`: every kind has a title and its three pictures. */
-export const markerProblems = (value: unknown, names: readonly string[]): Problem[] => {
-  const problems: Problem[] = [];
-  const kinds = (value ?? {}) as Record<string, Record<string, unknown> | undefined>;
-  if (Object.keys(kinds).length === 0)
-    problems.push({ level: 'error', at: 'markers', message: 'at least one marker kind' });
-  for (const [kind, entry] of Object.entries(kinds)) {
-    if (typeof entry?.title !== 'string' || entry.title.trim() === '')
-      problems.push({ level: 'error', at: kind, message: 'the marker in words' });
-    if (typeof entry?.landOnly !== 'boolean')
-      problems.push({ level: 'error', at: kind, message: 'landOnly is true or false' });
-    for (const part of MARKER_PICTURES)
-      if (!names.includes(`marker-${kind}-${part}`))
-        problems.push({ level: 'error', at: kind, message: `no picture marker-${kind}-${part}` });
-  }
-  return problems;
-};
+/** The pictures of the marker's k-th flower: in bud and open. */
+export const flowerPictures = (k: number): [string, string] => [
+  `marker-flower-${k}`,
+  `marker-flower-${k}-open`,
+];
 
 const isBand = (value: unknown): value is Band =>
   typeof value === 'string' && Object.hasOwn(SETTING_FEET, value);
@@ -93,19 +63,9 @@ const points = (value: unknown): Point[] | undefined => {
   return out.every((p) => p !== undefined) ? (out as Point[]) : undefined;
 };
 
-/** Whether (x, y) lies inside the polygon (even-odd rule). */
-const inside = (poly: readonly (readonly number[])[], x: number, y: number): boolean => {
-  let result = false;
-  poly.forEach(([x1 = 0, y1 = 0], i) => {
-    const [x2 = 0, y2 = 0] = poly[(i + 1) % poly.length] ?? [];
-    if (y1 > y !== y2 > y && x < ((x2 - x1) * (y - y1)) / (y2 - y1) + x1) result = !result;
-  });
-  return result;
-};
-
 /**
  * Problems of a ladder file: `names` are the pictures in content/art/,
- * `hues` the names in palette.json, `markers` markers.json; with `sources`
+ * `hues` the names in palette.json; with `sources`
  * (name → SVG text) the way points are checked on every version and on the
  * setting.
  */
@@ -113,7 +73,6 @@ export const ladderProblems = (
   value: unknown,
   names: readonly string[],
   hues: readonly string[],
-  markers: Readonly<Record<string, MarkerKind>>,
   sources?: Readonly<Record<string, string>>,
 ): Problem[] => {
   const problems: Problem[] = [];
@@ -152,10 +111,6 @@ export const ladderProblems = (
       error('row', '[x, y, width, height]: 3 : 2 inside the build (120 × 80)');
   }
   if (typeof ladder.water !== 'boolean') error('water', 'true if the setting is water, else false');
-  const kind = markers[String(ladder.marker)];
-  if (kind === undefined) error('marker', `one of ${Object.keys(markers).join(', ')}`);
-  else if (kind.landOnly && ladder.water === true)
-    error('marker', `${String(ladder.marker)} only on land, this setting is water`);
 
   const pictures = Array.isArray(ladder.pictures) ? (ladder.pictures as unknown[]) : [];
   const [ground, ...rest] = pictures.map((p) => (p ?? {}) as Record<string, unknown>);
@@ -173,30 +128,9 @@ export const ladderProblems = (
   const seen = new Map<Slot, number>();
   let buildPlace: Record<string, unknown> | undefined;
   let lastFeet = 0;
-  const markerParts: {
-    part: string;
-    order: number;
-    at: string;
-    box: [number, number, number, number];
-    feet: number;
-  }[] = [];
+  const flowers: { order: number; at: string }[] = [];
   rest.forEach((p, i) => {
     const at = `pictures[${i + 1}]`;
-    if (p.slot === 'marker' && p.part === 'cord') {
-      // a line of the setting: a setting-… picture over the whole scene
-      if (
-        typeof p.art !== 'string' ||
-        !p.art.startsWith('setting-') ||
-        !names.includes(p.art) ||
-        p.x !== 0 ||
-        p.y !== 0 ||
-        p.width !== SETTING_SIZE.width ||
-        p.height !== SETTING_SIZE.height
-      )
-        error(at, 'a line is a known setting-… picture filling the setting');
-      markerParts.push({ part: 'cord', order: num(p.order), at, box: [0, 0, 0, 0], feet: NaN });
-      return;
-    }
     const band = p.band;
     if (!isBand(band)) {
       error(at, 'band is one of far, middle, near');
@@ -222,27 +156,23 @@ export const ladderProblems = (
       return;
     }
     if (slot === 'marker') {
-      const part = String(p.part);
+      // a flower: a picture in the build's box, drawn over the build's slot
+      // right after it (in front of the thing)
       const order = num(p.order);
-      if (!(MARKER_PARTS as readonly string[]).includes(part))
-        error(at, `a marker part is one of ${MARKER_PARTS.join(', ')}`);
-      if (band !== 'near') error(at, 'the marker stands in the near band');
-      if (part === 'bead') {
-        // hangs from a line: no feet
-        if (w !== h || !HANG_SIZES.includes(w)) error(at, `it is ${HANG_SIZES.join(', ')} square`);
-        if (y < 0 || x < -w / 2 || x + w / 2 > SETTING_SIZE.width)
-          error(at, 'lies outside the scene');
-        markerParts.push({ part, order, at, box: [x, y, x + w, y + h], feet: NaN });
-        return;
-      }
-      // a post: thin, in the middle third of its picture
-      markerParts.push({
-        part,
-        order,
-        at,
-        box: [x + w / 3, y + h * TIE, x + (2 * w) / 3, y + h * FEET],
-        feet: y + h * FEET,
-      });
+      const [bud, open] = flowerPictures(order);
+      if (p.art !== bud || !names.includes(bud) || !names.includes(open))
+        error(at, `a flower is the known pictures ${bud} and ${open}`);
+      if (
+        buildPlace === undefined ||
+        band !== buildPlace.band ||
+        x !== buildPlace.x ||
+        y !== buildPlace.y ||
+        w !== buildPlace.width ||
+        h !== buildPlace.height
+      )
+        error(at, "a flower fills the build's slot, after the build");
+      flowers.push({ order, at });
+      return;
     }
     if (slot === 'build') {
       if (band !== 'middle') error(at, 'the build stands in the middle band');
@@ -251,7 +181,6 @@ export const ladderProblems = (
       buildPlace = p;
       feet = y + h * BUILD_FEET;
     } else {
-      if (slot === 'marker' && p.art !== undefined) error(at, 'the host fills a marker post');
       if (slot === undefined && (typeof p.art !== 'string' || !names.includes(p.art)))
         error(at, `unknown picture ${String(p.art)}`);
       if (w !== h || !sizes.includes(w))
@@ -265,86 +194,11 @@ export const ladderProblems = (
   });
   for (const slot of SLOTS) if (seen.get(slot) !== 1) error('pictures', `exactly one ${slot} slot`);
 
-  // The marker: posts on the layout's post points, in order; then the
-  // lines, each shown once both its posts stand; then the hanging elements,
-  // one by one, between the posts of a line. Every element has its place in
-  // one order 1 … E (`order`); the hosts show the first ceil(p × E).
-  const layout = String(ladder.layout);
-  const postPoints = Array.isArray(ladder.posts)
-    ? (ladder.posts as unknown[]).map((pt) =>
-        Array.isArray(pt) && pt.length === 2 ? [num(pt[0]), num(pt[1])] : [NaN, NaN],
-      )
-    : [];
-  const [nearLow, nearHigh] = SETTING_FEET.near;
-  const buildFeet =
-    buildPlace === undefined ? 0 : num(buildPlace.y) + num(buildPlace.height) * BUILD_FEET;
-  const wanted = layout === 'span' ? postPoints.length >= 2 : postPoints.length === 4;
-  if (!(MARKER_LAYOUTS as readonly string[]).includes(layout))
-    error('layout', `one of ${MARKER_LAYOUTS.join(', ')}`);
-  else if (
-    !wanted ||
-    postPoints.some(([px = NaN, py = NaN], k) => {
-      const before = postPoints[k - 1]?.[0] ?? -Infinity;
-      return Number.isNaN(px) || py < nearLow || py > nearHigh || px <= before;
-    })
-  )
-    error('posts', 'post points [x, y] in the near band, left to right (sides: four)');
-  // No post stands in water: a setting with water marks it (`waterAreas`,
-  // polygons in setting units) and no post point lies inside one.
-  const areas = Array.isArray(ladder.waterAreas) ? (ladder.waterAreas as unknown[]) : [];
-  const polygons = areas.map((area) =>
-    Array.isArray(area)
-      ? (area as unknown[]).map((pt) =>
-          Array.isArray(pt) && pt.length === 2 ? [num(pt[0]), num(pt[1])] : [NaN, NaN],
-        )
-      : [],
-  );
-  if (
-    (ladder.water === true && polygons.length === 0) ||
-    polygons.some((poly) => poly.length < 3 || poly.flat().some(Number.isNaN))
-  )
-    error('waterAreas', 'a setting with water marks it: polygons of [x, y] points');
-  postPoints.forEach(([px = NaN, py = NaN], k) => {
-    if (polygons.some((poly) => inside(poly, px, py)))
-      error('posts', `post point ${k + 1} (${px}, ${py}) stands in water`);
-  });
-  const parts = (part: string) =>
-    markerParts.filter((m) => m.part === part).sort((a, b) => a.order - b.order);
-  const posts = parts('post');
-  if (posts.length !== postPoints.length) error('marker', 'one post on each post point');
-  posts.forEach((m, k) => {
-    const [px = NaN, py = NaN] = postPoints[k] ?? [];
-    const centre = (m.box[0] + m.box[2]) / 2;
-    if (Math.abs(centre - px) > WAY_TOLERANCE || Math.abs(m.feet - py) > WAY_TOLERANCE)
-      error(m.at, `post ${k + 1} stands on post point ${px}, ${py}`);
-    if (m.order !== k + 1) error(m.at, `post ${k + 1} is element ${k + 1}`);
-    if (m.box[1] < buildFeet) error(m.at, 'its line is tied on below the build');
-  });
-  // the lines: between neighbours; `sides` leaves the middle pair open
-  const pairs = postPoints
-    .slice(1)
-    .map((_, k) => [k, k + 1] as const)
-    .filter(([k]) => layout === 'span' || k !== postPoints.length / 2 - 1);
-  const cords = parts('cord');
-  if (cords.length !== pairs.length)
-    error('marker', `${pairs.length} lines for the ${layout} layout`);
-  cords.forEach((m, k) => {
-    const pair = pairs[k];
-    if (pair !== undefined && m.order !== pair[1] + 1)
-      error(m.at, 'a line shows when its second post stands');
-  });
-  // the hanging elements: after the posts, one by one, under a line
-  const beads = parts('bead');
-  if (beads.length < 2) error('marker', 'at least two hanging elements');
-  beads.forEach((m, k) => {
-    if (m.order !== postPoints.length + k + 1)
-      error(m.at, `hanging element ${k + 1} is element ${postPoints.length + k + 1}`);
-    const centre = (m.box[0] + m.box[2]) / 2;
-    const under = pairs.some(
-      ([a, b]) => centre > (postPoints[a]?.[0] ?? NaN) && centre < (postPoints[b]?.[0] ?? NaN),
-    );
-    if (!under || m.box[1] < buildFeet)
-      error(m.at, 'hangs from a line between two posts, below the build');
+  // The marker: two flowers or more, in the order they grow (1 … E); the
+  // hosts show the first ceil(p × E).
+  if (flowers.length < 2) error('marker', 'at least two flowers');
+  flowers.forEach((f, k) => {
+    if (f.order !== k + 1) error(f.at, `flower ${k + 1} is element ${k + 1}, in order`);
   });
 
   // The way: each end is two points in build units; every version and the
@@ -364,13 +218,6 @@ export const ladderProblems = (
       num(buildPlace?.x) + px * scale,
       num(buildPlace?.y) + py * scale,
     ];
-    // nothing of the marker covers the way where it meets the build
-    for (const point of pair.map(toSetting))
-      for (const m of markerParts) {
-        const [x1, y1, x2, y2] = m.box;
-        if (point[0] >= x1 && point[0] <= x2 && point[1] >= y1 && point[1] <= y2)
-          error(at, `the marker's ${m.part} covers the way`);
-      }
     if (sources === undefined) return;
     for (const [k, v] of versions.entries()) {
       const art = String((v as Record<string, unknown>).art);

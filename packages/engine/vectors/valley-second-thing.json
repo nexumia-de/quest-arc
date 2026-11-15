@@ -1,5 +1,5 @@
 {
-  "name": "A second journey builds a second thing on the first journey's ladder: it starts at version 1 and follows its own stations; the paused first journey keeps its thing at version 3; the second thing hangs its own marker (flowers, the user's choice)",
+  "name": "A second journey builds a second thing on the first journey's ladder: it starts at version 1 and follows its own stations; the paused first journey keeps its thing at version 3; a marker in its older build record is ignored (#152)",
   "rule": "game rules \u00a78, the Valley; issue #148",
   "kind": "evaluate",
   "input": {
@@ -73,7 +73,7 @@
             "state": "paused",
             "ladder": "home",
             "version": 3,
-            "marker": "bunting"
+            "marker": null
           },
           {
             "runId": "r2",
@@ -81,7 +81,7 @@
             "state": "growing",
             "ladder": "home",
             "version": 1,
-            "marker": "flowers",
+            "marker": null,
             "markerProgress": 0,
             "ready": false
           }
@@ -94,7 +94,7 @@
       "build": {
         "ladder": "home",
         "version": 1,
-        "marker": "flowers"
+        "marker": null
       }
     },
     "paused": [

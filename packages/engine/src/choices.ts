@@ -307,7 +307,8 @@ export const parseChoices = (records: Readonly<Record<string, unknown>>): Choice
       } else bad();
     } else if (kind === 'build' && parts.length === 2 && parts[1]) {
       const choice: Record<string, string> = {};
-      for (const field of ['ladder', 'marker', 'hue'] as const) {
+      // `marker` of older records is ignored: the marker is always flowers (#152)
+      for (const field of ['ladder', 'hue'] as const) {
         const name = str(value[field]);
         if (name) choice[field] = name;
       }
