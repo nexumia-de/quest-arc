@@ -459,8 +459,7 @@ build('home-5', 'A house of two storeys', [
 
 // Garden: everything grows from one bed in front of the threshold stone at
 // x = 53–67, the same stone and way as Home's (history rule: the
-// greenhouse, a different technique, is parked). The accent is the
-// sunflower and the fruit.
+// greenhouse, a different technique, is parked). The accent is the fruit.
 const GARDEN_WAYS = HOME_WAYS;
 /** A raised bed of boards from x to x + w, its top at y. */
 const bed = (x, w, y = 64) => [
@@ -471,17 +470,6 @@ const bed = (x, w, y = 64) => [
 const plant = (cx, base, r) => [
   ...ellipseO(cx, base - r * 0.4, r, r * 0.9, 1.6),
   rect('fg', cx - 0.8, base - r * 1.1, 1.6, r * 1.1),
-];
-/** The sunflower: a stem from `base` with two leaves, the bloom in the accent. */
-const sunflower = (cx, base, top) => [
-  rect('fg', cx - 1, top, 2, base - top),
-  ...layered([
-    ellipseO(cx - 4.5, top + (base - top) * 0.6, 4.5, 2.4, 1.4),
-    ellipseO(cx + 4.5, top + (base - top) * 0.4, 4.5, 2.4, 1.4),
-  ]),
-  ellipse('fg', cx, top, 6.5, 6.5),
-  ellipse('accent', cx, top, 4.7, 4.7),
-  ellipse('fg', cx, top, 2, 2),
 ];
 /** A hedge from x to x + w: a row of round bushes grown into one, its top at y. */
 const hedge = (x, w, top, base = 66, size = 16) => {
@@ -515,34 +503,67 @@ const fruitTree = (cx, cy, r, trunk = true, fruits = FRUIT) => [
   ...ellipseO(cx, cy, r, r * 0.92, T),
   ...fruits.map(([dx, dy]) => ellipse('accent', cx + dx * r, cy + dy * r, 2.8, 2.8)),
 ];
-// The garden is drawn once, version by version: what stands keeps its
-// place and grows on, nothing moves, shrinks or disappears. The bed with
-// the sunflower in the middle (1), a bed on each side (2), a hedge behind
-// and two fruit trees beside the sunflower (3), two more trees further out
-// (4), a low wall of stones in front with its gate on the threshold (5).
-// A tree is young with one fruit when planted, grown with two a version
-// later, old with three after that; its trunk ends behind the hedge.
-const HEDGE_TOP = 44;
-const TREES = [
-  { x: 14, planted: 4 },
-  { x: 106, planted: 4 },
-  { x: 37, planted: 3 },
-  { x: 83, planted: 3 },
+// The garden is drawn once, version by version, from elements that each
+// have states: every element enters at its smallest state and grows one
+// state per version, and nothing moves, shrinks or disappears (#137). The
+// accent is the fruit, shown only on what is ripe.
+//
+//   element          enters  states
+//   middle bed       1       plants seedling → grown → ripe; stake bare → climber → ripe
+//   side beds        2       plants seedling → grown → ripe
+//   hedge            3       low → full
+//   inner trees      3       sapling → young → grown → old
+//   outer trees      4       sapling → young → …
+//   low wall, gate   5
+const stage = (v, from, last) => Math.min(v - from, last);
+/** A plant in a bed: larger with each state, its fruit in the accent once ripe. */
+const bedPlant = (x, s) => [
+  ...plant(x, 62, [4.5, 6.5, 8][s]),
+  ...(s === 2 ? [ellipse('accent', x + 3, 55, 2.4, 2.4)] : []),
 ];
-const TREE_AGES = [
-  { r: 9, trunk: 4, fruits: 1 },
+/** The stake in the middle bed: the stick grows, a climber with it, fruit once ripe. */
+const stake = (x, s) => {
+  const top = 48 - 8 * s;
+  return [
+    rect('fg', x - 1, top, 2, 62 - top),
+    ...layered(
+      // two leaves from the start (one alone reads as a flag), three when grown
+      Array.from({ length: Math.min(s + 2, 3) }, (_, i) =>
+        ellipseO(x + (i % 2 ? 3.6 : -3.6), top + 4 + i * 6, 3.6, 2.2, 1.3),
+      ),
+    ),
+    ...(s === 2 ? [x - 3, x + 3].map((fx) => ellipse('accent', fx, top + 9, 2.2, 2.2)) : []),
+  ];
+};
+const TREE_STATES = [
+  { r: 5, trunk: 4, fruits: 0 },
+  { r: 9, trunk: 4, fruits: 0 },
   { r: 12, trunk: 6, fruits: 2 },
   { r: 15, trunk: 8, fruits: 3 },
 ];
+const TREES = [
+  { x: 14, from: 4 },
+  { x: 106, from: 4 },
+  { x: 37, from: 3 },
+  { x: 83, from: 3 },
+];
+/** The hedge: low when planted, full a version later. */
+const hedgeTop = (v) => (v === 3 ? 52 : 44);
 const garden = (v) => [
   yard(),
-  ...TREES.filter((t) => v >= t.planted).flatMap(({ x, planted }) => {
-    const { r, trunk, fruits } = TREE_AGES[Math.min(v - planted, 2)];
-    return fruitTree(x, HEDGE_TOP - trunk - r * 0.92, r, 'solid', FRUIT.slice(0, fruits));
+  ...TREES.filter((t) => v >= t.from).flatMap(({ x, from }) => {
+    const { r, trunk, fruits } = TREE_STATES[stage(v, from, 3)];
+    return fruitTree(x, hedgeTop(v) - trunk - r * 0.92, r, 'solid', FRUIT.slice(0, fruits));
   }),
-  ...(v >= 3 ? hedge(2, 116, HEDGE_TOP, 62, 23) : []),
-  ...sunflower(60, 62, v === 1 ? 36 : 28),
-  ...layered([46, 74, ...(v >= 2 ? [16, 104] : [])].map((x) => plant(x, 62, 8))),
+  ...(v >= 3 ? hedge(2, 116, hedgeTop(v), 62, 23) : []),
+  ...stake(60, stage(v, 1, 2)),
+  // plants of the same state are drawn as one layer each (`layered`)
+  ...(stage(v, 1, 2) === stage(v, 2, 2)
+    ? layered([16, 46, 74, 104].map((x) => bedPlant(x, stage(v, 1, 2))))
+    : [
+        ...layered([46, 74].map((x) => bedPlant(x, stage(v, 1, 2)))),
+        ...(v >= 2 ? layered([16, 104].map((x) => bedPlant(x, stage(v, 2, 2)))) : []),
+      ]),
   ...layered([bed(32, 56, 62), ...(v >= 2 ? [bed(4, 24, 62), bed(92, 24, 62)] : [])]),
   ...(v >= 5
     ? [

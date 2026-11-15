@@ -169,13 +169,14 @@ journey):
    before and also different in form, so the row reads as a story: Home
    is a fire in a ring of single stones, a tent, a hut under a round
    thatch, a cottage with a pitched roof and chimney, a house of two
-   storeys. Garden is drawn once and only adds and grows (#135): the bed
-   with two plants and the sunflower in the middle; a bed on each side;
-   a hedge behind and two fruit trees beside the sunflower; two more trees
-   further out; a low wall of stones in front with its gate on the
-   threshold. Nothing moves, shrinks or disappears; a tree is young with
-   one fruit when planted, grown with two a version later, old with three
-   after that. Well
+   storeys. Garden is drawn once from elements with states (#137): every
+   element enters at its smallest state and grows one state per version,
+   and nothing moves, shrinks or disappears. The middle bed with
+   seedlings and a bare stake (1); a bed on each side (2); a low hedge
+   and two saplings (3); the hedge full, two more saplings (4); a low wall
+   of stones with its gate (5). Plants go seedling → grown → ripe, the
+   stake bare → climber → ripe, trees sapling → young → grown → old;
+   fruit shows only on what is ripe. Choosing what grows is #138. Well
    follows how water is drawn: a water hole dug down to the water (its
    earth heaped behind with the spade in it), a well sweep (a beam on a
    forked post with a stone and the bucket on a pole) over a low stone
@@ -195,7 +196,7 @@ journey):
    decision 13).
 9. **Look.** Outlined in `fg` with a `bg` fill, one `accent` detail (the
    flame, a glowing door or window, the keystone, a rail cap, the
-   sunflower and the fruit, the bucket), water and
+   fruit, the bucket), water and
    the yard in `tint-strong` of the region's hue. The setting is quiet:
    ground and far trees in `tint`, a few reused plants (tuft, reeds, bush,
    flowers, far trees) in the [depth bands](#look-and-depth-bands).
