@@ -1118,14 +1118,16 @@ ladder(
 // followed, and the lit lantern when it runs by itself (the flowers stay).
 // Both are drawn at the thing's scale and line weight in the build's units,
 // in the place's plot (valley-layout.ts): the slot with 14 units of room on
-// the path's side, where the lantern stands apart from the thing. The frame
-// is drawn for a thing on the right of the path (the path's side is x < 0);
-// a host mirrors it about the thing's centre (x = 60) for a thing on the
-// left. Layers, back to front: the flowers, the thing, the marker, the
+// the path's side, where the lantern stands apart from the thing. One frame
+// for both sides (the build's box with 14 units on either side and 12
+// below): the flowers fit either side, the lantern has a picture for each
+// side, so a host draws them in the thing's box and mirrors nothing. Layers, back to front: the flowers, the thing, the marker, the
 // lantern. Nothing overlaps the thing, the doorstep or the path: measured
 // by placeProblems (ladder-checks.mjs) for every thing and every layout.
-const PLACE_VIEW_BOX = '-14 0 134 92';
-const place = (name, title, shapes) => write(`${name}.svg`, svg(PLACE_VIEW_BOX, title, shapes));
+// The pictures share the build's view box, so a host draws them in the
+// thing's own box; they reach beyond it into the frame (overflow visible).
+const PLACE_FRAME = [-14, 0, 148, 92];
+const place = (name, title, shapes) => write(`${name}.svg`, svg('0 0 120 80', title, shapes));
 
 // Flowers at the thing's foot: clumps of leaves along the front of the
 // yard on both sides of the doorstep, outlined like the thing, with open
@@ -1158,34 +1160,51 @@ place('place-flowers', 'Flowers at its foot', FLOWERS);
 // the flame, a halo behind it and rays around it. The unlit lantern (the
 // marker's) is an empty outlined lantern without halo or rays, so the two
 // differ in shape, not only in colour. A 32 × 32 picture, as in the
-// settings' `lantern` slot; in the place it stands on the bay's edge beside
-// the doorstep towards the path, apart from the thing.
-write(
-  'lantern.svg',
-  svg('0 0 32 32', 'Lit lantern', [
-    ellipse('tint-strong', 16, 12.5, 11, 11),
-    rect('fg', 15, 20, 2, 9.5),
-    rect('fg', 11.5, 28.4, 9, 1.6, 0.8),
-    ...lantern(16, 7, 10, 12, true, [35, 145, 215, 325, 270]).slice(1),
-  ]),
-);
+// settings' `lantern` slot; in the place the same lantern stands on the
+// bay's edge beside the doorstep towards the path, apart from the thing.
+const LIT_LANTERN = [
+  ellipse('tint-strong', 16, 12.5, 11, 11),
+  rect('fg', 15, 20, 2, 9.5),
+  rect('fg', 11.5, 28.4, 9, 1.6, 0.8),
+  ...lantern(16, 7, 10, 12, true, [35, 145, 215, 325, 270]).slice(1),
+];
+write('lantern.svg', svg('0 0 32 32', 'Lit lantern', LIT_LANTERN));
+
+/** Plain shapes (rect, ellipse, polygon) scaled by k and moved by dx, dy. */
+const moved = (elements, k, dx, dy) =>
+  elements.map((element) =>
+    element
+      .replace(/ (x|cx)="([-\d.]+)"/g, (_, a, v) => ` ${a}="${n(dx + k * Number(v))}"`)
+      .replace(/ (y|cy)="([-\d.]+)"/g, (_, a, v) => ` ${a}="${n(dy + k * Number(v))}"`)
+      .replace(/ (width|height|rx|ry)="([-\d.]+)"/g, (_, a, v) => ` ${a}="${n(k * Number(v))}"`)
+      .replace(
+        /points="([^"]+)"/,
+        (_, list) =>
+          `points="${pts(
+            list
+              .split(' ')
+              .map((q) => q.split(',').map(Number))
+              .map(([x, y]) => [dx + k * x, dy + k * y]),
+          )}"`,
+      ),
+  );
+// In the place: 20 units high, its foot on y = 78, its centre 7 units from
+// the thing's box towards the path; on the left of the box for a thing on
+// the right of the path, on the right for one on the left. The flowers are
+// the same on both sides (symmetric about the thing's centre).
 const LANTERN_SIZE = 20;
-const LANTERN_AT = {
-  art: 'lantern',
-  x: -7 - LANTERN_SIZE / 2,
-  y: 78 - (LANTERN_SIZE * 30) / 32,
-  width: LANTERN_SIZE,
-  height: LANTERN_SIZE,
-};
+const lanternAt = (cx) =>
+  moved(LIT_LANTERN, LANTERN_SIZE / 32, cx - LANTERN_SIZE / 2, 78 - (LANTERN_SIZE * 30) / 32);
+place('place-lantern-right', 'Lit lantern', lanternAt(-7));
+place('place-lantern-left', 'Lit lantern', lanternAt(127));
 
 write(
   'place.json',
   `${JSON.stringify(
     {
-      viewBox: PLACE_VIEW_BOX.split(' ').map(Number),
-      far: 'right',
+      frame: PLACE_FRAME,
       flowers: 'place-flowers',
-      lantern: LANTERN_AT,
+      lantern: { right: 'place-lantern-right', left: 'place-lantern-left' },
     },
     null,
     2,

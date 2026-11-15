@@ -88,9 +88,14 @@ try {
     `the home shows the moment with its growing step (${moments})`,
   );
   expect(moments.includes('Today: done.'), 'the growing step says today is done');
-  expect((await view().locator('.qa-anchor').count()) === 1, 'one moment');
-  expect((await view().locator('.qa-anchor input').count()) === 0, 'the home has no boxes to tick');
+  expect((await view().locator('.qa-valley-place').count()) === 1, 'one place in the Valley');
+  expect((await view().locator('.qa-home input').count()) === 0, 'the home has no boxes to tick');
   await name('1-home');
+  // Home → place → back: the growing place opens its journey, back leads to the Valley.
+  await view().locator('.qa-valley-place').click();
+  await view().locator('.qa-station-card').waitFor();
+  await view().getByRole('button', { name: 'Back' }).click();
+  await view().locator('.qa-valley').waitFor();
   await journey(view);
   expect(
     (await view().locator('.qa-station-card').innerText()).includes('1 of 5 days'),
@@ -103,10 +108,10 @@ try {
   await view().locator('#qa-moment-name').fill('Morning');
   await name('2-moment');
   await view().getByRole('button', { name: 'Save' }).click();
-  await view().locator('.qa-anchor').waitFor();
+  await view().locator('.qa-valley').waitFor();
   expect(
-    (await view().locator('.qa-anchor h2').innerText()) === 'Morning',
-    'the moment carries its name',
+    (await view().locator('.qa-valley-name').innerText()) === 'Morning',
+    "the place carries the moment's name",
   );
 
   // Prepared data: the journey is finished and its habit runs by itself.
@@ -133,13 +138,21 @@ try {
   );
   await questArc();
   const rests = await home();
+  const label = await view().locator('.qa-valley-place').getAttribute('aria-label');
   expect(
-    rests.includes('Runs by itself: Drink a glass of water') && !/growing here/i.test(rests),
-    `what runs by itself is one line; nothing grows (${rests})`,
+    label.includes('The lantern is lit') && !/growing here/i.test(rests),
+    `the place says in words that the routine runs by itself; nothing grows (${label})`,
   );
   await name('3-runs-by-itself');
 
+  // Home → place → back: a place at rest opens its moment; back leads to the Valley.
+  await view().locator('.qa-valley-place').click();
+  await view().locator('#qa-moment-name').waitFor();
+  await view().getByRole('button', { name: 'Back' }).click();
+  await view().locator('.qa-valley').waitFor();
+
   // Extend this moment, tied to the step that runs by itself (a chain).
+  await view().locator('.qa-valley-place').click();
   await view().getByRole('button', { name: 'Extend This Moment' }).click();
   await view()
     .getByRole('button', { name: /A walk after lunch/ })
@@ -166,9 +179,11 @@ try {
   await questArc();
   const extended = await home();
   expect(
-    (await view().locator('.qa-anchor').count()) === 1 &&
+    (await view().locator('.qa-valley-place').count()) === 1 &&
       /growing here/i.test(extended) &&
-      extended.includes('Runs by itself'),
+      (await view().locator('.qa-valley-place').getAttribute('aria-label')).includes(
+        'The lantern is lit',
+      ),
     `both journeys stand at the one moment (${extended})`,
   );
   await name('5-chain');
@@ -193,7 +208,7 @@ try {
     !confirmed.includes('Is it still yours?') && confirmed.includes('After lunch'),
     `confirmed once, the question is gone (${confirmed})`,
   );
-  expect((await view().locator('.qa-anchor').count()) === 2, 'the journey has its own moment');
+  expect((await view().locator('.qa-valley-place').count()) === 2, 'the journey has its own place');
   await name('7-confirmed');
 } catch (error) {
   await shot('failed-', 'page').catch(() => undefined);

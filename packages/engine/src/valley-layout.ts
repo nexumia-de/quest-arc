@@ -63,9 +63,8 @@ export interface ValleyPiece {
   /** The build's box (view box 0 0 120 80, base line y = 74) in scene units. */
   slot: Box & { scale: number };
   /**
-   * The thing's ground: the slot with room beside it, `plotNear` build units
-   * on the path's side (the lit lantern) and `plotFar` on the far side, as
-   * high as the slot.
+   * The thing's ground: the slot with `plotNear` build units of room beside
+   * it towards the path (the lit lantern), as high as the slot.
    */
   plot: Box;
   /** The path widening on the thing's side: from the centre line to the slot's far side. */
@@ -107,12 +106,10 @@ export const VALLEY = {
   /** Space kept free at the scene's sides. */
   edge: 8,
   /**
-   * Room beside the slot, in build units: on the path's side for the lit
-   * lantern, which stands apart from the thing (#131, owner 2026-11-15);
-   * none on the far side.
+   * Room beside the slot towards the path, in build units, for the lit
+   * lantern, which stands apart from the thing (#131, owner 2026-11-15).
    */
   plotNear: 14,
-  plotFar: 0,
   /** The largest slot, in scene units per build unit (as the setting's slot). */
   maxScale: 1.75,
   /** The bay's half height and the base line's drop below the bend, in build units. */
@@ -209,17 +206,15 @@ const slotAt = (
 ): { slot: Box; plot: Box } | null => {
   const width = BUILD.width * scale;
   const height = BUILD.height * scale;
-  const near = VALLEY.plotNear * scale;
-  const far = VALLEY.plotFar * scale;
   const y = bend.y + VALLEY.baseDrop * scale - BUILD.base * scale;
   const gap = VALLEY.clearance * scene.unit;
   const edge = VALLEY.edge * scene.unit;
   const reached = reach(points, y, y + height, gap, side);
-  const plotWidth = near + width + far;
+  const plotWidth = width + VALLEY.plotNear * scale;
   const px = side === 'right' ? reached : reached - plotWidth;
   if (px < edge || px + plotWidth > scene.width - edge) return null;
   if (vertical && (y < 0 || y + height > scene.height)) return null;
-  const x = side === 'right' ? px + near : px + far;
+  const x = side === 'right' ? px + plotWidth - width : px;
   return { slot: { x, y, width, height }, plot: { x: px, y, width: plotWidth, height } };
 };
 

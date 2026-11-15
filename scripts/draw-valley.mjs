@@ -23,7 +23,6 @@ import { readFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { chromium } from 'playwright';
 import { cubicPathData, valleyLayout } from '../packages/engine/src/valley-layout.ts';
-import { placeLayers } from '../packages/ui/src/ui/valley-place.ts';
 
 const root = join(import.meta.dirname, '..');
 const art = join(root, 'content', 'art');
@@ -74,15 +73,14 @@ const shapesOf = (file) =>
     .replace(/^[\s\S]*?<\/title>/, '')
     .replace(/<\/svg>\s*$/, '');
 const buildShapes = (name) => shapesOf(`build-${name}`);
-/** A layer of a place (packages/ui/src/ui/valley-place.ts) as a nested svg. */
-const layerSvg = (layer, hue) => {
-  const [, , w] = layer.viewBox.split(' ').map(Number);
-  const [x0] = layer.viewBox.split(' ').map(Number);
-  const inner = layer.mirror
-    ? `<g transform="matrix(-1 0 0 1 ${2 * x0 + w} 0)">${shapesOf(layer.art)}</g>`
-    : shapesOf(layer.art);
-  return `<svg class="thing" style="--hue:${hue}" x="${n1(layer.x)}" y="${n1(layer.y)}" width="${n1(layer.width)}" height="${n1(layer.height)}" viewBox="${layer.viewBox}" overflow="visible">${inner}</svg>`;
-};
+/** The pictures of a place's sign, as the Valley's scene draws them (packages/ui/src/ui/valley/scene.ts). */
+const placeSigns = (place) => [
+  ...(place.sign ? [{ layer: 'flowers', art: placeArt.flowers }] : []),
+  ...(place.sign === 'lantern' ? [{ layer: 'lantern', art: placeArt.lantern[place.side] }] : []),
+];
+/** A sign drawn in the thing's box, reaching beyond it. */
+const signSvg = (sign, box, hue) =>
+  `<svg class="thing" style="--hue:${hue}" x="${n1(box.x)}" y="${n1(box.y)}" width="${n1(box.width)}" height="${n1(box.height)}" viewBox="0 0 120 80" overflow="visible">${shapesOf(sign.art)}</svg>`;
 
 /** The scene: ground, path, bays, things, names; all in the layout's units. */
 const scene = (places, theme) => {
@@ -100,21 +98,23 @@ const scene = (places, theme) => {
       (at) => `<stop offset="${n1((100 * at) / height)}%" style="stop-color:${tint}"/>`,
     );
   });
-  const layers = layout.places.map((place, i) =>
-    placeLayers(placeArt, place.slot, { ...places[i], side: place.side }),
-  );
+  const signs = layout.places.map((place, i) => placeSigns({ ...places[i], side: place.side }));
   const things = layout.places.map((place, i) => {
     const { x, y, width: w, height: h } = place.slot;
     const hue = hueOf(places[i]);
     return [
-      ...layers[i].back.map((layer) => layerSvg(layer, hue)),
+      ...signs[i]
+        .filter((sign) => sign.layer === 'flowers')
+        .map((sign) => signSvg(sign, place.slot, hue)),
       places[i].build
         ? `<svg class="thing" style="--hue:${hue}" x="${n1(x)}" y="${n1(y)}" width="${n1(w)}" height="${n1(h)}" viewBox="0 0 120 80">${buildShapes(places[i].build)}</svg>`
         : '',
     ].join('');
   });
-  const fronts = layers.flatMap((l, i) =>
-    l.front.map((layer) => layerSvg(layer, hueOf(places[i]))),
+  const fronts = signs.flatMap((list, i) =>
+    list
+      .filter((sign) => sign.layer === 'lantern')
+      .map((sign) => signSvg(sign, layout.places[i].slot, hueOf(places[i]))),
   );
   const bays = layout.places.map(
     ({ bay }) =>
@@ -236,9 +236,14 @@ for (const [build, hue, side] of [
 // right.
 const thumb = (build, state, theme) => {
   const hue = palette.meadow[theme];
-  const slot = { x: 7, y: 0, scale: 0.5 };
-  const { back, front } = placeLayers(placeArt, slot, { ...state, side: 'right' });
-  return `<svg width="67" height="46" viewBox="0 0 67 46" style="margin:4px;background:color-mix(in srgb, ${hue} 16%, var(--bg))">${back.map((l) => layerSvg(l, hue)).join('')}<svg class="thing" style="--hue:${hue}" x="7" y="0" width="60" height="40" viewBox="0 0 120 80">${buildShapes(build)}</svg>${front.map((l) => layerSvg(l, hue)).join('')}</svg>`;
+  const signs = placeSigns({ ...state, side: 'right' });
+  const box = { x: 7, y: 0, width: 60, height: 40 };
+  const drawn = (layer) =>
+    signs
+      .filter((sign) => sign.layer === layer)
+      .map((sign) => signSvg(sign, box, hue))
+      .join('');
+  return `<svg width="67" height="46" viewBox="0 0 67 46" style="margin:4px;background:color-mix(in srgb, ${hue} 16%, var(--bg))">${drawn('flowers')}<svg class="thing" style="--hue:${hue}" x="7" y="0" width="60" height="40" viewBox="0 0 120 80">${buildShapes(build)}</svg>${drawn('lantern')}</svg>`;
 };
 const THINGS = ['home', 'garden', 'well', 'lookout'].flatMap((l) => [`${l}-1`, `${l}-5`]);
 const sheet = ['light', 'dark']

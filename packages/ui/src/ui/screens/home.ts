@@ -1,183 +1,100 @@
-import { confirmAnchor, withdraw, type AnchorView, type RunView } from '@questarc/engine';
+import { withdraw } from '@questarc/engine';
 
-import { capitalise, planSentence } from '../../shared/plan';
-import { newRunId } from '../../shared/run-id';
-import { stageAction, t } from '../../shared/texts';
-import { h, icon, ICONS } from '../dom';
+import { t } from '../../shared/texts';
+import { art } from '../art-store';
+import { h } from '../dom';
 import { habitBanners } from '../habit-banners';
-import { conditionText } from '../journey/card';
-import { anchorTitle, suggestedWords } from '../journey/moment';
 import type { Context, Screen } from '../screen';
+import { confirmCard, growingStep } from '../valley/growing';
+import { sceneHeight, valleyModel } from '../valley/model';
+import { valleyScene } from '../valley/scene';
 import { readOnlyScreen } from './read-only';
 
 /**
- * Screen 0, the home (docs/behaviour.md, #96): the user's moments, not a
- * list of habits. Each moment says in one line what runs by itself
- * there (no boxes: nothing is ticked for it), what is still followed,
- * and shows the one growing step, which opens its journey (screen 4).
- * Something new starts from a moment (**Extend This Moment**) or from
- * **A New Moment**. A journey from before anchors asks once whether its
- * moment is the user's.
+ * Screen 0, the home (docs/behaviour.md, #114): the Valley, the user's
+ * moments as places along one path through the day, drawn from the
+ * engine's `valley` view and layout. Below it, within thumb reach: the
+ * growing step as a card that opens its journey, the banners, and the
+ * main action **A New Moment**. A place opens when tapped: the journey
+ * for the growing one, the moment otherwise. Where no moment stands yet
+ * the land is plain, with the path.
  */
-
-const words = (steps: readonly { journeyId: string; stageId: string }[]): string =>
-  steps
-    .flatMap((step) => stageAction(step.journeyId, step.stageId) ?? [])
-    .map(capitalise)
-    .join(' · ');
-
-/** The growing step: its plan, its progress in words and what today looks like. */
-const growingStep = (ctx: Context, run: RunView): HTMLElement | null => {
-  const { view, journeys } = ctx.state;
-  const journey = journeys.find((j) => j.id === run.journeyId);
-  const index = run.position.stage;
-  const station = run.stations[index];
-  const stage = journey?.stages[index];
-  if (!station || !stage) return null;
-  const bound = station.state === 'current' || station.state === 'met';
-  const today = station.lastDays?.find((d) => d.day === view.todayStr)?.mark;
-  const state = run.comeBack
-    ? t('ui.comeback.title')
-    : run.paused
-      ? t('ui.anchor.paused')
-      : station.state === 'met'
-        ? t(run.offer?.quietUntil ? 'ui.card.staying' : 'ui.card.met')
-        : station.state === 'unbound'
-          ? t('ui.card.unbound')
-          : station.state === 'unsupported-repeat'
-            ? t('ui.card.unsupported')
-            : today === 'done' || today === 'open'
-              ? t(`ui.anchor.today.${today}`)
-              : undefined;
-  return h(
-    'button',
-    { class: 'qa-growing', type: 'button', onclick: () => ctx.go({ name: 'journey' }) },
-    h(
-      'span',
-      { class: 'qa-overline' },
-      `${t('ui.anchor.growing')} · ${t('ui.station.of', { n: index + 1, total: run.stations.length })}`,
-    ),
-    h('span', { class: 'qa-plan' }, planSentence(stage, station.pair, run.anchor)),
-    bound ? h('span', {}, conditionText(stage, station)) : null,
-    state ? h('span', { class: 'qa-muted qa-small' }, state) : null,
-  ) as HTMLElement;
-};
-
-const line = (key: string, text: string): HTMLElement | null =>
-  text ? (h('p', { class: 'qa-muted' }, t(key, { steps: text })) as HTMLElement) : null;
-
-const momentCard = (ctx: Context, anchor: AnchorView): HTMLElement => {
-  const { view, journeys } = ctx.state;
-  const id = anchor.id;
-  const button = (label: string, onclick: () => void) =>
-    h('button', { class: 'qa-btn qa-btn-secondary', type: 'button', onclick }, label);
-  const active = anchor.growing && view.active;
-  const followed = anchor.steps.filter((step) => step.state !== 'graduated');
-  const waiting = anchor.resting
-    .flatMap((step) => journeys.find((j) => j.id === step.journeyId)?.title ?? [])
-    .map((title) => t(title))
-    .join(' · ');
-  const nothing = !active && anchor.steps.length === 0 && !waiting;
-  const suggested = anchor.suggest;
-  return h(
-    'section',
-    { class: 'qa-card qa-anchor' },
-    h(
-      'div',
-      { class: 'qa-anchor-head' },
-      h('h2', { class: 'qa-section-title' }, anchorTitle(anchor, journeys)),
-      id
-        ? h(
-            'button',
-            {
-              class: 'qa-icon-btn',
-              type: 'button',
-              title: t('ui.moment.change'),
-              'aria-label': t('ui.moment.change'),
-              onclick: () => ctx.go({ name: 'moment', anchorId: id }),
-            },
-            icon(ICONS.edit),
-          )
-        : null,
-    ),
-    line('ui.anchor.by-itself', words(anchor.steps.filter((step) => step.state === 'graduated'))),
-    line('ui.anchor.followed', words(followed)),
-    active ? growingStep(ctx, active) : null,
-    line('ui.anchor.waiting', waiting),
-    nothing ? h('p', { class: 'qa-muted' }, t('ui.anchor.nothing')) : null,
-    // From before anchors: asked once, in place; nothing depends on the answer.
-    suggested
-      ? h(
-          'div',
-          { class: 'qa-stack' },
-          h('p', {}, t('ui.anchor.confirm')),
-          button(t('ui.anchor.confirm.yes'), () => {
-            void ctx.write(
-              confirmAnchor(view, {
-                journeyId: suggested,
-                anchorId: newRunId(),
-                anchor: suggestedWords(anchor, journeys),
-              }),
-            );
-          }),
-          button(t('ui.anchor.confirm.change'), () =>
-            ctx.go({ name: 'moment', anchorId: '', journeyId: suggested }),
-          ),
-        )
-      : null,
-    id && !active
-      ? button(t('ui.anchor.extend'), () => ctx.go({ name: 'choose', anchorId: id }))
-      : null,
-  ) as HTMLElement;
-};
-
 export const homeScreen = (ctx: Context): Screen => {
-  const { view } = ctx.state;
+  const { view, journeys } = ctx.state;
   const readOnly = view.readOnly.find((r) => r.state === 'active');
   if (readOnly) return readOnlyScreen(ctx, readOnly);
   const ended = ctx.draft.ended as { runId: string; title: string } | undefined;
-  // The moment that grows comes first.
-  const anchors = [...view.anchors].sort(
-    (a, b) => Number(b.state === 'growing') - Number(a.state === 'growing'),
+  // The scene is as wide as the page up to 440 px (style.css) and two thirds of the window high.
+  const pixels = Math.min(440, Math.max(document.documentElement.clientWidth - 32, 1));
+  const model = valleyModel(
+    view.valley,
+    view.anchors,
+    journeys,
+    art(),
+    sceneHeight(window.innerHeight, pixels),
   );
-  const growing = anchors[0]?.state === 'growing' ? 1 : 0;
+  const scene = valleyScene(
+    model,
+    ({ view: place }) =>
+      ctx.go(place.growing ? { name: 'journey' } : { name: 'moment', anchorId: place.anchorId }),
+    t('ui.valley.label'),
+  );
+  const active = view.anchors.some((a) => a.growing) ? view.active : undefined;
+  const growing = active ? growingStep(ctx, active) : null;
+  // Until the place has its own page, the growing moment is changed from here.
+  const growingId = view.valley.find((place) => place.growing)?.anchorId;
   return {
     title: t('ui.app.name'),
     menu: [{ label: t('ui.shelf.title'), onSelect: () => ctx.go({ name: 'shelf' }) }],
     body: h(
       'div',
-      { class: 'qa-stack' },
-      ended
-        ? h(
-            'div',
-            { class: 'qa-banner', role: 'status' },
-            h('p', {}, t('ui.banner.ended', { title: ended.title })),
-            h(
+      { class: 'qa-home' },
+      scene.element,
+      h(
+        'div',
+        { class: 'qa-home-side qa-stack' },
+        growing,
+        growing && growingId
+          ? h(
               'button',
               {
                 class: 'qa-btn qa-btn-text',
                 type: 'button',
-                onclick: () => {
-                  delete ctx.draft.ended;
-                  void ctx.write(withdraw(`run-end:${ended.runId}`));
-                },
+                onclick: () => ctx.go({ name: 'moment', anchorId: growingId }),
               },
-              t('ui.action.undo'),
-            ),
-          )
-        : null,
-      // The growing moment stays on top; what is asked about the others follows it.
-      ...anchors.slice(0, growing).map((anchor) => momentCard(ctx, anchor)),
-      ...habitBanners(ctx),
-      ...anchors.slice(growing).map((anchor) => momentCard(ctx, anchor)),
-      anchors.length === 0
-        ? h(
-            'div',
-            { class: 'qa-empty' },
-            h('h2', { class: 'qa-heading' }, t('ui.home.empty.title')),
-            h('p', { class: 'qa-muted' }, t('ui.home.empty.text')),
-          )
-        : null,
+              t('ui.moment.change'),
+            )
+          : null,
+        ...view.anchors.map((anchor) => confirmCard(ctx, anchor)),
+        ended
+          ? h(
+              'div',
+              { class: 'qa-banner', role: 'status' },
+              h('p', {}, t('ui.banner.ended', { title: ended.title })),
+              h(
+                'button',
+                {
+                  class: 'qa-btn qa-btn-text',
+                  type: 'button',
+                  onclick: () => {
+                    delete ctx.draft.ended;
+                    void ctx.write(withdraw(`run-end:${ended.runId}`));
+                  },
+                },
+                t('ui.action.undo'),
+              ),
+            )
+          : null,
+        ...habitBanners(ctx),
+        view.anchors.length === 0
+          ? h(
+              'div',
+              { class: 'qa-empty' },
+              h('h2', { class: 'qa-heading' }, t('ui.home.empty.title')),
+              h('p', { class: 'qa-muted' }, t('ui.home.empty.text')),
+            )
+          : null,
+      ),
     ),
     actions: [
       h(

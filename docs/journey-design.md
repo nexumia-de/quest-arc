@@ -421,7 +421,9 @@ the day, and the scene's width and height, and returns:
   setting of the place screen.
 
 Colours (decision 9): outlines, fills and names `fg`/`bg`; path and bay
-the host's background; the ground each place's `tint` (16 % of its hue),
+the host's background in the light theme and, in the dark theme, the
+place's `tint-strong` (so a bay reads as the path widening, not as a hole
+in the lighter ground; #129); the ground each place's `tint` (16 % of its hue),
 passing into the next place's around the joint; the thing's one `accent`
 in the place's hue. No decoration without a job: no flags, no stones
 without a use, no water, no bridge; nothing crosses the path.
@@ -485,23 +487,27 @@ later art issues; the owner, 2026-11-15).
 the path beside every slot (the plot,
 [above](#the-place-piece-the-valley-127)), kept whether or not a place has
 a lantern, so nothing jumps when it is earned. The pictures are drawn in
-the build's units over the plot, in one frame (`-14 0 134 92`: the plot,
-12 deeper for the flowers; pictures named `place-…`), for a thing on the
-right of the path, so the path's side is x < 0. A host mirrors the frame
-about the thing's centre (x = 60) for a thing on the left; the lantern
-keeps its form and stands on the other side, again towards the path.
-`content/art/place.json` names the frame, the far side, the flowers and
-the lantern's place in the frame.
+the build's units in one frame over the slot for both sides of the path
+(`-14 0 148 92`: the build's box with 14 units on either side and 12
+below; pictures named `place-…`): the flowers are symmetric about the
+thing's centre and fit either side, and the lantern has a picture for each
+side (`place-lantern-right` left of the box for a thing on the right of
+the path, `place-lantern-left` right of it), so a host only places
+pictures and mirrors nothing. `content/art/place.json` names the frame,
+the flowers and the two lanterns.
 
 **Layers**, back to front: ground, path and bay, flowers, the thing, the
-marker, the lantern, the name. `placeLayers`
-(`packages/ui/src/ui/valley-place.ts`, pure, no imports) gives the
-pictures behind the thing (`back`) and in front of it (`front`) from the
-slot and the view; `placeSignWords` (`valley-place-words.ts`) says the
-sign in words for screen readers ("flowers grow at its foot and its
-lantern is lit"). The plugin bundles the place's pictures with the
-ladders' (`ladderArt`) in `plugin.js`, and `place.json` travels in the art
-pack; the view's `index.html` carries none of them.
+marker, the lantern, the name. `placeSigns`
+(`packages/ui/src/ui/valley-place.ts`, pure, no imports) gives each
+picture of a place's sign with its layer and its box from the slot and
+the view, and the home's scene (`packages/ui/src/ui/valley/scene.ts`)
+draws them into its `flowers` and `lantern` layers; the place's words for
+screen readers name the sign ("Flowers grow at its foot: the routine is
+still followed.", `ui.valley.sign.flowers`). The plugin bundles the
+place's pictures with the ladders' (`ladderArt`) in `plugin.js`, and
+`place.json` travels in the art pack; the view's `index.html` carries
+only the few lines that place them, because it is near its limit (with
+the first version, which mirrored a frame in the view, it was over it).
 
 **Checks.** `scripts/draw-ladders.mjs` writes nothing while
 `placeProblems` (`scripts/ladder-checks.mjs`) finds one, and
@@ -514,7 +520,8 @@ pictures the same way:
   lantern clear of the threshold stone and of every marker element of
   every ladder (nothing hides the marker);
 - the lantern and the flowers clear of every version of every ladder
-  (nothing overlaps the thing);
+  (nothing overlaps the thing), and each lantern beside the box towards
+  the path;
 - in the Valley's layout (`valleyLayout`) for one to six places on every
   choice of sides and seven to twelve alternating, at 360 and 720 wide:
   every place with its pictures inside the scene, off the path (its
@@ -539,6 +546,14 @@ right:
 The Valley pictures above show signs at some places (three places: the
 lantern, flowers; six places: the lantern, flowers, the lantern,
 flowers).
+
+In the home itself (the plugin's preview, demo data, `valley-1`, `-3` and
+`-6`), the signs as the scene draws them, light and dark:
+[three places at 360 × 720](screenshots/valley-home-3-phone-light.png)
+([dark](screenshots/valley-home-3-phone-dark.png)),
+[six places](screenshots/valley-home-6-phone-light.png)
+([dark](screenshots/valley-home-6-phone-dark.png)),
+[three places on the desktop](screenshots/valley-home-3-desktop-dark.png).
 
 **Rounds** (#146). Round 1 drew plants as pale tufts around the thing,
 the lantern in front of the house beside the door, and a fence, a tree, a

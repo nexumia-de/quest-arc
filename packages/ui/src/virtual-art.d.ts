@@ -2,7 +2,6 @@
 declare module 'virtual:questarc-art' {
   import type { Hue } from './ui/art';
   import type { Ladder } from './ui/ladder';
-  import type { PlaceArt } from './ui/valley-place';
 
   export const pictures: Readonly<Record<string, string>>;
   export const ladders: Readonly<Record<string, Ladder>>;
@@ -11,6 +10,4 @@ declare module 'virtual:questarc-art' {
   export const markers: Readonly<
     Record<string, { readonly title: string; readonly landOnly: boolean }>
   >;
-  /** What a place in the Valley gains around its thing (place.json, #131). */
-  export const place: PlaceArt;
 }

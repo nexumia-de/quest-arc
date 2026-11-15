@@ -1,12 +1,8 @@
 {
-  "viewBox": [-14, 0, 134, 92],
-  "far": "right",
+  "frame": [-14, 0, 148, 92],
   "flowers": "place-flowers",
   "lantern": {
-    "art": "lantern",
-    "x": -17,
-    "y": 59.25,
-    "width": 20,
-    "height": 20
+    "right": "place-lantern-right",
+    "left": "place-lantern-left"
   }
 }

@@ -97,3 +97,20 @@ export const scene = (
   }
   return svg;
 };
+
+/**
+ * One picture as a part of a larger scene: a nested svg at `box` (the
+ * picture's own view box is kept), in `hue` if given, without a label (the
+ * scene names it).
+ */
+export const part = (
+  source: string,
+  box: { readonly x: number; readonly y: number; readonly width: number; readonly height: number },
+  hue?: Hue,
+): SVGSVGElement => {
+  const svg = tinted(parse(source), hue);
+  svg.querySelector('title')?.remove();
+  svg.classList.add('qa-art');
+  for (const key of ['x', 'y', 'width', 'height'] as const) svg.setAttribute(key, String(box[key]));
+  return svg;
+};

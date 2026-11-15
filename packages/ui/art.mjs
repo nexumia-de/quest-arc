@@ -39,7 +39,8 @@ export const ladderArt = ({ ladders, markers, place }) => {
   const names = new Set(['lantern']);
   if (place) {
     names.add(place.flowers);
-    names.add(place.lantern.art);
+    names.add(place.lantern.left);
+    names.add(place.lantern.right);
   }
   for (const ladder of Object.values(ladders)) {
     for (const version of ladder.versions) names.add(version.art);
@@ -51,7 +52,7 @@ export const ladderArt = ({ ladders, markers, place }) => {
 };
 
 const source = (only) => {
-  const { pictures, ladders, palette, markers, place } = read();
+  const { pictures, ladders, palette, markers } = read();
   const kept = only ? ladderArt(read()) : undefined;
   return [
     `export const pictures = ${JSON.stringify(
@@ -62,7 +63,6 @@ const source = (only) => {
     `export const ladders = ${JSON.stringify(ladders)};`,
     `export const palette = ${JSON.stringify(palette)};`,
     `export const markers = ${JSON.stringify(markers)};`,
-    `export const place = ${JSON.stringify(place)};`,
   ].join('\n');
 };
 

@@ -70,70 +70,113 @@ the journey is in [journey design](journey-design.md).
 
 ## Screens
 
-### 0. Home: your moments
+### 0. Home: the Valley
 
-Issue #96, [design rule 28](psychology.md): the home of QuestArc is the
-user's moments, not a list of habits. Drawn from the engine's `anchors`
-([game rules](game-rules.md) §8); the Valley (#114) will draw the same
-data as regions.
+Issues #96 and #129 ([#114](https://github.com/nexumia-de/quest-arc/issues/114)
+decisions 1, 2, 6, 7 and 9), [design rule 28](psychology.md): the home of
+QuestArc is the user's moments, not a list of habits, drawn as the
+**Valley**: one path through the day, a place for every moment. It is
+drawn from the engine's `valley` view ([game rules](game-rules.md) §8) and
+the layout `valleyLayout` ([journey design](journey-design.md), "The place
+piece"); the screen places nothing by hand.
 
-| ![Phone](screenshots/moments-phone-light.png) | ![Phone, dark](screenshots/moments-phone-dark.png) |
-| --------------------------------------------- | -------------------------------------------------- |
+| ![Phone, light](screenshots/valley-home-3-phone-light.png) | ![Phone, dark](screenshots/valley-home-3-phone-dark.png) |
+| ---------------------------------------------------------- | -------------------------------------------------------- |
 
-![Desktop](screenshots/moments-desktop-light.png)
+![Desktop, six places](screenshots/valley-home-6-desktop-light.png)
 
-_Screenshots from demo data._
+With [one](screenshots/valley-home-1-phone-light.png) and
+[six](screenshots/valley-home-6-phone-light.png) places, and
+[dark](screenshots/valley-home-6-desktop-dark.png) on the desktop.
+_Screenshots from demo data at 360 × 720 and 1000 × 700; the signs and the
+surroundings follow with #131._
 
-- One card per moment, the growing one first. Its title is the name
-  the user gave it, else "After getting up" or "At 21:30"; a pencil
-  button, **Change this moment**, opens screen 0a.
-- **What runs by itself** is one line of words, without boxes: "Runs by
-  itself: Drink a glass of water · Read for 20 minutes in my book".
-  Nothing is ticked, counted or shown as due for it.
-- A finished journey's habit that has not graduated yet is named in
-  the line "Still followed: …": it is ticked off in the task list, and
-  its weekly question, its offer to graduate and its details stay
-  where they were (the banners below, the shelf).
-- **The growing step** (at most one, on the moment the active journey
-  starts from) is a card that opens the journey (screen 4): "Growing
-  here · Station 2 of 4", the plan sentence, the condition in words
-  ("4 of 5 days in the last 7 due days") and one line of state: "Today:
-  done." or "Today: still open. Tick off the task in your task list as
-  usual." on a due day, "You reached this station. You can continue
-  whenever you like.", "This station needs a recurring task.",
-  "Paused. Paused days don't count.", or "Good to see you." when the
-  card after a long break waits on the journey (flow D). In Super
-  Productivity the tick itself stays in the task list (flow A).
-- Journeys that wait at a moment are named in "Waiting: …" (resumed
-  from the shelf); a moment where nothing stands yet says so.
-- **Extend This Moment** on every moment without the growing step
-  opens screen 2 for that moment. Main action at the bottom: **A New
-  Moment** (screen 2; an outlined button while a journey is active).
-- Banners, below the growing moment: the undo after ending a journey,
-  and for the habits finished journeys left (flow F) at most one each:
-  the question after graduation, the offer to graduate, or the weekly
-  look back.
-- **A journey from before anchors** (started before this change) shows
-  as a moment with the words of its plan sentence and asks once, in
-  its card: "QuestArc now starts from moments in your day. Your
-  journey began with this one. Is it still yours?" with **Yes, That Is
-  It** (`confirmAnchor` with the suggested words) and **Change the
-  Words** (screen 0a, which confirms with what the user writes).
-  Nothing depends on the answer and nothing is asked again: until then
-  everything works with the journey's words.
-- No moment yet: "No moment yet" and "QuestArc starts from a moment
-  that already exists in your day, like getting up or lunch. A journey
-  adds one small step to it. You keep using your normal tasks."
-- The menu has Shelf and Settings. When the active journey is
-  read-only, its calm page stands here instead (screen 4).
+- **The scene** is the page's picture. Per place, from the layout: the
+  ground in the place's hue, blending into the next place's; the path and
+  the bays in the host's background; the place's **thing** in its current
+  version, in the place's hue; and the place's **name** on the free side
+  (the name the user gave the moment, else "After getting up" or "At
+  21:30"). The growing place's name is **bold**: the shape, not the colour,
+  tells which one grows. A free place does not exist: a place is a moment,
+  and where no journey stands yet the place is plain land with its name.
+  Nothing marks a place as free, nothing is announced, nothing is counted.
+- **The scene is built in layers**, back to front: ground, path and bay,
+  flowers, thing, marker, lantern, name.
 - **Signs** (#131), in the Valley and on the place: flowers at the
   thing's foot while a step there is still followed, and the lit lantern
   apart from the thing, beside the doorstep towards the path, when it
   runs by itself (the flowers stay). They appear when earned, never
   before; nothing on the screen names what is still to come. For screen
-  readers the place's words add them: "flowers grow at its foot and its
-  lantern is lit" (`placeSignWords`; pictures and layers in
+  readers the place's words say the sign: "Flowers grow at its foot: the
+  routine is still followed." or "The lantern is lit: the routine runs by
+  itself." (pictures and layers in
   [journey design](journey-design.md#the-signs-of-a-place-the-valley-131)).
+- **Tapping a place** opens it: the journey (screen 4) for the growing
+  place; for any other the moment (screen 0a, which offers **Extend This
+  Moment** while no journey grows there) until the place has its own page
+  (next issue of #114). Each place is one button of at least 44 × 44 px,
+  its row from edge to edge. A place never opens by itself; back leads to
+  the Valley.
+- **For screen readers** the scene is a section "The Valley: your moments
+  along the path of the day" whose buttons say each place in words, in
+  the order of the day: "After lunch: A lookout platform, version 2 of 5.
+  Growing here. The lantern is lit: the routine runs by itself." (name,
+  thing and version, the growing step, the sign). The drawing itself is
+  hidden from them.
+- **Size.** The scene is 360 units wide and about **two thirds of the
+  window high** (480 units in a 720-high window, never less: the
+  layout's checks hold from 480 for any number of places), so the growing
+  card starts on the first screen; `valleyLayout` takes the height, the
+  screen draws nothing of its own. With more than six places the scene is
+  longer and scrolls with the page. It is as wide as the page up to 440
+  px, so there is no horizontal scrolling at 360 or narrower; the names'
+  text size follows its width. At 720 px and wider the scene stands on the
+  left and the card on the right.
+- **Path and bays** are one colour, so a bay reads as the path widening:
+  the host's background in the light theme; in the dark theme the place's
+  `tint-strong` (the hue's 40 %, along the path as the places' hues follow
+  each other), lighter than the ground's 16 % tint, so the path is not a
+  hole in it.
+- **Below the scene, within thumb reach:**
+  - **The growing step** (at most one, on the moment the active journey
+    starts from) is a card that opens the journey (screen 4): "Growing
+    here · Station 2 of 4", the plan sentence, the condition in words ("4
+    of 5 days in the last 7 due days") and one line of state: "Today:
+    done." or "Today: still open. Tick off the task in your task list as
+    usual." on a due day, "You reached this station. You can continue
+    whenever you like.", "This station needs a recurring task.", "Paused.
+    Paused days don't count.", or "Good to see you." when the card after a
+    long break waits on the journey (flow D). In Super Productivity the
+    tick itself stays in the task list (flow A). Under it **Change this
+    moment** (screen 0a), until the place has its own page.
+  - **Banners**, as before: the undo after ending a journey, and for the
+    habits finished journeys left (flow F) at most one each: the question
+    after graduation, the offer to graduate, or the weekly look back.
+  - **A journey from before anchors** asks once, in a card: "QuestArc now
+    starts from moments in your day. Your journey began with this one. Is
+    it still yours?" with **Yes, That Is It** (`confirmAnchor` with the
+    suggested words) and **Change the Words** (screen 0a, which confirms
+    with what the user writes). Nothing depends on the answer and nothing
+    is asked again: until then everything works with the journey's words,
+    and the moment has no place in the Valley.
+  - The main action at the bottom: **A New Moment** (screen 2; an
+    outlined button while a journey is active).
+- **What the list said in words** ("Runs by itself: …", "Still followed:
+  …", "Waiting: …") is no longer on the home: the place's sign says it in
+  the scene's words, and the place's own page (next issue) lists the
+  steps. Nothing is ticked, counted or shown as due for what runs by
+  itself.
+- **Nothing animates on opening.** When a new version of a thing appears
+  while the screen is open, it grows in with the calm animation of the
+  journey screen (scale from 0.6 and fade, 600 ms); under
+  `prefers-reduced-motion: reduce` nothing moves.
+- **No moment yet:** plain land with the path (a short scene, so the words
+  stay in view), "No moment yet" and "QuestArc starts from a moment that
+  already exists in your day, like getting up or lunch. A journey adds one
+  small step to it. You keep using your normal tasks.", and **A New Moment**
+  as the main action. Nothing marks a free place.
+- The menu has Shelf and Settings. When the active journey is read-only,
+  its calm page stands here instead (screen 4).
 
 ### 0a. A moment
 
@@ -152,6 +195,8 @@ _Screenshots from demo data._
   anchors `confirmAnchor`). Without words or a time: "A moment needs a
   few words or a time." A leading "after" the user typed is not
   doubled.
+- **Extend This Moment** while no journey grows at the moment: screen 2
+  for it (the home no longer has this button, #129).
 - **Remove This Moment** only while nothing stands there ("Nothing
   stands here yet, so nothing is lost.", `removeAnchor`).
 

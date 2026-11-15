@@ -73,11 +73,11 @@ describe('valleyLayout', () => {
     }
   });
 
-  it('keeps room beside every slot: the lantern towards the path, the surroundings beyond', () => {
+  it('keeps room beside every slot towards the path, for the lantern', () => {
     for (const place of valleyLayout({ sides: ['right', 'left', 'left'] }).places) {
       const { slot, plot, side } = place;
       const s = slot.scale;
-      expect(plot.width).toBeCloseTo((VALLEY.plotNear + 120 + VALLEY.plotFar) * s, 9);
+      expect(plot.width).toBeCloseTo((VALLEY.plotNear + 120) * s, 9);
       expect(plot.y).toBeCloseTo(slot.y, 9);
       const near = side === 'right' ? slot.x - plot.x : plot.x + plot.width - slot.x - slot.width;
       expect(near).toBeCloseTo(VALLEY.plotNear * s, 9);

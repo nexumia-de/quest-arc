@@ -36,7 +36,8 @@ describe('the plugin bundles only the pictures of the build', () => {
 
   it('keeps the flowers and the lantern of a place (#131)', () => {
     expect(kept).toContain(place.flowers);
-    expect(kept).toContain(place.lantern.art);
+    expect(kept).toContain(place.lantern.left);
+    expect(kept).toContain(place.lantern.right);
   });
 
   it('leaves out pictures the journey screen does not draw', () => {

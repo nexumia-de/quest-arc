@@ -207,11 +207,9 @@ const ROLES = {
   flowers: new Set(['fg', 'bg', 'tint-strong', 'accent']),
 };
 
-/** A shape moved into the scene: frame units → scene, mirrored for a thing on the left. */
-const toScene = (shape, slot, mirror) =>
-  shape.map((ring) =>
-    ring.map(([x, y]) => [slot.x + (mirror ? 120 - x : x) * slot.scale, slot.y + y * slot.scale]),
-  );
+/** A shape moved into the scene: frame units → scene. */
+const toScene = (shape, slot) =>
+  shape.map((ring) => ring.map(([x, y]) => [slot.x + x * slot.scale, slot.y + y * slot.scale]));
 const rectShape = (b) => box(b.x, b.y, b.width, b.height);
 
 /**
@@ -222,7 +220,7 @@ const rectShape = (b) => box(b.x, b.y, b.width, b.height);
  */
 export const placeProblems = (place, pictures, ladders, valleyLayout) => {
   const problems = [];
-  const [fx, fy, fw, fh] = place.viewBox;
+  const [fx, fy, fw, fh] = place.frame;
   const frame = box(fx, fy, fw, fh);
   const shapesNamed = (name) => {
     const source = pictures[name];
@@ -234,18 +232,21 @@ export const placeProblems = (place, pictures, ladders, valleyLayout) => {
     if (bytes > MAX_BYTES) problems.push(`${name}: ${bytes} bytes, more than ${MAX_BYTES}`);
     return shapesOf(source);
   };
-  // the lantern in the frame's units
-  const { art: lanternArt, x: lx, y: ly, width: lw, height: lh } = place.lantern;
-  const lantern = shapesNamed(lanternArt).map((s) => ({
-    ...s,
-    shape: s.shape.map((ring) => ring.map(([x, y]) => [lx + (x * lw) / 32, ly + (y * lh) / 32])),
-  }));
-  const layers = [{ name: place.flowers, kind: 'flowers', shapes: shapesNamed(place.flowers) }];
-  const lanternShape = union(...lantern.map((s) => s.shape));
-  if (area(minus(lanternShape, frame)) > EPS) problems.push('lantern: outside the frame');
-  if (area(within(lanternShape, STONE)) > EPS) problems.push('lantern: covers the threshold stone');
-  if (area(within(lanternShape, DOORSTEP)) > EPS)
-    problems.push('lantern: in front of the doorstep');
+  const union1 = (name) => union(...shapesNamed(name).map((s) => s.shape));
+  const flowers = shapesNamed(place.flowers);
+  const layers = [{ name: place.flowers, kind: 'flowers', shapes: flowers }];
+  const lanterns = { right: union1(place.lantern.right), left: union1(place.lantern.left) };
+  for (const [side, lanternShape] of Object.entries(lanterns)) {
+    const name = `lantern (${side})`;
+    if (area(minus(lanternShape, frame)) > EPS) problems.push(`${name}: outside the frame`);
+    if (area(within(lanternShape, STONE)) > EPS)
+      problems.push(`${name}: covers the threshold stone`);
+    if (area(within(lanternShape, DOORSTEP)) > EPS)
+      problems.push(`${name}: in front of the doorstep`);
+  }
+  // the lantern stands towards the path: left of the box on the right of the path
+  if ((bounds(lanterns.right)?.[2] ?? 0) > 0 + EPS || (bounds(lanterns.left)?.[0] ?? 0) < 120 - EPS)
+    problems.push('lantern: not beside the box towards the path');
   // nothing overlaps the thing, whichever version of whichever ladder stands
   const things = Object.values(ladders).flatMap((ladder) =>
     ladder.versions
@@ -259,7 +260,7 @@ export const placeProblems = (place, pictures, ladders, valleyLayout) => {
         return;
       }
   };
-  clearOfThings('lantern', lanternShape);
+  for (const [side, shape] of Object.entries(lanterns)) clearOfThings(`lantern (${side})`, shape);
   for (const { name, kind, shapes } of layers) {
     const all = union(...shapes.map((s) => s.shape));
     const wrong = shapes.filter((s) => !ROLES[kind].has(s.role)).map((s) => s.role);
@@ -288,7 +289,8 @@ export const placeProblems = (place, pictures, ladders, valleyLayout) => {
           ),
         ),
       );
-      if (area(within(shape, lanternShape)) > EPS)
+      // the ladder's setting has the path's side on the left, as a thing on the right
+      if (area(within(shape, lanterns.right)) > EPS)
         problems.push(`lantern: covers ${ladderName}'s marker (${p.part} ${p.order})`);
     }
   }
@@ -315,11 +317,10 @@ export const placeProblems = (place, pictures, ladders, valleyLayout) => {
         layout.pathWidth + 2 * PATH_GAP * layout.unit,
       );
       const placed = layout.places.map((p) => {
-        const mirror = p.side !== place.far;
         const own = [
-          lanternShape,
+          lanterns[p.side],
           ...layers.map((l) => union(...l.shapes.map((s) => s.shape))),
-        ].map((shape) => toScene(shape, p.slot, mirror));
+        ].map((shape) => toScene(shape, p.slot));
         return { p, own, all: union(...own) };
       });
       placed.forEach(({ p, all }, i) => {
