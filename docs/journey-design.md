@@ -1,12 +1,13 @@
 ---
 type: Concept
 title: Journey design
-description: How the journey is drawn in both hosts: the journey's build above the current station's card, the last seven due days, the rules for colours, shapes and accessibility, the builds and ladders of the Valley (one thing whole at every stage, a festive marker growing in front of the build, way points, a hue per region) and the older scene rules for a region; with mockups.
+description: How the journey is drawn in both hosts: the journey's build above the current station's card, the last seven due days, the rules for colours, shapes and accessibility, the builds and ladders of the Valley (one thing whole at every stage, a festive marker growing in front of the build, way points, a hue per region), the Valley's place piece laid out by rule and the older scene rules for a region; with mockups.
 tags: [design, ui, journey, mockups, pictures, valley]
 generated: { by: claude-code/2.1.318, at: 2026-11-05 }
 sources:
   - '[^97]: https://github.com/nexumia-de/QuestArc/issues/97'
   - '[^42]: https://github.com/nexumia-de/QuestArc/issues/42'
+  - '[^127]: https://github.com/nexumia-de/quest-arc/issues/127'
 ---
 
 # Journey design
@@ -369,6 +370,80 @@ stanchions, and the scenery flowers read as a hanging element;
 [m5](screenshots/ladder-markers-round-5.png) slimmer posts, larger
 elements; then the owner asked for plain posts with nothing on top and
 ready only on the hanging elements; [m6](screenshots/ladder-markers-round-6.png) plain posts, but the `span` middle post stood in the water: now two posts, one on each bank, and one line across: the final images above.
+
+## The place piece (the Valley, #127)
+
+The Valley ([#114](https://github.com/nexumia-de/quest-arc/issues/114),
+decisions 2, 7, 8 and 9) is one scene made of **place pieces**, laid out
+by rule and never drawn by hand: `valleyLayout` in
+`packages/engine/src/valley-layout.ts`, pure and shared by every host
+(Pensum asks `engine-cli.mjs` with `{ "valley": { "sides": […] } }`). It
+takes the side of the path each place's thing stands on, in the order of
+the day, and the scene's width and height, and returns:
+
+- **the path**: one centre line from the top edge to the bottom edge, no
+  start, no goal, drawn 22 wide in the host's background. Each place is a
+  bend `20 + 6 n` to the side away from the thing (n places, at most 56),
+  so one place leaves it almost straight; between bends a smooth S-curve
+  (control points half a spacing long). Before the first and after the
+  last place the curve goes on as if the sides kept alternating and is cut
+  at the scene's edges.
+- **the places**, evenly spaced: six fill 360 × 720; with more the scene
+  is longer (120 per place) and scrolls; at 720 and wider the same scene
+  is drawn larger (all numbers times width / 360), not rearranged. The
+  bends sit a little below the middle of their spacing (by at most a
+  quarter of it), because a thing stands above its bay.
+- per place the **slot**, the build's box (`0 0 120 80`, base line
+  y = 74) wholly on the thing's side, its near edge at least 15 from the
+  path's centre line wherever the path comes nearest; one scale for every
+  thing, the largest at which each slot fits the scene (at most 1.75, the
+  journey screen's): 1.51 with one place, 1.40 with three, 1.04 with six
+  and more;
+- the **bay**: an ellipse in the path's colour from the centre line at
+  the bend to the slot's far side, 14 build units high on each side of
+  the bend, on the thing's side only; the build's own yard lies on it;
+- the **doorstep**: the threshold stone's top (x = 60, y = 74 of the
+  build), 4 build units below the bend, on the bay;
+- the **name** box on the free side at the height of the bay, from the
+  scene's edge (8) to 15 from the centre line: two lines of 14 on 18 at
+  most, then an ellipsis; the block hugs the path (`align`), its lines
+  start left (Chromium drops the ellipsis of right-aligned clamped text);
+- **joints** where the path crosses the piece's upper and lower edge and
+  the path within the piece, so a single piece can be drawn large as the
+  setting of the place screen.
+
+Colours (decision 9): outlines, fills and names `fg`/`bg`; path and bay
+the host's background; the ground each place's `tint` (16 % of its hue),
+passing into the next place's around the joint; the thing's one `accent`
+in the place's hue. No decoration without a job: no flags, no stones
+without a use, no water, no bridge; nothing crosses the path.
+
+**Checks** in `npm run journeys`: `valleyProblems`
+(`packages/engine/src/art-valley-check.ts`) measures the layout for 1 to
+12 places with the things alternating from either side, every choice of
+sides up to six places and the scene at 720 wide: no slot and no name box
+comes nearer than 15 to the centre line or leaves the scene, no two boxes
+overlap, a name box holds at least 5.5 characters, every bay stays on its
+side of the centre line at every height and reaches the slot's far side,
+the doorstep lies on the bay, the path runs edge to edge. The palette
+check (`art-palette.ts`) requires the hosts' text on every hue's `tint`,
+and where two hues' tints blend, at 4.5 : 1, light and dark, on every
+host card; the tint itself is decorative and not tested.
+
+**Pictures** come from `scripts/draw-valley.mjs` (the layout with the
+committed builds in its slots, rendered in Super Productivity's card
+colours, light left, dark right; example words and hues):
+
+![The Valley with one place](screenshots/valley-1.png)
+
+![The Valley with three places](screenshots/valley-3.png)
+
+![The Valley with six places](screenshots/valley-6.png)
+
+The same scenes drawn at 720 wide in a 1280 wide window:
+[one](screenshots/valley-desktop-1.png),
+[three](screenshots/valley-desktop-3.png),
+[six](screenshots/valley-desktop-6.png).
 
 ## The journey screen with the build
 

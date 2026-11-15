@@ -11,6 +11,8 @@
  *     → { "language": "de", "texts": { key: text } }: the texts of
  *     content/i18n and the journeys in the host's language, English
  *     behind every missing key (texts.ts, issue #39)
+ *   { "valley": { "sides": ["right", "left"], "width": 360, "height": 720 } }
+ *     → the Valley's geometry (valley-layout.ts, #127)
  *   { "batch": [request, …] }                → [answer, …]
  * Run with `gjs -m engine-cli.mjs < request.json`.
  */
@@ -25,6 +27,7 @@ import { pickLanguage, textsFor, type TextTables } from './texts';
 import type { Journey } from './types/journey';
 import type { Snapshot } from './types/snapshot';
 import type { GameView } from './types/view';
+import { valleyLayout, type ValleyInput } from './valley-layout';
 
 declare const print: (text: string) => void;
 
@@ -36,6 +39,7 @@ type Request =
   | { action: Action }
   | { guardWrite: { view: GameView; changes: Record<string, unknown> } }
   | { texts: { locale?: string; ui: TextTables; journeys?: Journey[] } }
+  | { valley: ValleyInput }
   | { batch: Request[] };
 
 const act = ({ name, args }: Action): unknown => {
@@ -55,6 +59,7 @@ const answer = (request: Request): unknown => {
     const language = pickLanguage(locale, Object.keys(ui));
     return { language, texts: textsFor(language, ui, journeys) };
   }
+  if ('valley' in request) return valleyLayout(request.valley);
   if ('batch' in request) return request.batch.map(answer);
   return { error: 'unknown request' };
 };
