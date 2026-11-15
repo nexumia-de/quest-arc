@@ -737,15 +737,6 @@
   overflow: hidden;
 }
 
-.qa-version-step {
-  box-sizing: border-box;
-  width: 56px;
-  height: 36px;
-  margin: 2px;
-  border: 2px solid var(--text-color-muted, rgba(44, 44, 44, 0.66));
-  border-radius: 10px;
-}
-
 .qa-build-state {
   margin: 0;
   padding: 0 var(--s2, 16px);

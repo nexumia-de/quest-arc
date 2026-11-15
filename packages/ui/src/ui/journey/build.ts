@@ -31,7 +31,7 @@ export const buildState = (build: BuildView, journey?: Journey): BuildState => (
       : undefined,
 });
 
-/** The row of versions: those standing small, the next as a plain step. */
+/** The row of versions: only those that stand, small. */
 export const versionRow = (
   ladder: Ladder,
   version: number,
@@ -57,19 +57,6 @@ export const versionRow = (
         { class: 'qa-version', 'aria-label': `${v}: ${given ? `${name}, ${given}` : name}` },
         svg,
         h('span', { 'aria-hidden': 'true' }, given ? `${v} · ${given}` : v),
-      ),
-    );
-  }
-  if (version < total) {
-    items.push(
-      h(
-        'li',
-        {
-          class: 'qa-version qa-version-next',
-          'aria-label': t('ui.build.next', { n: version + 1 }),
-        },
-        h('span', { class: 'qa-version-step', 'aria-hidden': 'true' }),
-        h('span', { 'aria-hidden': 'true' }, version + 1),
       ),
     );
   }

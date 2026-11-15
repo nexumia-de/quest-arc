@@ -409,14 +409,14 @@ Opened from the growing step of a moment (screen 0); back leads there.
   | ---------------------------------------------------------- | -------------------------------------------------------- |
 
   Below the place the row of
-  versions (the standing ones as small pictures with their number, the
-  next one as a plain step without a picture, nothing further), then one
-  line of state in words ("A hut stands · a cottage is on
-  its way", "… is ready", or only "A hut stands" before the stage's first
-  counting completion; the journey's own version names only while the run's ladder is the journey's own, else the ladder's titles, #115), then the card. The picture's text for
+  versions (the standing ones as small pictures with their number,
+  nothing further: no box or step for the next version), then one
+  line of state in words, only what stands ("A hut stands", never "… is
+  on its way" or "… is ready", #155; the journey's own version names only while the run's ladder is the journey's own, else the ladder's titles, #115), then the card. The picture's text for
   screen readers says the same and the flowers in words: "A hut,
   version 3 of 5; 3 of 6 flowers, in bud; not ready yet" ("6 of 6
-  flowers, open; ready" while the stage is met). At 720 px and wider the build is on the left and the card on the
+  flowers, open; ready" while the stage is met; only "A hut, version 3
+  of 5" before the first flower). At 720 px and wider the build is on the left and the card on the
   right. There is no drawn path any more: the stations are a list
   (**Stations** in the menu), each opening its details (screen 5).
 

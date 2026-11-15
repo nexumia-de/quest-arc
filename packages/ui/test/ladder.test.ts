@@ -79,18 +79,14 @@ describe('ladderScene', () => {
     expect(box(at('marker-flower-1'))).toEqual(box(at('build-home-3')));
     // in front of the thing: drawn after it
     expect(at('marker-flower-1')).toBeGreaterThan(at('build-home-3'));
-    expect(ladderScene(span, 3, { progress: 0.5 }).title).toBe(
-      'A plank bridge stands, a stone bridge is on its way',
-    );
+    expect(ladderScene(span, 3, { progress: 0.5 }).title).toBe('A plank bridge stands');
   });
 
   it('opens every flower when ready', () => {
     const on = marks(3, { ready: true, progress: 0.5 }, home);
     expect(on).toHaveLength(6);
     expect(on.every((a) => a.endsWith('-open'))).toBe(true);
-    expect(ladderScene(span, 3, { ready: true }).title).toBe(
-      'A plank bridge stands, a stone bridge is ready',
-    );
+    expect(ladderScene(span, 3, { ready: true }).title).toBe('A plank bridge stands');
   });
 
   it('shows no marker after the last version and lights the lantern', () => {
@@ -100,10 +96,8 @@ describe('ladderScene', () => {
   });
 
   it('says the state in words, never a building site', () => {
-    expect(buildWords(span, 1, { progress: 0.1 })).toBe(
-      'Stepping stones stand · a log is on its way',
-    );
-    expect(buildWords(home, 3, { ready: true })).toBe('A hut stands · a cottage is ready');
+    expect(buildWords(span, 1, { progress: 0.1 })).toBe('Stepping stones stand');
+    expect(buildWords(home, 3, { ready: true })).toBe('A hut stands');
     expect(buildWords(home, 5, { progress: 1 })).toBe('A house stands');
   });
 
@@ -117,19 +111,15 @@ describe('ladderScene', () => {
 // readers, the journey's own version count and what appears at the tick.
 describe('the build on the journey screen', () => {
   it('says the state in words, with the journey own names where given', () => {
-    expect(buildWords(span, 3, { progress: 0.5 })).toBe(
-      'A plank bridge stands · a stone bridge is on its way',
-    );
-    expect(buildWords(span, 1, { progress: 0.5 })).toBe(
-      'Stepping stones stand · a log is on its way',
-    );
+    expect(buildWords(span, 3, { progress: 0.5 })).toBe('A plank bridge stands');
+    expect(buildWords(span, 1, { progress: 0.5 })).toBe('Stepping stones stand');
     expect(buildWords(span, 3, { progress: 0 })).toBe('A plank bridge stands');
     expect(
       buildWords(span, 3, {
         ready: true,
         names: [undefined, undefined, 'The Morning Bridge', 'The Stone Way'],
       }),
-    ).toBe('The Morning Bridge stands · The Stone Way is ready');
+    ).toBe('The Morning Bridge stands');
   });
 
   it("shows the journey's names only on the journey's own ladder (#115)", () => {
@@ -151,7 +141,7 @@ describe('the build on the journey screen', () => {
     expect(buildLabel(home, 2, { ready: true })).toBe(
       'A tent, version 2 of 5; 6 of 6 flowers, open; ready',
     );
-    expect(buildLabel(home, 2, {})).toBe('A tent, version 2 of 5; nothing on its way yet');
+    expect(buildLabel(home, 2, {})).toBe('A tent, version 2 of 5');
     expect(buildLabel(home, 5, { progress: 1 })).toBe(
       'A house, version 5 of 5; all versions stand',
     );
