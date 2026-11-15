@@ -1,0 +1,26 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 80">
+  <title>A well under a roof</title>
+  <ellipse class="tint-strong" cx="60" cy="75" rx="54" ry="4.6"/>
+  <rect class="fg" x="53" y="74" width="14" height="3.5" rx="1"/>
+  <rect class="bg" x="54.4" y="75.4" width="11.2" height="0.7"/>
+  <rect class="fg" x="30" y="26" width="6" height="24"/>
+  <rect class="bg" x="32" y="28" width="2" height="20"/>
+  <rect class="fg" x="84" y="26" width="6" height="24"/>
+  <rect class="bg" x="86" y="28" width="2" height="20"/>
+  <rect class="fg" x="34" y="30" width="52" height="6" rx="3"/>
+  <rect class="bg" x="36" y="32" width="48" height="2" rx="1"/>
+  <rect class="fg" x="89" y="32" width="8" height="2"/>
+  <rect class="fg" x="95" y="32" width="2" height="8"/>
+  <rect class="fg" x="59.2" y="36" width="1.6" height="4"/>
+  <polygon class="fg" points="54.5,40 65.5,40 64.2,49 55.8,49"/>
+  <polygon class="accent" points="56.4,41.6 63.6,41.6 62.8,47.4 57.2,47.4"/>
+  <rect class="fg" x="54.5" y="43.2" width="11" height="1.4"/>
+  <polygon class="fg" points="60,4 108,30 12,30"/>
+  <polygon class="bg" points="60,6.3 100.1,28 19.9,28"/>
+  <rect class="fg" x="34" y="20" width="52" height="1.6"/>
+  <rect class="fg" x="24" y="52" width="72" height="22" rx="3"/>
+  <rect class="bg" x="26" y="54" width="68" height="18" rx="1"/>
+  <path class="fg" d="M39.4 56h1.6v6h-1.6ZM54.6 56h1.6v6h-1.6ZM69.8 56h1.6v6h-1.6ZM85 56h1.6v6h-1.6ZM25 61.2h70v1.6h-70ZM31.8 62h1.6v6h-1.6ZM47 62h1.6v6h-1.6ZM62.2 62h1.6v6h-1.6ZM77.4 62h1.6v6h-1.6ZM25 67.2h70v1.6h-70ZM39.4 68h1.6v5h-1.6ZM54.6 68h1.6v5h-1.6ZM69.8 68h1.6v5h-1.6ZM85 68h1.6v5h-1.6Z"/>
+  <ellipse class="fg" cx="60" cy="52" rx="38" ry="5.5"/>
+  <ellipse class="tint-strong" cx="60" cy="52" rx="35" ry="3"/>
+</svg>

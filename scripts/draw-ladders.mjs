@@ -507,6 +507,174 @@ build('garden-5', 'An orchard around a greenhouse', [
   ...greenhouse(),
 ]);
 
+// Well: a hole dug for water that grows into a well house, in front of the
+// same threshold stone as Home's. Size and form both grow, step by step in
+// how water is drawn: a water hole, a well sweep, a round well with a
+// winch, the well under a roof, a stone well house over it. Water is `tint-strong`; the
+// accent is the bucket.
+const WELL_WAYS = HOME_WAYS;
+const rock = (cx, cy, rx, ry) => ellipseO(cx, cy, rx, ry, 1.6);
+/** A bucket standing or hanging with its top at `top`, in the accent. */
+const bucket = (cx, top, w = 10, h = 10) => {
+  const shape = [
+    [cx - w / 2, top],
+    [cx + w / 2, top],
+    [cx + w * 0.38, top + h],
+    [cx - w * 0.38, top + h],
+  ];
+  return [
+    poly('fg', shape),
+    poly('accent', inset(shape, 1.6)),
+    rect('fg', cx - w / 2, top + h * 0.35, w, 1.4),
+  ];
+};
+/**
+ * Masonry: courses of stones from (x0, y0) to (x1, y1), each course `h`
+ * high, the joints of every second course shifted by half a stone `w`;
+ * one path, so a wall of many stones stays a small file.
+ */
+const masonry = (x0, y0, x1, y1, h, w, hole = () => null) => {
+  let d = '';
+  const joint = (x, y, jw, jh) => `M${n(x)} ${n(y)}h${n(jw)}v${n(jh)}h${n(-jw)}Z`;
+  /** A joint across from a to b, split around the hole at height y. */
+  const across = (a, b, y) => {
+    const gap = hole(y);
+    if (!gap) return joint(a, y - 0.8, b - a, 1.6);
+    return [
+      [a, gap[0]],
+      [gap[1], b],
+    ]
+      .filter(([l, r]) => r - l > 1)
+      .map(([l, r]) => joint(l, y - 0.8, r - l, 1.6))
+      .join('');
+  };
+  for (let k = 0, y = y0; y < y1 - 0.5; k += 1, y += h) {
+    const bottom = Math.min(y + h, y1);
+    if (k > 0) d += across(x0, x1, y);
+    const gaps = [hole(y), hole(bottom)].filter(Boolean);
+    for (let x = x0 + w * (k % 2 ? 0.5 : 1); x < x1 - 2; x += w)
+      if (!gaps.some(([l, r]) => x > l - 1 && x < r + 1)) d += joint(x - 0.8, y, 1.6, bottom - y);
+  }
+  return path('fg', d);
+};
+/** The round well seen from the front: a wall of stones, its rim an ellipse round the water. */
+const wellWall = (x, w, top = 52) => [
+  ...boxO(x + 2, top, w - 4, 74 - top, T, 3),
+  masonry(x + 3, top + 4, x + w - 3, 73, (74 - top - 4) / (top < 56 ? 3 : 2), w / 5),
+  ellipse('fg', 60, top, w / 2, 5.5),
+  ellipse('tint-strong', 60, top, w / 2 - 3, 3),
+];
+/** Two posts with a winch between them, the crank on the right, the bucket on its rope. */
+const winch = (x, w, top) => [
+  ...boxO(x, top, 6, 50 - top, T),
+  ...boxO(x + w - 6, top, 6, 50 - top, T),
+  ...boxO(x + 4, top + 4, w - 8, 6, T, 3),
+  rect('fg', x + w - 1, top + 6, 8, 2),
+  rect('fg', x + w + 5, top + 6, 2, 8),
+  rect('fg', 59.2, top + 10, 1.6, 30 - top),
+  ...bucket(60, 40, 11, 9),
+];
+
+// The water hole: a pit dug down to the water, its earth heaped behind it
+// with the spade still in it.
+build('well-1', 'A water hole', [
+  yard(),
+  ...boxO(84.2, 30, 2.6, 26, 1.3),
+  ...boxO(79.5, 29, 12, 3, 1.3, 1.5),
+  ...polyO(dome(85, 66, 21, 15, 12), T),
+  ...[
+    [78, 58],
+    [92, 60],
+  ].map(([x, y]) => rect('fg', x, y, 5, 1.6, 0.8)),
+  ellipse('fg', 60, 67, 28, 7),
+  ellipse('tint-strong', 60, 67, 25, 4.6),
+  ...[40, 80].flatMap((cx) => rock(cx, 72, 6, 2.8)),
+  ...bucket(25, 62),
+]);
+
+/** A bar from (x1, y1) to (x2, y2), `w` thick, as a polygon. */
+const bar = (x1, y1, x2, y2, w) => {
+  const len = Math.hypot(x2 - x1, y2 - y1);
+  const [nx, ny] = [(-(y2 - y1) / len) * (w / 2), ((x2 - x1) / len) * (w / 2)];
+  return [
+    [x1 + nx, y1 + ny],
+    [x2 + nx, y2 + ny],
+    [x2 - nx, y2 - ny],
+    [x1 - nx, y1 - ny],
+  ];
+};
+// The well sweep: a beam on a forked post, a stone at its short end, the
+// bucket on a pole from its long end over a low stone curb.
+build('well-2', 'A well sweep', [
+  yard(),
+  ...boxO(24, 42, 6, 32, T),
+  ...polyO(bar(10, 50, 66, 24, 4.5), 1.6),
+  ...boxO(3, 49, 12, 10, T, 2.5),
+  rect('fg', 63.2, 25, 1.6, 22),
+  ...bucket(64, 46, 10, 9),
+  ...wellWall(40, 40, 62),
+]);
+
+build('well-3', 'A well with a winch', [yard(), ...winch(30, 60, 22), ...wellWall(26, 68)]);
+
+build('well-4', 'A well under a roof', [
+  yard(),
+  ...winch(30, 60, 26),
+  ...polyO(
+    [
+      [60, 4],
+      [108, 30],
+      [12, 30],
+    ],
+    T,
+  ),
+  rect('fg', 34, 20, 52, 1.6),
+  ...wellWall(22, 76),
+]);
+
+// The well house: the well stands inside, under a tall arch: the shade
+// inside the arch, a smaller well set back on its floor, then the front
+// wall with the arch cut out over it, so the wall's edges cover the well's.
+const ARCH = [[26, 74], ...dome(60, 60, 34, 28), [94, 74]];
+/** Where the arch and its outline cut a course at height y: [left, right], or none above it. */
+const archAt = (y) => {
+  const [base, rx, ry] = [60, 34, 28];
+  if (y < base - ry - T) return null;
+  const t = y >= base ? 1 : Math.max(0, 1 - (base - y + T) / ry) ** (1 / 1.7);
+  return [60 - rx * t - T - 0.5, 60 + rx * t + T + 0.5];
+};
+const ring = (list) => `M${list.map(([x, y]) => `${n(x)} ${n(y)}`).join('L')}Z`;
+const FRONT = [
+  [8, 28],
+  [112, 28],
+  [112, 74],
+  [8, 74],
+];
+build('well-5', 'A well house', [
+  yard(),
+  ...polyO(
+    [
+      [60, 4],
+      [118, 30],
+      [2, 30],
+    ],
+    T,
+  ),
+  rect('fg', 32, 18, 56, 1.6),
+  poly('tint', ARCH),
+  rect('fg', 26, 66, 68, 1.6),
+  rect('fg', 59.2, 33, 1.6, 15),
+  ...bucket(60, 46, 10, 8),
+  ...wellWall(38, 44, 58),
+  path('fg', ring(FRONT) + ring(ARCH), true),
+  path(
+    'bg',
+    ring(inset(FRONT, T)) + ring(inset(ARCH, -T).map(([x, y]) => [x, Math.min(y, 74 - T)])),
+    true,
+  ),
+  masonry(10, 30, 110, 73, 7, 9, archAt),
+]);
+
 // ---- markers: drawn once for every ladder (32 × 32) ---------------------
 // While a stage runs, a small festive marker grows in the foreground, one
 // element at a time (owner, 2026-11-12, #42): first the posts, one after
@@ -710,6 +878,25 @@ setting('field', 'Open fields', [
   path('tint-strong', 'M320 146C296 146 280 158 268 180H320Z'),
   pathToThreshold(),
 ]);
+// A village green for a well: a long low ridge far away with the roofs of
+// a village on it, no water.
+const roof = (x, y, w) =>
+  poly('tint-strong', [
+    [x, y],
+    [x + w / 2, y - w * 0.45],
+    [x + w, y],
+    [x + w * 0.9, y + 6],
+    [x + w * 0.1, y + 6],
+  ]);
+setting('green', 'Village green', [
+  path('tint', 'M0 52C50 46 110 40 170 44C220 47 270 40 320 46V180H0Z'),
+  roof(22, 48, 14),
+  roof(40, 46, 10),
+  roof(272, 45, 12),
+  path('tint-strong', 'M0 148C30 144 58 154 78 180H0Z'),
+  path('tint-strong', 'M320 148C298 146 282 158 270 180H320Z'),
+  pathToThreshold(),
+]);
 
 // ---- the marker's posts: per setting (320 × 180) ------------------------
 // A setting declares its marker layout and an ordered list of post points
@@ -821,8 +1008,9 @@ const MARKER_LAYOUTS = {
     beads: 6,
   },
 };
-// The field has the clearing's path, so its marker stands where Home's does.
+// The field and the green have the clearing's path, so their markers stand where Home's does.
 MARKER_LAYOUTS.field = MARKER_LAYOUTS.clearing;
+MARKER_LAYOUTS.green = MARKER_LAYOUTS.clearing;
 const markerOf = ({ layout, posts }) => ({ layout, posts });
 
 // Where a setting has water: polygons in setting units, so the checker can
@@ -972,6 +1160,35 @@ ladder(
     at('bush', 'near', 296, 179, 48),
     at('tuft', 'near', 70, 178, 20),
     ...markerPlaces('field', MARKER_LAYOUTS.field),
+  ],
+);
+
+ladder(
+  'well',
+  {
+    title: 'Well',
+    hue: 'water',
+    water: false,
+    marker: 'lanterns',
+    ways: WELL_WAYS,
+    ...markerOf(MARKER_LAYOUTS.green),
+    versions: [
+      { art: 'build-well-1', title: 'A water hole' },
+      { art: 'build-well-2', title: 'A well sweep' },
+      { art: 'build-well-3', title: 'A well with a winch' },
+      { art: 'build-well-4', title: 'A roofed well' },
+      { art: 'build-well-5', title: 'A well house' },
+    ],
+  },
+  groundOf('green'),
+  [
+    at('tree', 'far', 250, 42, 20),
+    slot('build', { band: 'middle', ...SLOT }),
+    at('tuft', 'middle', 290, 132, 14),
+    lanternAtPost(MARKER_LAYOUTS.green),
+    at('bush', 'near', -22, 179, 48),
+    at('tuft', 'near', 236, 178, 20),
+    ...markerPlaces('green', MARKER_LAYOUTS.green),
   ],
 );
 

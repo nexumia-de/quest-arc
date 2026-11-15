@@ -34,8 +34,13 @@ describe('pictures in content/art', () => {
     expect(paletteProblems(palette)).toEqual([]);
   });
 
-  it('have the ladders crossing, garden and home', () => {
-    expect(ladders).toEqual(['crossing.ladder.json', 'garden.ladder.json', 'home.ladder.json']);
+  it('have the ladders crossing, garden, home and well', () => {
+    expect(ladders).toEqual([
+      'crossing.ladder.json',
+      'garden.ladder.json',
+      'home.ladder.json',
+      'well.ladder.json',
+    ]);
   });
 
   it.each(ladders)('%s passes the ladder checker', (file) => {

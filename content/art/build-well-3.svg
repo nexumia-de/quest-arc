@@ -1,0 +1,23 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 80">
+  <title>A well with a winch</title>
+  <ellipse class="tint-strong" cx="60" cy="75" rx="54" ry="4.6"/>
+  <rect class="fg" x="53" y="74" width="14" height="3.5" rx="1"/>
+  <rect class="bg" x="54.4" y="75.4" width="11.2" height="0.7"/>
+  <rect class="fg" x="30" y="22" width="6" height="28"/>
+  <rect class="bg" x="32" y="24" width="2" height="24"/>
+  <rect class="fg" x="84" y="22" width="6" height="28"/>
+  <rect class="bg" x="86" y="24" width="2" height="24"/>
+  <rect class="fg" x="34" y="26" width="52" height="6" rx="3"/>
+  <rect class="bg" x="36" y="28" width="48" height="2" rx="1"/>
+  <rect class="fg" x="89" y="28" width="8" height="2"/>
+  <rect class="fg" x="95" y="28" width="2" height="8"/>
+  <rect class="fg" x="59.2" y="32" width="1.6" height="8"/>
+  <polygon class="fg" points="54.5,40 65.5,40 64.2,49 55.8,49"/>
+  <polygon class="accent" points="56.4,41.6 63.6,41.6 62.8,47.4 57.2,47.4"/>
+  <rect class="fg" x="54.5" y="43.2" width="11" height="1.4"/>
+  <rect class="fg" x="28" y="52" width="64" height="22" rx="3"/>
+  <rect class="bg" x="30" y="54" width="60" height="18" rx="1"/>
+  <path class="fg" d="M41.8 56h1.6v6h-1.6ZM55.4 56h1.6v6h-1.6ZM69 56h1.6v6h-1.6ZM82.6 56h1.6v6h-1.6ZM29 61.2h62v1.6h-62ZM35 62h1.6v6h-1.6ZM48.6 62h1.6v6h-1.6ZM62.2 62h1.6v6h-1.6ZM75.8 62h1.6v6h-1.6ZM29 67.2h62v1.6h-62ZM41.8 68h1.6v5h-1.6ZM55.4 68h1.6v5h-1.6ZM69 68h1.6v5h-1.6ZM82.6 68h1.6v5h-1.6Z"/>
+  <ellipse class="fg" cx="60" cy="52" rx="34" ry="5.5"/>
+  <ellipse class="tint-strong" cx="60" cy="52" rx="31" ry="3"/>
+</svg>

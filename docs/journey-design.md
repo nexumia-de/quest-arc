@@ -68,7 +68,7 @@ whole at every stage, and every stage makes it a larger version. A
 **ladder** is that thing drawn once in five versions and used by every
 journey that picks it. The first two ladders, Crossing (with lanterns
 and with pennants) and Home (with pennants and with flowers), then Garden
-(with flowers, #128); plugin
+(with flowers) and Well (with lanterns, #128); plugin
 light above, Day Planner dark below (scale 2). Each version, then its
 marker growing element by element (every element for the first stage, a
 few sampled steps for the others), ready, then the next version:
@@ -90,6 +90,15 @@ journey mock at 360 × 720 (mid-way and ready, light and dark):
 ![Garden, versions and row](screenshots/ladder-garden-versions.png)
 
 ![Garden, journey mock](screenshots/ladder-garden-journey.png)
+
+Well the same way: the sequence, the versions with the row, the journey
+mock.
+
+![Well with lanterns](screenshots/ladder-well.png)
+
+![Well, versions and row](screenshots/ladder-well-versions.png)
+
+![Well, journey mock](screenshots/ladder-well-journey.png)
 
 The journey screen as a static mock (plugin and Day Planner side by side;
 Crossing above, Home below; first mid-way, posts up and two elements
@@ -129,7 +138,8 @@ journey):
    on both banks, as thick as the surface. A build the way leads to (a
    home or a garden) has one: the threshold stone (x = 53–67,
    y = 74–77.5) in front of the fire, the tent's opening and each door,
-   or of the garden's bed and the greenhouse door, where the path ends.
+   of the garden's bed and the greenhouse door, or of the water hole and
+   each well, where the path ends.
    `ways` lists them; the checker requires a corner of every version and
    of the setting's path at each way point.
 4. **Water runs through.** Water in a setting runs from edge to edge (the
@@ -155,10 +165,26 @@ journey):
    thatch, a cottage with a pitched roof and chimney, a house of two
    storeys. Garden is one raised bed with a sunflower, two rows of beds,
    the rows before a hedge with a fruit tree, a greenhouse between hedges
-   and trees, an orchard of five fruit trees around the greenhouse.
-8. **Look.** Outlined in `fg` with a `bg` fill, one `accent` detail (the
+   and trees, an orchard of five fruit trees around the greenhouse. Well
+   follows how water is drawn: a water hole dug down to the water (its
+   earth heaped behind with the spade in it), a well sweep (a beam on a
+   forked post with a stone and the bucket on a pole) over a low stone
+   curb, a round well with a winch, the well under a roof, a stone well
+   house with the well inside, under its arch (owner: a spring and a pump
+   break the line, a fountain is another use).
+8. **History, step by step** (owner, 2026-11-15). A ladder follows one
+   real line of development for one use; each version is what people
+   actually built next, within a world before electricity, so the row
+   reads as a story without words and no version is a step back. A
+   ladder has five versions; a journey with more stages uses the rule of
+   game rules §7 (the last version gains fixed additions). Parked: a
+   version that is a new technique joining what stands (a hand pump at
+   the well house), and several things at one place
+   ([#114](https://github.com/nexumia-de/quest-arc/issues/114),
+   decision 13).
+9. **Look.** Outlined in `fg` with a `bg` fill, one `accent` detail (the
    flame, a glowing door or window, the keystone, a rail cap, the
-   sunflower, the fruit), water and
+   sunflower, the fruit, the bucket), water and
    the yard in `tint-strong` of the region's hue. The setting is quiet:
    ground and far trees in `tint`, a few reused plants (tuft, reeds, bush,
    flowers, far trees) in the [depth bands](#look-and-depth-bands).
@@ -197,7 +223,7 @@ bridge is ready" while it is met.
 **Marker kinds** (`content/art/markers.json`), each drawn once and used
 with every ladder and setting; what hangs is the user's choice per
 journey, the ladder only gives the default (`marker`: Crossing lanterns,
-Home pennants, Garden flowers):
+Home pennants, Garden flowers, Well lanterns):
 
 - **lanterns**: small lanterns, outlined; ready filled with a flame, a
   halo and rays.
@@ -223,7 +249,7 @@ path meets the build:
   gently.
 - `sides`: two short lines, left and right, with a gap in the middle
   (four posts, two on each side). For a way leading to the build (Home
-  and Garden: the path to the threshold) or a build on water (a boat: the gap is the
+  Garden and Well: the path to the threshold) or a build on water (a boat: the gap is the
   waterway).
 - **Choosing**: the gap is wherever the user's way or view to the build
   passes. If nothing passes in front of the build, `span`; otherwise
@@ -283,7 +309,7 @@ on its own screen as below, and the hue belongs to the run.
 hues, a light and a dark value each); `fg`, `bg` and `dim` stay the
 host's, and the path, card and controls keep the host's accent. The
 setting's kind sets the default (river: water blue; clearing: meadow
-green; Garden's open fields: moss). Each hue is checked by computation (WCAG relative luminance) in
+green; Garden's open fields: moss; Well's village green: water blue). Each hue is checked by computation (WCAG relative luminance) in
 both repositories: `accent` at least 3 : 1 against every host card (WCAG
 1.4.11, non-text), `tint-strong` at least 1.5 : 1 (decorative, but the
 water must show) and the outline `fg` at least 3 : 1 on `tint-strong`;
