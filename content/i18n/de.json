@@ -172,7 +172,7 @@
   "ui.place.side.right": "Rechts",
   "ui.place.suggestion": "Vorschlag nehmen",
   "ui.build.one-thing": "An einem Moment steht ein Ding und wächst mit der Routine dort.",
-  "ui.start.grows-on": "Diese Reise lässt das Ding wachsen, das an diesem Moment steht.",
+  "ui.start.grows-on": "Diese Reise baut ein weiteres Ding derselben Art an diesem Moment (bis zu drei).",
   "ui.valley.label": "Das Tal: deine Momente entlang des Wegs durch den Tag",
   "ui.valley.place": "{name}: {thing}, Stufe {version} von {total}.",
   "ui.valley.place.free": "{name}: Hier steht noch nichts.",

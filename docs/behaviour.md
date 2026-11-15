@@ -313,9 +313,11 @@ with #131._
   ("You build: Home · pennants"), and **Change**, which
   opens screen 3a. Nothing is shown of the versions to come. For a
   further journey at a moment that already has its thing (#130) there is
-  nothing to choose and no **Change**: "This journey grows the thing that
-  stands at this moment." (#114, decision 5: a further journey continues
-  the same thing, engine rule #148); nothing is written for the build.
+  nothing to choose and no **Change**: "This journey builds another thing
+  of the same kind at this moment (up to three)." (#114, decision 5: a
+  place holds one to three things of the same kind, engine #148/#149;
+  until then the place shows its first thing only); nothing is written
+  for the build.
 - Main action: **Start**. Then the flow "Set up the task" (flow B) for
   the first stage. A changed build is written with the start, as one
   `build:<runId>` record ([data model](data-model.md)); an unchanged one

@@ -52,7 +52,7 @@ export const startScreen = (ctx: Context, journeyId: string, anchorId?: string):
       h('span', { class: 'qa-option-title' }, label),
     );
 
-  // A further journey at a moment that has its thing grows the thing that stands here: nothing to choose.
+  // A further journey at a moment that has its thing builds another thing of the same kind here: nothing to choose.
   const further = () =>
     view.valley.some(
       (p) => p.anchorId === ((ctx.draft.anchor as string | undefined) ?? anchorId) && p.thing,
