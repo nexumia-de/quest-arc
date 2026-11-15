@@ -52,6 +52,26 @@ of the threshold stone was only ever checked by eye.
 - Crossing, retired by #128, is measured and only warned about (its
   plank bridge covers 1 % more than the log).
 
+## Writing the pictures small
+
+Added with #135, when Garden 5 came out at 5.8 KB:
+
+- `compact` writes every run of plain shapes of one role (rectangles
+  without rounded corners, ellipses as two half arcs, polygons), all
+  turned clockwise, as one path; `layered` draws objects that do not
+  overlap layer by layer, so their outlines and their fills each become
+  one run. The picture stays the same: every build, setting and marker
+  picture but Garden rendered at four times its size shows no difference
+  against `main`.
+- Rings from the geometry library and rectangles are written with steps
+  along one axis (`H`, `V`) where they run straight; absolute, because
+  the picture checker reads the corners of absolute commands only (the
+  way points).
+- The measuring reads half-ellipse arcs and turns every single ring the
+  same way before it unites them. Before, a ring drawn the other way round
+  cancelled part of another in the union, so some versions were measured
+  too small (Crossing 2: 1,627 instead of 1,704).
+
 ## Considered
 
 - `polygon-clipping` (MIT): joins and cuts, but no offsetting, which the

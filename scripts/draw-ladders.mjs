@@ -43,7 +43,20 @@ const ellipseO = (cx, cy, rx, ry, t) => [
 
 /** Path data for a shape's rings (outer rings and holes). */
 const rings = (shape) =>
-  shape.map((ring) => `M${ring.map(([x, y]) => `${n(x)} ${n(y)}`).join('L')}Z`).join('');
+  shape
+    .map((ring) => {
+      // straight runs as steps along one axis (H, V), which keeps stonework
+      // small; absolute, so the picture checker reads their corners
+      const [[x0, y0], ...rest] = ring.map(([x, y]) => [Number(n(x)), Number(n(y))]);
+      let [px, py] = [x0, y0];
+      let d = `M${n(x0)} ${n(y0)}`;
+      for (const [x, y] of rest) {
+        d += y === py ? `H${n(x)}` : x === px ? `V${n(y)}` : `L${n(x)} ${n(y)}`;
+        [px, py] = [x, y];
+      }
+      return `${d}Z`;
+    })
+    .join('');
 /** A shape in one role: a polygon when it is one ring, else a path. */
 const shapeIn = (role, shape) =>
   shape.length === 1 ? poly(role, shape[0]) : path(role, rings(shape), true);
@@ -73,9 +86,69 @@ const masonry = (wall, h, w) => {
   return path('fg', rings(within(joints, wall)));
 };
 
+/**
+ * Path data of a plain shape element (a rectangle without rounded corners,
+ * an ellipse, a polygon), drawn clockwise; null for any other element.
+ */
+const asPathData = (element) => {
+  const [, name, rest = ''] =
+    /^<(rect|ellipse|polygon) class="[^"]+"([^>]*)\/>$/.exec(element) ?? [];
+  const a = Object.fromEntries([...rest.matchAll(/([a-z]+)="([^"]*)"/g)].map(([, k, v]) => [k, v]));
+  if (name === 'rect' && a.rx === undefined)
+    return `M${a.x} ${a.y}H${n(Number(a.x) + Number(a.width))}V${n(Number(a.y) + Number(a.height))}H${a.x}Z`;
+  if (name === 'ellipse') {
+    const arc = (dx) => `a${a.rx} ${a.ry} 0 1 1 ${n(dx)} 0`;
+    return `M${n(a.cx - a.rx)} ${a.cy}${arc(2 * a.rx)}${arc(-2 * a.rx)}Z`;
+  }
+  if (name === 'polygon') {
+    let list = a.points.split(' ').map((p) => p.split(',').map(Number));
+    const turn = list.reduce((sum, [x1, y1], i) => {
+      const [x2, y2] = list[(i + 1) % list.length];
+      return sum + x1 * y2 - x2 * y1;
+    }, 0);
+    if (turn < 0) list = list.reverse(); // clockwise on screen, like the others
+    return `M${list.map(([x, y]) => `${n(x)} ${n(y)}`).join('L')}Z`;
+  }
+  return null;
+};
+/**
+ * The elements with every run of plain shapes of the same role written as
+ * one path: the same picture (one colour, all clockwise, so they join), in
+ * far fewer bytes. Rounded rectangles and paths stay as they are.
+ */
+const compact = (elements) => {
+  const out = [];
+  let run = [];
+  const flush = () => {
+    if (run.length === 1) out.push(run[0].element);
+    else if (run.length > 1) out.push(path(run[0].role, run.map((r) => r.d).join('')));
+    run = [];
+  };
+  for (const element of elements) {
+    const d = asPathData(element);
+    const role = /class="([^"]+)"/.exec(element)?.[1];
+    if (d === null) {
+      flush();
+      out.push(element);
+      continue;
+    }
+    if (run.length > 0 && run[0].role !== role) flush();
+    run.push({ element, role, d });
+  }
+  flush();
+  return out;
+};
+/**
+ * Objects that do not overlap, drawn layer by layer: the first element of
+ * each, then the second of each, and so on, so that `compact` writes each
+ * layer as one path. The objects must have the same elements in the same
+ * roles; the picture is the same as drawing them one after the other.
+ */
+const layered = (objects) => objects[0].flatMap((_, i) => objects.map((o) => o[i]));
 const svg = (viewBox, title, shapes) =>
-  `<svg xmlns="http://www.w3.org/2000/svg" viewBox="${viewBox}">\n  <title>${title}</title>\n${shapes
-    .flat()
+  `<svg xmlns="http://www.w3.org/2000/svg" viewBox="${viewBox}">\n  <title>${title}</title>\n${compact(
+    shapes.flat(),
+  )
     .map((s) => `  ${s}`)
     .join('\n')}\n</svg>\n`;
 
@@ -385,15 +458,13 @@ build('home-5', 'A house of two storeys', [
 ]);
 
 // Garden: everything grows from one bed in front of the threshold stone at
-// x = 53–67, the same stone and way as Home's. Size and form both grow:
-// one raised bed, rows of beds, rows behind a hedge with a fruit tree, an
-// orchard behind the hedge, the orchard and beds inside a stone wall with
-// its gate on the threshold (history rule: the greenhouse, a different
-// technique, is parked). The accent is the sunflower, then the fruit.
+// x = 53–67, the same stone and way as Home's (history rule: the
+// greenhouse, a different technique, is parked). The accent is the
+// sunflower and the fruit.
 const GARDEN_WAYS = HOME_WAYS;
 /** A raised bed of boards from x to x + w, its top at y. */
 const bed = (x, w, y = 64) => [
-  ...boxO(x, y, w, 74 - y, T, 1),
+  ...boxO(x, y, w, 74 - y, T),
   rect('fg', x, (y + 74) / 2 - 0.8, w, 1.6),
 ];
 /** A leafy plant in a bed: a mound with a middle vein; the bed hides its foot. */
@@ -404,22 +475,25 @@ const plant = (cx, base, r) => [
 /** The sunflower: a stem from `base` with two leaves, the bloom in the accent. */
 const sunflower = (cx, base, top) => [
   rect('fg', cx - 1, top, 2, base - top),
-  ...ellipseO(cx - 4.5, top + (base - top) * 0.6, 4.5, 2.4, 1.4),
-  ...ellipseO(cx + 4.5, top + (base - top) * 0.4, 4.5, 2.4, 1.4),
+  ...layered([
+    ellipseO(cx - 4.5, top + (base - top) * 0.6, 4.5, 2.4, 1.4),
+    ellipseO(cx + 4.5, top + (base - top) * 0.4, 4.5, 2.4, 1.4),
+  ]),
   ellipse('fg', cx, top, 6.5, 6.5),
   ellipse('accent', cx, top, 4.7, 4.7),
   ellipse('fg', cx, top, 2, 2),
 ];
 /** A hedge from x to x + w: a row of round bushes grown into one, its top at y. */
-const hedge = (x, w, top, base = 66) => {
-  const bumps = Math.round(w / 16);
+const hedge = (x, w, top, base = 66, size = 16) => {
+  const bumps = Math.round(w / size);
   const r = w / bumps / 2;
-  const cy = top + r * 0.8;
+  const ry = Math.min(r * 0.8, 6.4); // large bushes stay low, like a clipped hedge
+  const cy = top + ry;
   const cxs = Array.from({ length: bumps }, (_, i) => x + r + i * 2 * r);
   return [
-    ...cxs.map((cx) => ellipse('fg', cx, cy, r + 1, r * 0.8)),
+    ...cxs.map((cx) => ellipse('fg', cx, cy, r + 1, ry)),
     rect('fg', x, cy, w, base - cy, 2),
-    ...cxs.map((cx) => ellipse('bg', cx, cy, r + 1 - T, r * 0.8 - T)),
+    ...cxs.map((cx) => ellipse('bg', cx, cy, r + 1 - T, ry - T)),
     rect('bg', x + T, cy, w - 2 * T, base - cy - T),
   ];
 };
@@ -441,82 +515,51 @@ const fruitTree = (cx, cy, r, trunk = true, fruits = FRUIT) => [
   ...ellipseO(cx, cy, r, r * 0.92, T),
   ...fruits.map(([dx, dy]) => ellipse('accent', cx + dx * r, cy + dy * r, 2.8, 2.8)),
 ];
-build('garden-1', 'A garden bed', [
-  yard(),
-  ...sunflower(60, 62, 36),
-  ...plant(46, 62, 8),
-  ...plant(74, 62, 8),
-  ...bed(32, 56, 62),
-]);
-
-build('garden-2', 'A garden in rows', [
-  yard(),
-  ...sunflower(60, 58, 28),
-  ...[34, 46, 74, 86].flatMap((x) => plant(x, 58, 7)),
-  ...bed(26, 68, 58),
-  ...[23, 34, 45, 75, 86, 97].flatMap((x) => plant(x, 66, 5.5)),
-  ...bed(16, 36, 66),
-  ...bed(68, 36, 66),
-]);
-
-// From version 3 on, the trees grow from the middle, where the sunflower
-// stood: one, then three, then five; what stands keeps its place and grows
-// on, so the first tree is the largest. A tree of age 1 (planted in this
-// version) is young with one fruit, age 2 grown with two, age 3 old with
-// three; its trunk ends behind the hedge or wall whose top is `top`.
-const ORCHARD = [14, 37, 60, 83, 106];
+// The garden is drawn once, version by version: what stands keeps its
+// place and grows on, nothing moves, shrinks or disappears. The bed with
+// the sunflower in the middle (1), a bed on each side (2), a hedge behind
+// and two fruit trees beside the sunflower (3), two more trees further out
+// (4), a low wall of stones in front with its gate on the threshold (5).
+// A tree is young with one fruit when planted, grown with two a version
+// later, old with three after that; its trunk ends behind the hedge.
+const HEDGE_TOP = 44;
+const TREES = [
+  { x: 14, planted: 4 },
+  { x: 106, planted: 4 },
+  { x: 37, planted: 3 },
+  { x: 83, planted: 3 },
+];
 const TREE_AGES = [
   { r: 9, trunk: 4, fruits: 1 },
   { r: 12, trunk: 6, fruits: 2 },
   { r: 15, trunk: 8, fruits: 3 },
 ];
-/** The trees of the orchard, ages by place (outer to middle), the oldest drawn last. */
-const orchard = (ages, top) =>
-  ORCHARD.map((x, i) => [x, ages[Math.min(i, 4 - i)]])
-    .filter(([, age]) => age > 0)
-    .sort(([, a], [, b]) => a - b)
-    .flatMap(([x, age]) => {
-      const { r, trunk, fruits } = TREE_AGES[age - 1];
-      return fruitTree(x, top - trunk - r * 0.92, r, 'solid', FRUIT.slice(0, fruits));
-    });
-build('garden-3', 'A garden with a fruit tree', [
+const garden = (v) => [
   yard(),
-  ...orchard([0, 0, 1], 42),
-  ...hedge(6, 108, 42, 60),
-  ...[19, 30, 41, 79, 90, 101].flatMap((x) => plant(x, 66, 5.5)),
-  ...bed(12, 40, 66),
-  ...bed(68, 40, 66),
-]);
-
-build('garden-4', 'An orchard', [
-  yard(),
-  ...orchard([0, 1, 2], 42),
-  ...hedge(5, 110, 42, 60),
-  ...[24, 38, 82, 96].flatMap((x) => plant(x, 66, 6)),
-  ...bed(14, 38, 66),
-  ...bed(68, 38, 66),
-]);
-
-// The walled garden: the orchard and beds inside a wall of stones at
-// shoulder height; the trees and the beds' plants rise over it, and its
-// gate opens on the threshold stone.
-const GATE = [[47, 74], ...dome(60, 58, 13, 13, 12), [73, 74]];
-const WALL = [
-  [3, 48],
-  [117, 48],
-  [117, 74],
-  [3, 74],
+  ...TREES.filter((t) => v >= t.planted).flatMap(({ x, planted }) => {
+    const { r, trunk, fruits } = TREE_AGES[Math.min(v - planted, 2)];
+    return fruitTree(x, HEDGE_TOP - trunk - r * 0.92, r, 'solid', FRUIT.slice(0, fruits));
+  }),
+  ...(v >= 3 ? hedge(2, 116, HEDGE_TOP, 62, 23) : []),
+  ...sunflower(60, 62, v === 1 ? 36 : 28),
+  ...layered([46, 74, ...(v >= 2 ? [16, 104] : [])].map((x) => plant(x, 62, 8))),
+  ...layered([bed(32, 56, 62), ...(v >= 2 ? [bed(4, 24, 62), bed(92, 24, 62)] : [])]),
+  ...(v >= 5
+    ? [
+        ...layered([2, 72].map((x) => boxO(x, 64, 46, 10, T))),
+        masonry([...box(4, 66, 42, 7), ...box(74, 66, 42, 7)], 3.5, 12),
+        ...layered([1, 71].map((x) => boxO(x, 60.5, 48, 5, T))),
+        ...layered([46, 69].map((x) => boxO(x, 56, 5, 18, T))),
+      ]
+    : []),
 ];
-build('garden-5', 'A walled garden', [
-  yard(),
-  ...orchard([1, 2, 3], 45),
-  ...[48.5, 71.5].flatMap((x) => plant(x, 48, 6.5)),
-  poly('tint', GATE),
-  shapeIn('fg', minus([WALL], [GATE])),
-  shapeIn('bg', minus(grow([WALL], -T), grow([GATE], T))),
-  masonry(minus(box(5, 51, 110, 22), grow([GATE], T + 0.5)), 7, 16),
-  ...boxO(1, 45, 118, 5, T, 2),
-]);
+[
+  'A garden bed',
+  'A row of beds',
+  'A garden with fruit trees',
+  'An orchard',
+  'A walled garden',
+].forEach((title, i) => build(`garden-${i + 1}`, title, garden(i + 1)));
 
 // Well: a hole dug for water that grows into a well house, in front of the
 // same threshold stone as Home's. Size and form both grow, step by step in
@@ -1115,8 +1158,8 @@ ladder(
     ...markerOf(MARKER_LAYOUTS.field),
     versions: [
       { art: 'build-garden-1', title: 'A garden bed' },
-      { art: 'build-garden-2', title: 'A garden in rows' },
-      { art: 'build-garden-3', title: 'A garden with a fruit tree' },
+      { art: 'build-garden-2', title: 'A row of beds' },
+      { art: 'build-garden-3', title: 'A garden with fruit trees' },
       { art: 'build-garden-4', title: 'An orchard' },
       { art: 'build-garden-5', title: 'A walled garden' },
     ],

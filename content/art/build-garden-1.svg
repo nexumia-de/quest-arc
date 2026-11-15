@@ -3,21 +3,13 @@
   <ellipse class="tint-strong" cx="60" cy="75" rx="54" ry="4.6"/>
   <rect class="fg" x="53" y="74" width="14" height="3.5" rx="1"/>
   <rect class="bg" x="54.4" y="75.4" width="11.2" height="0.7"/>
-  <rect class="fg" x="59" y="36" width="2" height="26"/>
-  <ellipse class="fg" cx="55.5" cy="51.6" rx="4.5" ry="2.4"/>
-  <ellipse class="bg" cx="55.5" cy="51.6" rx="3.1" ry="1"/>
-  <ellipse class="fg" cx="64.5" cy="46.4" rx="4.5" ry="2.4"/>
-  <ellipse class="bg" cx="64.5" cy="46.4" rx="3.1" ry="1"/>
+  <path class="fg" d="M59 36H61V62H59ZM51 51.6a4.5 2.4 0 1 1 9 0a4.5 2.4 0 1 1 -9 0ZM60 46.4a4.5 2.4 0 1 1 9 0a4.5 2.4 0 1 1 -9 0Z"/>
+  <path class="bg" d="M52.4 51.6a3.1 1 0 1 1 6.2 0a3.1 1 0 1 1 -6.2 0ZM61.4 46.4a3.1 1 0 1 1 6.2 0a3.1 1 0 1 1 -6.2 0Z"/>
   <ellipse class="fg" cx="60" cy="36" rx="6.5" ry="6.5"/>
   <ellipse class="accent" cx="60" cy="36" rx="4.7" ry="4.7"/>
-  <ellipse class="fg" cx="60" cy="36" rx="2" ry="2"/>
-  <ellipse class="fg" cx="46" cy="58.8" rx="8" ry="7.2"/>
-  <ellipse class="bg" cx="46" cy="58.8" rx="6.4" ry="5.6"/>
-  <rect class="fg" x="45.2" y="53.2" width="1.6" height="8.8"/>
-  <ellipse class="fg" cx="74" cy="58.8" rx="8" ry="7.2"/>
-  <ellipse class="bg" cx="74" cy="58.8" rx="6.4" ry="5.6"/>
-  <rect class="fg" x="73.2" y="53.2" width="1.6" height="8.8"/>
-  <rect class="fg" x="32" y="62" width="56" height="12" rx="1"/>
+  <path class="fg" d="M58 36a2 2 0 1 1 4 0a2 2 0 1 1 -4 0ZM38 58.8a8 7.2 0 1 1 16 0a8 7.2 0 1 1 -16 0ZM66 58.8a8 7.2 0 1 1 16 0a8 7.2 0 1 1 -16 0Z"/>
+  <path class="bg" d="M39.6 58.8a6.4 5.6 0 1 1 12.8 0a6.4 5.6 0 1 1 -12.8 0ZM67.6 58.8a6.4 5.6 0 1 1 12.8 0a6.4 5.6 0 1 1 -12.8 0Z"/>
+  <path class="fg" d="M45.2 53.2H46.8V62H45.2ZM73.2 53.2H74.8V62H73.2ZM32 62H88V74H32Z"/>
   <rect class="bg" x="34" y="64" width="52" height="8"/>
   <rect class="fg" x="32" y="67.2" width="56" height="1.6"/>
 </svg>

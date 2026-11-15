@@ -1,53 +1,15 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 80">
-  <title>A garden in rows</title>
+  <title>A row of beds</title>
   <ellipse class="tint-strong" cx="60" cy="75" rx="54" ry="4.6"/>
   <rect class="fg" x="53" y="74" width="14" height="3.5" rx="1"/>
   <rect class="bg" x="54.4" y="75.4" width="11.2" height="0.7"/>
-  <rect class="fg" x="59" y="28" width="2" height="30"/>
-  <ellipse class="fg" cx="55.5" cy="46" rx="4.5" ry="2.4"/>
-  <ellipse class="bg" cx="55.5" cy="46" rx="3.1" ry="1"/>
-  <ellipse class="fg" cx="64.5" cy="40" rx="4.5" ry="2.4"/>
-  <ellipse class="bg" cx="64.5" cy="40" rx="3.1" ry="1"/>
+  <path class="fg" d="M59 28H61V62H59ZM51 48.4a4.5 2.4 0 1 1 9 0a4.5 2.4 0 1 1 -9 0ZM60 41.6a4.5 2.4 0 1 1 9 0a4.5 2.4 0 1 1 -9 0Z"/>
+  <path class="bg" d="M52.4 48.4a3.1 1 0 1 1 6.2 0a3.1 1 0 1 1 -6.2 0ZM61.4 41.6a3.1 1 0 1 1 6.2 0a3.1 1 0 1 1 -6.2 0Z"/>
   <ellipse class="fg" cx="60" cy="28" rx="6.5" ry="6.5"/>
   <ellipse class="accent" cx="60" cy="28" rx="4.7" ry="4.7"/>
-  <ellipse class="fg" cx="60" cy="28" rx="2" ry="2"/>
-  <ellipse class="fg" cx="34" cy="55.2" rx="7" ry="6.3"/>
-  <ellipse class="bg" cx="34" cy="55.2" rx="5.4" ry="4.7"/>
-  <rect class="fg" x="33.2" y="50.3" width="1.6" height="7.7"/>
-  <ellipse class="fg" cx="46" cy="55.2" rx="7" ry="6.3"/>
-  <ellipse class="bg" cx="46" cy="55.2" rx="5.4" ry="4.7"/>
-  <rect class="fg" x="45.2" y="50.3" width="1.6" height="7.7"/>
-  <ellipse class="fg" cx="74" cy="55.2" rx="7" ry="6.3"/>
-  <ellipse class="bg" cx="74" cy="55.2" rx="5.4" ry="4.7"/>
-  <rect class="fg" x="73.2" y="50.3" width="1.6" height="7.7"/>
-  <ellipse class="fg" cx="86" cy="55.2" rx="7" ry="6.3"/>
-  <ellipse class="bg" cx="86" cy="55.2" rx="5.4" ry="4.7"/>
-  <rect class="fg" x="85.2" y="50.3" width="1.6" height="7.7"/>
-  <rect class="fg" x="26" y="58" width="68" height="16" rx="1"/>
-  <rect class="bg" x="28" y="60" width="64" height="12"/>
-  <rect class="fg" x="26" y="65.2" width="68" height="1.6"/>
-  <ellipse class="fg" cx="23" cy="63.8" rx="5.5" ry="5"/>
-  <ellipse class="bg" cx="23" cy="63.8" rx="3.9" ry="3.4"/>
-  <rect class="fg" x="22.2" y="60" width="1.6" height="6.1"/>
-  <ellipse class="fg" cx="34" cy="63.8" rx="5.5" ry="5"/>
-  <ellipse class="bg" cx="34" cy="63.8" rx="3.9" ry="3.4"/>
-  <rect class="fg" x="33.2" y="60" width="1.6" height="6.1"/>
-  <ellipse class="fg" cx="45" cy="63.8" rx="5.5" ry="5"/>
-  <ellipse class="bg" cx="45" cy="63.8" rx="3.9" ry="3.4"/>
-  <rect class="fg" x="44.2" y="60" width="1.6" height="6.1"/>
-  <ellipse class="fg" cx="75" cy="63.8" rx="5.5" ry="5"/>
-  <ellipse class="bg" cx="75" cy="63.8" rx="3.9" ry="3.4"/>
-  <rect class="fg" x="74.2" y="60" width="1.6" height="6.1"/>
-  <ellipse class="fg" cx="86" cy="63.8" rx="5.5" ry="5"/>
-  <ellipse class="bg" cx="86" cy="63.8" rx="3.9" ry="3.4"/>
-  <rect class="fg" x="85.2" y="60" width="1.6" height="6.1"/>
-  <ellipse class="fg" cx="97" cy="63.8" rx="5.5" ry="5"/>
-  <ellipse class="bg" cx="97" cy="63.8" rx="3.9" ry="3.4"/>
-  <rect class="fg" x="96.2" y="60" width="1.6" height="6.1"/>
-  <rect class="fg" x="16" y="66" width="36" height="8" rx="1"/>
-  <rect class="bg" x="18" y="68" width="32" height="4"/>
-  <rect class="fg" x="16" y="69.2" width="36" height="1.6"/>
-  <rect class="fg" x="68" y="66" width="36" height="8" rx="1"/>
-  <rect class="bg" x="70" y="68" width="32" height="4"/>
-  <rect class="fg" x="68" y="69.2" width="36" height="1.6"/>
+  <path class="fg" d="M58 28a2 2 0 1 1 4 0a2 2 0 1 1 -4 0ZM38 58.8a8 7.2 0 1 1 16 0a8 7.2 0 1 1 -16 0ZM66 58.8a8 7.2 0 1 1 16 0a8 7.2 0 1 1 -16 0ZM8 58.8a8 7.2 0 1 1 16 0a8 7.2 0 1 1 -16 0ZM96 58.8a8 7.2 0 1 1 16 0a8 7.2 0 1 1 -16 0Z"/>
+  <path class="bg" d="M39.6 58.8a6.4 5.6 0 1 1 12.8 0a6.4 5.6 0 1 1 -12.8 0ZM67.6 58.8a6.4 5.6 0 1 1 12.8 0a6.4 5.6 0 1 1 -12.8 0ZM9.6 58.8a6.4 5.6 0 1 1 12.8 0a6.4 5.6 0 1 1 -12.8 0ZM97.6 58.8a6.4 5.6 0 1 1 12.8 0a6.4 5.6 0 1 1 -12.8 0Z"/>
+  <path class="fg" d="M45.2 53.2H46.8V62H45.2ZM73.2 53.2H74.8V62H73.2ZM15.2 53.2H16.8V62H15.2ZM103.2 53.2H104.8V62H103.2ZM32 62H88V74H32ZM4 62H28V74H4ZM92 62H116V74H92Z"/>
+  <path class="bg" d="M34 64H86V72H34ZM6 64H26V72H6ZM94 64H114V72H94Z"/>
+  <path class="fg" d="M32 67.2H88V68.8H32ZM4 67.2H28V68.8H4ZM92 67.2H116V68.8H92Z"/>
 </svg>

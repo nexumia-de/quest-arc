@@ -14,22 +14,17 @@
   <rect class="accent" x="55" y="58" width="10" height="16"/>
   <rect class="fg" x="22" y="56" width="14" height="12" rx="1"/>
   <rect class="bg" x="23.8" y="57.8" width="10.4" height="8.4"/>
-  <rect class="fg" x="28.2" y="56" width="1.6" height="12"/>
-  <rect class="fg" x="22" y="61.2" width="14" height="1.6"/>
+  <path class="fg" d="M28.2 56H29.8V68H28.2ZM22 61.2H36V62.8H22Z"/>
   <rect class="fg" x="84" y="56" width="14" height="12" rx="1"/>
   <rect class="bg" x="85.8" y="57.8" width="10.4" height="8.4"/>
-  <rect class="fg" x="90.2" y="56" width="1.6" height="12"/>
-  <rect class="fg" x="84" y="61.2" width="14" height="1.6"/>
+  <path class="fg" d="M90.2 56H91.8V68H90.2ZM84 61.2H98V62.8H84Z"/>
   <rect class="fg" x="22" y="36" width="14" height="11" rx="1"/>
   <rect class="bg" x="23.8" y="37.8" width="10.4" height="7.4"/>
-  <rect class="fg" x="28.2" y="36" width="1.6" height="11"/>
-  <rect class="fg" x="22" y="40.7" width="14" height="1.6"/>
+  <path class="fg" d="M28.2 36H29.8V47H28.2ZM22 40.7H36V42.3H22Z"/>
   <rect class="fg" x="53" y="36" width="14" height="11" rx="1"/>
   <rect class="accent" x="54.8" y="37.8" width="10.4" height="7.4"/>
-  <rect class="fg" x="59.2" y="36" width="1.6" height="11"/>
-  <rect class="fg" x="53" y="40.7" width="14" height="1.6"/>
+  <path class="fg" d="M59.2 36H60.8V47H59.2ZM53 40.7H67V42.3H53Z"/>
   <rect class="fg" x="84" y="36" width="14" height="11" rx="1"/>
   <rect class="bg" x="85.8" y="37.8" width="10.4" height="7.4"/>
-  <rect class="fg" x="90.2" y="36" width="1.6" height="11"/>
-  <rect class="fg" x="84" y="40.7" width="14" height="1.6"/>
+  <path class="fg" d="M90.2 36H91.8V47H90.2ZM84 40.7H98V42.3H84Z"/>
 </svg>
