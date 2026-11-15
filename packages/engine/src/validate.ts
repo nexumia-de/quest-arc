@@ -1,4 +1,4 @@
-import type { Journey } from './types/journey';
+import { DAYPARTS, type Journey } from './types/journey';
 
 /**
  * Structural check of a journey before the engine uses it
@@ -88,7 +88,8 @@ export const journeyErrors = (value: unknown): string[] => {
       isObject(a) &&
       isKey(a.moment) &&
       isKey(a.example) &&
-      (a.time === undefined || (typeof a.time === 'string' && TIME.test(a.time)));
+      (a.time === undefined || (typeof a.time === 'string' && TIME.test(a.time))) &&
+      (a.daypart === undefined || DAYPARTS.some((d) => d === a.daypart));
     if (!ok) errors.push('anchor: invalid');
   }
   const stages = value.stages;

@@ -1,0 +1,57 @@
+{
+  "format": 3,
+  "id": "test-morning",
+  "version": 1,
+  "title": "test-morning.title",
+  "description": "test-morning.description",
+  "stages": [
+    {
+      "id": "a",
+      "plan": {
+        "anchor": "test-morning.a.anchor",
+        "action": "test-morning.a.action"
+      },
+      "schedule": {
+        "type": "daily"
+      },
+      "condition": {
+        "type": "days",
+        "n": 5,
+        "of": 7
+      }
+    },
+    {
+      "id": "b",
+      "plan": {
+        "anchor": "test-morning.b.anchor",
+        "action": "test-morning.b.action"
+      },
+      "schedule": {
+        "type": "daily"
+      },
+      "condition": {
+        "type": "count",
+        "n": 3
+      }
+    },
+    {
+      "id": "c",
+      "plan": {
+        "anchor": "test-morning.c.anchor",
+        "action": "test-morning.c.action"
+      },
+      "schedule": {
+        "type": "daily"
+      },
+      "condition": {
+        "type": "time_spent",
+        "minutes": 30
+      }
+    }
+  ],
+  "anchor": {
+    "moment": "test-morning.moment",
+    "example": "test-morning.anchor",
+    "daypart": "morning"
+  }
+}

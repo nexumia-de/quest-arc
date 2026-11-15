@@ -1,7 +1,7 @@
 ---
 type: Concept
 title: Game rules
-description: The exact rules and numbers the engine implements for both hosts: what counts, due days and misses, runs, stage conditions, staying, skipping and stepping back, welcome back and the card after a long break, graduation, the build of a journey (ladder, version, marker progress, ready), anchors and reminders, with worked examples.
+description: The exact rules and numbers the engine implements for both hosts: what counts, due days and misses, runs, stage conditions, staying, skipping and stepping back, welcome back and the card after a long break, graduation, the build of a journey (ladder, version, marker progress, ready), anchors, the Valley and reminders, with worked examples.
 tags: [game-rules, engine, numbers]
 generated: { by: claude-code/2.1.318, at: 2026-11-05 }
 ---
@@ -501,7 +501,9 @@ the engine gives only names and numbers.
   user's choice, else the journey's, else the ladder's default. A land-only
   marker (flowers) never hangs over water; a marker that does not fit the
   ladder's setting, or is not in the list, gives way to the next in that
-  order. **Hue:** the user's choice, else the ladder's default.
+  order. **Hue:** the ladder's default. The hue of a place belongs to its
+  anchor, no longer to the run (§8, the Valley): `build:<runId>.hue` is
+  not read (there are no users with one yet).
 - **Continue:** the next version stands and the marker starts again at
   0 with the next stage. A **paused** journey keeps its build; its paused
   days are not due, so its marker progress does not change. An **ended**
@@ -613,6 +615,72 @@ repeat stays at its anchor too and waits for a task (`unbound`).
 - `removeAnchor` withdraws an anchor where nothing stands: no growing
   step, no journey that waits, no habit. It returns no changes
   otherwise.
+
+### The Valley
+
+Issues #114 and #126, decided by the owner on 2026-11-15. The Valley
+draws the anchors as places along one path through the day; the engine
+derives the view (`valley`) every time and stores only what the user
+picked. Nothing here changes what is counted (§1 to §7).
+
+- **Places.** One place for every anchor the user named, in the order
+  of the day. Runs from before anchors have no anchor yet and stand in
+  no place until the user confirms theirs (above).
+- **The order of the day.** A place has the position the user gave
+  it. Places the user placed come first, by position (then id); the
+  others follow in the default order: by the kind of moment of the
+  anchor's first journey (`daypart` of the journey's `anchor` hint:
+  morning, midday, afternoon, evening, night), then places whose first
+  journey names none, then places where nothing stands, each by the
+  earliest start day of a journey there, then id. Moving a place
+  earlier or later swaps it with its neighbour and writes every
+  place's position (the order is then the user's); at the start or the
+  end of the path nothing moves. A place added after that stands
+  after the placed ones until the user moves it; withdrawing the
+  record gives it back to the default.
+- **Side.** The user's (`left` or `right`), else alternating by
+  position in the order, starting on the right.
+- **Hue.** The user's (a name in `palette.json`; an unknown name is not a
+  choice), else the hue at the place's index in the palette's order
+  (the file's order, wrapping round: with nine places the ninth takes the
+  first again). A default that equals the hue of the place before, or the
+  hue the user chose for the place after, takes the next hue in the
+  order instead, so neighbours never share a hue unless the user chose
+  it.
+- **One thing per place.** The first journey started from the anchor
+  (earliest start day, then run id), in whatever state, builds the
+  thing: its ladder, version, marker progress and ready as §7 computes
+  them; `state` says whether its journey grows (`growing`), waits
+  (`paused`), is finished (`finished`) or was ended early (`ended`). The
+  thing never passes to another journey: a paused journey keeps its
+  version standing and its marker as it was (§7), and a journey ended
+  early leaves its version standing without a marker, as §7 says.
+  Where no journey stands, there is no thing: plain land.
+- **Sign.** `plants` when a step at the place is `maintained` (a habit
+  still followed and ticked off); else `lantern` when a step is
+  `graduated` (it runs by itself, after which nothing is counted); else
+  none. A step waiting for a task (`unbound`, `unsupported-repeat`)
+  gives no sign.
+- **Surroundings.** A further journey from the same anchor builds no
+  thing. Its finished stations (stages with a checkpoint, and skipped
+  ones, like the version of §7) each add one step to the place's
+  surroundings (fence, tree, bench, gate), at most `SURROUNDINGS_STEPS`
+  = 4 in all. What a waiting or an early ended journey finished stays
+  counted; nothing is taken away. The first journey's own stations are
+  the thing's versions and add nothing.
+- **`growing`** is true when the active journey starts from the place.
+- **`chosen`** repeats what the user picked (`place:<anchorId>`, data
+  model §2); a field that is absent follows the rules above.
+- The actions: `movePlace`, `choosePlaceSide`, `choosePlaceHue` and
+  `withdrawPlace`; `removeAnchor` takes the place record along when
+  the user picked anything.
+
+**Example K.** Four anchors; "brushing my teeth" (night journey), "getting
+up" (morning journey), "lunch" (no kind of moment), and a free one. The
+Valley reads: getting up (right, meadow), brushing my teeth (left,
+water), lunch (right, sand), the free one (left, heather). The user moves
+"brushing my teeth" earlier: all four places get positions and it swaps
+with "getting up"; sides and default hues follow the new positions.
 
 **Example J.** The user's anchor is "getting up". _A gentle morning_
 was finished on 1 Oct and graduated on 28 Oct; its task was ended and

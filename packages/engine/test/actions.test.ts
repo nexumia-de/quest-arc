@@ -18,8 +18,12 @@ import {
   nameAnchor,
   pairStage,
   reminderSeen,
+  choosePlaceHue,
+  choosePlaceSide,
+  movePlace,
   removeAnchor,
   resumeJourney,
+  withdrawPlace,
   skipStage,
   startJourney,
   stayHere,
@@ -40,6 +44,12 @@ const fromVector = (file: string) => {
   return { run, journey: snapshot.journeys[0] as Journey };
 };
 
+const valley = (file: string) => {
+  const vector = loadVectors().find((v) => v.file === file);
+  if (!vector || vector.kind === 'diff') throw new Error(file);
+  return evaluate(vector.input as Snapshot);
+};
+
 // The record-writing actions both hosts use (docs/data-model.md §2); the
 // plugin's tests check startJourney, bindStage and continueJourney with
 // real journeys. engine-cli.mjs looks actions up by these names.
@@ -55,11 +65,14 @@ describe('actions', () => {
       'carryOn',
       'checkPlan',
       'chooseBuild',
+      'choosePlaceHue',
+      'choosePlaceSide',
       'confirmAnchor',
       'continueJourney',
       'endJourney',
       'graduate',
       'graduateLater',
+      'movePlace',
       'nameAnchor',
       'pairStage',
       'pauseJourney',
@@ -73,6 +86,7 @@ describe('actions', () => {
       'stepBack',
       'undoSkip',
       'withdraw',
+      'withdrawPlace',
     ]);
   });
 
@@ -427,5 +441,46 @@ describe('actions', () => {
     expect(after?.habit).toMatchObject({ state: 'maintained', backDay: '2026-11-11' });
     expect(after?.habit?.graduated).toBeUndefined();
     expect(bringBack(finishedOf('graduation-qualifies.json').run, '2026-11-11')).toEqual({});
+  });
+
+  it('movePlace swaps a place with its neighbour and writes the whole order', () => {
+    const view = valley('valley-default-order.json');
+    // a2, a1, a5, a3, a0, a4: a1 moves earlier, so a1 and a2 swap
+    expect(movePlace(view, 'a1', 'earlier')).toEqual({
+      'place:a1': { position: 0 },
+      'place:a2': { position: 1 },
+      'place:a5': { position: 2 },
+      'place:a3': { position: 3 },
+      'place:a0': { position: 4 },
+      'place:a4': { position: 5 },
+    });
+    expect(movePlace(view, 'a2', 'earlier')).toEqual({});
+    expect(movePlace(view, 'a4', 'later')).toEqual({});
+    expect(movePlace(view, 'nowhere', 'later')).toEqual({});
+  });
+
+  it('movePlace keeps the side and hue the user picked', () => {
+    const view = valley('valley-moved-place.json');
+    // order: a2 (0), a1 (1), a3: a3 earlier swaps with a1
+    const changes = movePlace(view, 'a3', 'earlier');
+    expect(changes).toEqual({ 'place:a3': { position: 1 }, 'place:a1': { position: 2 } });
+  });
+
+  it('chooses and gives back a side and a hue', () => {
+    const view = valley('valley-hue-chosen.json');
+    expect(choosePlaceHue(view, 'p1', 'rose')).toEqual({ 'place:p1': { hue: 'rose' } });
+    expect(choosePlaceHue(view, 'p1', 'gold')).toEqual({});
+    expect(choosePlaceHue(view, 'p2', undefined)).toEqual({ 'place:p2': '' });
+    expect(choosePlaceSide(view, 'p2', 'left')).toEqual({
+      'place:p2': { hue: 'meadow', side: 'left' },
+    });
+    expect(choosePlaceSide(view, 'nowhere', 'left')).toEqual({});
+    expect(withdrawPlace('p2')).toEqual({ 'place:p2': '' });
+  });
+
+  it('removeAnchor takes the place record with the anchor only when the user picked something', () => {
+    const view = valley('valley-hue-chosen.json');
+    expect(removeAnchor(view, 'p2')).toEqual({ 'anchor:p2': '', 'place:p2': '' });
+    expect(removeAnchor(view, 'p1')).toEqual({ 'anchor:p1': '' });
   });
 });

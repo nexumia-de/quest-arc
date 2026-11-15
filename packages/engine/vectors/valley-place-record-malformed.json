@@ -1,0 +1,56 @@
+{
+  "name": "A place record keeps only the fields it understands; one for an anchor that is gone, or not an object, changes nothing",
+  "rule": "game rules \u00a78, the Valley; issue #126",
+  "kind": "evaluate",
+  "input": {
+    "day": {
+      "todayStr": "2026-11-11",
+      "startOfNextDayDiffMs": 0,
+      "timeZone": "Europe/Berlin"
+    },
+    "tasks": [],
+    "repeatCfgs": [],
+    "choices": {
+      "anchor:a1": {
+        "kind": "routine",
+        "words": "moment a1"
+      },
+      "anchor:a2": {
+        "kind": "routine",
+        "words": "moment a2"
+      },
+      "place:a1": {
+        "position": -1,
+        "side": "up",
+        "hue": 7,
+        "region": "a field of a newer engine"
+      },
+      "place:a2": {
+        "side": "left",
+        "future": 1
+      },
+      "place:gone": {
+        "position": 0
+      },
+      "place:a3": "x"
+    },
+    "journeys": ["$test-daily", "$test-build", "$test-morning", "$test-night"]
+  },
+  "expect": {
+    "valley": [
+      {
+        "anchorId": "a1",
+        "side": "right",
+        "chosen": {}
+      },
+      {
+        "anchorId": "a2",
+        "side": "left",
+        "chosen": {
+          "side": "left"
+        }
+      }
+    ],
+    "problems": ["record place:a3: unexpected value"]
+  }
+}

@@ -67,11 +67,12 @@ The kind of moment the journey starts from ([design rule 2](psychology.md),
 the user names the anchor in their own words, or picks one they already
 have, and the journey never dictates the words.
 
-| Field     | Required | Meaning                                                                                                      |
-| --------- | -------- | ------------------------------------------------------------------------------------------------------------ |
-| `moment`  | yes      | Text key: the kind of moment, to end "This journey starts from …": "a moment in your morning" (60 chars)     |
-| `example` | yes      | Text key: example words that complete "After …": "getting up"; usually the key the stages use as plan anchor |
-| `time`    | no       | `HH:MM` (24 hours): suggests a fixed time instead of a routine                                               |
+| Field     | Required | Meaning                                                                                                                                                                       |
+| --------- | -------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `moment`  | yes      | Text key: the kind of moment, to end "This journey starts from …": "a moment in your morning" (60 chars)                                                                      |
+| `example` | yes      | Text key: example words that complete "After …": "getting up"; usually the key the stages use as plan anchor                                                                  |
+| `time`    | no       | `HH:MM` (24 hours): suggests a fixed time instead of a routine                                                                                                                |
+| `daypart` | no       | `morning`, `midday`, `afternoon`, `evening` or `night`: where the moment usually falls; the default place of its anchor on the Valley's path ([game rules](game-rules.md) §8) |
 
 ```json
 "anchor": { "moment": "gentle-morning.moment", "example": "gentle-morning.anchor" }

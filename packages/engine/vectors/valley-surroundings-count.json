@@ -1,0 +1,75 @@
+{
+  "name": "Surroundings count the finished stations of the further journeys: one finished stage is one step",
+  "rule": "game rules \u00a78, the Valley; issue #126",
+  "kind": "evaluate",
+  "input": {
+    "day": {
+      "todayStr": "2026-11-11",
+      "startOfNextDayDiffMs": 0,
+      "timeZone": "Europe/Berlin"
+    },
+    "tasks": [],
+    "repeatCfgs": [],
+    "choices": {
+      "anchor:m1": {
+        "kind": "routine",
+        "words": "getting up"
+      },
+      "run:r1": {
+        "journeyId": "test-daily",
+        "journeyVersion": 1,
+        "startDay": "2026-08-01"
+      },
+      "run-anchor:r1": {
+        "anchorId": "m1"
+      },
+      "stage:r1:a": {
+        "acceptedDay": "2026-08-01"
+      },
+      "stage-done:r1:a": {
+        "day": "2026-08-15",
+        "dataFormat": 2
+      },
+      "run-end:r1": {
+        "day": "2026-08-16",
+        "reason": "ended"
+      },
+      "run:r2": {
+        "journeyId": "test-build",
+        "journeyVersion": 1,
+        "startDay": "2026-09-02"
+      },
+      "run-anchor:r2": {
+        "anchorId": "m1"
+      },
+      "stage:r2:a": {
+        "acceptedDay": "2026-09-02"
+      },
+      "stage-done:r2:a": {
+        "day": "2026-09-10",
+        "dataFormat": 2
+      },
+      "stage:r2:b": {
+        "acceptedDay": "2026-09-10"
+      }
+    },
+    "journeys": ["$test-daily", "$test-build", "$test-morning", "$test-night"]
+  },
+  "expect": {
+    "valley": [
+      {
+        "anchorId": "m1",
+        "growing": true,
+        "surroundings": 1,
+        "thing": {
+          "runId": "r1",
+          "state": "ended",
+          "version": 2,
+          "markerProgress": 0,
+          "ready": false
+        }
+      }
+    ],
+    "problems": []
+  }
+}

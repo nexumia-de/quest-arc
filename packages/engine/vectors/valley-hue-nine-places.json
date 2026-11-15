@@ -1,0 +1,94 @@
+{
+  "name": "Hues by position from the fixed order of the palette; with nine places the ninth starts the order again and no neighbours share a hue",
+  "rule": "game rules \u00a78, the Valley; issue #126",
+  "kind": "evaluate",
+  "input": {
+    "day": {
+      "todayStr": "2026-11-11",
+      "startOfNextDayDiffMs": 0,
+      "timeZone": "Europe/Berlin"
+    },
+    "tasks": [],
+    "repeatCfgs": [],
+    "choices": {
+      "anchor:p1": {
+        "kind": "routine",
+        "words": "moment 1"
+      },
+      "anchor:p2": {
+        "kind": "routine",
+        "words": "moment 2"
+      },
+      "anchor:p3": {
+        "kind": "routine",
+        "words": "moment 3"
+      },
+      "anchor:p4": {
+        "kind": "routine",
+        "words": "moment 4"
+      },
+      "anchor:p5": {
+        "kind": "routine",
+        "words": "moment 5"
+      },
+      "anchor:p6": {
+        "kind": "routine",
+        "words": "moment 6"
+      },
+      "anchor:p7": {
+        "kind": "routine",
+        "words": "moment 7"
+      },
+      "anchor:p8": {
+        "kind": "routine",
+        "words": "moment 8"
+      },
+      "anchor:p9": {
+        "kind": "routine",
+        "words": "moment 9"
+      }
+    },
+    "journeys": ["$test-daily", "$test-build", "$test-morning", "$test-night"]
+  },
+  "expect": {
+    "valley": [
+      {
+        "anchorId": "p1",
+        "hue": "meadow"
+      },
+      {
+        "anchorId": "p2",
+        "hue": "water"
+      },
+      {
+        "anchorId": "p3",
+        "hue": "sand"
+      },
+      {
+        "anchorId": "p4",
+        "hue": "heather"
+      },
+      {
+        "anchorId": "p5",
+        "hue": "rust"
+      },
+      {
+        "anchorId": "p6",
+        "hue": "slate"
+      },
+      {
+        "anchorId": "p7",
+        "hue": "moss"
+      },
+      {
+        "anchorId": "p8",
+        "hue": "rose"
+      },
+      {
+        "anchorId": "p9",
+        "hue": "meadow"
+      }
+    ],
+    "problems": []
+  }
+}

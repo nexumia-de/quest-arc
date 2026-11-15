@@ -41,6 +41,10 @@
           "type": "string",
           "pattern": "^([01][0-9]|2[0-3]):[0-5][0-9]$",
           "description": "Suggests a fixed time of day instead of a routine."
+        },
+        "daypart": {
+          "enum": ["morning", "midday", "afternoon", "evening", "night"],
+          "description": "When in the day the moment usually falls: the default place of its anchor on the Valley's path (game rules 8)."
         }
       }
     },

@@ -18,7 +18,8 @@
   },
   "anchor": {
     "moment": "tidy-a-little.moment",
-    "example": "tidy-a-little.anchor"
+    "example": "tidy-a-little.anchor",
+    "daypart": "evening"
   },
   "stages": [
     {

@@ -1,0 +1,115 @@
+{
+  "name": "A place record is a kind this engine writes and withdraws; it belongs to no run",
+  "rule": "data model \u00a72, data format and unknown data",
+  "kind": "guard",
+  "input": {
+    "day": {
+      "todayStr": "2026-11-11",
+      "startOfNextDayDiffMs": 0,
+      "timeZone": "Europe/Berlin"
+    },
+    "tasks": [],
+    "repeatCfgs": [],
+    "choices": {
+      "anchor:a1": {
+        "kind": "routine",
+        "words": "brushing my teeth"
+      },
+      "run:r1": {
+        "journeyId": "test-night",
+        "journeyVersion": 1,
+        "startDay": "2026-10-01"
+      },
+      "run-anchor:r1": {
+        "anchorId": "a1"
+      },
+      "stage:r1:a": {
+        "acceptedDay": "2026-10-01"
+      },
+      "anchor:a2": {
+        "kind": "routine",
+        "words": "getting up"
+      },
+      "run:r2": {
+        "journeyId": "test-morning",
+        "journeyVersion": 1,
+        "startDay": "2026-10-20"
+      },
+      "run-anchor:r2": {
+        "anchorId": "a2"
+      },
+      "stage:r2:a": {
+        "acceptedDay": "2026-10-20"
+      },
+      "anchor:a3": {
+        "kind": "routine",
+        "words": "lunch"
+      },
+      "run:r3": {
+        "journeyId": "test-daily",
+        "journeyVersion": 1,
+        "startDay": "2026-09-01"
+      },
+      "run-anchor:r3": {
+        "anchorId": "a3"
+      },
+      "stage:r3:a": {
+        "acceptedDay": "2026-09-01"
+      },
+      "anchor:a4": {
+        "kind": "routine",
+        "words": "a free anchor"
+      },
+      "anchor:a0": {
+        "kind": "routine",
+        "words": "another free anchor"
+      },
+      "anchor:a5": {
+        "kind": "routine",
+        "words": "my own moment"
+      },
+      "run:r5": {
+        "journeyId": "test-build",
+        "journeyVersion": 1,
+        "startDay": "2026-08-01"
+      },
+      "run-anchor:r5": {
+        "anchorId": "a5"
+      },
+      "stage:r5:a": {
+        "acceptedDay": "2026-08-01"
+      }
+    },
+    "journeys": ["$test-daily", "$test-build", "$test-morning", "$test-night"]
+  },
+  "writes": [
+    {
+      "place:a1": {
+        "position": 0
+      }
+    },
+    {
+      "place:a1": ""
+    },
+    {
+      "place:a1": {
+        "position": 0
+      },
+      "run:zz": {
+        "x": 1
+      },
+      "future:a1": {}
+    }
+  ],
+  "expect": [
+    {
+      "refused": []
+    },
+    {
+      "refused": []
+    },
+    {
+      "refused": ["future:a1"]
+    }
+  ]
+}
