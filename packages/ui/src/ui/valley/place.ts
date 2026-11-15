@@ -26,7 +26,7 @@ const HEIGHT = 230;
 export const placeOfRun = (ctx: Context, run: RunView): ValleyPlace => {
   const { valley } = ctx.state.view;
   const found =
-    valley.find((p) => p.thing?.runId === run.runId) ??
+    valley.find((p) => p.things.some((each) => each.runId === run.runId)) ??
     valley.find((p) => p.anchorId === run.anchor?.id);
   if (found) return found;
   const { build } = run;
@@ -35,20 +35,26 @@ export const placeOfRun = (ctx: Context, run: RunView): ValleyPlace => {
     name: '',
     side: 'right',
     hue: art().ladders[build.ladder]?.hue ?? '',
-    thing: { ...build, runId: run.runId, journeyId: run.journeyId, state: 'growing' },
-    surroundings: 0,
+    things: [{ ...build, runId: run.runId, journeyId: run.journeyId, state: 'growing' }],
+    unbuilt: [],
     growing: true,
     chosen: {},
   };
 };
 
 /** The large piece of one place; `label` names it for screen readers (else the place in words). */
-export const placePiece = (ctx: Context, place: ValleyPlace, label?: string): HTMLElement => {
+export const placePiece = (
+  ctx: Context,
+  place: ValleyPlace,
+  label?: string,
+  runId?: string,
+): HTMLElement => {
   const { anchors } = ctx.state.view;
   const model = valleyModel([place], anchors, ctx.state.journeys, art(), {
     height: HEIGHT,
     own: true,
     marker: true,
+    ...(runId ? { runId } : {}),
   });
   const only: PlaceModel | undefined = model.places[0];
   const scene = valleyScene(model, undefined, label ?? only?.label ?? t('ui.valley.label'));
@@ -76,27 +82,34 @@ export const placePiece = (ctx: Context, place: ValleyPlace, label?: string): HT
 /**
  * The upper part of a place's pages: the piece, and for the journey that
  * builds the place's thing (or at rest) the row of versions that stand and
- * one line of state. A further journey shows the piece only.
+ * one line of state. A journey beyond the place's things shows the piece only.
  */
 export const placeSection = (
   ctx: Context,
   place: ValleyPlace,
   label?: string,
-  showRow = true,
+  runId?: string,
 ): HTMLElement => {
-  const { thing } = place;
-  const ladder = thing && art().ladders[thing.ladder];
-  const journey = thing && ctx.state.journeys.find((j) => j.id === thing.journeyId);
-  const state = thing && buildState({ ...thing, hue: '' }, journey);
+  // A journey's page: its own thing, or none (beyond the place's things). At rest: every thing.
+  const shown = runId ? place.things.filter((each) => each.runId === runId) : place.things;
+  const rows = shown.flatMap((thing) => {
+    const ladder = art().ladders[thing.ladder];
+    const journey = ctx.state.journeys.find((j) => j.id === thing.journeyId);
+    if (!ladder) return [];
+    const state = buildState({ ...thing, hue: '' }, journey);
+    return [
+      // Which journey grows which thing, where the place holds more than one.
+      !runId && place.things.length > 1 && journey
+        ? h('p', { class: 'qa-muted qa-small qa-build-state' }, t(journey.title))
+        : null,
+      versionRow(ladder, thing.version, state, hueOf(place.hue, ladder), thing.skipped),
+      h('p', { class: 'qa-build-state' }, buildWords(ladder, thing.version, state)),
+    ];
+  });
   return h(
     'section',
     { class: 'qa-build', 'aria-label': t('ui.build.title') },
-    h('div', { class: 'qa-build-scene' }, placePiece(ctx, place, label)),
-    ...(showRow && thing && ladder && state
-      ? [
-          versionRow(ladder, thing.version, state, hueOf(place.hue, ladder), thing.skipped),
-          h('p', { class: 'qa-build-state' }, buildWords(ladder, thing.version, state)),
-        ]
-      : []),
+    h('div', { class: 'qa-build-scene' }, placePiece(ctx, place, label, runId)),
+    ...rows,
   ) as HTMLElement;
 };

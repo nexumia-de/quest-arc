@@ -100,12 +100,15 @@ export interface ValleyPlace {
   readonly side: 'left' | 'right';
   /** A hue name from content/art/palette.json. */
   readonly hue: string;
-  /** The one thing; absent where no journey stands yet (plain land). */
-  readonly thing?: ValleyThing;
+  /**
+   * The things of the place in the order their journeys started: one to
+   * `THINGS_PER_PLACE`; empty where no journey stands yet (plain land).
+   */
+  readonly things: readonly ValleyThing[];
+  /** Journeys beyond the limit: listed, building no thing. */
+  readonly unbuilt: readonly ValleyJourney[];
   /** `plants`: a step here is still followed; `lantern`: a step runs by itself. */
   readonly sign?: 'plants' | 'lantern';
-  /** Steps of the surroundings (fence, tree, bench, gate): 0 to SURROUNDINGS_STEPS. */
-  readonly surroundings: number;
   /** The active journey grows here (the anchor's `state` is `growing`). */
   readonly growing: boolean;
   /** What the user picked; a field that is absent is by rule. */
@@ -116,12 +119,22 @@ export interface ValleyPlace {
   };
 }
 
-/** The first journey started from a place: its build, and where its journey is. */
+/**
+ * A thing of a place: the build of one journey started from it, on the
+ * ladder of the place's first journey (game rules §8).
+ */
 export interface ValleyThing extends Omit<BuildView, 'hue'> {
   readonly runId: string;
   readonly journeyId: string;
   /** `growing`: the active journey; `paused`; `finished`; `ended`: ended early. */
   readonly state: 'growing' | 'paused' | 'finished' | 'ended';
+}
+
+/** A journey at a place that builds no thing (the place holds `THINGS_PER_PLACE`). */
+export interface ValleyJourney {
+  readonly runId: string;
+  readonly journeyId: string;
+  readonly state: ValleyThing['state'];
 }
 
 export interface AnchorStep {

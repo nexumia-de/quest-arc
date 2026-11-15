@@ -40,7 +40,7 @@ export const journeyScreen = (ctx: Context): Screen => {
   const state = buildState(run.build, journey);
   const label =
     ladder && buildLabel(ladder, run.build.version, state, markerTitle(run.build.marker));
-  const build = placeSection(ctx, place, label, place.thing?.runId === run.runId);
+  const build = placeSection(ctx, place, label, run.runId);
   const anchor = view.anchors.find((a) => a.id !== undefined && a.id === place.anchorId);
 
   const action = (label: string, route: Parameters<Context['go']>[0], quiet = false) =>
@@ -86,7 +86,7 @@ export const journeyScreen = (ctx: Context): Screen => {
           .then(() => ctx.reset({ name: 'home' }, { ended: { runId: run.runId, title } }));
       },
     },
-    ...(place.thing?.runId === run.runId
+    ...(place.things[0]?.runId === run.runId
       ? [{ label: t('ui.build.title'), onSelect: () => ctx.go({ name: 'build' }) }]
       : []),
     { label: t('ui.check.title'), onSelect: () => ctx.go({ name: 'plan-check' }) },

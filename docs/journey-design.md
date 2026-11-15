@@ -64,6 +64,14 @@ falls to zero; the run text ("Run 4 · best 6") stays next to the marks.
 
 ## Builds and ladders (the Valley, #42)
 
+**Up to three things of one kind at a moment** (owner, 2026-11-15, #148).
+A further journey from the same moment builds another thing on the
+**first journey's ladder**, starting at version 1; at most three things
+stand at a place (`THINGS_PER_PLACE`), a fourth journey builds none.
+There are no surroundings. The place piece's room for stacked things
+(second and third behind the first, slightly smaller, in the far depth
+band) is its own issue.
+
 Decided by the owner on 2026-11-12[^42]: a journey builds **one thing**,
 whole at every stage, and every stage makes it a larger version. A
 **ladder** is that thing drawn once in five versions and used by every

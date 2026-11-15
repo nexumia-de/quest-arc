@@ -88,8 +88,9 @@ piece"); the screen places nothing by hand.
 With [one](screenshots/valley-home-1-phone-light.png) and
 [six](screenshots/valley-home-6-phone-light.png) places, and
 [dark](screenshots/valley-home-6-desktop-dark.png) on the desktop.
-_Screenshots from demo data at 360 × 720 and 1000 × 700; the signs and the
-surroundings follow with #131._
+_Screenshots from demo data at 360 × 720 and 1000 × 700; the signs
+follow with #131; a place draws its first thing, the further things (up to
+three, game rules §8) follow with the place piece._
 
 - **The scene** is the page's picture. Per place, from the layout: the
   ground in the place's hue, blending into the next place's; the path and
@@ -101,9 +102,8 @@ surroundings follow with #131._
   and where no journey stands yet the place is plain land with its name.
   Nothing marks a place as free, nothing is announced, nothing is counted.
 - **The scene is built in layers**, back to front: ground, path and bay,
-  surroundings, plants, thing, marker, lantern, name. Plants, lantern and
-  surroundings (the place's sign and steps, from the view) are filled in
-  by #131; until their pictures exist nothing is drawn for them.
+  plants, thing, marker, lantern, name. Plants and lantern (the place's
+  sign, from the view) are filled in by #131; until their pictures exist nothing is drawn for them.
 - **Tapping a place** opens it: the journey (screen 4) for the growing
   place; for any other the place (screen 0b), also where nothing stands
   yet. "Change this moment" (screen 0a) is reached from the place by its
@@ -239,7 +239,11 @@ with #131._
 - **The versions that stand**, as on the journey screen (the row of
   small pictures with their numbers; a version that stands for a skipped
   stage says "already yours"), and the line of state ("A well house
-  stands"). No next step is shown at rest beyond the last version.
+  stands"), once per thing: where the place holds more than one (up to
+  three, game rules §8) each row is headed by the title of the journey
+  that grows it. The piece draws the first thing until the layout
+  stacks the others (#151). Journeys beyond three build no thing and
+  have no row.
 - **One card, "Your routine here"**: the routine's steps in words, each
   with **Still followed** or **Runs by itself**, and what waits with
   **Waiting**; for a step that runs by itself also "Nothing is ticked or
@@ -314,7 +318,9 @@ with #131._
   opens screen 3a. Nothing is shown of the versions to come. For a
   further journey at a moment that already has its thing (#130) there is
   nothing to choose and no **Change**: "This journey builds another thing
-  of the same kind at this moment (up to three)." (#114, decision 5: a
+  of the same kind at this moment (up to three)." (once three stand: "This
+  moment already holds three things; this journey builds no new one.";
+  #114, decision 5: a
   place holds one to three things of the same kind, engine #148/#149;
   until then the place shows its first thing only); nothing is written
   for the build.
@@ -332,8 +338,9 @@ as their own page from **What you build** in the journey's menu
 - **What grows**: one option per ladder (Home, Garden, Well, Lookout), each with
   its first version as a small picture and its name in words, and
   nothing of the versions to come; the journey's suggestion says
-  "Suggested by the journey". Under the heading: "One thing stands at a
-  moment and grows with the routine there." (#114 decision 4).
+  "Suggested by the journey". Under the heading: "This is the kind of thing
+  this moment builds. Later journeys here build more of the same kind."
+  (#114 decision 5).
 - **What hangs**: lanterns, pennants, flowers, each with its plain
   element as a small picture (the "on" form is earned, never shown ahead)
   and its name. Flowers need ground: with a ladder on water the option is
@@ -379,17 +386,19 @@ Opened from the growing step of a moment (screen 0); back leads there.
   design](journey-design.md#the-journey-screen-with-the-build)). The
   title is the place's name. The upper part is the **place piece drawn
   large** (screen 0b) in the place's hue instead of the ladder's own
-  setting: the ladder's current version, and the marker standing in
-  front of it, mapped onto the thing's slot (so it never crosses the
-  path), with its first `ceil(markerProgress × E)` elements, all hanging
-  elements "on" while ready. The pencil on it opens "Change this
-  moment" (screen 0a). A journey from before anchors has no place yet:
-  it stands on a place made from its own build, with no pencil. A
-  further journey at a moment that already has its thing (#130) builds
-  on the thing at the place (#148): until the engine's rule for the
-  versions across journeys lands, it shows the place only, without the
-  row of versions and the line of state, and its menu has no **What you
-  build**.
+  setting: the thing this journey builds (the place's first thing, or,
+  for a further journey, its own: [game rules](game-rules.md) §8, a
+  further journey builds another thing of the same kind from version 1)
+  in its current version, and the marker standing in front of it, mapped
+  onto the thing's slot (so it never crosses the path), with its first
+  `ceil(markerProgress × E)` elements, all hanging elements "on" while
+  ready. The pencil on it opens "Change this moment" (screen 0a). A
+  journey from before anchors has no place yet: it stands on a place made
+  from its own build, with no pencil. A journey beyond the place's three
+  things builds none: it shows the place only, without the row of
+  versions and the line of state. The menu has **What you build** only
+  for the place's first thing (a further journey's ladder is the first
+  one's).
 
   | ![Phone, light](screenshots/place-journey-phone-light.png) | ![Phone, dark](screenshots/place-journey-phone-dark.png) |
   | ---------------------------------------------------------- | -------------------------------------------------------- |

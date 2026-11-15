@@ -13,21 +13,13 @@ import { grownSince, placeHue, type PlaceModel, type ValleyModel } from './model
  * placed by hand here.
  *
  * The scene is built in **layers**, back to front, each a named slot with
- * one group per place, so the signs and the surroundings (#131) are filled
+ * one group per place, so the signs (#131) are filled
  * in without touching the rest: `fillLayer(scene, 'plants', i)` returns
  * place i's group in a layer. The names are HTML on top (`name`), then the
  * places' tap areas.
  */
 
-export const LAYERS = [
-  'ground',
-  'path',
-  'surroundings',
-  'plants',
-  'thing',
-  'marker',
-  'lantern',
-] as const;
+export const LAYERS = ['ground', 'path', 'plants', 'thing', 'marker', 'lantern'] as const;
 export type Layer = (typeof LAYERS)[number];
 
 const SVG_NS = 'http://www.w3.org/2000/svg';
@@ -187,9 +179,9 @@ export const valleyScene = (
   // The marker in front of the thing; its new elements grow in, as on the journey screen.
   const before = shown;
   shown = new Map();
-  model.places.forEach(({ marker, view }, i) => {
+  model.places.forEach(({ marker, view, thing }, i) => {
     const slot = layers.get('marker')?.[i];
-    const key = view.thing?.runId ?? '';
+    const key = thing?.runId ?? '';
     if (!marker || !slot) return;
     shown.set(key, Math.max(0, ...marker.map((m) => m.order)));
     for (const m of marker) {

@@ -20,12 +20,16 @@ import { ladderScene, versionName, type Ladder } from '../ladder';
  * Node's tests.
  */
 
+type ThingView = PlaceView['things'][number];
+
 /** One piece of the engine's layout (the type is the layout's, not the view's). */
 type Piece = ReturnType<typeof valleyLayout>['places'][number];
 export type Geometry = ReturnType<typeof valleyLayout>;
 
 export interface PlaceModel {
   readonly view: PlaceView;
+  /** The thing drawn: the first of the place, or the one of `options.runId`. */
+  readonly thing?: ThingView;
   readonly piece: Piece;
   /** The name shown: the user's name for the moment, else "After …" or "At …". */
   readonly title: string;
@@ -53,10 +57,10 @@ export const versionArt = (ladder: Ladder, version: number): string | undefined 
 const wording = (
   place: PlaceView,
   title: string,
+  thing: ThingView | undefined,
   ladder: Ladder | undefined,
   journey: Journey | undefined,
 ): string => {
-  const thing = place.thing;
   const parts: string[] = [];
   if (thing && ladder) {
     const state = buildState({ ...thing, hue: '' }, journey);
@@ -97,7 +101,7 @@ export const sceneHeight = (windowHeight: number, pixels: number): number =>
 const markerPieces = (
   ladder: Ladder,
   slot: Piece['slot'],
-  thing: NonNullable<PlaceView['thing']>,
+  thing: ThingView,
   journey: Journey | undefined,
 ): (Placed & { order: number })[] => {
   const loose = ladder.pictures.filter((p) => p.slot === 'marker' && p.part !== 'cord');
@@ -128,6 +132,8 @@ export interface ModelOptions {
    * minimum (which keeps the layout's checks for six places and beyond).
    */
   readonly own?: boolean;
+  /** The journey whose page it is: its thing is drawn instead of the first. */
+  readonly runId?: string;
   /** Draw the marker of a growing thing (the place's pages, not the Valley). */
   readonly marker?: boolean;
 }
@@ -157,24 +163,26 @@ export const valleyModel = (
       if (!piece) return [];
       const anchor = anchors.find((a) => a.id === view.anchorId);
       const title = anchor ? anchorTitle(anchor, journeys) : view.name;
-      const ladder = view.thing ? pack.ladders[view.thing.ladder] : undefined;
-      const journey = view.thing && journeys.find((j) => j.id === view.thing?.journeyId);
-      const art = ladder && view.thing ? versionArt(ladder, view.thing.version) : undefined;
+      // One thing is drawn (a place holds up to three, game rules §8): the one of the
+      // journey whose page it is, else the first.
+      const thing = view.things.find((each) => each.runId === options.runId) ?? view.things[0];
+      const ladder = thing ? pack.ladders[thing.ladder] : undefined;
+      const journey = thing && journeys.find((j) => j.id === thing.journeyId);
+      const art = ladder && thing ? versionArt(ladder, thing.version) : undefined;
       // The thing's row: slot and name side by side, from edge to edge.
       const top = Math.min(piece.slot.y, piece.name.y);
       const bottom = Math.max(piece.slot.y + piece.slot.height, piece.name.y + piece.name.height);
       const span = Math.max(44, bottom - top);
-      const growing = options.marker && ladder && view.thing?.state === 'growing';
+      const growing = options.marker && ladder && thing?.state === 'growing';
       return {
         view,
         piece,
         title,
         ...(art ? { art } : {}),
-        ...(growing && view.thing
-          ? { marker: markerPieces(ladder, piece.slot, view.thing, journey) }
-          : {}),
+        ...(thing ? { thing } : {}),
+        ...(growing && thing ? { marker: markerPieces(ladder, piece.slot, thing, journey) } : {}),
         ...(ladder ? { ladder } : {}),
-        label: wording(view, title, ladder, journey),
+        label: wording(view, title, thing, ladder, journey),
         hit: {
           x: 0,
           y: Math.min(top, geometry.height - span),
@@ -198,11 +206,12 @@ export const grownSince = (
   const versions = new Map<string, number>();
   const grown = new Set<string>();
   for (const { view } of model.places) {
-    if (!view.thing) continue;
-    const key = `${view.anchorId}/${view.thing.runId}`;
-    versions.set(key, view.thing.version);
+    const thing = view.things[0];
+    if (!thing) continue;
+    const key = `${view.anchorId}/${thing.runId}`;
+    versions.set(key, thing.version);
     const was = before?.get(key);
-    if (was !== undefined && view.thing.version > was) grown.add(view.anchorId);
+    if (was !== undefined && thing.version > was) grown.add(view.anchorId);
   }
   return { grown, versions };
 };
