@@ -5,6 +5,11 @@ Changes that users notice, newest first. Versions follow the plugin's
 [GitHub release](https://github.com/nexumia-de/quest-arc/releases) with the
 plugin ZIP.
 
+## 4.3.1
+
+- Day Planner can save the kind of thing chosen at a moment: the engine
+  now answers the new choices from other hosts too.
+
 ## 4.3.0
 
 - **Choose what stands at a moment.** A journey suggests its kind of

@@ -2,6 +2,7 @@
 
 ## 2026-11-16
 
+- **Update**: version 4.3.1 with its [changelog](../CHANGELOG.md) section: engine-cli answers the choose-kind and choose-marker actions (#162).
 - **Fix** (#158): `choosePlaceKind`, `choosePlaceMarker` and `withdrawPlaceKind` were missing from the engine's `actions` table, so a gjs host got "unknown action" from `engine-cli.mjs`; they are in it, a test fails when an exported action is missing from the table, and a gjs test answers the three by name.
 - **Update**: version 4.3.0 with its [changelog](../CHANGELOG.md) section: the kind of thing at a moment can be chosen and changed later.
 - **Update** (#158, owner: "Choices with defaults"): the kind of thing and what hangs are choices again, per place (`place:<anchorId>.ladder` and `.marker`, changeable after the thing has grown, the version kept; `choosePlaceKind`, `choosePlaceMarker`, `withdrawPlaceKind`; `MARKERS` is the marker kinds every ladder file lists in `markers` (only flowers, so the marker choice stays hidden; #159 was cancelled); "Use the suggestion" also withdraws the first journey's `build` record; vectors `valley-kind-*`, `valley-marker-*`), in [game rules](game-rules.md) §7 and §8, [data model](data-model.md) and [behaviour](behaviour.md) 3a.
