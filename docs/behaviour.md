@@ -205,13 +205,17 @@ design](journey-design.md#the-place-piece-the-valley-127)); demo
   "This moment" after it, then **Move Earlier** and **Move Later**
   (disabled at the ends). **Side of the path**: **Left** or **Right**,
   the side the thing stands on. **Colour**: the eight hues, each a swatch
-  with its name (the name carries it, not the colour). Each change is
-  written at once, as the engine's `movePlace`, `choosePlaceSide` or
-  `choosePlaceHue` makes it (`place:<anchorId>` records); the screen
+  with its name (the name carries it, not the colour). Where a thing
+  stands there are two more choices, **What grows** (the kind of every
+  thing at the place, changeable after it has grown) and, once a second
+  marker kind exists, **What hangs** (screen 3a, #158). Each change is
+  written at once, as the engine's `movePlace`, `choosePlaceSide`,
+  `choosePlaceHue`, `choosePlaceKind` or `choosePlaceMarker` makes it
+  (`place:<anchorId>` records); the screen
   keeps what was typed above. **Use the suggestion** (only while
-  something was chosen) withdraws all three (`withdrawPlace`): the place
-  goes back to its position by the kind of moment, the alternating side
-  and the hue by position. The hue belongs to the place, not to the
+  something was chosen) withdraws all (`withdrawPlace`): the place
+  goes back to its position by the kind of moment, the alternating side,
+  the hue by position, the first journey's kind and flowers. The hue belongs to the place, not to the
   journey ([game rules](game-rules.md) §8).
 - **Extend This Moment** while no journey grows at the moment: screen 2
   for it (also on the place, screen 0b).
@@ -354,20 +358,31 @@ as their own page from **What you build** in the journey's menu
   "Suggested by the journey". Under the heading: "This is the kind of thing
   this moment builds. Later journeys here build more of the same kind."
   (#114 decision 5).
-- There is **no choice of what hangs** (#152): the marker is always
-  flowers growing in the thing's yard ([journey design](journey-design.md)),
-  so "What hangs" is gone.
+- **What hangs** (#158) comes back as a second choice: one option per
+  marker kind that exists, flowers being the usual one. While only
+  flowers exist the choice is **hidden** (nothing to choose); it is
+  never a flag or a light, because a lantern means "runs by itself".
 - There is **no colour choice** here any more: the colour is the
   place's hue, chosen in "Change this moment" (screen 0a). The engine
   does not read a run's hue ([game rules](game-rules.md) §8, #126). The
   screen is only for the journey that builds the place's thing; a
   further journey at the moment has no build to choose (screen 3).
+- **At a place the kind and what hangs belong to the place** (#158): from
+  the menu and from "Change this moment" (screen 0a) the same options are
+  written to the place's record (`choosePlaceKind`, `choosePlaceMarker`),
+  so one choice covers every thing there, also after it has grown; the
+  thing is then drawn as the new kind at the version it has reached.
+  **Use the suggestion** withdraws both fields.
 - On screen 3 the choice is written with **Start**; from the menu each
   change is written at once (`chooseBuild`). Only what the user picked
   is stored; the rest follows the journey. Changing later loses nothing:
   the version and the marker are derived from the stages, so the same
   progress is drawn as the other thing. **Use the journey's suggestion**
   withdraws the record.
+
+| ![The chooser, phone, light](screenshots/place-kind-chooser-phone-light.png)     | ![The chooser, phone, dark](screenshots/place-kind-chooser-phone-dark.png)     |
+| -------------------------------------------------------------------------------- | ------------------------------------------------------------------------------ |
+| ![After a change of kind, light](screenshots/place-kind-changed-phone-light.png) | ![After a change of kind, dark](screenshots/place-kind-changed-phone-dark.png) |
 
 ### 3b. Plan check
 

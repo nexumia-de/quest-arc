@@ -1,6 +1,7 @@
 import type { Journey } from './types/journey';
 import type { AnchorWords, GameView, PlanCheck, RunView, ValleyPlace } from './types/view';
 import { LADDERS } from './ladders';
+import { MARKERS } from './markers';
 import { CHECKPOINT_FORMAT, isTime, SKIP_FORMAT, STEP_BACK_FORMAT } from './choices';
 import { anchorWords, ownWords, pairWords, PLAN_CHECK_FIELDS, PLAN_CHECK_LIMIT } from './words';
 
@@ -422,39 +423,73 @@ export const movePlace = (
   );
 };
 
+/** One field of a place's record changed, the others kept; `undefined` withdraws that field. */
+const changePlace = (
+  view: GameView,
+  anchorId: string,
+  field: keyof ValleyPlace['chosen'],
+  value: string | undefined,
+): RecordChanges => {
+  const place = view.valley.find((p) => p.anchorId === anchorId);
+  if (!place) return {};
+  const kept = Object.fromEntries(Object.entries(place.chosen).filter(([name]) => name !== field));
+  return placeRecord(anchorId, { ...kept, ...(value ? { [field]: value } : {}) });
+};
+
 /** Choose the side of the path a place's thing stands on; no side gives it back to the rule. */
 export const choosePlaceSide = (
   view: GameView,
   anchorId: string,
   side: 'left' | 'right' | undefined,
-): RecordChanges => {
-  const place = view.valley.find((p) => p.anchorId === anchorId);
-  if (!place) return {};
-  const { position, hue } = place.chosen;
-  return placeRecord(anchorId, {
-    ...(position !== undefined ? { position } : {}),
-    ...(hue !== undefined ? { hue } : {}),
-    ...(side ? { side } : {}),
-  });
-};
+): RecordChanges => changePlace(view, anchorId, 'side', side);
 
 /** Choose a place's hue (a name of content/art/palette.json); none gives it back to the rule. */
 export const choosePlaceHue = (
   view: GameView,
   anchorId: string,
   hue: string | undefined,
-): RecordChanges => {
+): RecordChanges =>
+  hue !== undefined && !LADDERS.hues.includes(hue) ? {} : changePlace(view, anchorId, 'hue', hue);
+
+/**
+ * Choose the kind of thing a place builds (a ladder of content/art/), now
+ * or after it has grown: every thing here is drawn as the new kind at the
+ * version it has reached, and no other record changes (game rules §8,
+ * #158). None withdraws the choice, so the first journey's ladder applies.
+ */
+export const choosePlaceKind = (
+  view: GameView,
+  anchorId: string,
+  ladder: string | undefined,
+): RecordChanges =>
+  ladder !== undefined && !Object.prototype.hasOwnProperty.call(LADDERS.ladders, ladder)
+    ? {}
+    : changePlace(view, anchorId, 'ladder', ladder);
+
+/** Choose what hangs at a place, at any time; none withdraws the choice (flowers). */
+export const choosePlaceMarker = (
+  view: GameView,
+  anchorId: string,
+  marker: string | undefined,
+): RecordChanges =>
+  marker !== undefined && !MARKERS.kinds.includes(marker)
+    ? {}
+    : changePlace(view, anchorId, 'marker', marker);
+
+/**
+ * "Use the suggestion" for what is built at a place: the kind and what
+ * hangs go back to the rules; position, side and hue stay (#158).
+ */
+export const withdrawPlaceKind = (view: GameView, anchorId: string): RecordChanges => {
   const place = view.valley.find((p) => p.anchorId === anchorId);
-  if (!place || (hue !== undefined && !LADDERS.hues.includes(hue))) return {};
-  const { position, side } = place.chosen;
-  return placeRecord(anchorId, {
-    ...(position !== undefined ? { position } : {}),
-    ...(side !== undefined ? { side } : {}),
-    ...(hue ? { hue } : {}),
-  });
+  if (!place) return {};
+  const kept = Object.fromEntries(
+    Object.entries(place.chosen).filter(([name]) => name !== 'ladder' && name !== 'marker'),
+  );
+  return placeRecord(anchorId, kept);
 };
 
-/** Withdraw everything the user picked for a place: position, side and hue go back to the rules. */
+/** Withdraw everything the user picked for a place: position, side, hue, kind and marker go back to the rules. */
 export const withdrawPlace = (anchorId: string): RecordChanges => ({ [`place:${anchorId}`]: '' });
 
 /**

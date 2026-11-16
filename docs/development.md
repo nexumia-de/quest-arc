@@ -137,7 +137,7 @@ of 5 or more, #60), `paired`, `hard-week`, `met`, `stayed`, `skipped`, `comeback
 `unbound`, `newer`, `build`, `build-ready`, `build-home`, `build-garden`, `build-lookout`,
 `before-anchors` (a journey from before #96: the home asks once whether
 its moment is the user's), the home with several moments
-(`preview/demo-moments.ts`: `moments`, `moments-chain`, `moments-rest`),
+(`preview/demo-moments.ts`: `moments`, `moments-chain`, `moments-kind`, `moments-rest`),
 and for
 the habit a finished journey leaves (`preview/demo-habits.ts`, #22):
 `habit` (maintained, the weekly question due, answers of eight weeks),

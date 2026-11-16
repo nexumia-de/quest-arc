@@ -13,11 +13,18 @@ import { own } from './demo-words';
  *   journey that waits
  * - moments-chain: the same, but the walk starts from the morning and is
  *   tied to the step that runs by itself there
+ * - moments-kind: the walk after lunch at its second station, its place
+ *   changed to a Well (`place:noon`, #158)
  * - moments-rest: without the walk: the journey that waits in the evening
  *   is the only open one, so it is the active one, paused
  */
 
-export const MOMENT_SCENARIOS = ['moments', 'moments-chain', 'moments-rest'] as const;
+export const MOMENT_SCENARIOS = [
+  'moments',
+  'moments-chain',
+  'moments-kind',
+  'moments-rest',
+] as const;
 export type MomentScenario = (typeof MOMENT_SCENARIOS)[number];
 
 export const isMomentScenario = (scenario: string): scenario is MomentScenario =>
@@ -116,5 +123,6 @@ export const momentsDemo = (scenario: MomentScenario, today: string): DemoData =
     'run-anchor:demo',
     scenario === 'moments-chain' ? { anchorId: 'morning', after: 'morning' } : { anchorId: 'noon' },
   );
+  if (scenario === 'moments-kind') record('place:noon', { ladder: 'well' });
   return { tasks, repeatCfgs, data };
 };

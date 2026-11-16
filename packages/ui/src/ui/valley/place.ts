@@ -1,4 +1,4 @@
-import type { RunView, ValleyPlace } from '@questarc/engine';
+import { MARKERS, type RunView, type ValleyPlace } from '@questarc/engine';
 
 import { t } from '../../shared/texts';
 import { art } from '../art-store';
@@ -35,6 +35,7 @@ export const placeOfRun = (ctx: Context, run: RunView): ValleyPlace => {
     name: '',
     side: 'right',
     hue: art().ladders[build.ladder]?.hue ?? '',
+    marker: MARKERS.defaultMarker,
     things: [{ ...build, runId: run.runId, journeyId: run.journeyId, state: 'growing' }],
     unbuilt: [],
     growing: true,

@@ -100,6 +100,8 @@ export interface ValleyPlace {
   readonly side: 'left' | 'right';
   /** A hue name from content/art/palette.json. */
   readonly hue: string;
+  /** What hangs at the place while a journey grows: the user's choice if known, else flowers (#158). */
+  readonly marker: string;
   /**
    * The things of the place in the order their journeys started: one to
    * `THINGS_PER_PLACE`; empty where no journey stands yet (plain land).
@@ -116,6 +118,9 @@ export interface ValleyPlace {
     readonly position?: number;
     readonly side?: 'left' | 'right';
     readonly hue?: string;
+    /** A ladder: the kind of every thing here, changeable at any time (#158). */
+    readonly ladder?: string;
+    readonly marker?: string;
   };
 }
 

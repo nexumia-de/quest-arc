@@ -1,0 +1,68 @@
+{
+  "name": "A chosen kind (place record) wins over the journey's ladder; it is the user's pick and stays listed in `chosen`",
+  "rule": "game rules \u00a78, the Valley; issue #158",
+  "kind": "evaluate",
+  "input": {
+    "day": {
+      "todayStr": "2026-11-11",
+      "startOfNextDayDiffMs": 0,
+      "timeZone": "Europe/Berlin"
+    },
+    "tasks": [],
+    "repeatCfgs": [],
+    "choices": {
+      "anchor:m1": {
+        "kind": "routine",
+        "words": "getting up"
+      },
+      "run:r1": {
+        "journeyId": "test-daily",
+        "journeyVersion": 1,
+        "startDay": "2026-10-01"
+      },
+      "run-anchor:r1": {
+        "anchorId": "m1"
+      },
+      "stage:r1:a": {
+        "acceptedDay": "2026-10-01"
+      },
+      "stage-done:r1:a": {
+        "day": "2026-10-10",
+        "dataFormat": 2
+      },
+      "stage:r1:b": {
+        "acceptedDay": "2026-10-10"
+      },
+      "stage-done:r1:b": {
+        "day": "2026-10-20",
+        "dataFormat": 2
+      },
+      "stage:r1:c": {
+        "acceptedDay": "2026-10-20"
+      },
+      "place:m1": {
+        "ladder": "garden"
+      }
+    },
+    "journeys": ["$test-daily", "$test-build", "$test-morning", "$test-night"]
+  },
+  "expect": {
+    "valley": [
+      {
+        "anchorId": "m1",
+        "marker": "flowers",
+        "chosen": {
+          "ladder": "garden"
+        },
+        "things": [
+          {
+            "runId": "r1",
+            "version": 3,
+            "ladder": "garden"
+          }
+        ]
+      }
+    ],
+    "problems": []
+  }
+}

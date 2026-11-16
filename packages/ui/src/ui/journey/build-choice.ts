@@ -1,4 +1,11 @@
-import { LADDERS, resolveBuild, type BuildChoice, type Journey } from '@questarc/engine';
+import {
+  LADDERS,
+  MARKERS,
+  resolveBuild,
+  type BuildChoice,
+  type Journey,
+  type ValleyPlace,
+} from '@questarc/engine';
 
 import { t } from '../../shared/texts';
 import { art } from '../art-store';
@@ -66,6 +73,30 @@ export const option = (
     ),
   );
 
+/** The ladders as radio options: the picture of the first version and the name. */
+const ladderOptions = (
+  selected: string,
+  suggested: string,
+  hue: string,
+  onPick: (value: string) => void,
+): Node[] =>
+  ladderNames().map((name) => {
+    const ladder = art().ladders[name];
+    return option(
+      'qa-ladder',
+      name,
+      name === selected,
+      small(
+        art().pictures[ladder?.versions[0]?.art ?? ''],
+        art().palette[hue],
+        ladder ? rowViewBox(ladder) : undefined,
+      ),
+      ladder?.title ?? name,
+      name === suggested ? t('ui.build.suggested') : undefined,
+      onPick,
+    );
+  });
+
 /** The choice of thing as a fieldset; `onChange` gets the new choice. */
 export const buildChooser = (
   journey: Journey,
@@ -74,9 +105,6 @@ export const buildChooser = (
 ): Node => {
   const shown = resolveBuild(journey, choice);
   const suggested = resolveBuild(journey, undefined).ladder;
-  const hue = art().palette[shown.hue];
-  const pick = (field: keyof BuildChoice) => (value: string) =>
-    onChange(withChoice(choice, field, value));
   return h(
     'div',
     { class: 'qa-stack' },
@@ -85,25 +113,56 @@ export const buildChooser = (
       { class: 'qa-fieldset' },
       h('legend', { class: 'qa-section-title' }, t('ui.build.thing')),
       h('p', { class: 'qa-muted qa-small' }, t('ui.build.one-thing')),
-      ...ladderNames().map((name) => {
-        const ladder = art().ladders[name];
-        return option(
-          'qa-ladder',
-          name,
-          name === shown.ladder,
-          small(
-            art().pictures[ladder?.versions[0]?.art ?? ''],
-            hue,
-            ladder ? rowViewBox(ladder) : undefined,
-          ),
-          ladder?.title ?? name,
-          name === suggested ? t('ui.build.suggested') : undefined,
-          pick('ladder'),
-        );
-      }),
+      ...ladderOptions(shown.ladder, suggested, shown.hue, (value) =>
+        onChange(withChoice(choice, 'ladder', value)),
+      ),
     ),
   );
 };
+
+/**
+ * The kind of every thing at a place (#158), also after it has grown: the
+ * same options as before the first version, written to the place's record.
+ * `suggested` is the ladder the first journey names.
+ */
+export const kindChooser = (
+  place: ValleyPlace,
+  suggested: string,
+  onPick: (ladder: string) => void,
+): Node => {
+  const shown = place.things[0]?.ladder ?? '';
+  return h(
+    'fieldset',
+    { class: 'qa-fieldset' },
+    h('legend', { class: 'qa-section-title' }, t('ui.build.thing')),
+    h('p', { class: 'qa-muted qa-small' }, t('ui.place.kind.keeps')),
+    ...ladderOptions(shown, suggested, place.hue, onPick),
+  );
+};
+
+/**
+ * What hangs at a place (#158): one option per marker kind that exists.
+ * Hidden (null) while there is only one kind, so there is nothing to choose.
+ */
+export const markerChooser = (place: ValleyPlace, onPick: (marker: string) => void): Node | null =>
+  MARKERS.kinds.length < 2
+    ? null
+    : h(
+        'fieldset',
+        { class: 'qa-fieldset' },
+        h('legend', { class: 'qa-section-title' }, t('ui.place.marker')),
+        ...MARKERS.kinds.map((kind) =>
+          option(
+            'qa-marker',
+            kind,
+            kind === place.marker,
+            null,
+            t(`ui.marker.${kind}`),
+            kind === MARKERS.defaultMarker ? t('ui.place.marker.default') : undefined,
+            onPick,
+          ),
+        ),
+      );
 
 /** The build in words: the thing's name ("Home"). */
 export const buildSummary = (journey: Journey, choice: BuildChoice): string => {

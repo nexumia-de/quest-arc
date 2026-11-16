@@ -71,6 +71,10 @@ export interface PlaceRecord {
   readonly position?: number;
   readonly side?: 'left' | 'right';
   readonly hue?: string;
+  /** A ladder of content/art/ (game rules §8): the kind of every thing at the place. */
+  readonly ladder?: string;
+  /** What hangs at the place (a kind of `MARKERS`). */
+  readonly marker?: string;
 }
 
 /** Kinds every engine reads, also for a run in a newer format: they place the run among the others. */
@@ -333,12 +337,16 @@ export const parseChoices = (records: Readonly<Record<string, unknown>>): Choice
       // Fields that are not understood are left out; what is left is kept.
       const { position, side } = value;
       const hue = str(value.hue);
+      const ladder = str(value.ladder);
+      const marker = str(value.marker);
       const picked: PlaceRecord = {
         ...(typeof position === 'number' && Number.isInteger(position) && position >= 0
           ? { position }
           : {}),
         ...(side === 'left' || side === 'right' ? { side } : {}),
         ...(hue ? { hue } : {}),
+        ...(ladder ? { ladder } : {}),
+        ...(marker ? { marker } : {}),
       };
       if (Object.keys(picked).length > 0) places.set(parts[1], picked);
     } else if (kind === 'run-anchor' && parts.length === 2 && parts[1]) {

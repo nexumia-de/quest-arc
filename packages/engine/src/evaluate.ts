@@ -99,7 +99,7 @@ export const evaluate = (snapshot: Snapshot): GameView => {
 
   // One moment, one thing (game rules §8): every journey at an anchor shows
   // the place's thing, built by the stations of all of them.
-  const placed = placeBuilds([...open, ...finished]);
+  const placed = placeBuilds([...open, ...finished], choices.places);
   for (const list of [open, finished]) {
     list.forEach((run, i) => {
       const build = placed.get(run.runId);
