@@ -1,4 +1,5 @@
 import { describe, expect, it } from 'vitest';
+import * as module from '../src/actions';
 import {
   actions,
   anchorRun,
@@ -71,6 +72,8 @@ describe('actions', () => {
       'checkPlan',
       'chooseBuild',
       'choosePlaceHue',
+      'choosePlaceKind',
+      'choosePlaceMarker',
       'choosePlaceSide',
       'confirmAnchor',
       'continueJourney',
@@ -92,6 +95,7 @@ describe('actions', () => {
       'undoSkip',
       'withdraw',
       'withdrawPlace',
+      'withdrawPlaceKind',
     ]);
   });
 
@@ -540,5 +544,28 @@ describe('actions', () => {
     const view = valley('valley-hue-chosen.json');
     expect(removeAnchor(view, 'p2')).toEqual({ 'anchor:p2': '', 'place:p2': '' });
     expect(removeAnchor(view, 'p1')).toEqual({ 'anchor:p1': '' });
+  });
+
+  it('lists every exported action in the table engine-cli.mjs answers from', () => {
+    const exported = Object.entries(module).filter(
+      ([name, value]) => typeof value === 'function' && name !== 'actions',
+    );
+    const missing = exported.filter(([name]) => !Object.hasOwn(module.actions, name));
+    expect(missing.map(([name]) => name)).toEqual([]);
+    // and the table holds the exported function itself, under its own name
+    for (const [name, fn] of exported)
+      expect(module.actions[name as keyof typeof module.actions], name).toBe(fn);
+    expect(Object.keys(module.actions).sort()).toEqual(exported.map(([name]) => name).sort());
+  });
+
+  it('answers the place actions of #158 by name from the table, as engine-cli.mjs does', () => {
+    const view = valley('valley-kind-chosen.json');
+    const call = (name: keyof typeof module.actions, ...args: unknown[]) =>
+      (module.actions[name] as (...a: unknown[]) => unknown)(...args);
+    expect(call('choosePlaceKind', view, 'm1', 'well')).toEqual({ 'place:m1': { ladder: 'well' } });
+    expect(call('choosePlaceMarker', view, 'm1', 'flowers')).toEqual({
+      'place:m1': { ladder: 'garden', marker: 'flowers' },
+    });
+    expect(call('withdrawPlaceKind', view, 'm1')).toEqual({ 'place:m1': '', 'build:r1': '' });
   });
 });
