@@ -19,7 +19,12 @@ import {
   pairStage,
   reminderSeen,
   choosePlaceHue,
+  choosePlaceKind,
+  choosePlaceMarker,
   choosePlaceSide,
+  markerKinds,
+  resolveMarker,
+  withdrawPlaceKind,
   movePlace,
   removeAnchor,
   resumeJourney,
@@ -476,6 +481,59 @@ describe('actions', () => {
     });
     expect(choosePlaceSide(view, 'nowhere', 'left')).toEqual({});
     expect(withdrawPlace('p2')).toEqual({ 'place:p2': '' });
+  });
+
+  it('chooses, changes and gives back the kind and the marker of a place (#158)', () => {
+    const view = valley('valley-kind-changed-after-version-3.json');
+    // the record also holds the side: only the field changes
+    expect(choosePlaceKind(view, 'm1', 'well')).toEqual({
+      'place:m1': { ladder: 'well', side: 'left' },
+    });
+    expect(choosePlaceKind(view, 'm1', 'castle')).toEqual({});
+    expect(choosePlaceKind(view, 'm1', 'constructor')).toEqual({});
+    expect(choosePlaceKind(view, 'm1', undefined)).toEqual({ 'place:m1': { side: 'left' } });
+    expect(choosePlaceMarker(view, 'm1', 'flowers')).toEqual({
+      'place:m1': { ladder: 'lookout', side: 'left', marker: 'flowers' },
+    });
+    expect(choosePlaceMarker(view, 'm1', 'balloons')).toEqual({});
+    expect(choosePlaceKind(view, 'nowhere', 'well')).toEqual({});
+    // side and hue keep the kind
+    expect(choosePlaceSide(view, 'm1', 'right')).toEqual({
+      'place:m1': { ladder: 'lookout', side: 'right' },
+    });
+    // the kind chosen before the first version is withdrawn with it: the
+    // journey's own ladder applies again
+    expect(withdrawPlaceKind(view, 'm1')).toEqual({ 'place:m1': { side: 'left' }, 'build:r1': '' });
+    expect(withdrawPlace('m1', view)).toEqual({ 'place:m1': '', 'build:r1': '' });
+    expect(withdrawPlace('m1')).toEqual({ 'place:m1': '' });
+    // nothing else left: the record is withdrawn
+    const only = valley('valley-kind-chosen.json');
+    expect(choosePlaceKind(only, 'm1', undefined)).toEqual({ 'place:m1': '' });
+  });
+
+  it('the marker kinds offered are those every ladder draws, flowers first', () => {
+    const ladder = (markers: string[]) => ({ versions: 5, hue: 'water', markers });
+    const list = (ladders: Record<string, ReturnType<typeof ladder>>) => ({
+      defaultLadder: 'a',
+      ladders,
+      hues: ['water'],
+    });
+    expect(markerKinds()).toEqual(['flowers']);
+    expect(
+      markerKinds(list({ a: ladder(['birds', 'flowers']), b: ladder(['flowers', 'birds']) })),
+    ).toEqual(['flowers', 'birds']);
+    // a kind one ladder does not draw is not offered
+    expect(markerKinds(list({ a: ladder(['flowers', 'birds']), b: ladder(['flowers']) }))).toEqual([
+      'flowers',
+    ]);
+  });
+
+  it('a marker kind that is not in the list falls back to flowers; a list with more kinds keeps the pick', () => {
+    expect(resolveMarker('balloons')).toBe('flowers');
+    expect(resolveMarker(undefined)).toBe('flowers');
+    expect(resolveMarker('birds', { defaultMarker: 'flowers', kinds: ['flowers', 'birds'] })).toBe(
+      'birds',
+    );
   });
 
   it('removeAnchor takes the place record with the anchor only when the user picked something', () => {

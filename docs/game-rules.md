@@ -463,8 +463,12 @@ the engine gives only names and numbers.
   (a `build` record, [data model](data-model.md) §2). A ladder the engine
   does not know, or a journey without `build`, gets the default
   ladder `home`, so a host always has pictures.
-  At a place (§8) a further journey's thing uses the ladder of the
-  place's first journey instead of its own or the chosen one.
+  At a place (§8) the kind belongs to the place: every thing there uses
+  the ladder the user chose for the place, else the ladder of the
+  place's first journey, instead of its own or the chosen one. The user
+  may change the kind later (§8); the version is derived from the
+  stages, so the thing is drawn as the new kind at the version it has
+  reached and nothing is lost.
 - **Version.** Version 1 stands when the journey starts. Every finished
   stage (a stage with a checkpoint,
   [deleted history](decisions/deleted-history.md)) raises the version by
@@ -497,10 +501,15 @@ the engine gives only names and numbers.
 - **Ready:** the current stage is met now (§4, state `met`). It follows
   the present: when a met stage falls below its condition, ready goes,
   the marker progress stays.
-- **Marker:** always flowers, the same for every ladder (#152, owner,
-  2026-11-15); the view names no marker kind, there is nothing to choose,
-  and a `marker` in an older `build` record or journey is ignored. The
-  marker progress rule above is unchanged. **Hue:** the ladder's default. The hue of a place belongs to its
+- **Marker:** flowers by default (#152). The user may choose what hangs
+  at a place, and change it at any time (#158, owner, 2026-11-16); the
+  choice belongs to the place (§8), is a name from the engine's list of
+  marker kinds (`MARKERS`: the kinds every ladder file lists in its
+  `markers`, flowers first; now only flowers, so the choice is hidden
+  until a second kind is drawn; #159, new kinds, was cancelled), and a name not in the list falls back
+  to flowers. A lantern is never a marker. A `marker` in a `build`
+  record or a journey is ignored. The marker progress rule above is
+  unchanged. **Hue:** the ladder's default. The hue of a place belongs to its
   anchor, no longer to the run (§8, the Valley): `build:<runId>.hue` is
   not read (there are no users with one yet).
 - **Continue:** the next version stands and the marker starts again at
@@ -650,11 +659,12 @@ picked. Nothing here changes what is counted (§1 to §7).
   journey started from the anchor builds its own thing, in the order the
   journeys started (earliest start day, then run id), in whatever state.
   The first journey's thing is its build; a further journey builds a
-  second and then a third thing **on the same ladder as the first**,
-  whatever ladder it names itself or the user chose for it. Each thing
+  second and then a third thing **on the same ladder as the first**
+  (the kind of the place, below), whatever ladder it names itself or the
+  user chose for it. Each thing
   starts at version 1 and follows its own journey as §7 computes it:
   version, `skipped` ("already yours"), marker progress and `ready`;
-  every thing's marker is flowers (#152). `state` says whether the thing's journey
+  the marker kind is the place's (below). `state` says whether the thing's journey
   grows (`growing`), waits (`paused`), is finished (`finished`) or was
   ended early (`ended`). A thing never passes to another journey: a
   paused journey keeps its version standing and its marker as it was
@@ -674,6 +684,23 @@ picked. Nothing here changes what is counted (§1 to §7).
   there; else none. It is the place's only sign (owner, 2026-11-15,
   #131): a step still followed (`maintained`) or waiting for a task
   (`unbound`, `unsupported-repeat`) gives none.
+- **Kind and marker per place** (#158, owner, 2026-11-16). The kind of
+  thing (Home, Garden, Well, Lookout) is chosen **per place**, as #114
+  decision 5 has it (all things at a place are the same kind), not per
+  thing. The journey sets the default: the ladder of the place's first
+  journey (§7, which already applies a `build` choice made before the
+  first version). The user may choose another kind for the place
+  (`place:<anchorId>.ladder`), also **after it has grown**: every thing
+  at the place is then drawn as the new kind at the version it has
+  reached (the same versions, `skipped` and marker progress), no run or
+  stage record changes and nothing is lost. A name that is not a
+  ladder is not a choice. What hangs is `place:<anchorId>.marker`,
+  default flowers, at any time; the view's `marker` is the resolved
+  name (an unknown name gives flowers). "Use the suggestion" withdraws
+  both fields and the first journey's own `build` record (the kind chosen
+  before its first version): the ladder the journey file names and flowers
+  apply again. Only
+  what the user picked is stored.
 - **`growing`** is true when the active journey starts from the place.
 - **`chosen`** repeats what the user picked (`place:<anchorId>`, data
   model §2); a field that is absent follows the rules above.

@@ -17,6 +17,7 @@ const place = (id: string, over: Partial<ValleyPlace> = {}): ValleyPlace => ({
   name: id,
   side: 'right',
   hue: 'meadow',
+  marker: 'flowers',
   things: [],
   unbuilt: [],
   growing: false,

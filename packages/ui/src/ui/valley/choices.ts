@@ -1,5 +1,8 @@
 import {
   choosePlaceHue,
+  choosePlaceKind,
+  choosePlaceMarker,
+  resolveBuild,
   choosePlaceSide,
   LADDERS,
   movePlace,
@@ -10,7 +13,7 @@ import {
 import { t } from '../../shared/texts';
 import { art } from '../art-store';
 import { h } from '../dom';
-import { option } from '../journey/build-choice';
+import { kindChooser, markerChooser, option } from '../journey/build-choice';
 import type { Context } from '../screen';
 import { valleyModel } from './model';
 
@@ -20,6 +23,13 @@ import { valleyModel } from './model';
  * colour. Each change is one record through the engine's actions, written
  * at once; "Use the suggestion" gives all three back to the rules.
  */
+/** The ladder the place's first journey names (what "Use the suggestion" gives back to the rule). */
+const suggestedKind = (ctx: Context, place: ValleyPlace): string => {
+  const first = place.things[0];
+  const journey = first && ctx.state.journeys.find((j) => j.id === first.journeyId);
+  return journey ? resolveBuild(journey, undefined).ladder : '';
+};
+
 export const placeChoices = (ctx: Context, place: ValleyPlace): HTMLElement => {
   const { view, journeys } = ctx.state;
   const id = place.anchorId;
@@ -77,6 +87,12 @@ export const placeChoices = (ctx: Context, place: ValleyPlace): HTMLElement => {
         ),
       ),
     ),
+    place.things.length > 0
+      ? kindChooser(place, suggestedKind(ctx, place), (ladder) =>
+          write(choosePlaceKind(view, id, ladder)),
+        )
+      : null,
+    markerChooser(place, (marker) => write(choosePlaceMarker(view, id, marker))),
     h(
       'fieldset',
       { class: 'qa-fieldset' },
@@ -109,7 +125,7 @@ export const placeChoices = (ctx: Context, place: ValleyPlace): HTMLElement => {
           {
             class: 'qa-btn qa-btn-secondary',
             type: 'button',
-            onclick: () => write(withdrawPlace(id)),
+            onclick: () => write(withdrawPlace(id, view)),
           },
           t('ui.place.suggestion'),
         )

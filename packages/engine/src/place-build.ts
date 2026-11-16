@@ -1,21 +1,25 @@
+import type { PlaceRecord } from './choices';
 import { LADDERS, type LadderList } from './ladders';
 import type { BuildView, RunView } from './types/view';
 
 /**
  * The ladder of a place's things (docs/game-rules.md §8, issue #148):
  * every journey started from an anchor builds its own thing, on the ladder
- * of the first journey started there. Nothing else of a build changes:
- * version, marker progress and ready are the journey's own (§7).
+ * of the first journey started there, or the kind the user chose for the
+ * place (`place:<anchorId>.ladder`, #158). Nothing else of a build changes:
+ * version, marker progress and ready are the journey's own (§7), so a
+ * changed kind draws the same versions as another thing and loses nothing.
  */
 
 /**
- * The build of every run that stands at an anchor but is not its first
- * journey, with the place's ladder, by run id. The first journey's build
- * and the build of runs without an anchor id stay as `buildRun` computed
- * them.
+ * The build of every run that stands at an anchor, with the place's
+ * ladder, by run id: the user's choice for the place if it is a known
+ * ladder, else the first journey's. Only builds that change are listed;
+ * the build of runs without an anchor id stays as `buildRun` computed it.
  */
 export const placeBuilds = (
   runs: readonly RunView[],
+  places: ReadonlyMap<string, PlaceRecord> = new Map(),
   ladders: LadderList = LADDERS,
 ): Map<string, BuildView> => {
   const groups = new Map<string, RunView[]>();
@@ -26,15 +30,17 @@ export const placeBuilds = (
 
   const result = new Map<string, BuildView>();
   for (const group of groups.values()) {
-    const [first, ...further] = [...group].sort(
+    const [first] = [...group].sort(
       (a, b) => a.startDay.localeCompare(b.startDay) || a.runId.localeCompare(b.runId),
     );
     if (!first) continue;
-    const ladder = first.build.ladder;
-    const own = Object.prototype.hasOwnProperty.call(ladders.ladders, ladder)
-      ? ladders.ladders[ladder]
-      : undefined;
-    for (const run of further) {
+    const known = (name: string | undefined): name is string =>
+      name !== undefined && Object.prototype.hasOwnProperty.call(ladders.ladders, name);
+    const chosen = places.get(first.anchor?.id ?? '')?.ladder;
+    const ladder = known(chosen) ? chosen : first.build.ladder;
+    const own = ladders.ladders[ladder];
+    for (const run of group) {
+      if (run === first && ladder === first.build.ladder) continue;
       result.set(run.runId, {
         ...run.build,
         ladder,

@@ -110,6 +110,12 @@ export const ladderProblems = (
     )
       error('row', '[x, y, width, height]: 3 : 2 inside the build (120 × 80)');
   }
+  if (
+    !Array.isArray(ladder.markers) ||
+    !(ladder.markers as unknown[]).includes('flowers') ||
+    (ladder.markers as unknown[]).some((kind) => typeof kind !== 'string' || kind === '')
+  )
+    error('markers', 'the marker kinds drawn, as names, flowers among them');
   if (typeof ladder.water !== 'boolean') error('water', 'true if the setting is water, else false');
 
   const pictures = Array.isArray(ladder.pictures) ? (ladder.pictures as unknown[]) : [];

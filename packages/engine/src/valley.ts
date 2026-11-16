@@ -1,5 +1,6 @@
 import type { Choices } from './choices';
 import { LADDERS } from './ladders';
+import { resolveMarker } from './markers';
 import { DAYPARTS, type Journey } from './types/journey';
 import type { AnchorView, RunView, ValleyPlace, ValleyThing } from './types/view';
 
@@ -135,6 +136,7 @@ export const valleyView = (
       name,
       side: picked.side ?? (index % 2 === 0 ? 'right' : 'left'),
       hue: hue ?? '',
+      marker: resolveMarker(picked.marker),
       things,
       unbuilt,
       // the one sign: a step here runs by itself (owner, 2026-11-15, #131)
@@ -144,6 +146,8 @@ export const valleyView = (
         ...(picked.position !== undefined ? { position: picked.position } : {}),
         ...(picked.side !== undefined ? { side: picked.side } : {}),
         ...(picked.hue !== undefined ? { hue: picked.hue } : {}),
+        ...(picked.ladder !== undefined ? { ladder: picked.ladder } : {}),
+        ...(picked.marker !== undefined ? { marker: picked.marker } : {}),
       },
     });
   });

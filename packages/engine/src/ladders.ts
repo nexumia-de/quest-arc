@@ -21,14 +21,16 @@ import type { Journey } from './types/journey';
 interface LadderFile {
   readonly versions: readonly unknown[];
   readonly hue: string;
+  /** The marker kinds this ladder draws, the usual one first. */
+  readonly markers: readonly string[];
 }
 
 /** Only the fields the engine reads, named one by one so bundlers drop the rest. */
 const SOURCES: Readonly<Record<string, LadderFile>> = {
-  home: { versions: home.versions, hue: home.hue },
-  garden: { versions: garden.versions, hue: garden.hue },
-  well: { versions: well.versions, hue: well.hue },
-  lookout: { versions: lookout.versions, hue: lookout.hue },
+  home: { versions: home.versions, hue: home.hue, markers: home.markers },
+  garden: { versions: garden.versions, hue: garden.hue, markers: garden.markers },
+  well: { versions: well.versions, hue: well.hue, markers: well.markers },
+  lookout: { versions: lookout.versions, hue: lookout.hue, markers: lookout.markers },
 };
 
 export interface Ladder {
@@ -36,6 +38,8 @@ export interface Ladder {
   readonly versions: number;
   /** Default hue. */
   readonly hue: string;
+  /** The marker kinds this ladder draws (`markers` of its file). */
+  readonly markers: readonly string[];
 }
 
 export interface LadderList {
@@ -49,7 +53,7 @@ const listFromFiles = (): LadderList => ({
   ladders: Object.fromEntries(
     Object.entries(SOURCES).map(([name, file]) => [
       name,
-      { versions: file.versions.length, hue: file.hue },
+      { versions: file.versions.length, hue: file.hue, markers: file.markers },
     ]),
   ),
   hues: Object.keys(palette),

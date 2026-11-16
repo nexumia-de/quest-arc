@@ -88,35 +88,37 @@ it as the entity `questarc:<key>` and resolves sync conflicts per key
 (last writer wins), so records written on different devices never
 overwrite each other. Most records are written once and never changed.
 
-| Key                                        | Value                                                                                       | Written when                                                                                         |
-| ------------------------------------------ | ------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------- |
-| `run:<runId>`                              | `{ journeyId, journeyVersion, startDay, why? }`                                             | a journey is started (with the user's own "why")                                                     |
-| `run-end:<runId>`                          | `{ day, reason: "finished" \| "abandoned" }`                                                | the last stage is done, or the user ends the journey                                                 |
-| `stage:<runId>:<stageId>`                  | `{ acceptedDay }`                                                                           | the user accepts a stage                                                                             |
-| `binding:<runId>:<stageId>`                | `{ taskId, repeatCfgId?, day }`; `day`: due days start then at the latest                   | a recurring task is bound or rebound; `repeatCfgId` is missing while a new task waits for its repeat |
-| `stage-done:<runId>:<stageId>`             | `{ day, dataFormat: 2 }`                                                                    | the next stage is accepted, or the journey ends ([deleted history](decisions/deleted-history.md))    |
-| `pause:<runId>:<day>`                      | `{ action: "pause" \| "resume", source: "user" \| "repeat-cfg" }`                           | the user pauses or resumes; a host sees the bound repeat config paused or unpaused                   |
-| `checkin:<runId>:<stageId>:<isoWeek>`      | `{ score: 1..7 }`                                                                           | the weekly question is answered                                                                      |
-| `stay:<runId>:<stageId>`                   | `{ day }`                                                                                   | the user stays a while at a met station (quiets the offer for 7 days)                                |
-| `skip:<runId>:<stageId>`                   | `{ day, dataFormat: 3 }`                                                                    | the user passes an offered stage with "I already do this"                                            |
-| `plan-check:<runId>`                       | `{ wish?, outcome?, obstacle?, plan? }`: the user's own words                               | a journey is started with the optional plan check, or the user saves it later                        |
-| `pair:<runId>:<stageId>`                   | `{ text }`: the user's own words, at most 60 characters                                     | the user names what they pair the stage with, or continues from a stage that has one                 |
-| `carry-on:<runId>:<stageId>`               | `{ day }`                                                                                   | the user carries on after a long break (closes the card for this gap)                                |
-| `step-back:<runId>:<stageId>:<day>`        | `{ dataFormat: 4, until? }`; `stageId` is the stage left, `day` the day                     | the user starts smaller after a long break; `until` is added when the stage left is taken up again   |
-| `graduation:<runId>:<stageId>:<day>`       | `{ choice: "end" \| "keep", until? }`; `day` is the day of graduation                       | the user lets a finished journey's habit graduate; `until` is added when it is brought back          |
-| `graduation-later:<runId>:<stageId>`       | `{ day }`                                                                                   | the user answers the offer to graduate with "Not Now" (quiet for 28 days)                            |
-| `graduation-check:<runId>:<stageId>:<due>` | `{ day, still: true \| false }`; `due` is the date the question was due                     | the user answers "does it still run by itself?" after graduation                                     |
-| `reminder-seen:<runId>:<stageId>`          | `{ on: true \| false, day }`: a reminder seen on the task, or none since                    | a host sees the reminder of a followed stage's task come or go                                       |
-| `journey:<journeyId>`                      | a story-format-3 journey                                                                    | the user imports or writes a journey                                                                 |
-| `anchor:<anchorId>`                        | `{ kind: "routine", words, name? }` or `{ kind: "time", time, name? }`                      | the user names a moment in their day, changes its words or time, or gives it a name                  |
-| `run-anchor:<runId>`                       | `{ anchorId, after? }`; `after` is the run of the step it follows                           | a journey is started from an anchor, or the user confirms the anchor of an earlier journey           |
-| `place:<anchorId>`                         | `{ position?, side?, hue? }`: an integer from 0, `left` or `right`, a hue of `palette.json` | the user moves a place earlier or later, chooses its side of the path or its hue                     |
-| `build:<runId>`                            | `{ ladder?, hue? }`: names of the ladders in `content/art/`                                 | the user chooses what the run builds or its hue (when starting or later)                             |
+| Key                                        | Value                                                                                                                                                    | Written when                                                                                         |
+| ------------------------------------------ | -------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------- |
+| `run:<runId>`                              | `{ journeyId, journeyVersion, startDay, why? }`                                                                                                          | a journey is started (with the user's own "why")                                                     |
+| `run-end:<runId>`                          | `{ day, reason: "finished" \| "abandoned" }`                                                                                                             | the last stage is done, or the user ends the journey                                                 |
+| `stage:<runId>:<stageId>`                  | `{ acceptedDay }`                                                                                                                                        | the user accepts a stage                                                                             |
+| `binding:<runId>:<stageId>`                | `{ taskId, repeatCfgId?, day }`; `day`: due days start then at the latest                                                                                | a recurring task is bound or rebound; `repeatCfgId` is missing while a new task waits for its repeat |
+| `stage-done:<runId>:<stageId>`             | `{ day, dataFormat: 2 }`                                                                                                                                 | the next stage is accepted, or the journey ends ([deleted history](decisions/deleted-history.md))    |
+| `pause:<runId>:<day>`                      | `{ action: "pause" \| "resume", source: "user" \| "repeat-cfg" }`                                                                                        | the user pauses or resumes; a host sees the bound repeat config paused or unpaused                   |
+| `checkin:<runId>:<stageId>:<isoWeek>`      | `{ score: 1..7 }`                                                                                                                                        | the weekly question is answered                                                                      |
+| `stay:<runId>:<stageId>`                   | `{ day }`                                                                                                                                                | the user stays a while at a met station (quiets the offer for 7 days)                                |
+| `skip:<runId>:<stageId>`                   | `{ day, dataFormat: 3 }`                                                                                                                                 | the user passes an offered stage with "I already do this"                                            |
+| `plan-check:<runId>`                       | `{ wish?, outcome?, obstacle?, plan? }`: the user's own words                                                                                            | a journey is started with the optional plan check, or the user saves it later                        |
+| `pair:<runId>:<stageId>`                   | `{ text }`: the user's own words, at most 60 characters                                                                                                  | the user names what they pair the stage with, or continues from a stage that has one                 |
+| `carry-on:<runId>:<stageId>`               | `{ day }`                                                                                                                                                | the user carries on after a long break (closes the card for this gap)                                |
+| `step-back:<runId>:<stageId>:<day>`        | `{ dataFormat: 4, until? }`; `stageId` is the stage left, `day` the day                                                                                  | the user starts smaller after a long break; `until` is added when the stage left is taken up again   |
+| `graduation:<runId>:<stageId>:<day>`       | `{ choice: "end" \| "keep", until? }`; `day` is the day of graduation                                                                                    | the user lets a finished journey's habit graduate; `until` is added when it is brought back          |
+| `graduation-later:<runId>:<stageId>`       | `{ day }`                                                                                                                                                | the user answers the offer to graduate with "Not Now" (quiet for 28 days)                            |
+| `graduation-check:<runId>:<stageId>:<due>` | `{ day, still: true \| false }`; `due` is the date the question was due                                                                                  | the user answers "does it still run by itself?" after graduation                                     |
+| `reminder-seen:<runId>:<stageId>`          | `{ on: true \| false, day }`: a reminder seen on the task, or none since                                                                                 | a host sees the reminder of a followed stage's task come or go                                       |
+| `journey:<journeyId>`                      | a story-format-3 journey                                                                                                                                 | the user imports or writes a journey                                                                 |
+| `anchor:<anchorId>`                        | `{ kind: "routine", words, name? }` or `{ kind: "time", time, name? }`                                                                                   | the user names a moment in their day, changes its words or time, or gives it a name                  |
+| `run-anchor:<runId>`                       | `{ anchorId, after? }`; `after` is the run of the step it follows                                                                                        | a journey is started from an anchor, or the user confirms the anchor of an earlier journey           |
+| `place:<anchorId>`                         | `{ position?, side?, hue?, ladder?, marker? }`: an integer from 0, `left` or `right`, a hue of `palette.json`, a ladder of `content/art/`, a marker kind | the user moves a place earlier or later, chooses its side, hue, kind of thing or what hangs          |
+| `build:<runId>`                            | `{ ladder?, hue? }`: names of the ladders in `content/art/`                                                                                              | the user chooses what the run builds or its hue (when starting or later)                             |
 
-- **No marker choice** (#152): the marker is always flowers, so the
-  hosts no longer write `marker` in `build:<runId>`. A `marker` in an
-  older record is ignored and kept as read; there are no users yet, so
-  nothing is migrated.
+- **The marker is chosen per place** (#158), in `place:<anchorId>.marker`;
+  the hosts never write `marker` in `build:<runId>`, and a `marker` in an
+  older `build` record is ignored and kept as read. The kind chosen for a
+  place after its first version (`place:<anchorId>.ladder`) wins over
+  `build:<runId>.ladder`, which only sets the first journey's kind
+  before the first version.
 - **No settings record.** QuestArc before 3.3 wrote `settings`
   (`{ mode: "calm" | "rpg" }`); the mode is gone (#110), the engine
   reads nothing from the record and never writes it. It can still be
@@ -243,7 +245,9 @@ overwrite each other. Most records are written once and never changed.
   order is the user's. **The `hue` of a `build` record is no longer
   read**: the hue belongs to the place (#126); there are no users with
   one yet, so nothing moves. Withdrawing an anchor's place record gives
-  position, side and hue back to the rules.
+  position, side, hue, kind and marker back to the rules; the actions
+  `choosePlaceKind`, `choosePlaceMarker` and `withdrawPlaceKind` change
+  one field and keep the others; `withdrawPlaceKind` and `withdrawPlace` (with the view) also withdraw the first journey's `build:<runId>`.
 - **Run ids** are random identifiers made by the host when a journey
   starts (`crypto.randomUUID()`); the engine never makes ids. A run is one
   walk through a journey, so a journey can be walked again later.
@@ -440,11 +444,18 @@ interface ValleyPlace {
   name: string; // the user's name for the place, else the anchor's words, else its time
   side: 'left' | 'right'; // the user's, else alternating from the right
   hue: string; // the user's, else by position in the palette's order; neighbours differ
+  marker: string; // what hangs: the user's if it is a kind of MARKERS, else flowers (#158)
   things: ValleyThing[]; // one to three, in the order the journeys started (game rules §8); empty: plain land
   unbuilt: { runId: string; journeyId: string; state: ValleyThing['state'] }[]; // journeys beyond THINGS_PER_PLACE (3)
   sign?: 'lantern'; // a step here runs by itself (graduated)
   growing: boolean; // the active journey starts from here
-  chosen: { position?: number; side?: 'left' | 'right'; hue?: string }; // `place:<anchorId>`
+  chosen: {
+    position?: number;
+    side?: 'left' | 'right';
+    hue?: string;
+    ladder?: string;
+    marker?: string;
+  }; // `place:<anchorId>`
 }
 
 // the build of one journey, on the ladder of the place's first journey
