@@ -697,7 +697,9 @@ picked. Nothing here changes what is counted (§1 to §7).
   ladder is not a choice. What hangs is `place:<anchorId>.marker`,
   default flowers, at any time; the view's `marker` is the resolved
   name (an unknown name gives flowers). "Use the suggestion" withdraws
-  both fields: the first journey's ladder and flowers apply again. Only
+  both fields and the first journey's own `build` record (the kind chosen
+  before its first version): the ladder the journey file names and flowers
+  apply again. Only
   what the user picked is stored.
 - **`growing`** is true when the active journey starts from the place.
 - **`chosen`** repeats what the user picked (`place:<anchorId>`, data

@@ -477,8 +477,20 @@ export const choosePlaceMarker = (
     : changePlace(view, anchorId, 'marker', marker);
 
 /**
+ * The first journey's own `build` record at a place, withdrawn: the choice
+ * of kind the user made before the first version (game rules §7). The
+ * journey's ladder as written in its file applies again.
+ */
+const withdrawFirstBuild = (view: GameView, anchorId: string): RecordChanges => {
+  const first = view.valley.find((p) => p.anchorId === anchorId)?.things[0];
+  return first ? { [`build:${first.runId}`]: '' } : {};
+};
+
+/**
  * "Use the suggestion" for what is built at a place: the kind and what
- * hangs go back to the rules; position, side and hue stay (#158).
+ * hangs go back to the rules, and so does the kind chosen before the first
+ * version: the first journey's own ladder applies (#158). Position, side
+ * and hue stay.
  */
 export const withdrawPlaceKind = (view: GameView, anchorId: string): RecordChanges => {
   const place = view.valley.find((p) => p.anchorId === anchorId);
@@ -486,11 +498,15 @@ export const withdrawPlaceKind = (view: GameView, anchorId: string): RecordChang
   const kept = Object.fromEntries(
     Object.entries(place.chosen).filter(([name]) => name !== 'ladder' && name !== 'marker'),
   );
-  return placeRecord(anchorId, kept);
+  return { ...placeRecord(anchorId, kept), ...withdrawFirstBuild(view, anchorId) };
 };
 
-/** Withdraw everything the user picked for a place: position, side, hue, kind and marker go back to the rules. */
-export const withdrawPlace = (anchorId: string): RecordChanges => ({ [`place:${anchorId}`]: '' });
+/** Withdraw everything the user picked for a place: position, side, hue, kind and marker go back to the rules; with `view`, the
+ * first journey's own kind chosen before its first version goes too (#158). */
+export const withdrawPlace = (anchorId: string, view?: GameView): RecordChanges => ({
+  [`place:${anchorId}`]: '',
+  ...(view ? withdrawFirstBuild(view, anchorId) : {}),
+});
 
 /**
  * "Pair it with" (design rule 7): something the user enjoys only while

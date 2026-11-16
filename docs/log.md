@@ -2,7 +2,7 @@
 
 ## 2026-11-16
 
-- **Update** (#158, owner: "Choices with defaults"): the kind of thing and what hangs are choices again, per place (`place:<anchorId>.ladder` and `.marker`, changeable after the thing has grown, the version kept; `choosePlaceKind`, `choosePlaceMarker`, `withdrawPlaceKind`; `MARKERS` is the marker kinds every ladder file lists in `markers` (only flowers, so the marker choice stays hidden; #159 was cancelled); vectors `valley-kind-*`, `valley-marker-*`), in [game rules](game-rules.md) §7 and §8, [data model](data-model.md) and [behaviour](behaviour.md) 3a.
+- **Update** (#158, owner: "Choices with defaults"): the kind of thing and what hangs are choices again, per place (`place:<anchorId>.ladder` and `.marker`, changeable after the thing has grown, the version kept; `choosePlaceKind`, `choosePlaceMarker`, `withdrawPlaceKind`; `MARKERS` is the marker kinds every ladder file lists in `markers` (only flowers, so the marker choice stays hidden; #159 was cancelled); "Use the suggestion" also withdraws the first journey's `build` record; vectors `valley-kind-*`, `valley-marker-*`), in [game rules](game-rules.md) §7 and §8, [data model](data-model.md) and [behaviour](behaviour.md) 3a.
 - **Update**: version 4.2.0 with its [changelog](../CHANGELOG.md) section: the Valley as home, the place page, up to three things per place, flowers as the marker and the lit lantern.
 
 ## 2026-11-15

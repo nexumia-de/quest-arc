@@ -125,7 +125,7 @@ export const placeChoices = (ctx: Context, place: ValleyPlace): HTMLElement => {
           {
             class: 'qa-btn qa-btn-secondary',
             type: 'button',
-            onclick: () => write(withdrawPlace(id)),
+            onclick: () => write(withdrawPlace(id, view)),
           },
           t('ui.place.suggestion'),
         )

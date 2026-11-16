@@ -215,7 +215,7 @@ design](journey-design.md#the-place-piece-the-valley-127)); demo
   keeps what was typed above. **Use the suggestion** (only while
   something was chosen) withdraws all (`withdrawPlace`): the place
   goes back to its position by the kind of moment, the alternating side,
-  the hue by position, the first journey's kind and flowers. The hue belongs to the place, not to the
+  the hue by position, the ladder the first journey's file names and flowers. The hue belongs to the place, not to the
   journey ([game rules](game-rules.md) §8).
 - **Extend This Moment** while no journey grows at the moment: screen 2
   for it (also on the place, screen 0b).
@@ -372,7 +372,9 @@ as their own page from **What you build** in the journey's menu
   written to the place's record (`choosePlaceKind`, `choosePlaceMarker`),
   so one choice covers every thing there, also after it has grown; the
   thing is then drawn as the new kind at the version it has reached.
-  **Use the suggestion** withdraws both fields.
+  **Use the suggestion** withdraws both fields and the kind chosen when the
+  journey started (`build:<runId>` of the first journey): the journey's own
+  ladder applies again.
 - On screen 3 the choice is written with **Start**; from the menu each
   change is written at once (`chooseBuild`). Only what the user picked
   is stored; the rest follows the journey. Changing later loses nothing:

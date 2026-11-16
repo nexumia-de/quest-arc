@@ -492,7 +492,6 @@ describe('actions', () => {
     expect(choosePlaceKind(view, 'm1', 'castle')).toEqual({});
     expect(choosePlaceKind(view, 'm1', 'constructor')).toEqual({});
     expect(choosePlaceKind(view, 'm1', undefined)).toEqual({ 'place:m1': { side: 'left' } });
-    expect(withdrawPlaceKind(view, 'm1')).toEqual({ 'place:m1': { side: 'left' } });
     expect(choosePlaceMarker(view, 'm1', 'flowers')).toEqual({
       'place:m1': { ladder: 'lookout', side: 'left', marker: 'flowers' },
     });
@@ -502,6 +501,11 @@ describe('actions', () => {
     expect(choosePlaceSide(view, 'm1', 'right')).toEqual({
       'place:m1': { ladder: 'lookout', side: 'right' },
     });
+    // the kind chosen before the first version is withdrawn with it: the
+    // journey's own ladder applies again
+    expect(withdrawPlaceKind(view, 'm1')).toEqual({ 'place:m1': { side: 'left' }, 'build:r1': '' });
+    expect(withdrawPlace('m1', view)).toEqual({ 'place:m1': '', 'build:r1': '' });
+    expect(withdrawPlace('m1')).toEqual({ 'place:m1': '' });
     // nothing else left: the record is withdrawn
     const only = valley('valley-kind-chosen.json');
     expect(choosePlaceKind(only, 'm1', undefined)).toEqual({ 'place:m1': '' });

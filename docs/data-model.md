@@ -247,7 +247,7 @@ overwrite each other. Most records are written once and never changed.
   one yet, so nothing moves. Withdrawing an anchor's place record gives
   position, side, hue, kind and marker back to the rules; the actions
   `choosePlaceKind`, `choosePlaceMarker` and `withdrawPlaceKind` change
-  one field and keep the others.
+  one field and keep the others; `withdrawPlaceKind` and `withdrawPlace` (with the view) also withdraw the first journey's `build:<runId>`.
 - **Run ids** are random identifiers made by the host when a journey
   starts (`crypto.randomUUID()`); the engine never makes ids. A run is one
   walk through a journey, so a journey can be walked again later.
