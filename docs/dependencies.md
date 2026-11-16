@@ -49,6 +49,21 @@ major updates of `typescript` and of `@types/node` (which follows the
 Node version in `.nvmrc`); lift the TypeScript rule when typescript-eslint
 supports TypeScript 7.
 
+## Deploy only
+
+`tools/wrangler/` pins the Cloudflare CLI the CI job `deploy` installs
+with its own lockfile ([PWA release](pwa-release.md)); it is not a
+workspace and nothing of it ships.
+
+| Package    | Version | Licence           | Use                                                                                                                                                                                                                                                                    |
+| ---------- | ------- | ----------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `wrangler` | 4.158.0 | MIT OR Apache-2.0 | Uploading the standalone app to Cloudflare Workers static assets and its previews. The package ships no licence file; its `package.json` says `MIT OR Apache-2.0`, and the workers-sdk repository has `LICENSE-MIT` and `LICENSE-APACHE` at the tag `wrangler@4.158.0` |
+
+Its lockfile holds 91 packages: MIT, Apache-2.0, ISC, 0BSD, CC0-1.0 and,
+for `sharp`'s prebuilt libvips binaries (pulled in by miniflare),
+LGPL-3.0-or-later. All are tools run in CI only, never distributed with
+QuestArc, and compatible with its AGPL-3.0-or-later.
+
 ## Overrides
 
 - `minimatch` 11.0.4 (BlueOak-1.0.0, permissive) instead of 10.2.6, which ESLint and
@@ -61,7 +76,9 @@ supports TypeScript 7.
 Node 22.23.4 (`.nvmrc`) for development and CI. GitHub Actions:
 `actions/checkout` v7.0.1, `actions/setup-node` v7.1.0,
 `actions/upload-artifact` v7.0.2, `softprops/action-gh-release` v3.0.4,
-`actions/upload-pages-artifact` v5.0.0 and `actions/deploy-pages` v5.0.1
-(MIT, the standalone app's [PWA release](pwa-release.md)), each pinned
-to its commit SHA. Dependabot also updates the Docker image
-of the real-app test.
+`actions/download-artifact` v8.0.2 and `actions/github-script` v9.0.0
+(MIT, read from their licence files) and `cloudflare/wrangler-action`
+v4.1.3 (MIT OR Apache-2.0, its `LICENSE-MIT` and `LICENSE-APACHE`) for
+the standalone app's [PWA release](pwa-release.md), each pinned to its
+commit SHA. Dependabot also updates the Docker image of the real-app
+test and `tools/wrangler`.

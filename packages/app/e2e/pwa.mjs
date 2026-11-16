@@ -1,5 +1,6 @@
-// Checks the built app as a PWA the way GitHub Pages serves it, under
-// /quest-arc/ (docs/pwa-release.md): the browser reads the manifest
+// Checks the built app as a PWA the way Cloudflare serves it, at the
+// domain's root (docs/pwa-release.md); QUESTARC_PWA_BASE=/some/path/
+// checks it under a path instead. The browser reads the manifest
 // without errors and finds the app installable, the service worker runs
 // with the app's path as its scope and keeps every file of the build in
 // one versioned cache, a reload offline starts the app, and a new build
@@ -11,7 +12,7 @@ import { tmpdir } from 'node:os';
 import { join, resolve } from 'node:path';
 import { expect, launchProfile, serve } from './serve.mjs';
 
-const BASE = '/quest-arc/';
+const BASE = process.env.QUESTARC_PWA_BASE ?? '/';
 const READY = () => performance.getEntriesByName('questarc-ready').length > 0;
 // A copy of the build, so the update below can change it on the "server".
 const work = mkdtempSync(join(tmpdir(), 'questarc-pwa-'));
@@ -47,7 +48,7 @@ try {
   expect(errors.length === 0, `the browser finds the app installable (${errors.join(', ')})`);
 
   // Every file of the build is in one cache named with a version.
-  const built = readdirSync(dir).filter((file) => file !== 'sw.js');
+  const built = readdirSync(dir).filter((file) => !['sw.js', '_headers'].includes(file));
   const cached = await page.evaluate(async () => {
     const names = await caches.keys();
     const cache = await caches.open(names[0]);

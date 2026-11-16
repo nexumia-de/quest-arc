@@ -2,9 +2,10 @@
 // for any web server. app.js bundles the engine, the shared adapter and
 // screens, the journeys and the ladders' pictures; app.css is the theme
 // (light and dark after the system), the shared style and the app's
-// own; sw.js is the service worker with the list of all files. The
-// files are relative to the page, so the app runs under any path, such
-// as GitHub Pages' /quest-arc/ (docs/pwa-release.md).
+// own; sw.js is the service worker with the list of all files; _headers
+// sets the cache headers on Cloudflare (docs/pwa-release.md). The files
+// are relative to the page, so the app runs at a domain's root or under
+// any path.
 import { createHash } from 'node:crypto';
 import {
   copyFileSync,
@@ -77,6 +78,9 @@ await build({
     APP_CACHE: JSON.stringify(`questarc-${version}-${hash.digest('hex').slice(0, 16)}`),
   },
 });
+
+// Read by Cloudflare, not served, so not in the service worker's list.
+copyFileSync(join('src', '_headers'), join(out, '_headers'));
 
 let total = 0;
 for (const file of [...files, 'sw.js']) {

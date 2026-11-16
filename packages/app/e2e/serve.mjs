@@ -21,12 +21,13 @@ const TYPES = {
 
 /**
  * Starts the server on a free port; returns its URL and how to stop it.
- * `base` serves the app under a path, as GitHub Pages does (/quest-arc/).
+ * `base` serves the app under a path instead of the root. Like Cloudflare,
+ * it does not serve _headers.
  */
 export const serve = async (dir = resolve('dist', 'app'), { base = '/' } = {}) => {
   const server = createServer(async (request, response) => {
     const full = normalize(new URL(request.url, 'http://localhost').pathname);
-    if (!full.startsWith(base)) {
+    if (!full.startsWith(base) || full.endsWith('/_headers')) {
       response.writeHead(404).end();
       return;
     }

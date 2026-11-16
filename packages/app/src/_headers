@@ -1,0 +1,12 @@
+# Response headers for Cloudflare Workers static assets (docs/pwa-release.md).
+# Cloudflare already sends "public, max-age=0, must-revalidate"; the
+# service worker and the page are named here so a changed default can
+# never keep an old build: the browser asks again on every start online.
+/sw.js
+  Cache-Control: no-cache
+/
+  Cache-Control: no-cache
+/index.html
+  Cache-Control: no-cache
+/manifest.webmanifest
+  Cache-Control: no-cache

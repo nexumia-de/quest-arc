@@ -15,9 +15,10 @@ generated: { by: claude-code/2.1.318, at: 2026-11-05 }
 | `packages/engine`         | Pure game engine: snapshot in, game view out; builds `engine.mjs` and the gjs wrapper `engine-cli.mjs`                                              |
 | `packages/engine/vectors` | Test vectors (JSON input → expected output), run in Node and later in gjs                                                                           |
 | `packages/plugin`         | Super Productivity plugin: host entry `plugin.ts`, adapter `adapter/`, view `ui/`, shared `shared/`, preview `preview/`                             |
-| `packages/app`            | Standalone web app (#91): the shared adapter and screens on its own store, a PWA on GitHub Pages ([standalone app](#standalone-app-spike))          |
+| `packages/app`            | Standalone web app (#91): the shared adapter and screens on its own store, a PWA on Cloudflare ([standalone app](#standalone-app-spike))            |
 | `content/`                | Journeys (`journeys/`, one self-contained file each, CC BY-SA 4.0 in `LICENSE`), pictures (`art/`), UI and message texts (`i18n/`), schema, example |
 | `scripts/`                | Maintenance scripts                                                                                                                                 |
+| `tools/wrangler/`         | The pinned wrangler the CI job `deploy` installs to put the app on Cloudflare ([PWA release](pwa-release.md)); not a workspace                      |
 
 ## Commands
 
@@ -294,7 +295,7 @@ replaced by the app's own (`src/host-texts.ts`; a test keeps keys and
 placeholders equal to `content/i18n`). What it showed and
 what has to change before it becomes a product:
 [decision](decisions/standalone-app-spike.md). It is published as a PWA
-on GitHub Pages for a tag `app-v<version>` ([PWA release](pwa-release.md)).
+on Cloudflare from `main`, with a preview per pull request ([PWA release](pwa-release.md)).
 
 ```sh
 npm run build -w @questarc/app
@@ -318,8 +319,8 @@ logical days, offline after the first day, export and import; it prints
 the start time with the CPU slowed four times. Then `e2e/walk-day-start.mjs`
 sets the day start to 04:00 on the Data screen and checks that a tick at
 01:30 counts for the day before and that the stored configuration is
-whole. Last, `e2e/pwa.mjs` checks the build as a PWA under
-`/quest-arc/`, as GitHub Pages serves it: installable, every file
+whole. Last, `e2e/pwa.mjs` checks the build as a PWA at the root, as
+Cloudflare serves it: installable, every file
 cached, offline, updated by a new build ([PWA release](pwa-release.md)).
 Screenshots and the exported backups (`backup-360.json`,
 `backup-daystart-360.json`, each with an `expect-….json`) go to

@@ -4,7 +4,7 @@ import { join } from 'node:path';
 import { describe, expect, it } from 'vitest';
 
 // The web app manifest as a browser needs it to install the app from
-// GitHub Pages (docs/pwa-release.md); e2e/pwa.mjs asks a real browser.
+// its own domain (docs/pwa-release.md); e2e/pwa.mjs asks a real browser.
 const src = join(__dirname, '..', 'src');
 const manifest = JSON.parse(readFileSync(join(src, 'manifest.webmanifest'), 'utf8')) as {
   id: string;
@@ -29,7 +29,7 @@ describe('web app manifest', () => {
     expect(manifest.display).toBe('standalone');
   });
 
-  it('works under any path, such as /quest-arc/ on GitHub Pages', () => {
+  it('works at the root and under any path', () => {
     for (const url of [manifest.id, manifest.start_url, manifest.scope]) expect(url).toBe('./');
     for (const icon of manifest.icons) expect(icon.src).not.toMatch(/^\/|:/);
   });

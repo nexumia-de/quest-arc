@@ -1,0 +1,16 @@
+// Cloudflare Workers static assets for the standalone app: no worker
+// code, Cloudflare serves the built files of dist/app as they are
+// (docs/pwa-release.md). `npm run build` first; CI deploys it with the
+// wrangler of tools/wrangler.
+{
+  "name": "questarc",
+  "compatibility_date": "2026-11-01",
+  "assets": {
+    "directory": "./dist/app",
+  },
+  // Agent proposal, to be confirmed by the owner (docs/pwa-release.md):
+  // the app's own origin on the owner's zone nexumia.de.
+  "routes": [{ "pattern": "questarc.nexumia.de", "custom_domain": true }],
+  // Pull requests get a Worker Preview of their own (wrangler preview).
+  "previews": {},
+}

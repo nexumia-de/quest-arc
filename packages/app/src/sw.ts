@@ -32,8 +32,8 @@ worker.addEventListener('install', (event) => {
   event.waitUntil(
     caches
       .open(APP_CACHE)
-      // Past the browser's HTTP cache: GitHub Pages lets a file be cached
-      // for ten minutes, and the new cache must not keep an old file.
+      // Past the browser's HTTP cache: a server may let a file be cached
+      // for a while, and the new cache must not keep an old file.
       .then((cache) =>
         cache.addAll(APP_FILES.map((file) => new Request(file, { cache: 'reload' }))),
       )
