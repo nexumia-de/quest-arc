@@ -1,5 +1,9 @@
 # Directory Update Log
 
+## 2026-11-16
+
+- **Update**: version 4.2.0 with its [changelog](../CHANGELOG.md) section: the Valley as home, the place page, up to three things per place, flowers as the marker and the lit lantern.
+
 ## 2026-11-15
 
 - **Update** (#151): the place piece holds up to three things: `valleyLayout` takes `things` per place and gives every thing's box (`things`): the first is the slot, the second and third stand side by side behind it, higher and smaller (0.64 of the first; smaller where two must fit beside the path), each on its own ground patch drawn like the bay, the second away from the path; where a place's band is taken the scene grows, the first things never shrink; `valleyProblems` checks them for 1 to 12 places, both sides, 1 to 3 things; the home and the place's pages draw every thing, the flowers of a growing thing behind in view, the pencil on the free side; `scripts/draw-valley.mjs` draws `valley-stacked-6` and `valley-place-stacked-*`; demos `valley-6-stacked` and `place-<home|garden>-<1|2|3>` (journey design, behaviour).

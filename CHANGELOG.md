@@ -5,6 +5,24 @@ Changes that users notice, newest first. Versions follow the plugin's
 [GitHub release](https://github.com/nexumia-de/quest-arc/releases) with the
 plugin ZIP.
 
+## 4.2.0
+
+- **Your day as a valley.** QuestArc opens on one path through your day,
+  morning at the top and night at the bottom. Each of your moments is a
+  place along it, with the thing its routine builds. The step that is
+  growing now is a card below the valley.
+- **A page for every place.** Tap a place to see its thing, the versions
+  that stand and its routine in words. The pencil opens **Change this
+  moment**: its words, earlier or later in your day, the side of the
+  path and its colour.
+- **More journeys at one moment.** A further journey at the same moment
+  builds another thing of the same kind beside the first, up to three.
+- **Flowers show the way to the next station.** One flower grows for each
+  good day. When the routine runs by itself, a lantern is lit at its
+  place.
+- What comes next is no longer shown in advance; the row shows what
+  stands.
+
 ## 4.1.0
 
 - **Three new things to build:** a Garden, a Well and a Lookout, each
