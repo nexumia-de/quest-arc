@@ -188,7 +188,7 @@ local store with little new code (#93); the owner decided to go on, in
 this repository ([decision](decisions/standalone-app.md)). Then, as the
 plan lists (#91): the screens and the adapter core in one shared
 package with the plugin unchanged for users; the store proven against a
-real Super Productivity; Today by moments and the PWA on GitHub Pages;
+real Super Productivity; Today by moments and the PWA at its own domain;
 the APK with reminders.
 
 # Backlog

@@ -11,6 +11,10 @@ export default tseslint.config(
     languageOptions: { globals: globals.node },
   },
   {
+    files: ['**/*.cjs'],
+    languageOptions: { globals: globals.node, sourceType: 'commonjs' },
+  },
+  {
     // The engine is pure: no clock, no machine time zone, no logging, no
     // host globals (docs/architecture.md). Time comes in as input.
     files: ['packages/engine/src/**/*.ts'],

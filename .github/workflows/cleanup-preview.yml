@@ -1,0 +1,78 @@
+# Removes a pull request's Cloudflare preview of the standalone app
+# (pr-<number>, made by the job deploy in ci.yml) when the pull request
+# closes, and says so in its preview comment (docs/pwa-release.md). By
+# hand (workflow_dispatch) it removes a preview by name. Without the
+# Cloudflare secrets, and for forks and Dependabot, it does nothing.
+name: Cleanup preview
+
+on:
+  pull_request:
+    types: [closed]
+  workflow_dispatch:
+    inputs:
+      name:
+        description: 'Name of the preview to remove, such as pr-167'
+        type: string
+        required: true
+
+permissions:
+  contents: read
+
+jobs:
+  cleanup:
+    name: cleanup
+    if: >-
+      github.event_name == 'workflow_dispatch' ||
+      (github.event.pull_request.head.repo.full_name == github.repository &&
+      github.actor != 'dependabot[bot]')
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    permissions:
+      contents: read
+      pull-requests: write
+    env:
+      WRANGLER_SEND_METRICS: 'false'
+    steps:
+      - name: Cloudflare secrets present
+        id: secrets
+        env:
+          TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          ACCOUNT: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+        run: |
+          if [ -n "$TOKEN" ] && [ -n "$ACCOUNT" ]; then
+            echo "ok=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "::notice::No Cloudflare secrets in this repository: no preview to remove."
+          fi
+      - if: steps.secrets.outputs.ok
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - if: steps.secrets.outputs.ok
+        uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+          cache-dependency-path: tools/wrangler/package-lock.json
+      - name: Install the pinned wrangler
+        if: steps.secrets.outputs.ok
+        run: npm ci --ignore-scripts --prefix tools/wrangler
+      # A pull request that never got a preview (it failed, or came before
+      # the secrets) has nothing to remove: a warning, not a failure.
+      - name: Remove the preview
+        if: steps.secrets.outputs.ok
+        working-directory: tools/wrangler
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          PREVIEW: ${{ inputs.name || format('pr-{0}', github.event.pull_request.number) }}
+        run: |
+          npx --no-install wrangler preview delete --name "$PREVIEW" --config ../../packages/app/wrangler.jsonc --skip-confirmation \
+            || echo "::warning::Preview $PREVIEW not removed; see the log above."
+      - name: Say so in the pull request
+        if: steps.secrets.outputs.ok && github.event_name == 'pull_request'
+        uses: actions/github-script@3a2844b7e9c422d3c10d287c895573f7108da1b3 # v9.0.0
+        with:
+          script: |
+            const comment = require('./.github/scripts/preview-comment.cjs');
+            await comment({ github, context, core }, '');

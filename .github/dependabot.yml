@@ -19,6 +19,11 @@ updates:
     groups:
       dev-dependencies:
         dependency-type: development
+  # The wrangler the deploy installs (tools/wrangler, docs/pwa-release.md).
+  - package-ecosystem: npm
+    directory: /tools/wrangler
+    schedule:
+      interval: weekly
   - package-ecosystem: github-actions
     directory: /
     schedule:

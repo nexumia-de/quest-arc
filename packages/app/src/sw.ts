@@ -1,6 +1,12 @@
 // The service worker (#93): keeps the app's files at install and answers
 // every request from them, never from the network. A new build has a new
 // cache name (build.mjs), so its files replace the old ones together.
+//
+// Updates (docs/pwa-release.md): while online, the browser compares
+// sw.js with the server's on each start of the app; a changed one keeps
+// the new files, takes over at once and drops the old cache. The open
+// page keeps running the version it started with; the next start shows
+// the new one.
 
 /** The app's files and a name made from their content, set by build.mjs. */
 declare const APP_FILES: readonly string[];
@@ -26,7 +32,11 @@ worker.addEventListener('install', (event) => {
   event.waitUntil(
     caches
       .open(APP_CACHE)
-      .then((cache) => cache.addAll(APP_FILES))
+      // Past the browser's HTTP cache: a server may let a file be cached
+      // for a while, and the new cache must not keep an old file.
+      .then((cache) =>
+        cache.addAll(APP_FILES.map((file) => new Request(file, { cache: 'reload' }))),
+      )
       .then(() => worker.skipWaiting()),
   );
 });

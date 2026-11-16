@@ -40,3 +40,6 @@ plugin.zip
 super-productivity-repo/
 # Agent worktrees
 .claude/worktrees/
+
+# Wrangler state
+.wrangler/

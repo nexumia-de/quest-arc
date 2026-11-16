@@ -39,6 +39,7 @@ links. Change history is in [log.md](log.md).
 
 - [Plugin adapter](plugin-adapter.md) - plugin.js keeps the game current: evaluation, caching, hooks with fallbacks for older Super Productivity, messages, and the protocol with the view.
 - [Development](development.md) - Layout, commands, plugin build and packing, plugin API types copy, running the engine in gjs, cloud environment hosts.
+- [The standalone app as a PWA on Cloudflare](pwa-release.md) - Manifest and icons, the service worker's cache and update, cache headers, the browser check at the root, the CI job `deploy` (main to questarc.nexumia.de, a preview per pull request, cleanup on close), the owner's steps.
 - [Dependencies](dependencies.md) - Every dependency with version, licence and use; nothing third-party ships in the plugin.
 
 # Decision records
@@ -53,5 +54,5 @@ links. Change history is in [log.md](log.md).
 - [One plugin build for older Super Productivity versions](decisions/one-build-for-older-versions.md) - `minSupVersion` stays 19.3.0; one ZIP within 19.3.x's limits (index.html ≤ 100 KB), larger content via `plugin.js`, newer API members feature-detected.
 - [A data format number on the record that needs it](decisions/data-format.md) - Hosts on different engine versions: `dataFormat` on the run-scoped record an older engine would misread makes that run read-only there; unknown kinds and fields are ignored and kept; `guardWrite` refuses writes into such runs.
 - [Others publish journeys by pull request](decisions/journeys-by-pull-request.md) - One self-contained file, checked in CI, merged by the owner; CC BY-SA 4.0 with "Written by …"; private journeys later with the same file.
-- [The standalone app is a third host in this repository](decisions/standalone-app.md) - `packages/app` next to the plugin, screens and adapter core in one shared `packages/ui`; PWA then APK, no Flatpak; released on its own tags.
+- [The standalone app is a third host in this repository](decisions/standalone-app.md) - `packages/app` next to the plugin, screens and adapter core in one shared `packages/ui`; PWA then APK, no Flatpak; released on its own tags (proposed: `app-v<version>`, for the APK); the PWA on Cloudflare at its own domain, deployed from main.
 - [Spike: the screens and the engine as a standalone web app](decisions/standalone-app-spike.md) - Go: screens, adapter and engine run unchanged as an offline web app on a dataset in Super Productivity's backup format; what a shared package and the host interface need first.
