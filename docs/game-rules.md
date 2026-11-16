@@ -504,8 +504,9 @@ the engine gives only names and numbers.
 - **Marker:** flowers by default (#152). The user may choose what hangs
   at a place, and change it at any time (#158, owner, 2026-11-16); the
   choice belongs to the place (§8), is a name from the engine's list of
-  marker kinds (`MARKERS`, now only flowers, so the choice is hidden
-  until a second kind is drawn), and a name not in the list falls back
+  marker kinds (`MARKERS`: the kinds every ladder file lists in its
+  `markers`, flowers first; now only flowers, so the choice is hidden
+  until a second kind is drawn; #159, new kinds, was cancelled), and a name not in the list falls back
   to flowers. A lantern is never a marker. A `marker` in a `build`
   record or a journey is ignored. The marker progress rule above is
   unchanged. **Hue:** the ladder's default. The hue of a place belongs to its

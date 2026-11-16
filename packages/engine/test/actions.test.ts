@@ -22,6 +22,7 @@ import {
   choosePlaceKind,
   choosePlaceMarker,
   choosePlaceSide,
+  markerKinds,
   resolveMarker,
   withdrawPlaceKind,
   movePlace,
@@ -504,6 +505,23 @@ describe('actions', () => {
     // nothing else left: the record is withdrawn
     const only = valley('valley-kind-chosen.json');
     expect(choosePlaceKind(only, 'm1', undefined)).toEqual({ 'place:m1': '' });
+  });
+
+  it('the marker kinds offered are those every ladder draws, flowers first', () => {
+    const ladder = (markers: string[]) => ({ versions: 5, hue: 'water', markers });
+    const list = (ladders: Record<string, ReturnType<typeof ladder>>) => ({
+      defaultLadder: 'a',
+      ladders,
+      hues: ['water'],
+    });
+    expect(markerKinds()).toEqual(['flowers']);
+    expect(
+      markerKinds(list({ a: ladder(['birds', 'flowers']), b: ladder(['flowers', 'birds']) })),
+    ).toEqual(['flowers', 'birds']);
+    // a kind one ladder does not draw is not offered
+    expect(markerKinds(list({ a: ladder(['flowers', 'birds']), b: ladder(['flowers']) }))).toEqual([
+      'flowers',
+    ]);
   });
 
   it('a marker kind that is not in the list falls back to flowers; a list with more kinds keeps the pick', () => {

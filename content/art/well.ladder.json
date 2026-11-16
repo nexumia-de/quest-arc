@@ -1,6 +1,7 @@
 {
   "title": "Well",
   "hue": "water",
+  "markers": ["flowers"],
   "water": false,
   "ways": [
     [

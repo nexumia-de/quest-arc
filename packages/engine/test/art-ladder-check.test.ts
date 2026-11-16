@@ -20,6 +20,7 @@ const slot = { band: 'middle', x: 55, y: 10.5, width: 210, height: 140 };
 const ladder = {
   title: 'Bridge',
   hue: 'water',
+  markers: ['flowers'],
   width: 320,
   height: 180,
   water: true,
@@ -116,6 +117,11 @@ describe('ladderProblems', () => {
     expect(at({ ...ladder, row: [21, 28, 78, 60] })).toEqual(['row']);
     expect(at({ ...ladder, row: [60, 28, 78, 52] })).toEqual(['row']);
     expect(at({ ...ladder, row: 'middle' })).toEqual(['row']);
+  });
+
+  it('wants the marker kinds named, flowers among them', () => {
+    expect(at({ ...ladder, markers: ['birds'] })).toEqual(['markers']);
+    expect(at({ ...ladder, markers: ['flowers', 'birds'] })).toEqual([]);
   });
 
   it('wants water said, true or false', () => {

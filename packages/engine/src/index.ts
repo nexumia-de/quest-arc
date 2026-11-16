@@ -101,7 +101,7 @@ export { journeyProblems, languageProblems, TEXT_LIMITS } from './content-check'
 export type { Problem } from './content-check';
 export { isScheduled, isSupported } from './schedule';
 export { LADDERS, resolveBuild } from './ladders';
-export { MARKERS, resolveMarker } from './markers';
+export { MARKERS, markerKinds, resolveMarker } from './markers';
 export { THINGS_PER_PLACE } from './valley';
 export { DAYPARTS } from './types/journey';
 export type { Daypart } from './types/journey';

@@ -1,6 +1,7 @@
 {
   "title": "Lookout",
   "hue": "rust",
+  "markers": ["flowers"],
   "water": false,
   "ways": [
     [
