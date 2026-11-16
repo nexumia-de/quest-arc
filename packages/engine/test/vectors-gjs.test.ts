@@ -80,6 +80,27 @@ describe.skipIf(!gjs)('test vectors in gjs', () => {
     ]);
   });
 
+  it('answers the place actions of #158 by name', () => {
+    const view = { valley: [{ anchorId: 'm1', chosen: {}, things: [{ runId: 'r1' }] }] };
+    const answer = JSON.parse(
+      execFileSync(gjs as string, ['-m', cli], {
+        input: JSON.stringify({
+          batch: [
+            { action: { name: 'choosePlaceKind', args: [view, 'm1', 'well'] } },
+            { action: { name: 'choosePlaceMarker', args: [view, 'm1', 'flowers'] } },
+            { action: { name: 'withdrawPlaceKind', args: [view, 'm1'] } },
+          ],
+        }),
+        encoding: 'utf8',
+      }),
+    ) as unknown[];
+    expect(answer).toEqual([
+      { 'place:m1': { ladder: 'well' } },
+      { 'place:m1': { marker: 'flowers' } },
+      { 'place:m1': '', 'build:r1': '' },
+    ]);
+  });
+
   it('evaluates raw Super Productivity objects, the way Pensum passes them', () => {
     const view = JSON.parse(
       execFileSync(gjs as string, ['-m', cli], {

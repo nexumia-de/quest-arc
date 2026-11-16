@@ -537,7 +537,10 @@ export const checkPlan = (runId: string, answers: PlanCheck): RecordChanges => {
 /** Withdraw a record (undo), the empty string the data model defines. */
 export const withdraw = (key: string): RecordChanges => ({ [key]: '' });
 
-/** The actions by name, for engine-cli.mjs. */
+/**
+ * The actions by name, for engine-cli.mjs. Every exported action is listed
+ * here (a test fails when one is missing), or a gjs host cannot call it.
+ */
 export const actions = {
   nameAnchor,
   anchorRun,
@@ -546,6 +549,9 @@ export const actions = {
   movePlace,
   choosePlaceSide,
   choosePlaceHue,
+  choosePlaceKind,
+  choosePlaceMarker,
+  withdrawPlaceKind,
   withdrawPlace,
   startJourney,
   bindStage,
