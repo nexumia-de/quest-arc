@@ -5,6 +5,13 @@ Changes that users notice, newest first. Versions follow the plugin's
 [GitHub release](https://github.com/nexumia-de/quest-arc/releases) with the
 plugin ZIP.
 
+## 4.3.0
+
+- **Choose what stands at a moment.** A journey suggests its kind of
+  thing; under **Change this moment** you can pick another kind, also
+  after it has grown. It keeps the version it has reached. **Use the
+  suggestion** brings back the journey's own.
+
 ## 4.2.0
 
 - **Your day as a valley.** QuestArc opens on one path through your day,
