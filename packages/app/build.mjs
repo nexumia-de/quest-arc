@@ -2,9 +2,19 @@
 // for any web server. app.js bundles the engine, the shared adapter and
 // screens, the journeys and the ladders' pictures; app.css is the theme
 // (light and dark after the system), the shared style and the app's
-// own; sw.js is the service worker with the list of all files.
+// own; sw.js is the service worker with the list of all files. The
+// files are relative to the page, so the app runs under any path, such
+// as GitHub Pages' /quest-arc/ (docs/pwa-release.md).
 import { createHash } from 'node:crypto';
-import { copyFileSync, mkdirSync, readFileSync, rmSync, statSync, writeFileSync } from 'node:fs';
+import {
+  copyFileSync,
+  mkdirSync,
+  readdirSync,
+  readFileSync,
+  rmSync,
+  statSync,
+  writeFileSync,
+} from 'node:fs';
 import { join } from 'node:path';
 import { build, transform } from 'esbuild';
 import { esbuildLadderArt } from '../ui/art.mjs';
@@ -45,14 +55,18 @@ const style = [
 const { code: css } = await transform(style, { loader: 'css', minify: true });
 writeFileSync(join(out, 'app.css'), css);
 
-for (const file of ['index.html', 'manifest.webmanifest', 'icon.svg']) {
-  copyFileSync(join('src', file), join(out, file));
+// The page, the manifest and its icons (the PNGs come from npm run icons).
+for (const file of readdirSync('src')) {
+  if (/\.(html|webmanifest|svg|png)$/.test(file)) copyFileSync(join('src', file), join(out, file));
 }
 
-// The cache is named after the files' content: a changed build replaces it.
-const files = ['index.html', 'app.js', 'app.css', 'manifest.webmanifest', 'icon.svg'];
+// The service worker keeps every file of the build, read from the folder
+// so none is missed; the cache is named after the version and the files'
+// content, so a changed build replaces it.
+const files = readdirSync(out).sort();
+const { version } = JSON.parse(readFileSync('package.json', 'utf8'));
 const hash = createHash('sha256');
-for (const file of files) hash.update(readFileSync(join(out, file)));
+for (const file of files) hash.update(file).update(readFileSync(join(out, file)));
 await build({
   ...common,
   entryPoints: ['src/sw.ts'],
@@ -60,7 +74,7 @@ await build({
   minify: true,
   define: {
     APP_FILES: JSON.stringify(['./', ...files]),
-    APP_CACHE: JSON.stringify(`questarc-${hash.digest('hex').slice(0, 16)}`),
+    APP_CACHE: JSON.stringify(`questarc-${version}-${hash.digest('hex').slice(0, 16)}`),
   },
 });
 

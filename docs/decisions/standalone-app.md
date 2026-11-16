@@ -3,7 +3,7 @@ type: Decision Record
 title: The standalone app is a third host in this repository
 description: QuestArc gets a standalone web app for people without Super Productivity. It lives in this repository as packages/app next to the plugin; the screens and the adapter core are one shared package, packages/ui, that both hosts wrap. PWA first, then an APK; no Flatpak; released on its own tags.
 tags: [decision, standalone-app, architecture, packages, pwa]
-generated: { by: claude-code/2.1.325, at: 2026-11-14 }
+generated: { by: claude-code/2.1.326, at: 2026-11-16 }
 sources:
   - id: issue91
     title: "Standalone QuestArc app: one web app as PWA, APK and Flatpak (#91), with the owner's decisions of 2026-11-12 and 2026-11-14 in its comments"
@@ -63,7 +63,10 @@ format[^spike].
    Play). **No Flatpak**: Day Planner is the Flatpak home of the
    journeys, and Linux desktop users can install the PWA. The app is
    released on its own tags, apart from the plugin's `v<version>`; the
-   tag pattern is fixed with the first release.
+   tag pattern is fixed with the first release. **Agent proposal** for
+   the owner to confirm (2026-11-16): `app-v<version>`, the version
+   from `packages/app/package.json`; the workflow `Pages` publishes such
+   a tag ([PWA release](../pwa-release.md)).
 6. **Visible name**: "QuestArc: Habit Journeys", shown as QuestArc on a
    home screen (owner, 2026-11-12[^issue91]).
 7. **No plain habits** (owner, 2026-11-14[^issue91]): Today shows the
@@ -83,9 +86,11 @@ format[^spike].
 - A change to a screen is tested in both hosts: the plugin's real-app
   job and the app's walk (`standalone-app` in CI, not a required check
   for now).
-- Open in the plan (#91): the dataset's default configuration, the
-  Today screen by moments, a habit's page, automatic local backups, the
-  PWA release, the APK with reminders.
+- The PWA is ready to publish: installable, offline, checked in a
+  browser under `/quest-arc/`, deployed by the workflow `Pages`
+  ([PWA release](../pwa-release.md)); the owner turns Pages on and tags.
+- Open in the plan (#91): the Today screen by moments, a habit's page,
+  automatic local backups, the APK with reminders.
 
 [^issue91]: Standalone QuestArc app (#91) and the owner's decisions in its comments, https://github.com/nexumia-de/quest-arc/issues/91
 

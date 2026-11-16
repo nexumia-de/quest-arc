@@ -2,15 +2,16 @@
   "name": "@questarc/app",
   "version": "0.0.0",
   "private": true,
-  "description": "Spike (#93): QuestArc as a standalone web app on a dataset in Super Productivity's backup format",
+  "description": "QuestArc: Habit Journeys, the standalone web app (PWA) on a dataset in Super Productivity's backup format",
   "license": "AGPL-3.0-or-later",
   "type": "module",
   "scripts": {
     "build": "node build.mjs",
     "typecheck": "tsc --noEmit -p .",
     "test": "vitest run",
-    "e2e": "node e2e/walk.mjs 360 720 && node e2e/walk.mjs 1200 800 && node e2e/walk-day-start.mjs 360 720",
-    "e2e:import": "node e2e/sp-import.mjs && node e2e/sp-roundtrip.mjs dist/walk/sp-export-360.json && node e2e/sp-import.mjs dist/walk/backup-daystart-360.json && node e2e/sp-roundtrip.mjs dist/walk/sp-export-daystart-360.json"
+    "e2e": "node e2e/walk.mjs 360 720 && node e2e/walk.mjs 1200 800 && node e2e/walk-day-start.mjs 360 720 && node e2e/pwa.mjs",
+    "e2e:import": "node e2e/sp-import.mjs && node e2e/sp-roundtrip.mjs dist/walk/sp-export-360.json && node e2e/sp-import.mjs dist/walk/backup-daystart-360.json && node e2e/sp-roundtrip.mjs dist/walk/sp-export-daystart-360.json",
+    "icons": "node icons.mjs"
   },
   "dependencies": {
     "@questarc/engine": "*",

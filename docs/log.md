@@ -2,6 +2,7 @@
 
 ## 2026-11-16
 
+- **Creation** (#91, step 4): the standalone app as a PWA on GitHub Pages ([PWA release](pwa-release.md)). The manifest gains `id`, the decided name "QuestArc: Habit Journeys", PNG icons of 192 and 512 px and a maskable one (rendered from the SVGs by `npm run icons`, committed; no new dependency), `index.html` an `apple-touch-icon`; `build.mjs` precaches every file of the output folder in a cache named after the version and the content; the service worker fetches them past the HTTP cache. `e2e/pwa.mjs` checks the build under `/quest-arc/` in Chromium: manifest without errors, installable, scope, every file cached, offline start, a new build replacing the cache. The workflow `Pages` builds, checks and deploys for a tag `app-v<version>` (an agent proposal for the owner to confirm, [decision](decisions/standalone-app.md)) or by hand; `actions/upload-pages-artifact` v5.0.0 and `actions/deploy-pages` v5.0.1 ([dependencies](dependencies.md)).
 - **Update**: version 4.3.1 with its [changelog](../CHANGELOG.md) section: engine-cli answers the choose-kind and choose-marker actions (#162).
 - **Fix** (#158): `choosePlaceKind`, `choosePlaceMarker` and `withdrawPlaceKind` were missing from the engine's `actions` table, so a gjs host got "unknown action" from `engine-cli.mjs`; they are in it, a test fails when an exported action is missing from the table, and a gjs test answers the three by name.
 - **Update**: version 4.3.0 with its [changelog](../CHANGELOG.md) section: the kind of thing at a moment can be chosen and changed later.

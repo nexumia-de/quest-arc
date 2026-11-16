@@ -34,7 +34,7 @@ below are MIT, Apache-2.0, BlueOak-1.0.0 or BSL-1.0 and compatible with it.
 | `globals`                        | 17.14.0 | MIT        | Lint globals                                                                                                                                           |
 | `prettier`                       | 3.9.10  | MIT        | Formatting                                                                                                                                             |
 | `@types/node`                    | 22.20.5 | MIT        | Types for tests and scripts                                                                                                                            |
-| `playwright`                     | 1.64.1  | Apache-2.0 | Screenshots, real-app test                                                                                                                             |
+| `playwright`                     | 1.64.1  | Apache-2.0 | Screenshots, real-app test, the standalone app's walk and PWA check, rendering its PNG icons (`npm run icons`, committed)                              |
 | `clipper2-ts`                    | 2.0.1   | BSL-1.0    | Outlines, cut-outs and measuring in `scripts/draw-ladders.mjs` ([decision](decisions/ladder-geometry.md)); read from its LICENSE file; no dependencies |
 | `@super-productivity/plugin-api` | 20.0.0  | MIT        | Plugin API types (`import type` only, nothing bundled; the package ships no LICENSE file, its `package.json` and README say MIT, (c) Johannes Millan)  |
 
@@ -61,5 +61,7 @@ supports TypeScript 7.
 Node 22.23.4 (`.nvmrc`) for development and CI. GitHub Actions:
 `actions/checkout` v7.0.1, `actions/setup-node` v7.1.0,
 `actions/upload-artifact` v7.0.2, `softprops/action-gh-release` v3.0.4,
-each pinned to its commit SHA. Dependabot also updates the Docker image
+`actions/upload-pages-artifact` v5.0.0 and `actions/deploy-pages` v5.0.1
+(MIT, the standalone app's [PWA release](pwa-release.md)), each pinned
+to its commit SHA. Dependabot also updates the Docker image
 of the real-app test.
