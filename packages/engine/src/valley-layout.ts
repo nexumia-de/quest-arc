@@ -17,6 +17,12 @@ export type Side = 'left' | 'right';
 export interface ValleyInput {
   /** The side of the path each place's thing stands on, in the order of the day. */
   sides: readonly Side[];
+  /**
+   * How many things stand at each place (1 to 3, game rules §8), in the
+   * order of `sides`; one where absent. The second and third stand behind
+   * the first (#151).
+   */
+  things?: readonly number[];
   /** The scene's width (360 on a phone). */
   width?: number;
   /** The height six places fill (720 on a phone); fewer places fill it too, more scroll. */
@@ -62,6 +68,14 @@ export interface ValleyPiece {
   path: [Cubic, Cubic];
   /** The build's box (view box 0 0 120 80, base line y = 74) in scene units. */
   slot: Box & { scale: number };
+  /**
+   * Every thing's box at the place, front to back: the first is `slot`; the
+   * second and third stand behind it (#151), higher, slightly smaller, on
+   * the side away from the path, partly hidden by the ones in front.
+   */
+  things: (Box & { scale: number })[];
+  /** The ground patch under each thing behind the first (`things[1]` on), drawn like the bay. */
+  patches: Ellipse[];
   /**
    * The thing's ground: the slot with `plotNear` build units of room beside
    * it towards the path (the lit lantern), as high as the slot.
@@ -115,6 +129,47 @@ export const VALLEY = {
   /** The bay's half height and the base line's drop below the bend, in build units. */
   bayHalfHeight: 14,
   baseDrop: 4,
+  /**
+   * The things behind the first (#151), in the first's build units: their
+   * size, how far their base line rises above the first's, and the edge of
+   * the first's box they keep to (`outer`, away from the path, or `inner`;
+   * an inner one slides outwards where the path comes nearer than
+   * `clearance`). They stand side by side in a row behind the first, their
+   * feet above its highest version's roof, so a small growing version and
+   * its flowers stay in view: the second at the outer edge, the third at
+   * the other edge (owner, round 2: about two thirds of the first, side by
+   * side, neither covering the other).
+   */
+  behind: [
+    { scale: 0.64, rise: 72, edge: 'outer' },
+    { scale: 0.64, rise: 72, edge: 'inner' },
+  ],
+  /**
+   * Free room between the second and third, in the first's build units;
+   * where the path leaves less than two things and this, both are drawn
+   * smaller.
+   */
+  besideGap: 4,
+  /**
+   * Each thing behind stands on its own ground patch, drawn like the bay
+   * (owner, round 2): an ellipse under its base line, this share of its
+   * box's width across and `patchHalfHeight` of its own build units high on
+   * each side.
+   */
+  patchWidth: 1,
+  patchHalfHeight: 14,
+  /** The patches keep this much room from the path's edge, in scene units at 360 wide. */
+  patchGap: 3,
+  /**
+   * The lit lantern stands from this height of the build's box down (build
+   * units): the lantern's room beside the slot, kept free of the things
+   * behind.
+   */
+  lanternTop: 48,
+  /** At most this many things at a place (game rules §8, THINGS_PER_PLACE). */
+  things: 3,
+  /** The marker stands in this many build units at the foot of a thing's box. */
+  markerBand: 20,
   /** The name's text size and line height. */
   nameSize: 14,
   nameLine: 18,
@@ -250,9 +305,13 @@ const pathFor = (
   pitch: number,
   sceneHeight: number,
   shift: number,
+  extra: readonly number[] = [],
 ) => {
   const n = sides.length;
-  const bendAt = (side: Side, i: number) => bendOf(side, n, width, unit, (i + 0.5) * pitch + shift);
+  // room added above place i (and so to everything below it)
+  const above = (i: number) => extra.slice(0, Math.max(0, i + 1)).reduce((a, b) => a + b, 0);
+  const bendAt = (side: Side, i: number) =>
+    bendOf(side, n, width, unit, (i + 0.5) * pitch + shift + above(i));
   const bends = sides.map(bendAt);
   const all = [
     bendAt(other(sides[0] as Side), -1),
@@ -276,17 +335,79 @@ const pathFor = (
   return { bends, pieces, path: pieces.flat() };
 };
 
-/** The Valley's geometry for places on the given sides. */
-export const valleyLayout = ({
-  sides,
-  width = VALLEY.width,
-  height = VALLEY.height,
-}: ValleyInput): ValleyLayout => {
+/**
+ * The boxes of the things behind the first (#151): higher, slightly smaller,
+ * keeping to an edge of the first's box; one that would come nearer the path
+ * than `clearance` slides away from it.
+ */
+const behindBoxes = (
+  points: readonly Point[],
+  slot: Box,
+  scale: number,
+  side: Side,
+  count: number,
+  unit: number,
+): (Box & { scale: number })[] => {
+  const rows = VALLEY.behind.slice(0, Math.max(0, count - 1));
+  const gap = VALLEY.clearance * unit;
+  const outerEdge = side === 'right' ? slot.x + slot.width : slot.x;
+  const boxAt = (k: number, rise: number) => {
+    const width = BUILD.width * scale * k;
+    const height = BUILD.height * scale * k;
+    return { width, height, y: slot.y + slot.height - rise * scale - height };
+  };
+  const place = (k: number) =>
+    rows.map(({ rise, edge }) => {
+      const { width, height, y } = boxAt(k, rise);
+      // the second at the outer edge, the third right beside it towards the
+      // path: across the first's inner edge, above the lantern, if room allows
+      const outer = edge === 'outer';
+      const step = width + VALLEY.besideGap * scale;
+      let x =
+        side === 'right' ? outerEdge - width - (outer ? 0 : step) : outerEdge + (outer ? 0 : step);
+      const reached = reach(points, y, y + height, gap, side);
+      x = side === 'right' ? Math.max(x, reached) : Math.min(x, reached - width);
+      return { x, y, width, height, scale: scale * k };
+    });
+  // Where the path comes nearer, both get smaller, so that they stand side
+  // by side, neither covering the other: the largest size up to the rule's.
+  const apart = (k: number) => {
+    const [a, b] = place(k);
+    if (!a || !b) return true;
+    const gapScene = VALLEY.besideGap * scale - 1e-6;
+    return side === 'right' ? b.x + b.width <= a.x - gapScene : a.x + a.width <= b.x - gapScene;
+  };
+  return place(largest(Math.min(...rows.map((r) => r.scale)), apart));
+};
+
+/** The ground patch a thing behind stands on: an ellipse under its base line, like the bay. */
+const patchOf = (box: Box & { scale: number }): Ellipse => ({
+  cx: box.x + box.width / 2,
+  cy: box.y + (BUILD.base / BUILD.height) * box.height,
+  rx: (VALLEY.patchWidth * box.width) / 2,
+  ry: VALLEY.patchHalfHeight * box.scale,
+});
+
+/** Every box a place puts on the ground, for making room above the things behind. */
+const groundOf = (p: ValleyPiece): Box[] => [p.plot, p.name, ...p.things.slice(1)];
+
+const overlapsX = (a: Box, b: Box) => a.x < b.x + b.width && b.x < a.x + a.width;
+
+/** One pass of the layout, with `extra` room above each place and the scale at most `cap`. */
+const compose = (
+  sides: readonly Side[],
+  counts: readonly number[],
+  width: number,
+  height: number,
+  extra: readonly number[],
+  cap?: number,
+): ValleyLayout => {
   const unit = width / VALLEY.width;
   const n = sides.length;
   const pathWidth = VALLEY.pathWidth * unit;
   const pitch = height / Math.max(1, Math.min(n, VALLEY.fill));
-  const sceneHeight = n <= VALLEY.fill ? height : pitch * n;
+  const added = extra.reduce((a, b) => a + b, 0);
+  const sceneHeight = (n <= VALLEY.fill ? height : pitch * n) + added;
   if (n === 0) {
     const straight = curve({ x: width / 2, y: 0 }, { x: width / 2, y: sceneHeight });
     return { width, height: sceneHeight, unit, pathWidth, path: [straight], places: [] };
@@ -297,16 +418,16 @@ export const valleyLayout = ({
   // A thing stands above its bay, so the bends move down until the slots
   // sit about in the middle of their pieces, by at most a quarter of the
   // spacing so the path still leaves at the bottom gently.
-  const flat = pathFor(sides, width, unit, pitch, sceneHeight, 0);
+  const flat = pathFor(sides, width, unit, pitch, sceneHeight, 0, extra);
   const flatPoints = pathPoints(flat.path);
   const roomy = largest(max, (s) =>
     sides.every((side, i) => slotAt(flatPoints, flat.bends[i] as Point, side, s, scene, false)),
   );
   const shift = Math.min((BUILD.base - BUILD.height / 2 - VALLEY.baseDrop) * roomy, pitch / 4);
-  const { bends, pieces, path } = pathFor(sides, width, unit, pitch, sceneHeight, shift);
+  const { bends, pieces, path } = pathFor(sides, width, unit, pitch, sceneHeight, shift, extra);
   const points = pathPoints(path);
   // one scale for every thing: the largest at which each slot fits
-  const scale = largest(max, (s) =>
+  const scale = largest(Math.min(max, cap ?? Infinity), (s) =>
     sides.every((side, i) => slotAt(points, bends[i] as Point, side, s, scene, true)),
   );
 
@@ -334,13 +455,18 @@ export const valleyLayout = ({
     const [nx0, nx1] = free === 'left' ? [edge, near] : [near, width - edge];
     const top = half[0].from;
     const bottom = half[1].to;
+    const first = { ...slot, scale };
+    const count = Math.min(Math.max(1, Math.round(counts[i] ?? 1)), VALLEY.things);
+    const behind = behindBoxes(points, slot, scale, side, count, unit);
     return {
       side,
       piece: { x: 0, y: top.y, width, height: bottom.y - top.y },
       bend,
       joints: { top, bottom },
       path: half,
-      slot: { ...slot, scale },
+      slot: first,
+      things: [first, ...behind],
+      patches: behind.map(patchOf),
       plot,
       bay,
       doorstep: { x: slot.x + BUILD.door * scale, y: slot.y + BUILD.base * scale },
@@ -359,6 +485,54 @@ export const valleyLayout = ({
   });
 
   return { width, height: sceneHeight, unit, pathWidth, path, places };
+};
+
+/**
+ * How much room each place needs above it so the things behind its first
+ * stay in the scene and clear of every other place's ground: the scene
+ * grows there, nothing shrinks (#151).
+ */
+const roomNeeded = (layout: ValleyLayout): number[] => {
+  const gap = 2 * layout.unit;
+  return layout.places.map((place, i) => {
+    const behind = place.things.slice(1);
+    if (behind.length === 0) return 0;
+    const top = Math.min(...behind.map((b) => b.y));
+    let need = -top;
+    layout.places.forEach((other, j) => {
+      if (j === i) return;
+      for (const box of groundOf(other)) {
+        if (box.y >= place.slot.y) continue;
+        if (!behind.some((b) => overlapsX(b, box))) continue;
+        need = Math.max(need, box.y + box.height + gap - top);
+      }
+    });
+    return Math.max(0, need);
+  });
+};
+
+/** The Valley's geometry for places on the given sides. */
+export const valleyLayout = ({
+  sides,
+  things = [],
+  width = VALLEY.width,
+  height = VALLEY.height,
+}: ValleyInput): ValleyLayout => {
+  // The first things' size is the one without the things behind: a second
+  // or third thing never makes them smaller; where it needs room above, the
+  // scene grows by that much.
+  const plain = compose(sides, [], width, height, []);
+  if (!things.some((k) => k > 1)) return plain;
+  const cap = plain.places[0]?.slot.scale;
+  let extra = sides.map(() => 0);
+  let layout = compose(sides, things, width, height, extra, cap);
+  for (let round = 0; round < 6; round += 1) {
+    const need = roomNeeded(layout);
+    if (need.every((v) => v <= 0.01)) break;
+    extra = extra.map((v, i) => v + (need[i] ?? 0));
+    layout = compose(sides, things, width, height, extra, cap);
+  }
+  return layout;
 };
 
 /** SVG path data for a run of cubics (the centre line, to be stroked at `pathWidth`). */

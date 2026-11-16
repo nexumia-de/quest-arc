@@ -149,7 +149,7 @@ describe('a new version appears, the first draw animates nothing', () => {
     const same = grownSince(first.versions, at(2));
     expect(same.grown.size).toBe(0);
     const next = grownSince(same.versions, at(3));
-    expect([...next.grown]).toEqual(['a']);
+    expect([...next.grown]).toEqual(['a/run-home']);
   });
 
   it('does not animate a version that went down or a thing that is new', () => {
@@ -159,18 +159,70 @@ describe('a new version appears, the first draw animates nothing', () => {
   });
 });
 
-describe('the place piece draws the first thing, or the one of the journey whose page it is (#130)', () => {
+describe('the place piece is about the first thing, or the one of the journey whose page it is (#130)', () => {
   const two = [place('a', { things: [thing(3), { ...thing(1), runId: 'second' }] })];
-  it('draws the first thing, and the one of a given run', () => {
+  it('is about the first thing, and the one of a given run', () => {
     expect(valleyModel(two, [], journeys, pack).places[0]?.thing?.runId).toBe('run-home');
     const own = valleyModel(two, [], journeys, pack, { runId: 'second' }).places[0];
     expect(own?.thing?.runId).toBe('second');
     expect(own?.art).toBe(home.versions[0]?.art);
   });
 
-  it('draws the first thing for a run that builds none', () => {
+  it('is about the first thing for a run that builds none', () => {
     const model = valleyModel(two, [], journeys, pack, { runId: 'unbuilt' });
     expect(model.places[0]?.thing?.runId).toBe('run-home');
+  });
+});
+
+describe('a place draws every thing, the second and third behind the first (#151)', () => {
+  const three = (state: 'growing' | 'finished' = 'finished') => [
+    place('a', {
+      growing: state === 'growing',
+      things: [
+        { ...thing(3), state: 'finished' },
+        { ...thing(2), runId: 'second', state, markerProgress: 0.6 },
+        { ...thing(1), runId: 'third', state: 'paused' },
+      ],
+    }),
+  ];
+
+  it('draws each thing in its own box of the layout, front to back', () => {
+    const model = valleyModel(three(), [], journeys, pack);
+    const [p] = model.places;
+    expect(p?.things.map((each) => each.thing.runId)).toEqual(['run-home', 'second', 'third']);
+    expect(p?.things.map((each) => each.box)).toEqual(model.geometry.places[0]?.things);
+    expect(p?.things[0]?.box).toEqual(p?.piece.slot);
+    expect(p?.things[1]?.art).toBe(home.versions[1]?.art);
+  });
+
+  it('stands the marker at the growing thing behind the first', () => {
+    const p = valleyModel(three('growing'), [], journeys, pack, { marker: true }).places[0];
+    const box = p?.things[1]?.box;
+    expect(p?.markerRunId).toBe('second');
+    expect(p?.marker?.length).toBeGreaterThan(0);
+    for (const m of p?.marker ?? []) {
+      if (m.art.includes('cord')) continue;
+      expect(m.x).toBeGreaterThanOrEqual((box?.x ?? 0) - 0.01);
+      expect(m.x + m.width).toBeLessThanOrEqual((box?.x ?? 0) + (box?.width ?? 0) + 0.01);
+      expect(m.y + m.height).toBeLessThanOrEqual((box?.y ?? 0) + (box?.height ?? 0) + 0.01);
+    }
+  });
+
+  it('reaches the tap area up to the things behind, not into the row above', () => {
+    const model = valleyModel(
+      [
+        place('a', { things: [thing(3)] }),
+        place('b', { side: 'left', things: [thing(1), thing(1), thing(1)] }),
+      ],
+      [],
+      journeys,
+      pack,
+    );
+    const [a, b] = model.places;
+    const row = (p: typeof a) =>
+      p ? Math.max(p.piece.slot.y + p.piece.slot.height, p.piece.name.y + p.piece.name.height) : 0;
+    expect(b?.hit.y).toBeGreaterThanOrEqual(row(a) - 0.01);
+    expect(b?.hit.y).toBeLessThanOrEqual(b?.piece.slot.y ?? 0);
   });
 });
 

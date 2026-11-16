@@ -11,7 +11,7 @@
  *     → { "language": "de", "texts": { key: text } }: the texts of
  *     content/i18n and the journeys in the host's language, English
  *     behind every missing key (texts.ts, issue #39)
- *   { "valley": { "sides": ["right", "left"], "width": 360, "height": 720 } }
+ *   { "valley": { "sides": ["right", "left"], "things": [1, 3], "width": 360, "height": 720 } }
  *     → the Valley's geometry (valley-layout.ts, #127)
  *   { "batch": [request, …] }                → [answer, …]
  * Run with `gjs -m engine-cli.mjs < request.json`.

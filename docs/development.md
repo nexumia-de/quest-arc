@@ -180,7 +180,7 @@ itself has the demos `build` (the journey's Well), `build-ready`,
 `build-home`, `build-garden` and `build-lookout` (`node screenshots.mjs
 build-home:Station,build-ready:Station 2` opens the place with its
 flowers); the Valley as
-the home (#129) has `valley-1`, `valley-3` and `valley-6`
+the home (#129) has `valley-1`, `valley-3`, `valley-6` and `valley-6-stacked` (#151; some places with two or three things), one place with one to three things `place-<home|garden>-<1|2|3>` (open it by its name: `place-home-3:brushing`, `place-garden-3:dinner`)
 (`node screenshots.mjs valley-1,valley-3,valley-6 2`);
 `preview.tick()` in the console ticks today off, to see new marker
 elements grow in. The plugin bundles only the pictures of the ladders

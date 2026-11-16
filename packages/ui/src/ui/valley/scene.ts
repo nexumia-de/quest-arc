@@ -148,42 +148,51 @@ export const valleyScene = (
       style: `stroke:${wayStops.length > 0 ? 'url(#qa-valley-way)' : SURFACE}`,
     }),
   );
+  // The bay, and a ground patch drawn like it under each thing behind the first (#151).
   model.places.forEach(({ piece, view }, i) => {
-    const { bay } = piece;
     const hue = placeHue(view);
-    layers.get('path')?.[i]?.append(
-      svgEl('ellipse', {
-        cx: n1(bay.cx),
-        cy: n1(bay.cy),
-        rx: n1(bay.rx),
-        ry: n1(bay.ry),
-        class: 'qa-valley-bay',
-        style: `fill:${hue ? WAY(HUE) : SURFACE};${hueVars(hue)}`,
-      }),
-    );
+    for (const ground of [piece.bay, ...piece.patches])
+      layers.get('path')?.[i]?.append(
+        svgEl('ellipse', {
+          cx: n1(ground.cx),
+          cy: n1(ground.cy),
+          rx: n1(ground.rx),
+          ry: n1(ground.ry),
+          class: 'qa-valley-bay',
+          style: `fill:${hue ? WAY(HUE) : SURFACE};${hueVars(hue)}`,
+        }),
+      );
   });
 
-  // The things, and the sign (#131): the lit lantern, drawn in the thing's
-  // box and reaching beyond it towards the path (one picture per side), in
-  // front of the marker (docs/journey-design.md, "The sign of a place").
-  model.places.forEach(({ piece, view, art: thing }, i) => {
-    const draw = (layer: Layer, name?: string) => {
+  // The things, back to front, each in its own box: the second and third
+  // stand behind the first (#151). Then the sign (#131): the lit lantern,
+  // drawn in the first thing's box and reaching beyond it towards the path
+  // (one picture per side), in front of the marker (docs/journey-design.md,
+  // "The place piece" and "The sign of a place").
+  model.places.forEach(({ piece, view, things }, i) => {
+    const hue = placeHue(view);
+    const slot = layers.get('thing')?.[i];
+    for (const { thing, box, art: name } of [...things].reverse()) {
       const source = name && art().pictures[name];
-      const slot = layers.get(layer)?.[i];
-      if (source) slot?.append(part(source, piece.slot, placeHue(view)));
-      return slot;
-    };
-    const slot = draw('thing', thing);
-    if (thing && grown.has(view.anchorId)) slot?.setAttribute('class', 'qa-grow');
-    if (view.sign === 'lantern') draw('lantern', `place-lantern-${view.side}`);
+      if (!source || !slot) continue;
+      const g = svgEl(
+        'g',
+        grown.has(`${view.anchorId}/${thing.runId}`) ? { class: 'qa-grow' } : {},
+      );
+      g.append(part(source, box, hue));
+      slot.append(g);
+    }
+    const lantern = view.sign === 'lantern' && art().pictures[`place-lantern-${view.side}`];
+    if (lantern) layers.get('lantern')?.[i]?.append(part(lantern, piece.slot, hue));
   });
 
-  // The marker in front of the thing; its new elements grow in, as on the journey screen.
+  // The marker in front of every thing, so nothing hides it, at the foot of
+  // the growing thing; its new elements grow in, as on the journey screen.
   const before = shown;
   shown = new Map();
-  model.places.forEach(({ marker, view, thing }, i) => {
+  model.places.forEach(({ marker, markerRunId, view }, i) => {
     const slot = layers.get('marker')?.[i];
-    const key = thing?.runId ?? '';
+    const key = `${view.anchorId}/${markerRunId ?? ''}`;
     if (!marker || !slot) return;
     shown.set(key, Math.max(0, ...marker.map((m) => m.order)));
     for (const m of marker) {

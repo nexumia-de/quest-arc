@@ -10,8 +10,13 @@ const every = (n: number): Side[][] =>
   Array.from({ length: 2 ** n }, (_, m) =>
     Array.from({ length: n }, (_, i): Side => ((m >> i) & 1 ? 'left' : 'right')),
   );
-const messages = (sides: Side[], width?: number, height?: number) =>
-  valleyProblems(valleyLayout({ sides, width, height })).map((p) => `${p.at}: ${p.message}`);
+const messages = (sides: Side[], width?: number, height?: number, things?: number[]) =>
+  valleyProblems(valleyLayout({ sides, width, height, things })).map(
+    (p) => `${p.at}: ${p.message}`,
+  );
+/** Things at each place: all k, or 1, 2, 3 in turn starting at `from`. */
+const counts = (n: number, k: number | 'mixed', from = 0): number[] =>
+  Array.from({ length: n }, (_, i) => (k === 'mixed' ? ((i + from) % 3) + 1 : k));
 
 describe('the place pieces, measured', () => {
   const counts = Array.from({ length: 12 }, (_, i) => i + 1);
@@ -30,6 +35,104 @@ describe('the place pieces, measured', () => {
 
   it('holds drawn larger, at 720 wide', () => {
     expect(messages(alternating(6, 'right'), 720, 1440)).toEqual([]);
+  });
+});
+
+// #151: up to three things at a place, the second and third behind the first.
+describe('the things behind the first, measured', () => {
+  const places = Array.from({ length: 12 }, (_, i) => i + 1);
+  const kinds = [1, 2, 3, 'mixed'] as const;
+  // the Valley's own heights: the layout's, the home's least (480) and one place's page (230)
+  it.each(places)('%i places, both sides, 1 to 3 things each: nothing hides or crosses', (n) => {
+    for (const first of ['right', 'left'] as const)
+      for (const k of kinds)
+        for (const from of [0, 1, 2])
+          for (const height of [720, 480]) {
+            const sides = alternating(n, first);
+            expect(
+              messages(sides, 360, height, counts(n, k, from)),
+              `${first} ${k} ${height}`,
+            ).toEqual([]);
+          }
+  });
+
+  it('holds for every choice of sides up to six places, with three things at each', () => {
+    for (let n = 1; n <= 6; n += 1)
+      for (const sides of every(n)) {
+        expect(messages(sides, 360, 720, counts(n, 3)), sides.join(' ')).toEqual([]);
+        expect(messages(sides, 360, 480, counts(n, 'mixed')), sides.join(' ')).toEqual([]);
+      }
+  });
+
+  it('holds for one place drawn as its own page, and at 720 wide', () => {
+    for (const side of ['right', 'left'] as const)
+      for (const k of [1, 2, 3]) expect(messages([side], 360, 230, [k])).toEqual([]);
+    expect(messages(alternating(6, 'right'), 720, 1440, counts(6, 3))).toEqual([]);
+  });
+});
+
+describe('valleyLayout with things behind the first', () => {
+  it('keeps the first where it stood and as large, wherever there is room above', () => {
+    for (const n of [1, 3]) {
+      const sides = alternating(n, 'right');
+      const one = valleyLayout({ sides });
+      const three = valleyLayout({ sides, things: counts(n, 3) });
+      expect(three.height).toBe(one.height);
+      three.places.forEach((p, i) => expect(p.slot).toEqual(one.places[i]?.slot));
+    }
+  });
+
+  it('never makes a first thing smaller; the scene grows where the band above is full', () => {
+    const sides = alternating(6, 'right');
+    const one = valleyLayout({ sides, height: 480 });
+    const stacked = valleyLayout({ sides, height: 480, things: counts(6, 3) });
+    expect(stacked.places[0]?.slot.scale).toBeCloseTo(one.places[0]?.slot.scale ?? 0, 9);
+    expect(stacked.height).toBeGreaterThan(one.height);
+  });
+
+  it('stands the second and third higher, smaller, side by side, the second away from the path', () => {
+    for (const side of ['right', 'left'] as const) {
+      const [place] = valleyLayout({ sides: [side], things: [3] }).places;
+      if (!place) throw new Error('one place');
+      const [first, second, third] = place.things;
+      if (!first || !second || !third) throw new Error('three things');
+      expect(first).toEqual(place.slot);
+      expect(second.y + second.height).toBeLessThan(first.y + first.height);
+      expect(third.y).toBeCloseTo(second.y, 9);
+      // at most about two thirds of the first, smaller where two must fit side by side
+      expect(second.scale).toBeLessThanOrEqual(first.scale * VALLEY.behind[0].scale + 1e-9);
+      expect(second.scale).toBeGreaterThan(first.scale * 0.5);
+      expect(third.scale).toBeCloseTo(second.scale, 9);
+      const outer = (b: typeof first) => (side === 'right' ? b.x + b.width : b.x);
+      expect(outer(second)).toBeCloseTo(outer(first), 9);
+      // side by side, neither covering the other, the third towards the path
+      const [a, b] = side === 'right' ? [third, second] : [second, third];
+      expect(a.x + a.width).toBeLessThanOrEqual(b.x + 1e-9);
+      // each on its own ground patch under its base line
+      expect(place.patches).toHaveLength(2);
+      place.patches.forEach((patch, k) => {
+        const box = place.things[k + 1];
+        expect(patch.cx).toBeCloseTo((box?.x ?? 0) + (box?.width ?? 0) / 2, 9);
+        expect(patch.cy).toBeCloseTo((box?.y ?? 0) + (74 / 80) * (box?.height ?? 0), 9);
+      });
+    }
+  });
+
+  it('keeps two thirds of the first for a second thing alone', () => {
+    for (const side of ['right', 'left'] as const) {
+      const [place] = valleyLayout({ sides: [side], things: [2] }).places;
+      expect(place?.things[1]?.scale).toBeCloseTo(
+        (place?.slot.scale ?? 0) * VALLEY.behind[0].scale,
+        9,
+      );
+    }
+  });
+
+  it('holds at most three things, one where none is given', () => {
+    const [place] = valleyLayout({ sides: ['right'], things: [5] }).places;
+    expect(place?.things).toHaveLength(3);
+    const [plain] = valleyLayout({ sides: ['left'] }).places;
+    expect(plain?.things).toHaveLength(1);
   });
 });
 
@@ -167,6 +270,30 @@ describe('valleyProblems', () => {
       expect.arrayContaining([
         expect.stringMatching(/^place 1 name: 30 wide/),
         'place 1 plot: overlaps place 2 plot',
+      ]),
+    );
+  });
+
+  it('finds a thing behind moved onto the path, over the doorstep or covering another, a patch on the path, and a name of one line', () => {
+    const layout = valleyLayout({ sides: alternating(2, 'right'), things: [3, 3] });
+    const [first, second] = layout.places;
+    const behind = first?.things[1];
+    const back = second?.things[2];
+    const patch = second?.patches[0];
+    if (!first || !second || !behind || !back || !patch) throw new Error('things behind');
+    first.things[2] = { ...behind, x: first.bend.x - 5 };
+    first.things[1] = { ...behind, x: first.doorstep.x - 5, y: first.doorstep.y - 5 };
+    second.things[2] = { ...back, x: second.things[1]?.x ?? 0 };
+    second.patches[0] = { ...patch, cx: second.bend.x };
+    second.name = { ...second.name, height: second.name.lineHeight };
+    const at = valleyProblems(layout).map((p) => `${p.at}: ${p.message}`);
+    expect(at).toEqual(
+      expect.arrayContaining([
+        expect.stringMatching(/^place 1 thing 3: .* from the path's centre line/),
+        'place 1 thing 2: covers the doorstep',
+        'place 2 thing 3: covers thing 2',
+        expect.stringMatching(/^place 2 thing 2 patch: .* from the path's centre line/),
+        'place 2 name: holds fewer than two lines',
       ]),
     );
   });
