@@ -29,6 +29,17 @@ Decided by the owner on 2026-11-14:
 - **4.1.0**: _The Valley_ and _Private journeys_.
 - The _Standalone app_ goes on next to them and is released on its own.
 
+Decided by the owner on 2026-11-20: the owner's one app for building
+habits is Day Planner (Pensum), native on the Linux phone, where a web
+app works badly
+([Pensum's decision](https://github.com/nexumia-de/pensum/blob/main/docs/decisions/habits-first.md)).
+Super Productivity with the plugin stays the owner's desktop. For the
+order here this means: _Private journeys_ is what Day Planner waits
+for (the quick form, #89, and journey files, #40; pensum#80), so its
+rules, checker and records are built in the engine first, where every
+host gets them. The _Standalone app_ stays the way for people without
+Super Productivity and without a Linux phone.
+
 # The journey
 
 The heart of QuestArc 3.0. A **journey** is one habit that grows in
@@ -176,7 +187,9 @@ back (#84).
 
 **Exit criteria**: import and export of a journey file in the plugin and
 in Pensum, checked by the same journey checker as CI (#40); the quick
-journey form, later the editor (#89).
+journey form, later the editor (#89). What the form writes and how it
+is checked lives in the engine, so that Pensum offers the same form
+natively (pensum#80).
 
 # Standalone app
 
