@@ -1,4 +1,7 @@
 import type { Journey } from './types/journey';
+import { forgetJourney } from './own-journeys';
+
+export { forgetJourney };
 import type { AnchorWords, GameView, PlanCheck, RunView, ValleyPlace } from './types/view';
 import { LADDERS } from './ladders';
 import { MARKERS } from './markers';
@@ -576,4 +579,5 @@ export const actions = {
   checkPlan,
   pairStage,
   withdraw,
+  forgetJourney,
 } as const;

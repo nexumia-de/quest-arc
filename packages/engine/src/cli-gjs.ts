@@ -13,6 +13,11 @@
  *     behind every missing key (texts.ts, issue #39)
  *   { "valley": { "sides": ["right", "left"], "things": [1, 3], "width": 360, "height": 720 } }
  *     → the Valley's geometry (valley-layout.ts, #127)
+ *   { "quick": { "answers": { … }, "texts": { key: text } } } → { journey, problems, hints }:
+ *     the journey of the quick form's answers (quick.ts, #89)
+ *   { "quickSteps": { "first": 2, "last": 20 } } → [2, 5, 10, 20]
+ *   { "keepJourney": { "journey": { … }, "builtIn": [id, …] } } → { changes, problems }:
+ *     the record of a journey of the user's own, checked first (#40)
  *   { "batch": [request, …] }                → [answer, …]
  * Run with `gjs -m engine-cli.mjs < request.json`.
  */
@@ -22,6 +27,9 @@ import { actions } from './actions';
 import { diff } from './diff';
 import { evaluate } from './evaluate';
 import { guardWrite } from './guard';
+import { keepJourney } from './own-journeys';
+import { quickJourney, type QuickAnswers } from './quick';
+import { proposeSteps } from './quick-steps';
 import { snapshotFromHost, type HostInput } from './host-data';
 import { pickLanguage, textsFor, type TextTables } from './texts';
 import type { Journey } from './types/journey';
@@ -40,6 +48,9 @@ type Request =
   | { guardWrite: { view: GameView; changes: Record<string, unknown> } }
   | { texts: { locale?: string; ui: TextTables; journeys?: Journey[] } }
   | { valley: ValleyInput }
+  | { quick: { answers: QuickAnswers; texts: Record<string, string> } }
+  | { quickSteps: { first: number; last: number } }
+  | { keepJourney: { journey: unknown; builtIn: string[] } }
   | { batch: Request[] };
 
 const act = ({ name, args }: Action): unknown => {
@@ -60,6 +71,10 @@ const answer = (request: Request): unknown => {
     return { language, texts: textsFor(language, ui, journeys) };
   }
   if ('valley' in request) return valleyLayout(request.valley);
+  if ('quick' in request) return quickJourney(request.quick.answers, request.quick.texts);
+  if ('quickSteps' in request)
+    return proposeSteps(request.quickSteps.first, request.quickSteps.last);
+  if ('keepJourney' in request) return keepJourney(request.keepJourney);
   if ('batch' in request) return request.batch.map(answer);
   return { error: 'unknown request' };
 };

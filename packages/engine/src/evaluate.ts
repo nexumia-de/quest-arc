@@ -19,15 +19,19 @@ export const evaluate = (snapshot: Snapshot): GameView => {
   const problems = [...choices.problems];
 
   const journeys = new Map<string, Journey>();
-  for (const candidate of [...snapshot.journeys, ...choices.userJourneys]) {
+  const builtIn = snapshot.journeys.length;
+  [...snapshot.journeys, ...choices.userJourneys].forEach((candidate, index) => {
     const errors = journeyErrors(candidate);
     const id = (candidate as { id?: unknown })?.id;
-    if (errors.length > 0) {
+    if (index >= builtIn && typeof id === 'string' && journeys.has(id)) {
+      // A journey of the user's own never replaces a built-in one (#40).
+      problems.push(`journey ${id}: a built-in journey has this id`);
+    } else if (errors.length > 0) {
       problems.push(`journey ${typeof id === 'string' ? id : '?'}: ${errors.join('; ')}`);
     } else {
       journeys.set((candidate as Journey).id, candidate as Journey);
     }
-  }
+  });
 
   const ctx = {
     today,

@@ -5,6 +5,13 @@ Changes that users notice, newest first. Versions follow the plugin's
 [GitHub release](https://github.com/nexumia-de/quest-arc/releases) with the
 plugin ZIP.
 
+## 4.4.0
+
+- **Journeys of your own, first in Day Planner.** The engine can build a
+  journey from a few answers (what you want to do, after what, how it
+  grows) and keep it with your data. Day Planner offers the form; the
+  plugin for Super Productivity follows.
+
 ## 4.3.1
 
 - Day Planner can save the kind of thing chosen at a moment: the engine

@@ -1,0 +1,99 @@
+{
+  "name": "A habit that stays the same: two stages with one action, first 3 of 7 due days, then 5 of 7; unknown ladder and steps are ignored",
+  "rule": "story-format, the quick journey (#89)",
+  "answers": {
+    "language": "en",
+    "name": "  Water   first ",
+    "action": "drink a glass of water",
+    "anchor": "getting up",
+    "measure": "same",
+    "steps": [3, 9],
+    "schedule": {
+      "type": "everyNDays",
+      "n": 2
+    },
+    "ladder": "castle"
+  },
+  "expect": {
+    "journey": {
+      "format": 3,
+      "id": "own-water-first",
+      "version": 1,
+      "title": "own-water-first.title",
+      "description": "own-water-first.description",
+      "why": "own-water-first.why",
+      "build": {
+        "ladder": "home"
+      },
+      "anchor": {
+        "moment": "own-water-first.moment",
+        "example": "own-water-first.anchor"
+      },
+      "stages": [
+        {
+          "id": "step-1",
+          "plan": {
+            "anchor": "own-water-first.anchor",
+            "action": "own-water-first.step-1.action"
+          },
+          "schedule": {
+            "type": "everyNDays",
+            "n": 2
+          },
+          "condition": {
+            "type": "days",
+            "n": 3,
+            "of": 7
+          },
+          "story": {
+            "arrival": "own-water-first.step-1.arrival",
+            "accept": "own-water-first.step-1.accept"
+          },
+          "nugget": "own-water-first.step-1.nugget"
+        },
+        {
+          "id": "step-2",
+          "plan": {
+            "anchor": "own-water-first.anchor",
+            "action": "own-water-first.step-2.action"
+          },
+          "schedule": {
+            "type": "everyNDays",
+            "n": 2
+          },
+          "condition": {
+            "type": "days",
+            "n": 5,
+            "of": 7
+          },
+          "story": {
+            "arrival": "own-water-first.step-2.arrival"
+          },
+          "nugget": "own-water-first.step-2.nugget"
+        }
+      ],
+      "ending": {
+        "story": "own-water-first.ending"
+      },
+      "texts": {
+        "en": {
+          "own-water-first.title": "Water first",
+          "own-water-first.description": "A habit of your own that grows in small steps.",
+          "own-water-first.why": "Why does this matter to you? In your own words.",
+          "own-water-first.anchor": "getting up",
+          "own-water-first.moment": "a moment in your day",
+          "own-water-first.ending": "This habit is yours now. What you built stays, and you decide what comes next.",
+          "own-water-first.step-1.action": "drink a glass of water",
+          "own-water-first.step-1.arrival": "The first step is taken. It is small on purpose, and the first piece stands.",
+          "own-water-first.step-1.accept": "The next step is a little more of the same. It is there when you want it.",
+          "own-water-first.step-1.nugget": "You could put what you need where you will see it at your moment, so that starting takes no thought.",
+          "own-water-first.step-2.action": "drink a glass of water",
+          "own-water-first.step-2.arrival": "You have reached the step you set out for. What you built is whole.",
+          "own-water-first.step-2.nugget": "On a full day you could do the smallest version. A tiny step keeps the habit alive."
+        }
+      }
+    },
+    "problems": [],
+    "hints": []
+  }
+}

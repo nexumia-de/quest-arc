@@ -146,8 +146,8 @@ chosen ladder, so a host compares it with `build.ladder`).
 
 `journeyProblems()` in `packages/engine/src/content-check.ts` checks
 what can be checked without a person; `npm run journeys` runs it on
-every file, and `npm run check` (CI) includes it. A future import of
-private journeys (#40) runs the same function.
+every file, and `npm run check` (CI) includes it. Keeping a journey of
+the user's own (`keepJourney`, #40, #89) runs the same function.
 
 | Level   | Check                                                                                                               | Rule       |
 | ------- | ------------------------------------------------------------------------------------------------------------------- | ---------- |
@@ -168,6 +168,50 @@ private journeys (#40) runs the same function.
 
 The test also checks that each file is named after its id and that ids
 are unique.
+
+## The quick journey
+
+A journey of the user's own from a short form (#89), written by
+`quickJourney(answers, texts)` in `packages/engine/src/quick.ts`, so
+that every host writes the same file for the same answers. The result
+is a normal journey of this format, kept as a `journey:<id>` record
+([data model](data-model.md)); it also returns the checker's problems
+and kind hints.
+
+| Answer     | Meaning                                                                                                                     |
+| ---------- | --------------------------------------------------------------------------------------------------------------------------- |
+| `language` | The language the user answered in; the host passes its app texts in that language as `texts`                                |
+| `name`     | The journey's title (40 characters)                                                                                         |
+| `action`   | The action in the user's words (80): after "I will" in English ("read"), the infinitive in German ("lesen")                 |
+| `anchor`   | The moment in their words (40): after "After" in English ("brushing my teeth"), the dative after "Nach" ("dem Zähneputzen") |
+| `measure`  | `minutes`, `pages`, `times` or `same` (the habit stays as it is)                                                            |
+| `steps`    | The amount of each step, growing, at most six; `proposeSteps(first, last)` suggests three to five ("2, 4, 10, 20")          |
+| `schedule` | A stage's schedule, the same for every stage                                                                                |
+| `ladder`   | What it builds; the default ladder when missing or unknown                                                                  |
+| `daypart`  | Optional, for the `anchor` hint                                                                                             |
+| `taken`    | The journey ids that exist, so the new id is free                                                                           |
+
+- **Id**: `own-` and the name in lower-case ASCII ("Abends Lesen" →
+  `own-abends-lesen`; `own-habit` without letters), with `-2`, `-3` …
+  while taken. Built-in journeys never start with `own-`.
+- **Stages** `step-1` … one per step, each with the action built from
+  the user's words and the amount ("read 5 pages", "5 Minuten lesen"),
+  the default condition `days` 5 of 7, an arrival and an accept text, a
+  nugget, and the journey's `why`, `anchor` hint, `ending` and `build`.
+  A habit that stays the same, or has one amount, gets two stages with
+  the same action: 3 of 7 due days first, then 5 of 7.
+- **Texts**: the sentences around the user's words are the app texts
+  `ui.quick.…` of `content/i18n/`, checked like every journey text. The
+  journey holds them itself, so it reads the same wherever it is
+  opened. English is the block every host falls back to, so the texts
+  stand under `en` whatever the language; another language gets its
+  block beside it, German with the plan form "will ich _step_".
+- **Hints**: a first step above 2 (minutes, pages, times) returns
+  `ui.quick.hint.smaller` ("Could the first step be smaller?"). Hints
+  and the checker's warnings never block; its errors do.
+
+Vectors: `packages/engine/vectors/quick/` (answers and the whole
+result, in Node and in gjs).
 
 ## Writing a journey
 

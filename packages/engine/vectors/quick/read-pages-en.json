@@ -1,0 +1,147 @@
+{
+  "name": "Reading by pages, in English: one stage per step, the user's words in every text",
+  "rule": "story-format, the quick journey (#89)",
+  "answers": {
+    "language": "en",
+    "name": "Reading at night",
+    "action": "read",
+    "anchor": "brushing my teeth",
+    "measure": "pages",
+    "steps": [1, 5, 10, 20],
+    "schedule": {
+      "type": "daily"
+    },
+    "ladder": "garden",
+    "daypart": "evening",
+    "taken": ["walk-after-lunch"]
+  },
+  "expect": {
+    "journey": {
+      "format": 3,
+      "id": "own-reading-at-night",
+      "version": 1,
+      "title": "own-reading-at-night.title",
+      "description": "own-reading-at-night.description",
+      "why": "own-reading-at-night.why",
+      "build": {
+        "ladder": "garden"
+      },
+      "anchor": {
+        "moment": "own-reading-at-night.moment",
+        "example": "own-reading-at-night.anchor",
+        "daypart": "evening"
+      },
+      "stages": [
+        {
+          "id": "step-1",
+          "plan": {
+            "anchor": "own-reading-at-night.anchor",
+            "action": "own-reading-at-night.step-1.action"
+          },
+          "schedule": {
+            "type": "daily"
+          },
+          "condition": {
+            "type": "days",
+            "n": 5,
+            "of": 7
+          },
+          "story": {
+            "arrival": "own-reading-at-night.step-1.arrival",
+            "accept": "own-reading-at-night.step-1.accept"
+          },
+          "nugget": "own-reading-at-night.step-1.nugget"
+        },
+        {
+          "id": "step-2",
+          "plan": {
+            "anchor": "own-reading-at-night.anchor",
+            "action": "own-reading-at-night.step-2.action"
+          },
+          "schedule": {
+            "type": "daily"
+          },
+          "condition": {
+            "type": "days",
+            "n": 5,
+            "of": 7
+          },
+          "story": {
+            "arrival": "own-reading-at-night.step-2.arrival",
+            "accept": "own-reading-at-night.step-2.accept"
+          },
+          "nugget": "own-reading-at-night.step-2.nugget"
+        },
+        {
+          "id": "step-3",
+          "plan": {
+            "anchor": "own-reading-at-night.anchor",
+            "action": "own-reading-at-night.step-3.action"
+          },
+          "schedule": {
+            "type": "daily"
+          },
+          "condition": {
+            "type": "days",
+            "n": 5,
+            "of": 7
+          },
+          "story": {
+            "arrival": "own-reading-at-night.step-3.arrival",
+            "accept": "own-reading-at-night.step-3.accept"
+          },
+          "nugget": "own-reading-at-night.step-3.nugget"
+        },
+        {
+          "id": "step-4",
+          "plan": {
+            "anchor": "own-reading-at-night.anchor",
+            "action": "own-reading-at-night.step-4.action"
+          },
+          "schedule": {
+            "type": "daily"
+          },
+          "condition": {
+            "type": "days",
+            "n": 5,
+            "of": 7
+          },
+          "story": {
+            "arrival": "own-reading-at-night.step-4.arrival"
+          },
+          "nugget": "own-reading-at-night.step-4.nugget"
+        }
+      ],
+      "ending": {
+        "story": "own-reading-at-night.ending"
+      },
+      "texts": {
+        "en": {
+          "own-reading-at-night.title": "Reading at night",
+          "own-reading-at-night.description": "A habit of your own that grows in small steps.",
+          "own-reading-at-night.why": "Why does this matter to you? In your own words.",
+          "own-reading-at-night.anchor": "brushing my teeth",
+          "own-reading-at-night.moment": "a moment in your day",
+          "own-reading-at-night.ending": "This habit is yours now. What you built stays, and you decide what comes next.",
+          "own-reading-at-night.step-1.action": "read 1 page",
+          "own-reading-at-night.step-1.arrival": "The first step is taken. It is small on purpose, and the first piece stands.",
+          "own-reading-at-night.step-1.accept": "The next step is a little more of the same. It is there when you want it.",
+          "own-reading-at-night.step-1.nugget": "You could put what you need where you will see it at your moment, so that starting takes no thought.",
+          "own-reading-at-night.step-2.action": "read 5 pages",
+          "own-reading-at-night.step-2.arrival": "A little more than before, and it held. What you build has grown with it.",
+          "own-reading-at-night.step-2.accept": "There is a next step, a bit larger. You could take it now, or stay here for a while.",
+          "own-reading-at-night.step-2.nugget": "On a full day you could do the smallest version. A tiny step keeps the habit alive.",
+          "own-reading-at-night.step-3.action": "read 10 pages",
+          "own-reading-at-night.step-3.arrival": "This step belongs to your day now. Another piece stands.",
+          "own-reading-at-night.step-3.accept": "The next step grows again by a little. You decide when.",
+          "own-reading-at-night.step-3.nugget": "You could say your plan out loud once: after my moment, I will do my step.",
+          "own-reading-at-night.step-4.action": "read 20 pages",
+          "own-reading-at-night.step-4.arrival": "You have reached the step you set out for. What you built is whole.",
+          "own-reading-at-night.step-4.nugget": "If your moment keeps slipping, you could choose another one that already happens every day."
+        }
+      }
+    },
+    "problems": [],
+    "hints": []
+  }
+}

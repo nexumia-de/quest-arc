@@ -113,6 +113,14 @@ overwrite each other. Most records are written once and never changed.
 | `place:<anchorId>`                         | `{ position?, side?, hue?, ladder?, marker? }`: an integer from 0, `left` or `right`, a hue of `palette.json`, a ladder of `content/art/`, a marker kind | the user moves a place earlier or later, chooses its side, hue, kind of thing or what hangs          |
 | `build:<runId>`                            | `{ ladder?, hue? }`: names of the ladders in `content/art/`                                                                                              | the user chooses what the run builds or its hue (when starting or later)                             |
 
+- **Journeys of the user's own** (#40, #89): `keepJourney({ journey,
+builtIn })` gives the `journey:<id>` record of a journey file after
+  the journey checker ([story format](story-format.md)); with an error,
+  or with the id of a built-in journey, nothing is written. A record
+  never replaces a built-in journey: the engine ignores it and names it
+  in `problems`. `forgetJourney(view, id)` withdraws the record, and
+  writes nothing while a run uses the journey, so what was walked stays
+  readable. The quick form's journeys have ids starting with `own-`.
 - **The marker is chosen per place** (#158), in `place:<anchorId>.marker`;
   the hosts never write `marker` in `build:<runId>`, and a `marker` in an
   older `build` record is ignored and kept as read. The kind chosen for a
