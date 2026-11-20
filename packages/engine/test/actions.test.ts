@@ -78,6 +78,7 @@ describe('actions', () => {
       'confirmAnchor',
       'continueJourney',
       'endJourney',
+      'forgetJourney',
       'graduate',
       'graduateLater',
       'movePlace',

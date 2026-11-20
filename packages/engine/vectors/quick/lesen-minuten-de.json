@@ -1,0 +1,116 @@
+{
+  "name": "Minutes in German: the infinitive names the step, the plan form says \"will ich …\", English holds the same words as fallback",
+  "rule": "story-format, the quick journey and the German plan form (#89, #39)",
+  "answers": {
+    "language": "de",
+    "name": "Abends Lesen & Ruhe",
+    "action": "lesen",
+    "anchor": "dem Zähneputzen",
+    "measure": "minutes",
+    "steps": [5, 10],
+    "schedule": {
+      "type": "weekdays",
+      "days": ["mon", "wed", "fri"]
+    },
+    "taken": ["own-abends-lesen-ruhe"]
+  },
+  "expect": {
+    "journey": {
+      "format": 3,
+      "id": "own-abends-lesen-ruhe-2",
+      "version": 1,
+      "title": "own-abends-lesen-ruhe-2.title",
+      "description": "own-abends-lesen-ruhe-2.description",
+      "why": "own-abends-lesen-ruhe-2.why",
+      "build": {
+        "ladder": "home"
+      },
+      "anchor": {
+        "moment": "own-abends-lesen-ruhe-2.moment",
+        "example": "own-abends-lesen-ruhe-2.anchor"
+      },
+      "stages": [
+        {
+          "id": "step-1",
+          "plan": {
+            "anchor": "own-abends-lesen-ruhe-2.anchor",
+            "action": "own-abends-lesen-ruhe-2.step-1.action"
+          },
+          "schedule": {
+            "type": "weekdays",
+            "days": ["mon", "wed", "fri"]
+          },
+          "condition": {
+            "type": "days",
+            "n": 5,
+            "of": 7
+          },
+          "story": {
+            "arrival": "own-abends-lesen-ruhe-2.step-1.arrival",
+            "accept": "own-abends-lesen-ruhe-2.step-1.accept"
+          },
+          "nugget": "own-abends-lesen-ruhe-2.step-1.nugget"
+        },
+        {
+          "id": "step-2",
+          "plan": {
+            "anchor": "own-abends-lesen-ruhe-2.anchor",
+            "action": "own-abends-lesen-ruhe-2.step-2.action"
+          },
+          "schedule": {
+            "type": "weekdays",
+            "days": ["mon", "wed", "fri"]
+          },
+          "condition": {
+            "type": "days",
+            "n": 5,
+            "of": 7
+          },
+          "story": {
+            "arrival": "own-abends-lesen-ruhe-2.step-2.arrival"
+          },
+          "nugget": "own-abends-lesen-ruhe-2.step-2.nugget"
+        }
+      ],
+      "ending": {
+        "story": "own-abends-lesen-ruhe-2.ending"
+      },
+      "texts": {
+        "en": {
+          "own-abends-lesen-ruhe-2.title": "Abends Lesen & Ruhe",
+          "own-abends-lesen-ruhe-2.description": "Eine eigene Gewohnheit, die in kleinen Schritten wächst.",
+          "own-abends-lesen-ruhe-2.why": "Warum ist dir das wichtig? In deinen eigenen Worten.",
+          "own-abends-lesen-ruhe-2.anchor": "dem Zähneputzen",
+          "own-abends-lesen-ruhe-2.moment": "einem Moment in deinem Tag",
+          "own-abends-lesen-ruhe-2.ending": "Diese Gewohnheit gehört jetzt dir. Was du gebaut hast, bleibt, und du entscheidest, wie es weitergeht.",
+          "own-abends-lesen-ruhe-2.step-1.action": "5 Minuten lesen",
+          "own-abends-lesen-ruhe-2.step-1.arrival": "Der erste Schritt ist getan. Er ist mit Absicht klein, und das erste Stück steht.",
+          "own-abends-lesen-ruhe-2.step-1.accept": "Der nächste Schritt ist ein wenig mehr vom Gleichen. Er ist da, wenn du ihn möchtest.",
+          "own-abends-lesen-ruhe-2.step-1.nugget": "Du könntest bereitlegen, was du brauchst, dort, wo du es in deinem Moment siehst. Dann braucht der Anfang kein Nachdenken.",
+          "own-abends-lesen-ruhe-2.step-2.action": "10 Minuten lesen",
+          "own-abends-lesen-ruhe-2.step-2.arrival": "Du bist bei dem Schritt angekommen, den du dir vorgenommen hast. Was du gebaut hast, ist vollständig.",
+          "own-abends-lesen-ruhe-2.step-2.nugget": "An einem vollen Tag könntest du die kleinste Fassung machen. Ein winziger Schritt hält die Gewohnheit am Leben."
+        },
+        "de": {
+          "own-abends-lesen-ruhe-2.title": "Abends Lesen & Ruhe",
+          "own-abends-lesen-ruhe-2.description": "Eine eigene Gewohnheit, die in kleinen Schritten wächst.",
+          "own-abends-lesen-ruhe-2.why": "Warum ist dir das wichtig? In deinen eigenen Worten.",
+          "own-abends-lesen-ruhe-2.anchor": "dem Zähneputzen",
+          "own-abends-lesen-ruhe-2.moment": "einem Moment in deinem Tag",
+          "own-abends-lesen-ruhe-2.ending": "Diese Gewohnheit gehört jetzt dir. Was du gebaut hast, bleibt, und du entscheidest, wie es weitergeht.",
+          "own-abends-lesen-ruhe-2.step-1.action": "5 Minuten lesen",
+          "own-abends-lesen-ruhe-2.step-1.action.plan": "will ich 5 Minuten lesen",
+          "own-abends-lesen-ruhe-2.step-1.arrival": "Der erste Schritt ist getan. Er ist mit Absicht klein, und das erste Stück steht.",
+          "own-abends-lesen-ruhe-2.step-1.accept": "Der nächste Schritt ist ein wenig mehr vom Gleichen. Er ist da, wenn du ihn möchtest.",
+          "own-abends-lesen-ruhe-2.step-1.nugget": "Du könntest bereitlegen, was du brauchst, dort, wo du es in deinem Moment siehst. Dann braucht der Anfang kein Nachdenken.",
+          "own-abends-lesen-ruhe-2.step-2.action": "10 Minuten lesen",
+          "own-abends-lesen-ruhe-2.step-2.action.plan": "will ich 10 Minuten lesen",
+          "own-abends-lesen-ruhe-2.step-2.arrival": "Du bist bei dem Schritt angekommen, den du dir vorgenommen hast. Was du gebaut hast, ist vollständig.",
+          "own-abends-lesen-ruhe-2.step-2.nugget": "An einem vollen Tag könntest du die kleinste Fassung machen. Ein winziger Schritt hält die Gewohnheit am Leben."
+        }
+      }
+    },
+    "problems": [],
+    "hints": ["ui.quick.hint.smaller"]
+  }
+}

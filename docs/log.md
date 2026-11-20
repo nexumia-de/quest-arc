@@ -2,6 +2,8 @@
 
 ## 2026-11-20
 
+- **Update**: version 4.4.0 with its [changelog](../CHANGELOG.md) section: the engine part of journeys of the user's own.
+- **Creation** (#89, #40, engine part): the quick journey in the engine. `quickJourney(answers, texts)` builds a story-format-3 journey from the form's answers, with the sentences around the user's words from the new app texts `ui.quick.…` (English and German, German with the plan form "will ich …"); `proposeSteps(first, last)` suggests the steps; `keepJourney` gives the `journey:<id>` record after the journey checker and `forgetJourney` withdraws it while no run uses it; a record never replaces a built-in journey. `engine-cli.mjs` answers `quick`, `quickSteps` and `keepJourney`. Vectors in `packages/engine/vectors/quick/` run in Node and gjs ([story format](story-format.md#the-quick-journey), [data model](data-model.md), [behaviour](behaviour.md), screen 2a). The form itself is built in Day Planner first (pensum#80); the plugin's form and the import and export of a file there stay open in #89 and #40.
 - **Decision** (owner): the owner's one app for building habits is Day Planner (Pensum), native on the Linux phone, because a web app works badly there; Super Productivity with the plugin stays the desktop ([Pensum's decision](https://github.com/nexumia-de/pensum/blob/main/docs/decisions/habits-first.md)). In the [roadmap](roadmap.md): _Private journeys_ (#89, #40) is what Day Planner waits for (pensum#80), with the form's rules, checker and records in the engine; the standalone app stays for people without Super Productivity and without a Linux phone.
 
 ## 2026-11-16

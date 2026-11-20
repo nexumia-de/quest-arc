@@ -299,6 +299,32 @@ lantern is lit beside the doorstep (#131)._
 - Opened by **A New Moment** or, for one moment, by **Extend This
   Moment** (screen 0); the moment is then chosen already on screen 3.
 
+### 2a. A journey of your own
+
+The quick form (#89): **Your Own Habit** on the Choose page opens it.
+One question per screen, nothing focused on opening, back at any time:
+
+1. **What do you want to do?** The action in the user's words.
+2. **After what?** The moment, the same for every step (rule 2).
+3. **How should it grow?** Minutes, pages, times or "it stays the
+   same", with a first and a last step; the proposed steps can be
+   changed. A first step that is not tiny gets the kind hint, never a
+   block (rule 1).
+4. **How often?** Every day, every few days or chosen weekdays.
+5. **Name and what it builds**: the name, and the kind of thing with
+   **Change**.
+
+The last screen shows the plan sentence of every step before **Keep
+this journey**. What it writes is the engine's
+([story format](story-format.md#the-quick-journey)); the journey then
+starts like any other (screen 3). The checker's errors are shown in
+plain words with the answer they belong to; warnings are not shown for
+a quick journey. Built first in Day Planner (pensum#80). The plugin gets the form
+later; until it reads `journey:<id>` records into its list of journeys
+and texts (#40), a run of an own journey that arrives by sync is not
+shown there. An own journey that no run uses can be removed from the
+Choose page, with Undo.
+
 ### 3. Start a journey
 
 - **Your moment** (#96), first: "This journey starts from a moment in
