@@ -40,6 +40,8 @@ export interface StoredRepeatCfg extends HostRepeatCfg {
   readonly defaultEstimate?: number;
   readonly skipOverdue?: boolean;
   readonly lastTaskCreationDay?: string;
+  /** The same cursor in ms (noon of that day), which Super Productivity writes with it. */
+  readonly lastTaskCreation?: number;
 }
 
 export interface StoredProject {

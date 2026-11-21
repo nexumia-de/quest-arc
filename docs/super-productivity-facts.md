@@ -354,6 +354,75 @@ message}` to the parent; the host calls the handler `plugin.js` set with
   (merging their `timeSpentOnDay` into the parent) and clears notes and issue
   fields of tasks done over a year ago (`archive-compression.service.ts`)[^sp].
 
+### What the user's actions on a recurring task write (v20.0.0, for #166)
+
+Checked at `v20.0.0`, commit `4db0e112`, for the standalone app's
+habit page and "won't do": the app writes these fields itself, so each
+is what Super Productivity writes for the same action. Facts only; no
+code was copied.
+
+- **Won't do** sets three fields on the task: `isDone: true` and
+  `doneOn` and `wontDoOn` to the same timestamp
+  (`src/app/features/tasks/util/is-wont-do-task.ts`, `getWontDoChanges`).
+  **Opening the task again** removes `doneOn` and leaves `wontDoOn`
+  behind (`task.reducer.util.ts`, `updateDoneOnForTask`); it no longer
+  equals a `doneOn`, so a later completion is a completion
+  (`isWontDoTask`)[^sp20].
+- **Skipping an occurrence** ("skip instance" in the repeat dialog)
+  appends the date to the config's `deletedInstanceDates` and writes
+  nothing else (`store/task-repeat-cfg.reducer.ts`,
+  `deleteTaskRepeatCfgInstance`). The dialog offers it only for an
+  occurrence **after today**: for today and the past it is off
+  (`dialog-edit-task-repeat-cfg.component.ts`, `canRemoveInstance`,
+  `!isTargetTodayOrPast`). There is no action that takes a skipped date
+  out of the list again[^sp20].
+- **Saving the repeat dialog** sends only the fields that differ from
+  the stored config (`get-task-repeat-cfg-changes.ts`). The "Daily"
+  preset is `quickSetting: DAILY` with `repeatCycle: DAILY`,
+  `repeatEvery: 1` (`get-quick-setting-updates.ts`); a custom pattern
+  is `quickSetting: CUSTOM`. `skipOverdue` gets its default only when a
+  config is new (`get-default-skip-overdue.ts`); a later change of the
+  schedule leaves it[^sp20].
+- **Pausing** writes `isPaused: true`; the open instance stays where it
+  is (`store/task-repeat-cfg.effects.ts`,
+  `rescheduleTaskOnRepeatCfgUpdate$`: a pause or resume alone moves no
+  occurrence). **Resuming** writes `isPaused: false` and, in the same
+  update, moves the creation cursor to the logical yesterday when it is
+  older (`lastTaskCreationDay`, and `lastTaskCreation` at noon of that
+  day), so the dates that passed during the pause are not made up for;
+  the cursor never moves back (`get-resume-cursor-changes.ts`). Today's
+  instance is then created if today is an occurrence and was not
+  handled yet[^sp20].
+- **Changing the schedule** (the cycle, the step, a weekday flag,
+  `startDate`; `store/schedule-affecting-fields.const.ts`) of a config
+  that is not paused relocates the live instance
+  (`rescheduleTaskOnRepeatCfgUpdate$`): with undone live instances, the
+  newest (by `created`) is planned for the next occurrence on or after
+  the logical today, today included
+  (`get-next-repeat-occurrence.util.ts` with `inclusive`: the pattern
+  from `startDate`, not past `repeatUntilDay`, `deletedInstanceDates`
+  not looked at), and `lastTaskCreationDay` and `lastTaskCreation`
+  (noon of that day) are set to it. Without such an occurrence because
+  of an end date the instance stays. Without an undone instance nothing
+  moves; today's instance is created if today is an occurrence and the
+  cursor is before today. A config with a valid `startTime` and a
+  `remindAt` is scheduled with a time instead
+  (`scheduleTaskWithTime`)[^sp20].
+- **Planning a task for a day** (`PlannerActions.planTaskForDay`) sets
+  the task's `dueDay` and removes `dueWithTime` and `remindAt`
+  (`tasks/store/task.reducer.ts`). For today the task goes to the end
+  of the Today tag's `taskIds`; for another day it leaves that list. It
+  is removed from every day of `planner.days` and, for a day other than
+  today, appended to `planner.days[day]`
+  (`root-store/meta/task-shared-meta-reducers/planner-shared.reducer.ts`,
+  `handlePlanTaskForDay`; `task-shared-helpers.ts`). The planner slice
+  is `{ days: { 'YYYY-MM-DD': taskId[] }, addPlannedTasksDialogLastShown? }`,
+  empty at the start (`features/planner/store/planner.reducer.ts`)[^sp20].
+- **Creating an instance** writes both cursors, `lastTaskCreationDay`
+  and `lastTaskCreation` (noon of the occurrence day;
+  `task-repeat-cfg.service.ts`); readers prefer `lastTaskCreationDay`
+  (`store/get-effective-last-task-creation-day.util.ts`)[^sp20].
+
 ## 6. Can a plugin create or end a repeat config?
 
 - No API method creates, updates or deletes a `TaskRepeatCfg`; `getAppState`

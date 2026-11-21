@@ -123,7 +123,12 @@ export const createInstances = (data: Dataset, today: string): Dataset => {
         ...next.taskRepeatCfg,
         entities: {
           ...next.taskRepeatCfg.entities,
-          [cfg.id]: { ...cfg, lastTaskCreationDay: day },
+          [cfg.id]: {
+            ...cfg,
+            lastTaskCreationDay: day,
+            // Super Productivity keeps the cursor in ms too; where a config has it, both move.
+            ...(cfg.lastTaskCreation === undefined ? {} : { lastTaskCreation: localNoon(day) }),
+          },
         },
       },
     };

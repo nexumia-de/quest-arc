@@ -121,9 +121,10 @@ format[^spike].
 - Today is grouped by moments (#164,
   [behaviour](../behaviour.md#10-today-standalone-app)), and the Data
   screen offers language and appearance, kept on the device outside the
-  dataset (#165, [behaviour](../behaviour.md#11-data-standalone-app)). Open in the
-  plan (#91): a habit's page and skip / won't do (#166), automatic local backups, the APK with
-  reminders.
+  dataset (#165, [behaviour](../behaviour.md#11-data-standalone-app)). Today offers "won't do" with undo, and a habit has its page:
+  schedule, pause, leaving out the next time (#166,
+  [behaviour](../behaviour.md#12-a-habit-standalone-app)). Open in the
+  plan (#91): automatic local backups, the APK with reminders.
 
 [^issue91]: Standalone QuestArc app (#91) and the owner's decisions in its comments, https://github.com/nexumia-de/quest-arc/issues/91
 

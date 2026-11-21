@@ -20,11 +20,13 @@ import { createHost } from './host';
 import { applyHostTexts } from './host-texts';
 import { applyAppearance, createPreferences, localeFor } from './preferences';
 import { renderData } from './screens/data';
+import { createHabitPage } from './screens/habit-page';
 import { renderToday } from './screens/today';
-import { todayMoments } from './screens/today-moments';
+import { habitsNotToday, todayMoments } from './screens/today-moments';
 import { createShell } from './shell';
 import { BackupError, parseBackup, toBackup } from './store/backup';
 import { freshDataset, type Dataset } from './store/dataset';
+import { isHabit, isWontDo, wontDo } from './store/habit-actions';
 import { setDone, todaysTasks } from './store/habits';
 import { indexedDbPersistence } from './store/idb';
 import { keepDataOnce } from './store/persist';
@@ -146,21 +148,62 @@ const start = async (root: HTMLElement): Promise<void> => {
   // The game state Today was last drawn from: a tick shows at once, the
   // moments follow when the engine has looked again.
   let known: State | undefined;
-  const drawToday = (): void =>
+  /** The task whose further actions are open on Today. */
+  let panel: string | undefined;
+  const allTasks = () =>
+    Object.values(store.data.task.entities).filter((task) => task !== undefined);
+  const change = (next: (data: Dataset) => Dataset): Promise<void> =>
+    store.update(next).then(() => host.emit('dataChanged'));
+  const habitPage = createHabitPage({
+    root: shell.views.today,
+    store,
+    today,
+    game: () => known,
+    change,
+    message: (text, action) => shell.message(text, action),
+    redraw: () => drawToday(),
+  });
+  const drawToday = (): void => {
+    if (habitPage.draw()) return;
+    const tasks = todaysTasks(store.data, today());
+    const habits = Object.values(store.data.taskRepeatCfg.entities).filter(isHabit);
     renderToday(shell.views.today, {
       today: today(),
-      moments: todayMoments(
-        todaysTasks(store.data, today()),
-        known,
-        Object.values(store.data.task.entities).filter((task) => task !== undefined),
-      ),
+      moments: todayMoments(tasks, known, allTasks()),
+      resting: habitsNotToday(habits, tasks, known, allTasks()).map((cfg) => ({
+        id: cfg.id,
+        title: cfg.title ?? '',
+        note: habitPage.note(cfg),
+      })),
       hasHabits: store.data.taskRepeatCfg.ids.length > 0,
-      toggle: (task) =>
-        void store
-          .update((data) => setDone(data, task.id, !task.isDone, Date.now()))
-          .then(() => host.emit('dataChanged')),
+      ...(panel === undefined ? {} : { panel }),
+      togglePanel: (taskId) => {
+        panel = panel === taskId ? undefined : taskId;
+        drawToday();
+      },
+      // A tap ticks off; on a task that is done or left out it opens it again.
+      toggle: (task) => void change((data) => setDone(data, task.id, !task.isDone, Date.now())),
+      wontDo: (task) => {
+        panel = undefined;
+        void change((data) => wontDo(data, task.id, Date.now())).then(() =>
+          shell.message(at('today.left.done'), {
+            label: at('data.undo'),
+            // Undo opens it again, and only while it is still left out.
+            run: () =>
+              void change((data) => {
+                const now = data.task.entities[task.id];
+                return now && isWontDo(now) ? setDone(data, task.id, false, Date.now()) : data;
+              }),
+          }),
+        );
+      },
+      openHabit: (cfgId) => {
+        panel = undefined;
+        habitPage.open(cfgId);
+      },
       openJourney: () => shell.show('journey'),
     });
+  };
   const draw = async (): Promise<void> => {
     keepData(store.data.taskRepeatCfg.ids.length > 0);
     drawToday();
