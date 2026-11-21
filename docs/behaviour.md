@@ -636,6 +636,55 @@ that grows with real progress. What QuestArc does not do:
 random rewards, rankings, punishment, collecting data. "Success is your
 habit, not how often you open QuestArc."
 
+### 10. Today (standalone app)
+
+Issue #164, [decision](decisions/standalone-app.md) point 7,
+[design rules](psychology.md) 25 and 28. Only the standalone app has
+this screen: in Super Productivity and in Pensum the task list is the
+host's. It is where a standalone user ticks off, so it follows the same
+order of the day as the Valley
+(screen 0). The grouping is read from the engine's view (`valley` for
+the order, `anchors` and the runs for what stands where) and the
+`binding` records; the screen computes nothing about the game
+(`packages/app/src/screens/today-moments.ts`).
+
+- **Title** "Today", the date in words under it.
+- **A moment** is a section with its name as the heading (the name the
+  user gave it, else "After getting up" or "At 21:30", as in the
+  Valley), in the order of the day (game rules §8). Under it:
+  - **The tasks due today** of the steps that start from this moment,
+    and those from an earlier day that are still open ("from <day>",
+    said neutrally: a missed day is a gap, not a debt). Each is one
+    button with a box, at least 44 px high and as wide as the page: a
+    tap ticks it off, another opens it again. After a tap the keyboard
+    stays on the task.
+  - **The growing step** (at most one) stands first at its moment and
+    says "Growing here" above its title: words, not a colour. Nothing
+    else is said about it here; its plan, progress and station are on
+    the journey (screen 4).
+  - **What runs by itself** stands at its moment in one line without a
+    box: the step in words and "Runs by itself" (the line of the place,
+    screen 0b). It is not ticked, counted or shown as due, and its task,
+    if the user kept it repeating, is not listed.
+- **Only moments with something under them today** are shown: a moment
+  whose step is not due today and where nothing runs by itself does not
+  appear. Nothing marks it as missing.
+- **Without a moment**, last: tasks that belong to no place in the
+  Valley (a journey from before moments that the user has not confirmed
+  yet, a recurring task from an imported backup that no journey uses).
+  The heading stands only when a moment stands above it; alone it is a
+  plain list. The user's tasks are never hidden, except the one of a
+  step that runs by itself.
+- **Nothing due:** "Nothing is due today." under whatever runs by
+  itself. Without any habit: "Your habits come from a journey: each
+  stage adds one small habit here." and **Open the Journey** at the
+  bottom.
+- Until the engine has looked at the data (the first moment after the
+  start) the tasks stand as a plain list; a tick shows at once and the
+  moments follow.
+- At 360 px nothing scrolls sideways; titles wrap. At desktop size the
+  list keeps the reading width of the other screens.
+
 ## Flows
 
 ### A. Completing a task

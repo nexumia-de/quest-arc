@@ -9,6 +9,18 @@ import type { Context, Screen } from '../screen';
 import { placeSection } from '../valley/place';
 
 /**
+ * One step of a routine in a line without a box: what it is and how it
+ * stands ("Runs by itself"). Also a line of the standalone app's Today.
+ */
+export const routineRow = (tag: 'p' | 'li', text: string, note: string): HTMLElement =>
+  h(
+    tag,
+    { class: 'qa-routine' },
+    h('span', {}, text),
+    h('span', { class: 'qa-muted qa-small' }, note),
+  ) as HTMLElement;
+
+/**
  * The routine of a moment in words (docs/behaviour.md, the place): each
  * step still followed or running by itself, and what waits. Nothing is
  * ticked, counted or shown as due for what runs by itself.
@@ -30,14 +42,7 @@ export const routineCard = (ctx: Context, anchor: AnchorView): HTMLElement => {
     { class: 'qa-card' },
     h('h2', { class: 'qa-section-title' }, t('ui.routine.title')),
     rows.length === 0 ? h('p', { class: 'qa-muted' }, t('ui.anchor.nothing')) : null,
-    ...rows.map(({ text, note }) =>
-      h(
-        'p',
-        { class: 'qa-routine' },
-        h('span', {}, capitalise(text ?? '')),
-        h('span', { class: 'qa-muted qa-small' }, note),
-      ),
-    ),
+    ...rows.map(({ text, note }) => routineRow('p', capitalise(text ?? ''), note)),
     anchor.steps.some((step) => step.state === 'graduated')
       ? h('p', { class: 'qa-muted qa-small' }, t('ui.routine.nothing-ticked'))
       : null,

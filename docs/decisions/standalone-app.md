@@ -74,6 +74,9 @@ format[^spike].
    home screen (owner, 2026-11-12[^issue91]).
 7. **No plain habits** (owner, 2026-11-14[^issue91]): Today shows the
    moments with the one growing step; what runs by itself is not ticked.
+   Built with #164: a recurring task that no journey uses (from an
+   imported backup) is still listed, last, so nothing of the user's is
+   hidden; the app offers no way to add one.
 8. **Day start**: the app's dataset carries Super Productivity's whole
    default configuration, so an export imports without repair and the
    day start travels with the backup (owner, 2026-11-14[^issue91]).
@@ -115,8 +118,11 @@ format[^spike].
   Cloudflare, with previews for pull requests
   ([PWA release](../pwa-release.md)); the owner adds the Cloudflare
   secrets and confirms the domain.
-- Open in the plan (#91): the Today screen by moments, a habit's page,
-  automatic local backups, the APK with reminders.
+- Today is grouped by moments (#164,
+  [behaviour](../behaviour.md#10-today-standalone-app)). Open in the
+  plan (#91): choosing language and appearance (#165), a habit's page
+  and skip / won't do (#166), automatic local backups, the APK with
+  reminders.
 
 [^issue91]: Standalone QuestArc app (#91) and the owner's decisions in its comments, https://github.com/nexumia-de/quest-arc/issues/91
 

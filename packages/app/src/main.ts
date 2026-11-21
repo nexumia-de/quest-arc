@@ -8,6 +8,7 @@ import { artPackIn } from '@questarc/ui/adapter/art-pack';
 import { messageFor } from '@questarc/ui/adapter/snacks';
 import { builtInJourneys } from '@questarc/ui/shared/content';
 import { useLanguage } from '@questarc/ui/shared/languages';
+import type { State } from '@questarc/ui/shared/protocol';
 import { language, t } from '@questarc/ui/shared/texts';
 import { createApp } from '@questarc/ui/ui/app';
 import { setArt } from '@questarc/ui/ui/art-store';
@@ -19,6 +20,7 @@ import { createHost } from './host';
 import { applyHostTexts } from './host-texts';
 import { renderData } from './screens/data';
 import { renderToday } from './screens/today';
+import { todayMoments } from './screens/today-moments';
 import { createShell } from './shell';
 import { BackupError, parseBackup, toBackup } from './store/backup';
 import { freshDataset, type Dataset } from './store/dataset';
@@ -128,11 +130,17 @@ const start = async (root: HTMLElement): Promise<void> => {
   };
 
   const keepData = keepDataOnce();
-  const draw = async (): Promise<void> => {
-    keepData(store.data.taskRepeatCfg.ids.length > 0);
+  // The game state Today was last drawn from: a tick shows at once, the
+  // moments follow when the engine has looked again.
+  let known: State | undefined;
+  const drawToday = (): void =>
     renderToday(shell.views.today, {
       today: today(),
-      tasks: todaysTasks(store.data, today()),
+      moments: todayMoments(
+        todaysTasks(store.data, today()),
+        known,
+        Object.values(store.data.task.entities).filter((task) => task !== undefined),
+      ),
       hasHabits: store.data.taskRepeatCfg.ids.length > 0,
       toggle: (task) =>
         void store
@@ -140,6 +148,9 @@ const start = async (root: HTMLElement): Promise<void> => {
           .then(() => host.emit('dataChanged')),
       openJourney: () => shell.show('journey'),
     });
+  const draw = async (): Promise<void> => {
+    keepData(store.data.taskRepeatCfg.ids.length > 0);
+    drawToday();
     renderData(shell.views.data, {
       dayStart: dayStartTime(store.data),
       setDayStart: (time) => void replace(withDayStart(store.data, time)),
@@ -147,7 +158,12 @@ const start = async (root: HTMLElement): Promise<void> => {
       importBackup: (file) => void importBackup(file),
     });
     try {
-      journey.update(await game.state());
+      const state = await game.state();
+      if (state !== known) {
+        known = state;
+        drawToday();
+      }
+      journey.update(state);
     } catch {
       journey.showError(t('ui.error.load'));
     }
