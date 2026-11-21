@@ -46,9 +46,16 @@ const theme = await build({
 const { themeCss } = await import(
   `data:text/javascript;base64,${Buffer.from(theme.outputFiles[0].text).toString('base64')}`
 );
+// Light and dark follow the system; `data-theme` on the root, the user's
+// choice on the Data screen (src/preferences.ts), comes after and wins.
+const chosen = (mode) =>
+  `${themeCss(mode).replace(':root', `:root[data-theme="${mode}"]`)}` +
+  `:root[data-theme="${mode}"]{color-scheme:${mode}}`;
 const style = [
   themeCss('light'),
   `@media (prefers-color-scheme: dark){${themeCss('dark')}}`,
+  chosen('light'),
+  chosen('dark'),
   readFileSync(join('..', 'ui', 'src', 'ui', 'start.css'), 'utf8'),
   readFileSync(join('..', 'ui', 'src', 'ui', 'style.css'), 'utf8'),
   readFileSync(join('src', 'app.css'), 'utf8'),

@@ -18,6 +18,7 @@ import { h } from '@questarc/ui/ui/dom';
 import { dayContext, dayStartTime, withDayStart } from './day';
 import { createHost } from './host';
 import { applyHostTexts } from './host-texts';
+import { applyAppearance, createPreferences, localeFor } from './preferences';
 import { renderData } from './screens/data';
 import { renderToday } from './screens/today';
 import { todayMoments } from './screens/today-moments';
@@ -33,17 +34,29 @@ import { at } from './texts';
 
 const DAY_CHECK_MS = 60_000;
 
+const preferences = createPreferences();
+
 /**
- * The app speaks the language of the device (issue #39): German for a
+ * The app speaks the language the user chose on the Data screen (#165);
+ * without a choice the language of the device (issue #39): German for a
  * German locale, English for any other; `?lang=de` says it by hand, as
  * a host that embeds the app does with its own locale.
  */
-useLanguage(
-  new URLSearchParams(location.search).get('lang') ?? navigator.language,
-  builtInJourneys,
-);
-applyHostTexts();
-document.documentElement.lang = language();
+const speak = (): void => {
+  useLanguage(
+    localeFor(
+      preferences.language(),
+      new URLSearchParams(location.search).get('lang'),
+      navigator.language,
+    ),
+    builtInJourneys,
+  );
+  applyHostTexts();
+  document.documentElement.lang = language();
+};
+speak();
+// Light or dark by choice, before the first screen is drawn.
+applyAppearance(document.documentElement, preferences.appearance());
 
 const start = async (root: HTMLElement): Promise<void> => {
   const store = await openStore(indexedDbPersistence(), freshDataset);
@@ -156,6 +169,19 @@ const start = async (root: HTMLElement): Promise<void> => {
       setDayStart: (time) => void replace(withDayStart(store.data, time)),
       exportBackup,
       importBackup: (file) => void importBackup(file),
+      language: preferences.language(),
+      setLanguage: (choice) => {
+        preferences.setLanguage(choice);
+        speak();
+        shell.relabel();
+        void draw();
+      },
+      appearance: preferences.appearance(),
+      setAppearance: (choice) => {
+        preferences.setAppearance(choice);
+        applyAppearance(document.documentElement, choice);
+        void draw();
+      },
     });
     try {
       const state = await game.state();

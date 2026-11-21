@@ -14,6 +14,8 @@ export type Tab = (typeof TABS)[number];
 export interface Shell {
   readonly views: Readonly<Record<Tab, HTMLElement>>;
   show(tab: Tab): void;
+  /** Writes the tabs' names again, after the language changed. */
+  relabel(): void;
   /** Shows a message for a while, with one action at most. */
   message(text: string, action?: { label: string; run: () => void }): void;
 }
@@ -51,6 +53,9 @@ export const createShell = (root: HTMLElement): Shell => {
   return {
     views,
     show,
+    relabel() {
+      for (const name of TABS) buttons[name].textContent = at(`tab.${name}`);
+    },
     message(text, action) {
       const close = () => {
         message.hidden = true;
