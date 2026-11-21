@@ -291,7 +291,10 @@ on a second host: its own dataset in Super Productivity's backup format,
 kept in IndexedDB, with a Today screen by moments
 ([behaviour](behaviour.md#10-today-standalone-app); the grouping is
 `src/screens/today-moments.ts`, tested in `test/today-moments.test.ts`),
-export and import. Its host
+a habit's page ([behaviour](behaviour.md#12-a-habit-standalone-app);
+its writes are `src/store/habit-actions.ts`, each tested in
+`test/habit-actions.test.ts` with a check that the dataset is still a
+backup), export and import. Its host
 offers `createHabit`, so "Create the task" makes the recurring task with
 the stage's schedule and binds it at once. Texts that name the host are
 replaced by the app's own (`src/host-texts.ts`; a test keeps keys and
@@ -330,7 +333,11 @@ sets the day start to 04:00 on the Data screen and checks that a tick at
 01:30 counts for the day before and that the stored configuration is
 whole. `e2e/walk-preferences.mjs` (360 × 720 and 1200 × 800, in a
 browser that says English and dark) chooses German and light on the
-Data screen, restarts offline and gives both back to the device. Last,
+Data screen, restarts offline and gives both back to the device.
+`e2e/walk-habit.mjs` (both sizes) leaves a task out and undoes it, opens
+the habit's page, pauses and resumes, changes the schedule and leaves
+out the next time, reading what the app stored after each step; it
+writes `backup-habit-<width>.json` for the import below. Last,
 `e2e/pwa.mjs` checks the build as a PWA at the root, as
 Cloudflare serves it: installable, every file
 cached, offline, updated by a new build ([PWA release](pwa-release.md)).
@@ -343,7 +350,8 @@ again after it.
 QUESTARC_SP_URL=http://localhost:8080/ npm run e2e:import -w @questarc/app
 ```
 
-imports both backups into Super Productivity (`e2e/sp-import.mjs`; the
+imports the backups (the walk's, the day start's and the habit page's)
+into Super Productivity (`e2e/sp-import.mjs`; the
 same image and variable as [in the real app](#in-the-real-app); without
 the variable the live web app) and fails on a validation failure, a
 repair or a dialog, then installs the plugin ZIP and compares the

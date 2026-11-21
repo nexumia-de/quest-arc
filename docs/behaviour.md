@@ -655,10 +655,22 @@ the order, `anchors` and the runs for what stands where) and the
   Valley), in the order of the day (game rules §8). Under it:
   - **The tasks due today** of the steps that start from this moment,
     and those from an earlier day that are still open ("from <day>",
-    said neutrally: a missed day is a gap, not a debt). Each is one
-    button with a box, at least 44 px high and as wide as the page: a
-    tap ticks it off, another opens it again. After a tap the keyboard
-    stays on the task.
+    said neutrally: a missed day is a gap, not a debt). Each is a card
+    with two buttons: the task with its box, at least 44 px high and as
+    wide as the card allows (a tap ticks it off, another opens it
+    again), and beside it **More** (44 × 44 px, "More about <task>" for
+    screen readers). After a tap the keyboard stays on the task.
+  - **More** (#166) opens two actions under the task and closes them
+    again: **Won't Do Today**, while the task is open, and **About This
+    Habit** (screen 12). Won't do finishes the task without counting it
+    ([game rules](game-rules.md) §1; what is written:
+    [Super Productivity facts](super-productivity-facts.md) §5). The
+    task then shows a dash in its box, its title quiet and "Left out
+    today"; it is not struck through and not marked as ticked. A message
+    says "Left out for today." with **Undo**, which opens the task
+    again; a tap on the task does the same later. For the journey the
+    day is like any day without a tick: open, later a gap, never
+    blamed.
   - **The growing step** (at most one) stands first at its moment and
     says "Growing here" above its title: words, not a colour. Nothing
     else is said about it here; its plan, progress and station are on
@@ -676,6 +688,11 @@ the order, `anchors` and the runs for what stands where) and the
   The heading stands only when a moment stands above it; alone it is a
   plain list. The user's tasks are never hidden, except the one of a
   step that runs by itself.
+- **Not today** (#166), after the moments: the habits without a task
+  today, each a line that opens its page (screen 12), with "Paused" or
+  its schedule in words ("On Monday, Wednesday, Friday"). This is how a
+  paused habit is reached to resume it. What runs by itself is not
+  listed here.
 - **Nothing due:** "Nothing is due today." under whatever runs by
   itself. Without any habit: "Your habits come from a journey: each
   stage adds one small habit here." and **Open the Journey** at the
@@ -712,6 +729,51 @@ plugin leaves to Super Productivity.
   choice holds until the app is closed.
 - Both are native lists with their label, at least 44 px high; after a
   choice the keyboard stays on the list.
+
+### 12. A habit (standalone app)
+
+Issue #166. Only the standalone app has this page: in Super
+Productivity it is the recurring task's own dialog. It is pushed over
+Today from **About This Habit** or from a line under "Not today"; the
+arrow in its header leads back to Today. Every action writes what Super
+Productivity writes for it
+([Super Productivity facts](super-productivity-facts.md) §5,
+`packages/app/src/store/habit-actions.ts`). Nothing here ends a habit,
+deletes a task or reopens one.
+
+- **Title**: the task's title. Under it the **plan sentence** in the
+  user's words ("After getting up, I will drink a glass of water"),
+  when a journey's step uses the habit.
+- **Schedule**: "Now: Every day" and the three schedules a stage may
+  use ([game rules](game-rules.md) §2): **Every day**, **Every few
+  days** (2 to 7, a list), **On chosen weekdays** (seven boxes).
+  **Save Schedule** is off until something differs; a weekly schedule
+  without a weekday says "A weekly schedule needs at least one weekday."
+  and cannot be saved. Under it: "The journey then looks at its days by
+  the new schedule." (the due days of the past follow the schedule,
+  [marker progress](decisions/marker-progress.md)). After saving,
+  "Schedule changed." An open task of the habit moves with the
+  schedule as in Super Productivity: it stays on today when today is
+  still an occurrence, else it goes to the next one and comes back to
+  Today on that day; no second task is made for it. A habit whose task
+  has a reminder time (only from an imported backup) shows its schedule
+  and "This task has a reminder time, so its schedule stays as it is
+  here."
+- **Pause**: "While paused no tasks are made, and paused days don't
+  count." with **Pause**; then "Paused. Paused days don't count." with
+  **Resume**. An open task stays. The journey shows the pause as flow E
+  does; resuming makes today's task if today is an occurrence, and
+  none for the days of the pause.
+- **Next time**: "Next time: Wednesday, March 4" with **Leave Out That
+  Day** and "A day you leave out ahead is not due. It is not a gap."
+  (game rules §2: a planned skip). A message names the day with
+  **Undo**; each day left out stays listed ("Left out: Wednesday, March
+  4") with **Take Back** until it has passed. Only days after today can
+  be left out: for today the task has **Won't Do Today** (screen 10).
+- Pause and a change of schedule have no undo: Resume and the schedule
+  form take them back.
+- Every button, list and box is at least 44 px high; after a choice
+  the keyboard stays on it. At 360 px the weekdays stand in two columns.
 
 ## Flows
 

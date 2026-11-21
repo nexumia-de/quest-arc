@@ -30,12 +30,15 @@ export interface TodayMoment {
   readonly byItself: readonly string[];
 }
 
-type Game = Pick<State, 'view' | 'journeys' | 'records'>;
+export type Game = Pick<State, 'view' | 'journeys' | 'records'>;
 type Binding = { taskId?: string; repeatCfgId?: string } | undefined;
 
-interface Bound {
+/** What a bound repeat config is in the game: its run and stage, and how it stands. */
+export interface Bound {
   readonly anchorId?: string;
   readonly kind: 'growing' | 'followed' | 'by-itself';
+  readonly run: RunView;
+  readonly stageId: string;
 }
 
 /**
@@ -43,10 +46,13 @@ interface Bound {
  * several stages is the growing step first, then a followed one, and
  * runs by itself only when nothing else follows it.
  */
-const boundConfigs = (
+export const boundConfigs = (
   { view, records }: Game,
-  cfgOfTask: ReadonlyMap<string, string>,
+  allTasks: readonly StoredTask[],
 ): Map<string, Bound> => {
+  const cfgOfTask = new Map(
+    allTasks.flatMap((task) => (task.repeatCfgId ? [[task.id, task.repeatCfgId] as const] : [])),
+  );
   const found = new Map<string, Bound>();
   const rank = { 'by-itself': 0, followed: 1, growing: 2 };
   const put = (run: RunView, stageId: string, kind: Bound['kind']) => {
@@ -57,7 +63,7 @@ const boundConfigs = (
     if (!cfgId) return;
     const before = found.get(cfgId);
     if (before && rank[before.kind] >= rank[kind]) return;
-    found.set(cfgId, { kind, ...(run.anchor ? { anchorId: run.anchor.id } : {}) });
+    found.set(cfgId, { kind, run, stageId, ...(run.anchor ? { anchorId: run.anchor.id } : {}) });
   };
   const runs = [...view.finished, ...view.paused, ...(view.active ? [view.active] : [])];
   for (const run of runs) {
@@ -89,10 +95,7 @@ export const todayMoments = (
   allTasks: readonly StoredTask[] = tasks,
 ): TodayMoment[] => {
   if (!game) return tasks.length > 0 ? [{ rows: tasks.map(plain), byItself: [] }] : [];
-  const cfgOfTask = new Map(
-    allTasks.flatMap((task) => (task.repeatCfgId ? [[task.id, task.repeatCfgId] as const] : [])),
-  );
-  const bound = boundConfigs(game, cfgOfTask);
+  const bound = boundConfigs(game, allTasks);
   const places = new Set(game.view.valley.map((place) => place.anchorId));
   const rest: TodayRow[] = [];
   const at = new Map<string, TodayRow[]>();
@@ -124,4 +127,23 @@ export const todayMoments = (
     ];
   });
   return rest.length > 0 ? [...moments, { rows: rest, byItself: [] }] : moments;
+};
+
+/**
+ * The habits without a task on Today (#166): paused, or not due today.
+ * They are listed so their page can be reached, above all to resume a
+ * paused one. A habit that runs by itself is not among them: it stands
+ * at its moment.
+ */
+export const habitsNotToday = <T extends { readonly id: string }>(
+  habits: readonly T[],
+  tasks: readonly StoredTask[],
+  game: Game | undefined,
+  allTasks: readonly StoredTask[] = tasks,
+): T[] => {
+  const today = new Set(tasks.map((task) => task.repeatCfgId));
+  const bound = game ? boundConfigs(game, allTasks) : undefined;
+  return habits.filter(
+    (habit) => !today.has(habit.id) && bound?.get(habit.id)?.kind !== 'by-itself',
+  );
 };
