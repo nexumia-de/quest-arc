@@ -1,10 +1,18 @@
 import { h } from '@questarc/ui/ui/dom';
 
+import {
+  APPEARANCES,
+  LANGUAGE_NAMES,
+  LANGUAGES,
+  type Appearance,
+  type LanguageChoice,
+} from '../preferences';
 import { at } from '../texts';
 
 /**
- * Data (#93): the dataset as a backup file, out and in, and the one
- * setting the day needs.
+ * Data (#93): the dataset as a backup file, out and in, the one setting
+ * the day needs, and the app's language and light or dark (#165;
+ * docs/behaviour.md "Data").
  */
 
 export interface DataProps {
@@ -13,7 +21,34 @@ export interface DataProps {
   readonly setDayStart: (time: string) => void;
   readonly exportBackup: () => void;
   readonly importBackup: (file: File) => void;
+  readonly language: LanguageChoice;
+  readonly setLanguage: (choice: LanguageChoice) => void;
+  readonly appearance: Appearance;
+  readonly setAppearance: (choice: Appearance) => void;
 }
+
+/** One choice of a few: a labelled native list, which every platform shows its own way. */
+const choice = <T extends string>(
+  id: string,
+  label: string,
+  options: readonly (readonly [T, string])[],
+  chosen: T,
+  set: (value: T) => void,
+): Node =>
+  h(
+    'label',
+    { class: 'app-field' },
+    h('span', { class: 'qa-section-title' }, label),
+    h(
+      'select',
+      {
+        id,
+        class: 'app-input',
+        onchange: (event: Event) => set((event.target as HTMLSelectElement).value as T),
+      },
+      ...options.map(([value, name]) => h('option', { value, selected: value === chosen }, name)),
+    ),
+  );
 
 export const renderData = (root: HTMLElement, props: DataProps): void => {
   const file = h('input', {
@@ -30,6 +65,8 @@ export const renderData = (root: HTMLElement, props: DataProps): void => {
   const button = (label: string, onclick: () => void) =>
     h('button', { class: 'qa-btn qa-btn-secondary', type: 'button', onclick }, label);
 
+  // A redraw after a choice keeps the keyboard's place on its field.
+  const focused = root.contains(document.activeElement) ? document.activeElement?.id : undefined;
   root.replaceChildren(
     h(
       'header',
@@ -60,7 +97,7 @@ export const renderData = (root: HTMLElement, props: DataProps): void => {
             h('span', { class: 'qa-section-title' }, at('data.day-start')),
             h('input', {
               type: 'time',
-              class: 'app-time',
+              class: 'app-input',
               value: props.dayStart,
               onchange: (event: Event) => {
                 const { value } = event.target as HTMLInputElement;
@@ -70,7 +107,30 @@ export const renderData = (root: HTMLElement, props: DataProps): void => {
           ),
           h('p', { class: 'qa-muted qa-small' }, at('data.day-start.text')),
         ),
+        h(
+          'section',
+          { class: 'qa-card qa-stack' },
+          choice(
+            'app-language',
+            at('data.language'),
+            [
+              ['device', at('data.language.device')],
+              ...LANGUAGES.map((code) => [code, LANGUAGE_NAMES[code]] as const),
+            ],
+            props.language,
+            props.setLanguage,
+          ),
+          choice(
+            'app-appearance',
+            at('data.appearance'),
+            APPEARANCES.map((mode) => [mode, at(`data.appearance.${mode}`)] as const),
+            props.appearance,
+            props.setAppearance,
+          ),
+          h('p', { class: 'qa-muted qa-small' }, at('data.preferences.text')),
+        ),
       ),
     ),
   );
+  if (focused) root.querySelector<HTMLElement>(`#${focused}`)?.focus();
 };

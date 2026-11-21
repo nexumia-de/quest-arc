@@ -144,7 +144,12 @@ body {
   gap: var(--s2, 16px);
 }
 
-.app-time {
+.app-field select {
+  min-width: 9.5em;
+}
+
+.app-input {
+  min-width: 0;
   min-height: 44px;
   padding: 0 var(--s, 8px);
   border: 1px solid var(--divider-color);

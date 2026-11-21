@@ -310,7 +310,12 @@ service worker `sw.js`, which keeps them and answers every request from
 its cache; [PWA release](pwa-release.md)). It needs `http://localhost` or HTTPS; opened from a file it
 has no service worker. It shows German for a German device language
 (`navigator.language`) and English for any other; `?lang=de` sets it by
-hand, as a host that embeds it with its own locale would (#39).
+hand, as a host that embeds it with its own locale would (#39). The user
+chooses the language and light or dark on the Data screen (#165,
+[behaviour](behaviour.md#11-data-standalone-app)): `src/preferences.ts`
+keeps both in `localStorage`, and `build.mjs` writes the theme's
+variables a second time for `data-theme="light"` and `"dark"` on the
+root, after the rule that follows the system.
 
 ```sh
 npm run e2e -w @questarc/app
@@ -323,7 +328,10 @@ offline after the first day, export and import; it prints
 the start time with the CPU slowed four times. Then `e2e/walk-day-start.mjs`
 sets the day start to 04:00 on the Data screen and checks that a tick at
 01:30 counts for the day before and that the stored configuration is
-whole. Last, `e2e/pwa.mjs` checks the build as a PWA at the root, as
+whole. `e2e/walk-preferences.mjs` (360 × 720 and 1200 × 800, in a
+browser that says English and dark) chooses German and light on the
+Data screen, restarts offline and gives both back to the device. Last,
+`e2e/pwa.mjs` checks the build as a PWA at the root, as
 Cloudflare serves it: installable, every file
 cached, offline, updated by a new build ([PWA release](pwa-release.md)).
 Screenshots and the exported backups (`backup-360.json`,

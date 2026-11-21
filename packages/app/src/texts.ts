@@ -33,6 +33,14 @@ const english = {
   'data.day-start': 'A day starts at',
   'data.day-start.text':
     'What you tick off before this time counts for the day before, for people who are up after midnight.',
+  'data.language': 'Language',
+  'data.language.device': 'Follow Device',
+  'data.appearance': 'Appearance',
+  'data.appearance.system': 'Follow System',
+  'data.appearance.light': 'Light',
+  'data.appearance.dark': 'Dark',
+  'data.preferences.text':
+    'Both choices are kept on this device only. They are not part of a backup.',
   'error.start': 'The app could not open its data on this device.',
 } as const;
 
@@ -67,6 +75,13 @@ const german: Readonly<Record<Key, string>> = {
   'data.day-start': 'Ein Tag beginnt um',
   'data.day-start.text':
     'Was du vor dieser Zeit abhakst, zählt für den Tag davor: für alle, die nach Mitternacht noch wach sind.',
+  'data.language': 'Sprache',
+  'data.language.device': 'Wie das Gerät',
+  'data.appearance': 'Darstellung',
+  'data.appearance.system': 'Wie das System',
+  'data.appearance.light': 'Hell',
+  'data.appearance.dark': 'Dunkel',
+  'data.preferences.text': 'Beides bleibt nur auf diesem Gerät und gehört nicht zum Backup.',
   'error.start': 'Die App konnte ihre Daten auf diesem Gerät nicht öffnen.',
 };
 

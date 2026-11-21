@@ -47,7 +47,8 @@ the journey is in [journey design](journey-design.md).
 - **Language** (#39). The hosts show English or German: the plugin
   follows Super Productivity's language (read at start with
   `getCurrentLanguage`, then on every `languageChange`), the standalone
-  app the device's language or `?lang=`, Pensum its locale (through the
+  app the language the user chose on its Data screen (screen 11), else
+  `?lang=` or the device's language, Pensum its locale (through the
   engine's command line, `texts`). Any other language, and any key a
   language lacks, shows English. A change of language redraws the open
   screen in place. German texts say "du", never "Sie"; they are written,
@@ -684,6 +685,33 @@ the order, `anchors` and the runs for what stands where) and the
   moments follow.
 - At 360 px nothing scrolls sideways; titles wrap. At desktop size the
   list keeps the reading width of the other screens.
+
+### 11. Data (standalone app)
+
+Only the standalone app has this screen (#93, #165); it holds what the
+plugin leaves to Super Productivity.
+
+- **The backup**: "Export a Backup" and "Import a Backup" with "Importing
+  replaces everything in this app."; after an import a message offers
+  **Undo**.
+- **A day starts at**: a time, kept in the dataset as Super Productivity
+  keeps it (game rules §2).
+- **Language** (#165): **Follow Device** (the default), **English**,
+  **Deutsch**; the languages' names are their own in every language. A
+  choice changes every text in place, the tabs and the open journey
+  screen included; the user's own words and the titles of tasks that
+  exist stay as they are. A choice here comes before `?lang=`.
+- **Appearance** (#165): **Follow System** (the default), **Light**,
+  **Dark**. A choice holds whatever the system says and changes the
+  page at once.
+- Under both: "Both choices are kept on this device only. They are not
+  part of a backup." They are in the app's own storage
+  (`localStorage`), not in the dataset: an import does not change them,
+  an export does not carry them, and nothing is sent anywhere. Following
+  the device stores nothing. Where the browser gives no storage the
+  choice holds until the app is closed.
+- Both are native lists with their label, at least 44 px high; after a
+  choice the keyboard stays on the list.
 
 ## Flows
 
