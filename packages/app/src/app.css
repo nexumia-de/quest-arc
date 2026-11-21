@@ -93,6 +93,19 @@ body {
   margin: 0;
 }
 
+/* A moment of the day with what stands under it today (#164). */
+.app-moment {
+  display: flex;
+  flex-direction: column;
+  align-self: stretch;
+  gap: var(--s, 8px);
+}
+
+/* What runs by itself: a line without a box, set in to the tasks' text. */
+.app-by-itself {
+  padding-inline: calc(var(--s2, 16px) + 28px + var(--s2, 16px)) var(--s2, 16px);
+}
+
 .app-habit {
   flex-direction: row;
   align-items: center;

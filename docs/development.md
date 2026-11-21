@@ -288,7 +288,10 @@ host passed in: `createApp(root, client, host)` with `ViewHost`
 
 `packages/app` (#91, spike #93) is the shared screens and adapter core
 on a second host: its own dataset in Super Productivity's backup format,
-kept in IndexedDB, with a Today screen, export and import. Its host
+kept in IndexedDB, with a Today screen by moments
+([behaviour](behaviour.md#10-today-standalone-app); the grouping is
+`src/screens/today-moments.ts`, tested in `test/today-moments.test.ts`),
+export and import. Its host
 offers `createHabit`, so "Create the task" makes the recurring task with
 the stage's schedule and binds it at once. Texts that name the host are
 replaced by the app's own (`src/host-texts.ts`; a test keeps keys and
@@ -315,7 +318,8 @@ npm run e2e -w @questarc/app
 
 walks the built app at 360 × 720 and 1200 × 800 (`e2e/walk.mjs`, served
 by `e2e/serve.mjs` on a free port): a journey from start over three
-logical days, offline after the first day, export and import; it prints
+logical days (Today shows the task under its moment, "Growing here"),
+offline after the first day, export and import; it prints
 the start time with the CPU slowed four times. Then `e2e/walk-day-start.mjs`
 sets the day start to 04:00 on the Data screen and checks that a tick at
 01:30 counts for the day before and that the stored configuration is

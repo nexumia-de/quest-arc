@@ -110,6 +110,14 @@ try {
       made.taskRepeatCfg.entities[cfgId].repeatCycle === 'DAILY',
     'the app created the repeat config and its instance rpt_<cfgId>_<day>',
   );
+  // Today by moments (#164): the habit under its moment, the growing step in words.
+  const moment = page.locator('.app-moment');
+  await moment.getByRole('heading', { name: 'After getting up' }).waitFor();
+  expect(
+    (await moment.count()) === 1 && /growing here/i.test(await habit().innerText()),
+    'Today shows the habit under its moment, the growing step marked',
+  );
+  await noOverflow('on Today by moments');
   await shot('2-today');
 
   // Day 1: tick, undo, tick again.

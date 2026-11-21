@@ -16,6 +16,7 @@ const english = {
   'today.earlier': 'from {day}',
   'today.done': 'Done',
   'today.open': 'Not done yet',
+  'today.other': 'Without a moment',
   'data.title': 'Data',
   'data.text':
     'Your habits and your journey are kept on this device, in the format of Super Productivity’s backups. A backup file can be imported there, and one from there here.',
@@ -48,6 +49,7 @@ const german: Readonly<Record<Key, string>> = {
   'today.earlier': 'vom {day}',
   'today.done': 'Erledigt',
   'today.open': 'Noch offen',
+  'today.other': 'Ohne Moment',
   'data.title': 'Daten',
   'data.text':
     'Deine Gewohnheiten und deine Reise liegen auf diesem Gerät, im Format der Backups von Super Productivity. Eine Backup-Datei lässt sich dort importieren, und eine von dort hier.',

@@ -1,5 +1,9 @@
 # Directory Update Log
 
+## 2026-11-21
+
+- **Update** (#164): the standalone app's Today is grouped by moments. [Behaviour](behaviour.md#10-today-standalone-app) gains screen 10: the tasks due today under the moment their journey starts from, in the Valley's order of the day; the growing step first, with "Growing here" in words; what runs by itself in one line without a box, its task not listed; tasks at no place last under "Without a moment"; only moments with something under them today. The grouping is data read from the engine's view and the binding records (`packages/app/src/screens/today-moments.ts`, tests in `test/today-moments.test.ts`); the line of a routine is shared with the place's page (`routineRow` in `packages/ui`). A redraw after a tick keeps the keyboard focus on the task. The walk checks the moment and the mark at 360 × 720 and 1200 × 800. The [decision](decisions/standalone-app.md) (point 7, consequences) and [development](development.md) say so.
+
 ## 2026-11-20
 
 - **Update**: version 4.4.0 with its [changelog](../CHANGELOG.md) section: the engine part of journeys of the user's own.
