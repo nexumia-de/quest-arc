@@ -864,13 +864,22 @@
   min-width: 0;
 }
 
+/*
+ * The land fills the page's width; the scene stands in its middle, at
+ * most 440 px wide, and its ground goes on to both sides (scene.ts).
+ */
+.qa-valley-land {
+  width: 100%;
+  overflow: hidden;
+  border-radius: var(--card-border-radius, 8px);
+}
+
 .qa-valley {
   position: relative;
   container-type: inline-size;
   width: 100%;
   max-width: 440px;
-  overflow: hidden;
-  border-radius: var(--card-border-radius, 8px);
+  margin-inline: auto;
 }
 
 .qa-valley-svg > g svg {
@@ -880,6 +889,7 @@
 
 .qa-valley-svg {
   position: absolute;
+  overflow: visible;
   inset: 0;
   width: 100%;
   height: 100%;

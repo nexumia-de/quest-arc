@@ -24,8 +24,11 @@ export const homeScreen = (ctx: Context): Screen => {
   const readOnly = view.readOnly.find((r) => r.state === 'active');
   if (readOnly) return readOnlyScreen(ctx, readOnly);
   const ended = ctx.draft.ended as { runId: string; title: string } | undefined;
-  // The scene is as wide as the page up to 440 px (style.css) and two thirds of the window high.
-  const pixels = Math.min(440, Math.max(document.documentElement.clientWidth - 32, 1));
+  // The scene is as wide as the page up to 440 px, from 640 px beside a card of at least
+  // 240 px (style.css), and two thirds of the window high.
+  const viewport = document.documentElement.clientWidth;
+  const page = viewport - 32;
+  const pixels = Math.min(440, Math.max(viewport >= 640 ? page - 24 - 240 : page, 1));
   const model = valleyModel(view.valley, view.anchors, journeys, art(), {
     height: sceneHeight(window.innerHeight, pixels),
   });
