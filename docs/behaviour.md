@@ -135,8 +135,9 @@ design](journey-design.md#the-place-piece-the-valley-127)); demo
   screen draws nothing of its own. With more than six places the scene is
   longer and scrolls with the page. It is as wide as the page up to 440
   px, so there is no horizontal scrolling at 360 or narrower; the names'
-  text size follows its width. At 720 px and wider the scene stands on the
-  left and the card on the right.
+  text size follows its width. At 640 px and wider the scene stands on the
+  left and the card on the right (the card at least 240 px wide, the
+  scene giving way down to 320 px), so no strip stays empty beside it.
 - **Path and bays** are one colour, so a bay reads as the path widening:
   the host's background in the light theme; in the dark theme the place's
   `tint-strong` (the hue's 40 %, along the path as the places' hues follow
@@ -272,8 +273,8 @@ lantern is lit beside the doorstep (#131)._
   graduate. Banners of other places stay on the home.
 - **Extend This Moment** (screen 2 for this moment).
 - Screen readers get the piece as the place in words ("After lunch: …,
-  version 2 of 5. …"); at 720 px and wider the piece is on the left and
-  the card on the right.
+  version 2 of 5. …"); at 640 px and wider the piece is on the left and
+  the card on the right, as on the home.
 
 ### 1. Welcome (first start)
 
