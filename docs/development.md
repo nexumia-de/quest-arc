@@ -44,7 +44,10 @@ journey checker ([story format](story-format.md#the-journey-checker)).
   pull request and push to `main` (job `check`, the required check in
   `.github/rulesets/main.json`; the owner imports the ruleset) and keeps
   the plugin ZIP as an artifact. Job `real-app`, also required, tries the
-  ZIP in Super Productivity ([in the real app](#in-the-real-app)). Job
+  ZIP in Super Productivity ([in the real app](#in-the-real-app)) at the
+  oldest supported version; job `real-app-newest` (not required, #102)
+  does the same at the newest release
+  (`packages/plugin/e2e/newest/Dockerfile`). Job
   `standalone-app` (not required) walks the spike of the standalone app
   and imports its export into the same Super Productivity
   ([standalone app](#standalone-app-spike)).
