@@ -113,7 +113,9 @@ export const valleyScene = (
   svg.prepend(defs);
   group('ground').prepend(
     svgEl('rect', {
-      width,
+      // a scene's width of land to either side, for the page wider than the scene (.qa-valley-land)
+      x: -width,
+      width: 3 * width,
       height,
       // plain land where there is no place
       style: `fill:${stops.length > 0 ? 'url(#qa-valley-ground)' : SURFACE}`,
@@ -243,16 +245,21 @@ export const valleyScene = (
     }),
   );
 
+  // The scene in the middle of its land: where the page is wider, the ground goes on to both sides.
   const element = h(
-    'section',
-    {
-      class: 'qa-valley',
-      'aria-label': label,
-      style: `aspect-ratio:${width} / ${height}`,
-    },
-    svg,
-    ...names,
-    ...taps,
+    'div',
+    { class: 'qa-valley-land' },
+    h(
+      'section',
+      {
+        class: 'qa-valley',
+        'aria-label': label,
+        style: `aspect-ratio:${width} / ${height}`,
+      },
+      svg,
+      ...names,
+      ...taps,
+    ),
   ) as HTMLElement;
   return { element, slot: (layer, index) => layers.get(layer)?.[index] };
 };
