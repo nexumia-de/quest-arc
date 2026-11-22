@@ -11,6 +11,7 @@ links. Change history is in [log.md](log.md).
 # Plan
 
 - [Roadmap](roadmap.md) - The journey and the goals and exit criteria of each milestone; work items are GitHub issues.
+- [Checks only the owner can do](owner-checks.md) - What closed issues left for the owner's account, device, secrets, own use over weeks or upstream projects, as checklists per issue.
 - [Architecture](architecture.md) - One pure engine, two native hosts, derived game state, stored choices; prototypes, risks and the owner's decisions.
 
 # Design
