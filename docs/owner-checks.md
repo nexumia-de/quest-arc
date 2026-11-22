@@ -56,3 +56,17 @@ counts only. Earliest eight weeks after the first real journey started:
       planned; reopen only if yes)?
 - [ ] Each change that follows: one issue that changes the rule, its
       vectors and the code together.
+
+## #91 Standalone app: the PWA on its own domain
+
+Everything up to the installable, offline PWA and its deploy job is on
+main; the APK and stores wait ([decision](decisions/standalone-app-after-pwa.md)).
+The deploy needs the owner's account ([PWA release](pwa-release.md#the-owners-steps)):
+
+- [ ] A Cloudflare API token (Workers Scripts: Edit; for `nexumia.de`
+      Workers Routes: Edit and DNS: Edit).
+- [ ] Repository secrets `CLOUDFLARE_API_TOKEN` and
+      `CLOUDFLARE_ACCOUNT_ID`.
+- [ ] Confirm `questarc.nexumia.de` or name another domain.
+- [ ] After the next push to `main`: open the app on an Android phone,
+      install it from the browser, start a journey, tick it off offline.

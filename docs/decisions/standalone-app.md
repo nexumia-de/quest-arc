@@ -124,7 +124,8 @@ format[^spike].
   dataset (#165, [behaviour](../behaviour.md#11-data-standalone-app)). Today offers "won't do" with undo, and a habit has its page:
   schedule, pause, leaving out the next time (#166,
   [behaviour](../behaviour.md#12-a-habit-standalone-app)). Open in the
-  plan (#91): automatic local backups, the APK with reminders.
+  plan (#91) were automatic local backups and the APK with reminders;
+  both wait ([decision](standalone-app-after-pwa.md), 2026-11-22).
 
 [^issue91]: Standalone QuestArc app (#91) and the owner's decisions in its comments, https://github.com/nexumia-de/quest-arc/issues/91
 
