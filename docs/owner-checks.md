@@ -70,3 +70,13 @@ The deploy needs the owner's account ([PWA release](pwa-release.md#the-owners-st
 - [ ] Confirm `questarc.nexumia.de` or name another domain.
 - [ ] After the next push to `main`: open the app on an Android phone,
       install it from the browser, start a journey, tick it off offline.
+
+## #114 The Valley
+
+Built and documented ([decision](decisions/valley-path.md)); what only
+the owner has:
+
+- [ ] Add the design session's rough mockups as
+      `docs/screenshots/valley-mock-*.png`, if they should be kept.
+- [ ] Look at the Valley with your own moments over a few weeks: does
+      the order of the day and the place of each moment feel right?

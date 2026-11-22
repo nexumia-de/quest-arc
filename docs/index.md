@@ -60,4 +60,5 @@ links. Change history is in [log.md](log.md).
 - [The standalone app stays a PWA for now](decisions/standalone-app-after-pwa.md) - No APK, store listings or automatic backup files until users or reminders call for them; Android installs the PWA.
 - [The Valley keeps its name; no Map and no Atlas](decisions/valley-names.md) - The open names of #88: one name per thing the user sees.
 - [No travel companion](decisions/no-companion.md) - The companion of #43 is not planned: no evidence, it works against graduation; back only if the look back misses it.
+- [The Valley, one path through the day](decisions/valley-path.md) - The owner's decisions of #114 in their final form: the home, a place per moment with up to three things, the lantern as the only sign, layout by rule.
 - [Spike: the screens and the engine as a standalone web app](decisions/standalone-app-spike.md) - Go: screens, adapter and engine run unchanged as an offline web app on a dataset in Super Productivity's backup format; what a shared package and the host interface need first.
