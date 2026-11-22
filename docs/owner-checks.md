@@ -35,7 +35,7 @@ request is super-productivity/super-productivity#9528.
 
 ## #84 Look back at the numbers after eight weeks of daily use
 
-The agent part is on main: `scripts/look-back.mjs` (commit `3f6df49`,
+The agent part is on main: `scripts/look-back.mjs` (commit `2a79abc`,
 [development](development.md)) reads a Super Productivity backup and
 prints, per stage, due days, completions, gaps, run-ending misses, days
 from acceptance to met, backfill use and the weekly answers, ids and
