@@ -32,3 +32,27 @@ request is super-productivity/super-productivity#9528.
 - [ ] When a release has the methods: open an issue here to create the
       repeat config from the plugin, with the hand-over kept for older
       versions.
+
+## #84 Look back at the numbers after eight weeks of daily use
+
+The agent part is on main: `scripts/look-back.mjs` (commit `3f6df49`,
+[development](development.md)) reads a Super Productivity backup and
+prints, per stage, due days, completions, gaps, run-ending misses, days
+from acceptance to met, backfill use and the weekly answers, ids and
+counts only. Earliest eight weeks after the first real journey started:
+
+- [ ] Run `node scripts/look-back.mjs <backup.json>` on an export.
+- [ ] Condition `days` 5 of 7: too easy, too hard, right?
+- [ ] One-day backfill window: used, enough?
+- [ ] Did a stage grow too early (stay or skip, #81)?
+- [ ] Weekly question: answered or skipped? Does the answer move?
+- [ ] Welcome back and the hard-week hint: helpful or noise?
+- [ ] Does the build (the thing at a place) add anything after the first
+      weeks?
+- [ ] Graduation thresholds (three answers of 6–7, 80 %): plausible
+      against your own data?
+- [ ] Are keepsakes as a page missed, beyond the one sentence in the
+      weekly look back (#87)? Is a companion missed (#43, closed as not
+      planned; reopen only if yes)?
+- [ ] Each change that follows: one issue that changes the rule, its
+      vectors and the code together.
