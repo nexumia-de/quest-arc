@@ -441,6 +441,7 @@ interface HabitView {
   // journey's end, and its last 7 due or paused days, oldest first
   run?: { current: number; best: number; total: number; gap: boolean };
   lastDays?: { day: string; mark: 'done' | 'gap' | 'open' | 'paused' }[];
+  milestone?: number; // 10, 25, 50 … reached in the last 7 days (game rules §10)
   reminder?: ReminderView; // maintained only: the reminder of the habit's task
 }
 
@@ -507,6 +508,7 @@ interface StationView {
   leftDay?: string; // the stage left by a step back (state `ahead`): since this day
   // current stage only: the last 7 due or paused days, oldest first
   lastDays?: { day: string; mark: 'done' | 'gap' | 'open' | 'paused' }[];
+  milestone?: number; // 10, 25, 50 … reached in the last 7 days (game rules §10)
 }
 ```
 

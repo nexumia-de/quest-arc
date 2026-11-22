@@ -274,6 +274,8 @@ export interface HabitView {
    */
   readonly run?: StationRun;
   /** Maintained only: the last 7 due (or paused) days, oldest first. */
+  /** The 10th, 25th, 50th … completion of the habit, when reached in the last seven days (#87). */
+  readonly milestone?: number;
   readonly lastDays?: readonly DayMark[];
   /** Maintained only: the reminder of the habit's task (game rules §9). */
   readonly reminder?: ReminderView;
@@ -372,6 +374,8 @@ export interface StationView {
   readonly leftDay?: string;
   /** Current stage only: the last 7 due (or paused) days, oldest first. */
   readonly lastDays?: readonly DayMark[];
+  /** Current stage only: the 10th, 25th, 50th … completion since it was accepted, when reached in the last seven days (#87). */
+  readonly milestone?: number;
 }
 
 /**

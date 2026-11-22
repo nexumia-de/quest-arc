@@ -56,6 +56,7 @@
   "ui.checkin.habit-at": "\"{action} at {anchor}\"",
   "ui.checkin.habit-then": "\"{action} after I {anchor}\"",
   "ui.checkin.question": "{habit} is something I do automatically.",
+  "ui.checkin.milestone": "This week was your {n}th time: {habit}.",
   "ui.checkin.score": "{score} of 7",
   "ui.checkin.low": "1 · not at all",
   "ui.checkin.high": "7 · completely",

@@ -103,6 +103,7 @@ export { isScheduled, isSupported } from './schedule';
 export { LADDERS, resolveBuild } from './ladders';
 export { MARKERS, markerKinds, resolveMarker } from './markers';
 export { THINGS_PER_PLACE } from './valley';
+export { MILESTONE_COUNTS, milestoneThisWeek } from './milestones';
 export { DAYPARTS } from './types/journey';
 export type { Daypart } from './types/journey';
 export type { BuildChoice, Ladder, LadderList } from './ladders';

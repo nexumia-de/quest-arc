@@ -586,6 +586,9 @@ Opened from the growing step of a moment (screen 0); back leads there.
   is at least 7 days old; never as a notification.
 - The last 7 due days as marks: done, gap, not due, paused (shape and
   label, not only colour); current and best run.
+- A milestone reached this week, in one sentence: "This week was your
+  50th time: …" ([game rules](game-rules.md) §10, #87); nothing when
+  none was reached.
 - The answers so far as a row of seven-step marks, week by week, the
   latest twelve weeks at most; a skipped week is an empty mark. Under
   it "Easier than four weeks ago." or "About the same as four weeks

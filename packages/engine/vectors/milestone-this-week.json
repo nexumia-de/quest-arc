@@ -1,0 +1,119 @@
+{
+  "name": "The 10th completion of a step, reached in the last seven days, is its milestone for the weekly look back",
+  "rule": "game-rules §10 (#87)",
+  "kind": "evaluate",
+  "input": {
+    "day": {
+      "todayStr": "2026-11-04",
+      "startOfNextDayDiffMs": 0,
+      "timeZone": "Europe/Berlin"
+    },
+    "tasks": [
+      {
+        "id": "rpt_cfgA_2026-10-26",
+        "isDone": true,
+        "repeatCfgId": "cfgA",
+        "created": 1792990800000,
+        "doneOn": 1793012400000
+      },
+      {
+        "id": "rpt_cfgA_2026-10-27",
+        "isDone": true,
+        "repeatCfgId": "cfgA",
+        "created": 1793077200000,
+        "doneOn": 1793098800000
+      },
+      {
+        "id": "rpt_cfgA_2026-10-28",
+        "isDone": true,
+        "repeatCfgId": "cfgA",
+        "created": 1793163600000,
+        "doneOn": 1793185200000
+      },
+      {
+        "id": "rpt_cfgA_2026-10-29",
+        "isDone": true,
+        "repeatCfgId": "cfgA",
+        "created": 1793250000000,
+        "doneOn": 1793271600000
+      },
+      {
+        "id": "rpt_cfgA_2026-10-30",
+        "isDone": true,
+        "repeatCfgId": "cfgA",
+        "created": 1793336400000,
+        "doneOn": 1793358000000
+      },
+      {
+        "id": "rpt_cfgA_2026-10-31",
+        "isDone": true,
+        "repeatCfgId": "cfgA",
+        "created": 1793422800000,
+        "doneOn": 1793444400000
+      },
+      {
+        "id": "rpt_cfgA_2026-11-01",
+        "isDone": true,
+        "repeatCfgId": "cfgA",
+        "created": 1793509200000,
+        "doneOn": 1793530800000
+      },
+      {
+        "id": "rpt_cfgA_2026-11-02",
+        "isDone": true,
+        "repeatCfgId": "cfgA",
+        "created": 1793595600000,
+        "doneOn": 1793617200000
+      },
+      {
+        "id": "rpt_cfgA_2026-11-03",
+        "isDone": true,
+        "repeatCfgId": "cfgA",
+        "created": 1793682000000,
+        "doneOn": 1793703600000
+      },
+      {
+        "id": "rpt_cfgA_2026-11-04",
+        "isDone": true,
+        "repeatCfgId": "cfgA",
+        "created": 1793768400000,
+        "doneOn": 1793790000000
+      }
+    ],
+    "repeatCfgs": [
+      {
+        "id": "cfgA",
+        "repeatCycle": "DAILY",
+        "repeatEvery": 1,
+        "startDate": "2026-10-20"
+      }
+    ],
+    "choices": {
+      "run:r1": {
+        "journeyId": "test-daily",
+        "journeyVersion": 1,
+        "startDay": "2026-10-26"
+      },
+      "stage:r1:a": {
+        "acceptedDay": "2026-10-26"
+      },
+      "binding:r1:a": {
+        "taskId": "rpt_cfgA_2026-10-26",
+        "repeatCfgId": "cfgA"
+      }
+    },
+    "journeys": ["$test-daily"]
+  },
+  "expect": {
+    "active": {
+      "stations": [
+        {
+          "completions": 10,
+          "milestone": 10
+        },
+        {},
+        {}
+      ]
+    }
+  }
+}
