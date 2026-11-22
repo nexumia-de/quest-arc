@@ -5,6 +5,6 @@
   "description": "The wrangler the deploy and preview cleanup install with npm ci (.github/workflows/ci.yml, cleanup-preview.yml); updated by Dependabot. Not a workspace of the app.",
   "license": "AGPL-3.0-or-later",
   "devDependencies": {
-    "wrangler": "4.163.0"
+    "wrangler": "4.165.0"
   }
 }
