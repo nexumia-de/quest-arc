@@ -119,7 +119,13 @@ export type {
   ValleyPiece,
 } from './valley-layout';
 export { valleyProblems } from './art-valley-check';
-export { forgetJourney, journeyInUse, keepJourney } from './own-journeys';
+export {
+  forgetJourney,
+  JOURNEY_RECORD_LIMIT,
+  journeyInUse,
+  keepJourney,
+  ownJourneys,
+} from './own-journeys';
 export type { KeptJourney } from './own-journeys';
 export { OWN_PREFIX, QUICK_LIMITS, QUICK_MAX_STEPS, QUICK_MEASURES, quickJourney } from './quick';
 export type { QuickAnswers, QuickJourney, QuickMeasure } from './quick';

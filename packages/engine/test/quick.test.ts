@@ -2,7 +2,16 @@ import { execFileSync, spawnSync } from 'node:child_process';
 import { existsSync, readdirSync, readFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { describe, expect, it } from 'vitest';
-import { evaluate, forgetJourney, keepJourney, proposeSteps, quickJourney, textsIn } from '../src';
+import {
+  evaluate,
+  forgetJourney,
+  JOURNEY_RECORD_LIMIT,
+  keepJourney,
+  ownJourneys,
+  proposeSteps,
+  quickJourney,
+  textsIn,
+} from '../src';
 import type { QuickAnswers, Snapshot } from '../src';
 
 // The quick journey (docs/story-format.md; issue #89): the vectors in
@@ -104,5 +113,64 @@ describe("journeys of the user's own", () => {
     );
     expect(walked.active?.journeyId).toBe(made.journey.id);
     expect(forgetJourney(walked, made.journey.id)).toEqual({});
+  });
+});
+
+describe('journey files of the user (#40)', () => {
+  const made = quickJourney(vectors[2]?.answers as QuickAnswers, ui.en);
+  const day = { todayStr: '2026-11-02', startOfNextDayDiffMs: 0, timeZone: 'Europe/Berlin' };
+  const key = `journey:${made.journey.id}`;
+
+  it('lists the valid journeys of the own records, sorted, never a built-in id', () => {
+    const second = { ...made.journey, id: 'own-a-second' };
+    const records = {
+      [key]: made.journey,
+      'journey:own-a-second': second,
+      'journey:broken': { format: 3 },
+      'journey:walk-after-lunch': { ...made.journey, id: 'walk-after-lunch' },
+      'journey:withdrawn': '',
+      'journey:own-other-key': made.journey,
+      'run:r1': { journeyId: 'x' },
+    };
+    expect(ownJourneys(records, ['walk-after-lunch']).map((j) => j.id)).toEqual([
+      'own-a-second',
+      made.journey.id,
+    ]);
+  });
+
+  it('does not replace a journey a run walks', () => {
+    const view = evaluate({
+      day,
+      tasks: [],
+      repeatCfgs: [],
+      journeys: [],
+      choices: {
+        [key]: made.journey,
+        'run:r1': { journeyId: made.journey.id, journeyVersion: 1, startDay: '2026-11-02' },
+        'stage:r1:step-1': { acceptedDay: '2026-11-02' },
+      },
+    } as unknown as Snapshot);
+    const kept = keepJourney({ journey: made.journey, builtIn: [], view });
+    expect(kept.changes).toEqual({});
+    expect(kept.problems[0]?.at).toBe('id');
+    const free = evaluate({
+      day,
+      tasks: [],
+      repeatCfgs: [],
+      journeys: [],
+      choices: { [key]: made.journey },
+    } as unknown as Snapshot);
+    expect(keepJourney({ journey: made.journey, builtIn: [], view: free }).changes).toEqual({
+      [key]: made.journey,
+    });
+  });
+
+  it('refuses a journey larger than a record may be', () => {
+    const big = { ...made.journey, description: 'x'.repeat(JOURNEY_RECORD_LIMIT) };
+    const kept = keepJourney({ journey: big, builtIn: [] });
+    expect(kept.changes).toEqual({});
+    expect(kept.problems.some((p) => p.level === 'error' && p.message.includes('bytes'))).toBe(
+      true,
+    );
   });
 });

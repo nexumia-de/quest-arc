@@ -29,7 +29,10 @@ const brain = createBrain({
 registerHooks(PluginAPI, brain.refresh);
 const panel = createSidePanel(PluginAPI);
 const settings = registerSettingsEntry(PluginAPI);
-PluginAPI.onMessage?.((message) => handleMessage(brain, message, panel, settings, journey));
+// Saving a file (a journey's export, #40) goes through plugin.js: the
+// view's shim does not pass `downloadFile` on.
+const save = (name: string, text: string) => PluginAPI.downloadFile(name, text);
+PluginAPI.onMessage?.((message) => handleMessage(brain, message, panel, settings, journey, save));
 
 // Super Productivity does not clear a plugin's timers when it switches
 // the plugin off or replaces it (docs/super-productivity-facts.md).

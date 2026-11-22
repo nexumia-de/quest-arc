@@ -14,7 +14,10 @@ export interface State {
   /** Rises with every new evaluation, so the view redraws only on change. */
   readonly revision: number;
   readonly view: GameView;
+  /** The built-in journeys, then the user's own (#40). */
   readonly journeys: readonly Journey[];
+  /** The ids of the built-in journeys; every other journey is the user's own. */
+  readonly builtIn?: readonly string[];
   /** Raw choice records by key, for the screens that edit them. */
   readonly records: Readonly<Record<string, unknown>>;
   /** Whether the side panel setting is on on this device (#100). */
@@ -59,12 +62,27 @@ export type Request =
   /** Turns the side panel setting of this device on or off. */
   | { readonly type: 'questarc:side-panel'; readonly on: boolean }
   /** Texts, style and the ladders' pictures (a ContentPack). */
-  | { readonly type: 'questarc:content' };
+  | { readonly type: 'questarc:content' }
+  /**
+   * Saves a file for the user (a journey of their own, #40): the view's
+   * shim cannot call `downloadFile`, plugin.js can.
+   */
+  | { readonly type: 'questarc:save-file'; readonly name: string; readonly text: string }
+  /** Checks a journey file before it is kept (#40); answers a KeptJourney. */
+  | { readonly type: 'questarc:check-journey'; readonly journey: unknown };
 
 export const isRequest = (message: unknown): message is Request => {
   if (typeof message !== 'object' || message === null) return false;
-  const { type, records, on } = message as { type?: unknown; records?: unknown; on?: unknown };
+  const { type, records, on, name, text } = message as {
+    type?: unknown;
+    records?: unknown;
+    on?: unknown;
+    name?: unknown;
+    text?: unknown;
+  };
   if (type === 'questarc:get' || type === 'questarc:content') return true;
+  if (type === 'questarc:save-file') return typeof name === 'string' && typeof text === 'string';
+  if (type === 'questarc:check-journey') return 'journey' in message;
   if (type === 'questarc:side-panel') return typeof on === 'boolean';
   return type === 'questarc:write' && typeof records === 'object' && records !== null;
 };

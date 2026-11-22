@@ -17,9 +17,11 @@ need: hand it over with a sentence like _"Read
 `https://github.com/nexumia-de/quest-arc/blob/main/docs/authoring-journeys.md`
 and write a QuestArc journey for <topic>."_
 
-A journey cannot be private yet: it is either published here or not
-used. Importing your own journey without publishing it is planned for a
-later milestone (#40); it will accept the same file.
+A journey can also stay private: **Import a Journey File** on the
+Choose page of the plugin and the standalone app takes the same file,
+checks it with the same journey checker and keeps it with your data
+([behaviour](behaviour.md), screen 2b; #40). Its id must not be a
+built-in journey's, and **Export as File** gives the file back.
 
 ## What a journey is
 

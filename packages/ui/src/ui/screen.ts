@@ -1,3 +1,5 @@
+import type { KeptJourney } from '@questarc/engine';
+
 import type { State } from '../shared/protocol';
 import type { ViewHost } from './view-host';
 
@@ -11,6 +13,12 @@ export type Route =
   | { readonly name: 'moment'; readonly anchorId: string; readonly journeyId?: string }
   | { readonly name: 'choose'; readonly anchorId?: string }
   | { readonly name: 'preview'; readonly journeyId: string; readonly anchorId?: string }
+  | {
+      readonly name: 'import';
+      readonly file: unknown;
+      readonly kept: KeptJourney;
+      readonly anchorId?: string;
+    }
   | { readonly name: 'settings' }
   | { readonly name: 'station'; readonly index: number }
   | { readonly name: 'start'; readonly journeyId: string; readonly anchorId?: string }
@@ -47,6 +55,8 @@ export interface Context {
   redraw(): void;
   /** Writes choice records through plugin.js; the view redraws with the result. */
   write(records: Record<string, unknown>): Promise<void>;
+  /** Checks a journey file of the user's before it is kept (#40). */
+  checkJourney(journey: unknown): Promise<KeptJourney>;
   /** Turns the side panel setting of this device on or off (plugin.js keeps it); only the plugin has one. */
   sidePanel?(on: boolean): Promise<void>;
   /** The host that shows the screens: tasks to list, show and create. */

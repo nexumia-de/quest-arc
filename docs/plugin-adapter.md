@@ -84,7 +84,15 @@ and a day start of midnight are used.
 
 The view sends `PLUGIN_MESSAGE` with `questarc:get` or `questarc:write`
 (records to write; `''` withdraws one) and gets the state back: a
-`revision` number, the game view, the journeys and the raw records. It
+`revision` number, the game view, the journeys (the built-in ones, then
+the user's own from `journey:<id>` records, #40), the ids of the
+built-in ones and the raw records. `questarc:save-file` (`name`,
+`text`) saves a file for the user, a journey's export: the view's shim
+does not pass `downloadFile` on, so plugin.js calls it
+([facts](super-productivity-facts.md) §1). `questarc:check-journey` (`journey`) answers
+what `keepJourney` says about a journey file against the current state:
+the journey checker stays in plugin.js, since the view has no room for
+it (#40). It
 asks again 300 ms after a hook fires in the view (so plugin.js has marked
 its data stale first), when the page becomes visible, and every 5 s as a
 fallback; it redraws only when the revision changed.

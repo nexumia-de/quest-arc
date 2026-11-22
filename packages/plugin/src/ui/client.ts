@@ -1,3 +1,4 @@
+import type { KeptJourney } from '@questarc/engine';
 import type { Client } from '@questarc/ui/ui/client';
 import type { ContentPack, Request, State } from '@questarc/ui/shared/protocol';
 
@@ -56,5 +57,8 @@ export const createClient = (
     write: (records: Record<string, unknown>) => request({ type: 'questarc:write', records }),
     sidePanel: (on: boolean) => request({ type: 'questarc:side-panel', on }),
     content: () => request<ContentPack>({ type: 'questarc:content' }),
+    saveFile: (name: string, text: string) => request({ type: 'questarc:save-file', name, text }),
+    checkJourney: (journey: unknown) =>
+      request<KeptJourney>({ type: 'questarc:check-journey', journey }),
   };
 };

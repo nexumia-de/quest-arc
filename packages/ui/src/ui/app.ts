@@ -49,6 +49,7 @@ export const createApp = (root: HTMLElement, client: Client, host: ViewHost) => 
         render(false);
       }
     },
+    checkJourney: (journey) => client.checkJourney(journey),
     ...(setSidePanel
       ? {
           sidePanel: async (on: boolean) => {

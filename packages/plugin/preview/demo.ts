@@ -1,6 +1,8 @@
 import type { Task } from '@super-productivity/plugin-api';
 
-import { isoWeek } from '@questarc/engine';
+import { isoWeek, quickJourney, type QuickAnswers } from '@questarc/engine';
+
+import en from '../../../content/i18n/en.json';
 
 import { habitDemo, isHabitScenario, type HabitScenario } from './demo-habits';
 import { isMomentScenario, momentsDemo, type MomentScenario } from './demo-moments';
@@ -42,6 +44,7 @@ import { own } from './demo-words';
 export type Scenario =
   | 'welcome'
   | 'empty'
+  | 'own-journey'
   | 'journey'
   | 'reminder'
   | 'before-anchors'
@@ -104,8 +107,25 @@ export const demoData = (scenario: Scenario, today: string): DemoData => {
     record('anchor:morning', { kind: 'routine', words: own('getting up') });
     record('run-anchor:demo', { anchorId: 'morning' });
   }
-  if (scenario === 'empty') {
+  if (scenario === 'empty' || scenario === 'own-journey') {
     record('run-end:demo', { day: day(1) });
+    // A journey of the user's own, as the quick form or an import keeps it (#40).
+    if (scenario === 'own-journey') {
+      const answers: QuickAnswers = {
+        language: 'en',
+        name: 'Reading at night',
+        action: 'read',
+        anchor: 'brushing my teeth',
+        measure: 'pages',
+        steps: [1, 5, 10, 20],
+        schedule: { type: 'daily' },
+        ladder: 'garden',
+        daypart: 'evening',
+        taken: [],
+      };
+      const { journey } = quickJourney(answers, en);
+      record(`journey:${journey.id}`, journey);
+    }
     return { tasks, repeatCfgs, data };
   }
   for (let i = 0; i < current; i += 1) {

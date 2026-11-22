@@ -19,7 +19,7 @@ const STARTING_RETRY_MS = 1000;
 
 const root = document.getElementById('app') ?? document.body;
 const client = createClient();
-const app = createApp(root, client, createViewHost());
+const app = createApp(root, client, createViewHost(client));
 
 // The view carries only the texts of its start state; the others, the
 // style and the ladders' pictures come from plugin.js once, before the

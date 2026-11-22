@@ -64,7 +64,11 @@ dev dependency, types only)[^sp][^sp20].
 - The iframe gets an injected `PluginAPI` shim that calls the host through
   `postMessage` (`API_CALL` → `API_RESPONSE`/`API_ERROR`), limited to
   `ALLOWED_IFRAME_API_METHODS`; every shim method returns a Promise, including
-  `translate` (`plugin-iframe.util.ts`)[^sp].
+  `translate` (`plugin-iframe.util.ts`)[^sp]. `downloadFile` is not among
+  them in v19.3.1 (checked at the tag on 2026-11-22, also not in v20.1.0's
+  list); in `plugin.js` it exists in both and saves through the app's
+  `download` utility (`plugin-bridge.service.ts`, `_downloadFile`), so a
+  plugin's view asks `plugin.js` to save a file.
 - In the iframe, `registerHeaderButton`, `registerMenuEntry`,
   `registerTaskContextMenuEntry`, `registerSidePanelButton`,
   `registerShortcut` and `registerConfigHandler` are unsupported; they must be

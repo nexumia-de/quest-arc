@@ -299,6 +299,15 @@ lantern is lit beside the doorstep (#131)._
   pauses it after a confirmation that says so (it can be resumed).
 - Opened by **A New Moment** or, for one moment, by **Extend This
   Moment** (screen 0); the moment is then chosen already on screen 3.
+- The user's own journeys (#40, #89) come after the built-in ones, each
+  with "Your own journey". Below the list: **Import a Journey File**
+  with "A journey file someone wrote, or one you exported. It is checked
+  before anything is kept." A file that is not JSON says so in place
+  (screen 2b otherwise).
+- The preview of a journey of the user's own has a menu: **Export as
+  File** (`<id>.json`, the record as it is, readable; only where the host
+  can save a file) and, while no run uses the journey, **Remove This
+  Journey**: the page then says "“…” is removed." with **Undo**.
 
 ### 2a. A journey of your own
 
@@ -320,11 +329,29 @@ this journey**. What it writes is the engine's
 ([story format](story-format.md#the-quick-journey)); the journey then
 starts like any other (screen 3). The checker's errors are shown in
 plain words with the answer they belong to; warnings are not shown for
-a quick journey. Built first in Day Planner (pensum#80). The plugin gets the form
-later; until it reads `journey:<id>` records into its list of journeys
-and texts (#40), a run of an own journey that arrives by sync is not
-shown there. An own journey that no run uses can be removed from the
-Choose page, with Undo.
+a quick journey. Built first in Day Planner (pensum#80). An own
+journey that no run uses can be removed from its preview, with Undo
+(screen 2).
+
+### 2b. A journey file (import)
+
+What **Import a Journey File** opens (#40). The engine's journey checker
+runs first, the same as in CI (`keepJourney`):
+
+- **Errors** keep the file from being kept: "This file cannot be
+  kept:" and the checker's messages (in English, as the checker writes
+  them), among them a built-in journey's id, a journey of the user's own
+  that a run walks or walked ("a changed copy needs another id"), and a
+  file larger than a record may be (256 KB).
+- A journey that passes shows its title, description, "Written by …"
+  and every station as a plan sentence, and "This replaces your own
+  journey with the same id." when one is kept already. The checker's
+  warnings are under "Hints from the journey checker, for the journey's
+  author:", folded; they never block.
+- **Keep This Journey** writes the `journey:<id>` record and opens the
+  journey's preview (screen 2), from where it starts like any other.
+- The file is data only: every text is shown as plain text, nothing in
+  it runs.
 
 ### 3. Start a journey
 

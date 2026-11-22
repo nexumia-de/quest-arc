@@ -131,7 +131,7 @@ fields smaller than 44 px. The third argument is the language Super
 Productivity would report (#39): `node screenshots.mjs journey,habit 1 de`
 writes `…-de.png` in German, and the preview takes `?lang=de` (or
 `de-AT`; anything else is English). Routes then name German buttons
-(`welcome:Reise auswählen`, `graduated:Menü>Regal`). Demos (`preview/demo.ts`): `welcome`, `empty`,
+(`welcome:Reise auswählen`, `graduated:Menü>Regal`). Demos (`preview/demo.ts`): `welcome`, `empty`, `own-journey` (a journey of the user's own on the Choose page, #40),
 `journey`, `reminder` (a reminder on the task and two weekly answers
 of 5 or more, #60), `paired`, `hard-week`, `met`, `stayed`, `skipped`, `comeback`
 (the card after a long break, #82), `smaller` (after starting smaller),

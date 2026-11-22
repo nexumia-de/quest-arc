@@ -4,13 +4,16 @@ import {
   evaluate,
   guardWrite,
   isRelevant,
+  keepJourney,
+  ownJourneys,
   relevantIds,
   toRepeatCfg,
   toTask,
 } from '@questarc/engine';
-import type { GameEvent, GameView, Journey, SnapshotTask } from '@questarc/engine';
+import type { GameEvent, GameView, Journey, KeptJourney, SnapshotTask } from '@questarc/engine';
 
 import type { State } from '../shared/protocol';
+import { addJourneyTexts } from '../shared/texts';
 import { readDay } from './day';
 import type { HostApi } from './host';
 import { loadRecords, writeRecords, type Records } from './records';
@@ -53,6 +56,12 @@ export interface Brain {
    */
   write(records: Records): Promise<State>;
   /**
+   * Checks a journey file of the user's (#40) against the current state:
+   * the journey checker, the built-in ids and the journeys runs walk.
+   * Here rather than in the view, which has no room for the checker.
+   */
+  checkJourney(journey: unknown): Promise<KeptJourney>;
+  /**
    * Ends the brain when the plugin is unloaded: clears the waiting
    * refresh, ignores later ones and reports no more events.
    */
@@ -69,6 +78,7 @@ export const createBrain = ({ api, journeys, onEvents, debounceMs = 750 }: Brain
   let revision = 0;
   let stopped = false;
   const pauseSeen = new Map<string, boolean>();
+  const builtIn = journeys.map((journey) => journey.id);
 
   const evaluateOnce = async (): Promise<State> => {
     // A hook may mark the records stale while this evaluation waits (the
@@ -108,12 +118,17 @@ export const createBrain = ({ api, journeys, onEvents, debounceMs = 750 }: Brain
       if (records !== undefined) records = loaded;
       view = evaluate(snapshotOf(loaded));
     }
+    // The user's own journeys come after the built-in ones (#40); their
+    // texts are added here too, for the messages plugin.js shows.
+    const own = ownJourneys(loaded, builtIn);
+    if (own.length > 0) addJourneyTexts(own);
+    const all = own.length > 0 ? [...journeys, ...own] : journeys;
     const before = current?.view;
     revision += 1;
-    current = { revision, view, journeys, records: loaded };
+    current = { revision, view, journeys: all, builtIn, records: loaded };
     if (before && !stopped) {
       const events = diff(before, view);
-      if (events.length > 0) onEvents(events, view, journeys);
+      if (events.length > 0) onEvents(events, view, all);
     }
     return current;
   };
@@ -135,6 +150,10 @@ export const createBrain = ({ api, journeys, onEvents, debounceMs = 750 }: Brain
 
   return {
     state: flush,
+    async checkJourney(journey) {
+      const { view } = await flush();
+      return keepJourney({ journey, builtIn, view });
+    },
     refresh(what) {
       if (what === 'records') records = undefined;
       if (what === 'archive') archived = undefined;
