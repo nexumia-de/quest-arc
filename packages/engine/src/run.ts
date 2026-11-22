@@ -6,6 +6,7 @@ import { creditedDays, minutesTracked } from './completions';
 import { bestProgress, conditionProgress } from './conditions';
 import { daysBetween, isoWeek } from './days';
 import { habitOf } from './habit';
+import { milestoneThisWeek } from './milestones';
 import { resolveBuild } from './ladders';
 import { continueOffer } from './offer';
 import { reminderView } from './reminder';
@@ -184,6 +185,7 @@ export const buildRun = (run: RunRecord, journey: Journey, ctx: RunContext): Run
       daysBetween(acceptedDay, today) >= 7 &&
       !choices.checkins.has(`${run.runId}:${stage.id}:${isoWeek(today)}`);
     progress = condition.progress;
+    const milestone = milestoneThisWeek(credited, today);
     return {
       ...base,
       state: condition.met ? 'met' : 'current',
@@ -192,6 +194,7 @@ export const buildRun = (run: RunRecord, journey: Journey, ctx: RunContext): Run
       completions: credited.size,
       welcomeBacks: timeline.welcomeBacks,
       lastDays: timeline.lastDays,
+      ...(milestone !== undefined ? { milestone } : {}),
     };
   });
   // The user's own "pair it with" (design rule 7): shown, never evaluated.

@@ -53,7 +53,12 @@ Option 3.
   `DAY_CHANGE`, `getDayContext`, …) are optional and feature-detected;
   QuestArc works without them.
 - The real-app check runs against the oldest supported version (19.3.1).
-  A check against a newer version is an addition, not a replacement.
+  A check against a newer version is an addition, not a replacement:
+  since 2026-11-22 the job `real-app-newest` walks the same test in the
+  newest release (20.1.0, `packages/plugin/e2e/newest/Dockerfile`, every
+  update proposed by Dependabot), so both ends of the range are tested.
+  It is not a required check; a failure there is a newer Super
+  Productivity breaking something and gets its own fix.
 
 State on 2026-11-13, after 20.0.0 was released: the fallbacks are in
 place and 3.2.1 still installs in 19.3.x; every 20.0.0 member QuestArc

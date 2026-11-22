@@ -11,6 +11,7 @@ links. Change history is in [log.md](log.md).
 # Plan
 
 - [Roadmap](roadmap.md) - The journey and the goals and exit criteria of each milestone; work items are GitHub issues.
+- [Checks only the owner can do](owner-checks.md) - What closed issues left for the owner's account, device, secrets, own use over weeks or upstream projects, as checklists per issue.
 - [Architecture](architecture.md) - One pure engine, two native hosts, derived game state, stored choices; prototypes, risks and the owner's decisions.
 
 # Design
@@ -55,4 +56,9 @@ links. Change history is in [log.md](log.md).
 - [A data format number on the record that needs it](decisions/data-format.md) - Hosts on different engine versions: `dataFormat` on the run-scoped record an older engine would misread makes that run read-only there; unknown kinds and fields are ignored and kept; `guardWrite` refuses writes into such runs.
 - [Others publish journeys by pull request](decisions/journeys-by-pull-request.md) - One self-contained file, checked in CI, merged by the owner; CC BY-SA 4.0 with "Written by …"; private journeys later with the same file.
 - [The standalone app is a third host in this repository](decisions/standalone-app.md) - `packages/app` next to the plugin, screens and adapter core in one shared `packages/ui`; PWA then APK, no Flatpak; released on its own tags (proposed: `app-v<version>`, for the APK); the PWA on Cloudflare at its own domain, deployed from main.
+- [No editor for journeys of your own for now](decisions/own-journey-editor.md) - The quick form, export and import cover changing an own journey; the full editor of #89 waits for evidence of need.
+- [The standalone app stays a PWA for now](decisions/standalone-app-after-pwa.md) - No APK, store listings or automatic backup files until users or reminders call for them; Android installs the PWA.
+- [The Valley keeps its name; no Map and no Atlas](decisions/valley-names.md) - The open names of #88: one name per thing the user sees.
+- [No travel companion](decisions/no-companion.md) - The companion of #43 is not planned: no evidence, it works against graduation; back only if the look back misses it.
+- [The Valley, one path through the day](decisions/valley-path.md) - The owner's decisions of #114 in their final form: the home, a place per moment with up to three things, the lantern as the only sign, layout by rule.
 - [Spike: the screens and the engine as a standalone web app](decisions/standalone-app-spike.md) - Go: screens, adapter and engine run unchanged as an offline web app on a dataset in Super Productivity's backup format; what a shared package and the host interface need first.

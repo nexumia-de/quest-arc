@@ -115,6 +115,14 @@ export const createHost = ({
     addTask: async ({ title }) =>
       (await createHabit({ title, schedule: { type: 'daily' } })).taskId,
     createHabit,
+    // A journey's export (#40): the browser's own download.
+    saveFile: async (name, text) => {
+      const link = document.createElement('a');
+      link.href = URL.createObjectURL(new Blob([text], { type: 'application/json' }));
+      link.download = name;
+      link.click();
+      setTimeout(() => URL.revokeObjectURL(link.href), 60_000);
+    },
   };
 
   return { api, view, emit, onChange: (listener) => listeners.push(listener) };

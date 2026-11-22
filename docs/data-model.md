@@ -121,6 +121,14 @@ builtIn })` gives the `journey:<id>` record of a journey file after
   in `problems`. `forgetJourney(view, id)` withdraws the record, and
   writes nothing while a run uses the journey, so what was walked stays
   readable. The quick form's journeys have ids starting with `own-`.
+  With the game view, `keepJourney` also refuses a journey of the
+  user's own that a run walks or walked, and any journey above 256 KB
+  (`JOURNEY_RECORD_LIMIT`, Super Productivity's limit per record). A
+  record holds the journey its key names: one whose `id` differs is
+  reported and not read (vector `journey-record-other-id`).
+  `ownJourneys(records, builtIn)` lists the journeys of the user's own
+  the engine reads, sorted by id; hosts show them after their built-in
+  journeys, and `engine-cli.mjs` answers `ownJourneys`.
 - **The marker is chosen per place** (#158), in `place:<anchorId>.marker`;
   the hosts never write `marker` in `build:<runId>`, and a `marker` in an
   older `build` record is ignored and kept as read. The kind chosen for a
@@ -433,6 +441,7 @@ interface HabitView {
   // journey's end, and its last 7 due or paused days, oldest first
   run?: { current: number; best: number; total: number; gap: boolean };
   lastDays?: { day: string; mark: 'done' | 'gap' | 'open' | 'paused' }[];
+  milestone?: number; // 10, 25, 50 … reached in the last 7 days (game rules §10)
   reminder?: ReminderView; // maintained only: the reminder of the habit's task
 }
 
@@ -499,6 +508,7 @@ interface StationView {
   leftDay?: string; // the stage left by a step back (state `ahead`): since this day
   // current stage only: the last 7 due or paused days, oldest first
   lastDays?: { day: string; mark: 'done' | 'gap' | 'open' | 'paused' }[];
+  milestone?: number; // 10, 25, 50 … reached in the last 7 days (game rules §10)
 }
 ```
 

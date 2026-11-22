@@ -22,4 +22,6 @@ export interface ViewHost {
     title: string;
     schedule: Schedule;
   }): Promise<{ taskId: string; repeatCfgId: string }>;
+  /** Saves a text file for the user (a journey's export, #40); without it, no export is offered. */
+  saveFile?(name: string, text: string): Promise<void>;
 }

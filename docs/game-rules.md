@@ -771,3 +771,32 @@ Thursday of week 45 the reminder may not be needed any more. With 4 and
 said. Example G's habit with a reminder on its task cannot graduate.
 The user turns it off on 28 Oct, and a host sees that the same day: on
 10 Nov (13 days) the habit still waits, on 11 Nov it can graduate.
+
+## 10. Milestones
+
+Decided by the owner on 2026-11-14 (#87): milestones are one sentence in
+the weekly look back, without a page and without pictures; scoped on
+2026-11-22 to what can be derived from task data every time.
+
+- A milestone is the 10th, 25th, 50th, 100th, 250th, 500th or 1000th
+  day with a counting completion of the **current stage** since it was
+  accepted, or of the **habit** a finished journey left (§6), counted
+  the same way as the stage's or the habit's run.
+- It is said only in the seven days up to today in which it was reached
+  (`milestone` on the station or the habit; the highest one if several):
+  "This week was your 50th time: drinking a glass of water after
+  getting up." After that week it is not said again.
+- Nothing is announced: no list of milestones, no next number, no count
+  down (design rules on rewards that are not announced). Nothing is
+  earned for opening QuestArc or answering.
+- Totals across a whole journey are not counted: a finished stage keeps
+  only its checkpoint, so its completions would fall with deleted
+  history, and a milestone must never be lost. Keepsakes from other
+  groups of #87 (steadiness, coming back, patience) wait for the look
+  back after eight weeks ([owner checks](owner-checks.md)).
+
+Example: a daily step accepted on 26 Oct and done every day to 4 Nov
+has ten completions; seven days back from 4 Nov is 29 Oct, three of them
+lie before it, so the 10th was reached this week and is said (vector
+`milestone-this-week`). On 12 Nov all ten lie before the week and
+nothing is said (`milestone-earlier`).

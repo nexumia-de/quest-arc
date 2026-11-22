@@ -16,8 +16,11 @@
  *   { "quick": { "answers": { … }, "texts": { key: text } } } → { journey, problems, hints }:
  *     the journey of the quick form's answers (quick.ts, #89)
  *   { "quickSteps": { "first": 2, "last": 20 } } → [2, 5, 10, 20]
- *   { "keepJourney": { "journey": { … }, "builtIn": [id, …] } } → { changes, problems }:
- *     the record of a journey of the user's own, checked first (#40)
+ *   { "keepJourney": { "journey": { … }, "builtIn": [id, …], "view"?: { … } } } → { changes, problems }:
+ *     the record of a journey of the user's own, checked first; with the
+ *     game view, a journey a run walks is not replaced (#40)
+ *   { "ownJourneys": { "records": { … }, "builtIn": [id, …] } } → [journey, …]:
+ *     the valid journeys of the user's own among the records (#40)
  *   { "batch": [request, …] }                → [answer, …]
  * Run with `gjs -m engine-cli.mjs < request.json`.
  */
@@ -27,7 +30,7 @@ import { actions } from './actions';
 import { diff } from './diff';
 import { evaluate } from './evaluate';
 import { guardWrite } from './guard';
-import { keepJourney } from './own-journeys';
+import { keepJourney, ownJourneys } from './own-journeys';
 import { quickJourney, type QuickAnswers } from './quick';
 import { proposeSteps } from './quick-steps';
 import { snapshotFromHost, type HostInput } from './host-data';
@@ -50,7 +53,8 @@ type Request =
   | { valley: ValleyInput }
   | { quick: { answers: QuickAnswers; texts: Record<string, string> } }
   | { quickSteps: { first: number; last: number } }
-  | { keepJourney: { journey: unknown; builtIn: string[] } }
+  | { keepJourney: { journey: unknown; builtIn: string[]; view?: GameView } }
+  | { ownJourneys: { records: Record<string, unknown>; builtIn: string[] } }
   | { batch: Request[] };
 
 const act = ({ name, args }: Action): unknown => {
@@ -75,6 +79,8 @@ const answer = (request: Request): unknown => {
   if ('quickSteps' in request)
     return proposeSteps(request.quickSteps.first, request.quickSteps.last);
   if ('keepJourney' in request) return keepJourney(request.keepJourney);
+  if ('ownJourneys' in request)
+    return ownJourneys(request.ownJourneys.records, request.ownJourneys.builtIn);
   if ('batch' in request) return request.batch.map(answer);
   return { error: 'unknown request' };
 };

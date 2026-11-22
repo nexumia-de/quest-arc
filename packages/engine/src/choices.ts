@@ -355,7 +355,9 @@ export const parseChoices = (records: Readonly<Record<string, unknown>>): Choice
       if (anchorId) runAnchors.set(parts[1], { anchorId, ...(after ? { after } : {}) });
       else bad();
     } else if (kind === 'journey' && parts.length === 2) {
-      userJourneys.push(value as unknown as Journey);
+      // The key names the journey: a record holding another id is not read (#40).
+      if (value.id === parts[1]) userJourneys.push(value as unknown as Journey);
+      else bad();
     } else if (kind === 'graduation' && parts.length === 4 && isDay(parts[3])) {
       const { choice, until } = value;
       if (

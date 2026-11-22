@@ -6,6 +6,8 @@ import { continueScreen } from './continue';
 import { finishedScreen } from './finished';
 import { graduateScreen } from './graduate';
 import { homeScreen } from './home';
+import { importScreen } from './import';
+import { quickScreen } from './quick';
 import { journeyScreen } from './journey';
 import { momentScreen } from './moment';
 import { motivatesScreen } from './motivates';
@@ -40,6 +42,10 @@ export const screenFor = (route: Route, ctx: Context): Screen => {
       return chooseScreen(ctx, route.anchorId);
     case 'preview':
       return previewScreen(ctx, route.journeyId, route.anchorId);
+    case 'quick':
+      return quickScreen(ctx, route.step, route.answers, route.anchorId);
+    case 'import':
+      return importScreen(ctx, route.file, route.kept, route.anchorId);
     case 'settings':
       return settingsScreen(ctx);
     case 'station':

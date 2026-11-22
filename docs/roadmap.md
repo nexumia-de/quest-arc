@@ -174,12 +174,13 @@ their agents ([decision](decisions/journeys-by-pull-request.md)).
 **Goal**: what was built stays visible beyond one journey. There is one
 look; nothing here is an optional layer.
 
-**Exit criteria**: a region per anchor with the Map, the place after the
-journey (it stays alive with the maintained habit and gets its lit
-lantern at graduation) and the remaining ladders (#114); the principles
-every display follows (#88). Keepsakes (#87) and the travel companion
-(#43) belong here only if the owner decides for them after the look
-back (#84).
+**Exit criteria**: the Valley as the home with a place per moment (no
+separate Map, [decision](decisions/valley-names.md)), the place after
+the journey (its lit lantern at graduation) and the remaining ladders
+(#114); the principles every display follows (#88). Milestones are one
+sentence in the weekly look back (#87); a keepsakes page and a travel
+companion (#43, not planned) come back only if the look back (#84)
+asks for them.
 
 # Private journeys
 

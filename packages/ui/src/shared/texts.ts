@@ -55,6 +55,10 @@ export const stageAction = (journeyId: string, stageId: string): string | undefi
 
 export const hasText = (key: string): boolean => Object.hasOwn(texts, key);
 
+/** The texts whose keys start with `prefix`, e.g. the quick journey's sentences (#89). */
+export const textsStartingWith = (prefix: string): Record<string, string> =>
+  Object.fromEntries(Object.entries(texts).filter(([key]) => key.startsWith(prefix)));
+
 /** The text for `key` with `{name}` placeholders filled; the key itself if unknown. */
 export const t = (key: string, params: TextParams = {}): string =>
   (texts[key] ?? key).replace(/\{([a-z][a-z0-9-]*)\}/gi, (match, name: string) =>

@@ -299,32 +299,66 @@ lantern is lit beside the doorstep (#131)._
   pauses it after a confirmation that says so (it can be resumed).
 - Opened by **A New Moment** or, for one moment, by **Extend This
   Moment** (screen 0); the moment is then chosen already on screen 3.
+- The user's own journeys (#40, #89) come after the built-in ones, each
+  with "Your own journey". Below the list: **Import a Journey File**
+  with "A journey file someone wrote, or one you exported. It is checked
+  before anything is kept." A file that is not JSON says so in place
+  (screen 2b otherwise).
+- The preview of a journey of the user's own has a menu: **Export as
+  File** (`<id>.json`, the record as it is, readable; only where the host
+  can save a file) and, while no run uses the journey, **Remove This
+  Journey**: the page then says "“…” is removed." with **Undo**.
 
 ### 2a. A journey of your own
 
-The quick form (#89): **Your Own Habit** on the Choose page opens it.
-One question per screen, nothing focused on opening, back at any time:
+The quick form (#89), in the plugin and the standalone app: **Your Own
+Habit** on the Choose page ("A journey of your own from five short
+questions.") opens it. One question per screen with "Question n of 5",
+nothing focused on opening, **Next** at the bottom, back (the header's)
+to the previous question at any time; an empty answer stays and says
+"A few words here are enough.":
 
 1. **What do you want to do?** The action in the user's words.
 2. **After what?** The moment, the same for every step (rule 2).
 3. **How should it grow?** Minutes, pages, times or "it stays the
-   same", with a first and a last step; the proposed steps can be
-   changed. A first step that is not tiny gets the kind hint, never a
-   block (rule 1).
-4. **How often?** Every day, every few days or chosen weekdays.
-5. **Name and what it builds**: the name, and the kind of thing with
-   **Change**.
+   same", with a first and a last step; the steps between are proposed
+   (`proposeSteps`) and each can be changed.
+4. **How often?** Every day, every few days (how many days apart, 2 to 7) or chosen weekdays (at least one stays ticked).
+5. **Name your journey.** What it builds is chosen on screen 3 with
+   **Change**, as for every journey, so the form does not ask twice.
 
-The last screen shows the plan sentence of every step before **Keep
-this journey**. What it writes is the engine's
-([story format](story-format.md#the-quick-journey)); the journey then
-starts like any other (screen 3). The checker's errors are shown in
-plain words with the answer they belong to; warnings are not shown for
-a quick journey. Built first in Day Planner (pensum#80). The plugin gets the form
-later; until it reads `journey:<id>` records into its list of journeys
-and texts (#40), a run of an own journey that arrives by sync is not
-shown there. An own journey that no run uses can be removed from the
-Choose page, with Undo.
+The last screen, "Your steps", shows the plan sentence of every step
+and, when the first step is not tiny, the kind hint "Could the first
+step be smaller? …", never a block (rule 1), before **Keep This
+Journey**. What it writes is the engine's, built and checked in
+plugin.js (`questarc:quick`), since the checker does not fit in the
+view ([story format](story-format.md#the-quick-journey)); the journey
+then starts like any other (screen 3), with the user's words for the
+moment filled in and back leading to Choose. The checker's errors are
+shown in plain words; warnings are not shown for a quick journey. Day
+Planner builds the same form (pensum#80). An own
+journey that no run uses can be removed from its preview, with Undo
+(screen 2).
+
+### 2b. A journey file (import)
+
+What **Import a Journey File** opens (#40). The engine's journey checker
+runs first, the same as in CI (`keepJourney`):
+
+- **Errors** keep the file from being kept: "This file cannot be
+  kept:" and the checker's messages (in English, as the checker writes
+  them), among them a built-in journey's id, a journey of the user's own
+  that a run walks or walked ("a changed copy needs another id"), and a
+  file larger than a record may be (256 KB).
+- A journey that passes shows its title, description, "Written by …"
+  and every station as a plan sentence, and "This replaces your own
+  journey with the same id." when one is kept already. The checker's
+  warnings are under "Hints from the journey checker, for the journey's
+  author:", folded; they never block.
+- **Keep This Journey** writes the `journey:<id>` record and opens the
+  journey's preview (screen 2), from where it starts like any other.
+- The file is data only: every text is shown as plain text, nothing in
+  it runs.
 
 ### 3. Start a journey
 
@@ -552,6 +586,9 @@ Opened from the growing step of a moment (screen 0); back leads there.
   is at least 7 days old; never as a notification.
 - The last 7 due days as marks: done, gap, not due, paused (shape and
   label, not only colour); current and best run.
+- A milestone reached this week, in one sentence: "This week was your
+  50th time: …" ([game rules](game-rules.md) §10, #87); nothing when
+  none was reached.
 - The answers so far as a row of seven-step marks, week by week, the
   latest twelve weeks at most; a skipped week is an empty mark. Under
   it "Easier than four weeks ago." or "About the same as four weeks

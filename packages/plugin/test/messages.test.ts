@@ -49,6 +49,29 @@ describe('messages from the view', () => {
     expect(state.records['pause:run-1:2026-10-27']).toEqual({ action: 'pause', source: 'user' });
   });
 
+  it('saves a file through plugin.js and answers with the state (#40)', async () => {
+    const { brain } = setUp();
+    const saved: string[][] = [];
+    const save = async (name: string, text: string) => {
+      saved.push([name, text]);
+    };
+    const message = { type: 'questarc:save-file', name: 'own-a.json', text: '{}' };
+    const answer = (await handleMessage(
+      brain,
+      message,
+      undefined,
+      undefined,
+      undefined,
+      save,
+    )) as State;
+    expect(saved).toEqual([['own-a.json', '{}']]);
+    expect(answer.view).toBeDefined();
+    await expect(handleMessage(brain, message)).rejects.toThrow('cannot save files');
+    await expect(handleMessage(brain, { type: 'questarc:save-file', name: 1 })).rejects.toThrow(
+      'unknown request',
+    );
+  });
+
   it('rejects unknown requests', async () => {
     const { brain } = setUp();
     await expect(handleMessage(brain, { type: 'other' })).rejects.toThrow();

@@ -54,3 +54,10 @@ versions.
   same habit; it never ends it itself.
 - Pensum creates repeat configs directly with its own repeating-task
   code and writes the same binding record.
+
+## Status
+
+Checked on 2026-11-22 against `@super-productivity/plugin-api` 20.0.0:
+still no method to create or end a repeat config, so the hand-over
+stays. The upstream request and what follows when it is released are
+on the owner's list ([owner checks](../owner-checks.md), #41).

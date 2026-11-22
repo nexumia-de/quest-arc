@@ -4,13 +4,24 @@ import {
   evaluate,
   guardWrite,
   isRelevant,
+  keepJourney,
+  ownJourneys,
+  quickJourney,
   relevantIds,
   toRepeatCfg,
   toTask,
 } from '@questarc/engine';
-import type { GameEvent, GameView, Journey, SnapshotTask } from '@questarc/engine';
+import type {
+  GameEvent,
+  GameView,
+  Journey,
+  KeptJourney,
+  QuickAnswers,
+  SnapshotTask,
+} from '@questarc/engine';
 
 import type { State } from '../shared/protocol';
+import { addJourneyTexts, language, textsStartingWith } from '../shared/texts';
 import { readDay } from './day';
 import type { HostApi } from './host';
 import { loadRecords, writeRecords, type Records } from './records';
@@ -39,6 +50,18 @@ export interface BrainOptions {
   readonly debounceMs?: number;
 }
 
+/** The quick form's answers; the language and the ids in use come from the state. */
+export type QuickForm = Omit<QuickAnswers, 'language' | 'taken'>;
+
+/** The quick form's answers while they are edited, field by field. */
+export type QuickDraft = { -readonly [K in keyof QuickForm]?: QuickForm[K] };
+
+/** What `quickJourney` says, and the record to write when it can be kept. */
+export interface QuickResult extends KeptJourney {
+  readonly journey: Journey;
+  readonly hints: readonly string[];
+}
+
 export type Invalidate = 'tasks' | 'records' | 'archive';
 
 export interface Brain {
@@ -52,6 +75,17 @@ export interface Brain {
    * refused as a whole (docs/data-model.md §2, data format).
    */
   write(records: Records): Promise<State>;
+  /**
+   * Checks a journey file of the user's (#40) against the current state:
+   * the journey checker, the built-in ids and the journeys runs walk.
+   * Here rather than in the view, which has no room for the checker.
+   */
+  checkJourney(journey: unknown): Promise<KeptJourney>;
+  /**
+   * The journey of the quick form's answers (#89) in the language of the
+   * texts, with an id no journey has, checked as a file would be.
+   */
+  quick(answers: QuickForm): Promise<QuickResult>;
   /**
    * Ends the brain when the plugin is unloaded: clears the waiting
    * refresh, ignores later ones and reports no more events.
@@ -69,6 +103,7 @@ export const createBrain = ({ api, journeys, onEvents, debounceMs = 750 }: Brain
   let revision = 0;
   let stopped = false;
   const pauseSeen = new Map<string, boolean>();
+  const builtIn = journeys.map((journey) => journey.id);
 
   const evaluateOnce = async (): Promise<State> => {
     // A hook may mark the records stale while this evaluation waits (the
@@ -108,12 +143,17 @@ export const createBrain = ({ api, journeys, onEvents, debounceMs = 750 }: Brain
       if (records !== undefined) records = loaded;
       view = evaluate(snapshotOf(loaded));
     }
+    // The user's own journeys come after the built-in ones (#40); their
+    // texts are added here too, for the messages plugin.js shows.
+    const own = ownJourneys(loaded, builtIn);
+    if (own.length > 0) addJourneyTexts(own);
+    const all = own.length > 0 ? [...journeys, ...own] : journeys;
     const before = current?.view;
     revision += 1;
-    current = { revision, view, journeys, records: loaded };
+    current = { revision, view, journeys: all, builtIn, records: loaded };
     if (before && !stopped) {
       const events = diff(before, view);
-      if (events.length > 0) onEvents(events, view, journeys);
+      if (events.length > 0) onEvents(events, view, all);
     }
     return current;
   };
@@ -135,6 +175,19 @@ export const createBrain = ({ api, journeys, onEvents, debounceMs = 750 }: Brain
 
   return {
     state: flush,
+    async checkJourney(journey) {
+      const { view } = await flush();
+      return keepJourney({ journey, builtIn, view });
+    },
+    async quick(answers) {
+      const state = await flush();
+      const made = quickJourney(
+        { ...answers, language: language(), taken: state.journeys.map((j) => j.id) },
+        textsStartingWith('ui.quick.'),
+      );
+      const kept = keepJourney({ journey: made.journey, builtIn, view: state.view });
+      return { journey: made.journey, hints: made.hints, ...kept };
+    },
     refresh(what) {
       if (what === 'records') records = undefined;
       if (what === 'archive') archived = undefined;

@@ -1,4 +1,5 @@
 import { answeredNow, answersOf, slowFrom, weeklyAnswers } from './answers';
+import { milestoneThisWeek } from './milestones';
 import { resolveBinding } from './binding';
 import type { Choices, RunRecord } from './choices';
 import { awayBy } from './comeback';
@@ -128,6 +129,12 @@ export const habitOf = (
     // The run of the last stage, carried on past the journey's end (#66).
     run: timeline.run,
     lastDays: timeline.lastDays,
+    ...milestoneOf(credited, today),
     reminder: reminderView(binding.cfg, answers, today, slow),
   };
+};
+
+const milestoneOf = (credited: ReadonlySet<string>, today: string): { milestone?: number } => {
+  const milestone = milestoneThisWeek(credited, today);
+  return milestone === undefined ? {} : { milestone };
 };

@@ -41,3 +41,8 @@ updates:
       # (docs/decisions/one-build-for-older-versions.md).
       - dependency-name: johannesjo/super-productivity
         update-types: ['version-update:semver-major']
+  - package-ecosystem: docker
+    # The newest Super Productivity, for the job real-app-newest (#102).
+    directory: /packages/plugin/e2e/newest
+    schedule:
+      interval: weekly

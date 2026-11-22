@@ -1,3 +1,7 @@
+import type { KeptJourney } from '@questarc/engine';
+
+import type { QuickForm, QuickResult } from '../adapter/brain';
+
 import type { State } from '../shared/protocol';
 import type { ViewHost } from './view-host';
 
@@ -11,6 +15,18 @@ export type Route =
   | { readonly name: 'moment'; readonly anchorId: string; readonly journeyId?: string }
   | { readonly name: 'choose'; readonly anchorId?: string }
   | { readonly name: 'preview'; readonly journeyId: string; readonly anchorId?: string }
+  | {
+      readonly name: 'import';
+      readonly file: unknown;
+      readonly kept: KeptJourney;
+      readonly anchorId?: string;
+    }
+  | {
+      readonly name: 'quick';
+      readonly step: number;
+      readonly answers: Partial<QuickForm>;
+      readonly anchorId?: string;
+    }
   | { readonly name: 'settings' }
   | { readonly name: 'station'; readonly index: number }
   | { readonly name: 'start'; readonly journeyId: string; readonly anchorId?: string }
@@ -36,7 +52,8 @@ export interface Context {
    */
   readonly draft: Record<string, unknown>;
   go(route: Route): void;
-  back(): void;
+  /** Goes back `times` screens (one by default), never past the first. */
+  back(times?: number): void;
   /**
    * Replaces the whole navigation stack, e.g. after onboarding; `draft`
    * seeds the new screen's. The journey keeps the home under it, so back
@@ -47,6 +64,10 @@ export interface Context {
   redraw(): void;
   /** Writes choice records through plugin.js; the view redraws with the result. */
   write(records: Record<string, unknown>): Promise<void>;
+  /** Checks a journey file of the user's before it is kept (#40). */
+  checkJourney(journey: unknown): Promise<KeptJourney>;
+  /** The journey of the quick form's answers, built and checked by the host (#89). */
+  quick(answers: QuickForm): Promise<QuickResult>;
   /** Turns the side panel setting of this device on or off (plugin.js keeps it); only the plugin has one. */
   sidePanel?(on: boolean): Promise<void>;
   /** The host that shows the screens: tasks to list, show and create. */

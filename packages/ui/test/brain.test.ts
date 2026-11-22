@@ -83,6 +83,40 @@ describe('brain', () => {
     expect(host.data).toEqual(before);
   });
 
+  it("lists the user's own journeys after the built-in ones (#40)", async () => {
+    const { brain, host } = setUp([]);
+    const builtIn = builtInJourneys.map((journey) => journey.id);
+    const own = { ...builtInJourneys[0], id: 'own-copy' };
+    host.data['journey:own-copy'] = JSON.stringify(own);
+    host.data[`journey:${builtIn[0]}`] = JSON.stringify(own);
+    const state = await brain.state();
+    expect(state.builtIn).toEqual(builtIn);
+    expect(state.journeys.map((journey) => journey.id)).toEqual([...builtIn, 'own-copy']);
+  });
+
+  it("builds the quick form's journey with a free id and its record (#89)", async () => {
+    const { brain } = setUp([]);
+    const made = await brain.quick({
+      name: 'Reading at night',
+      action: 'read',
+      anchor: 'brushing my teeth',
+      measure: 'pages',
+      steps: [1, 5, 10],
+      schedule: { type: 'daily' },
+    });
+    expect(made.journey.id).toBe('own-reading-at-night');
+    expect(made.journey.stages).toHaveLength(3);
+    expect(Object.keys(made.changes)).toEqual(['journey:own-reading-at-night']);
+  });
+
+  it('checks a journey file against the state before it is kept (#40)', async () => {
+    const { brain } = setUp(['2026-10-26']);
+    const walked = await brain.checkJourney(builtInJourneys.find((j) => j.id === 'gentle-morning'));
+    expect(walked.changes).toEqual({});
+    expect(walked.problems[0]?.message).toContain('built-in journey');
+    expect((await brain.checkJourney('not a journey')).changes).toEqual({});
+  });
+
   it('derives the game from the plugin API', async () => {
     const { brain } = setUp(['2026-10-26', '2026-10-27', '2026-10-28']);
     const { view } = await brain.state();

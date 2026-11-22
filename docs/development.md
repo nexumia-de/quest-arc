@@ -44,7 +44,10 @@ journey checker ([story format](story-format.md#the-journey-checker)).
   pull request and push to `main` (job `check`, the required check in
   `.github/rulesets/main.json`; the owner imports the ruleset) and keeps
   the plugin ZIP as an artifact. Job `real-app`, also required, tries the
-  ZIP in Super Productivity ([in the real app](#in-the-real-app)). Job
+  ZIP in Super Productivity ([in the real app](#in-the-real-app)) at the
+  oldest supported version; job `real-app-newest` (not required, #102)
+  does the same at the newest release
+  (`packages/plugin/e2e/newest/Dockerfile`). Job
   `standalone-app` (not required) walks the spike of the standalone app
   and imports its export into the same Super Productivity
   ([standalone app](#standalone-app-spike)).
@@ -131,7 +134,7 @@ fields smaller than 44 px. The third argument is the language Super
 Productivity would report (#39): `node screenshots.mjs journey,habit 1 de`
 writes `…-de.png` in German, and the preview takes `?lang=de` (or
 `de-AT`; anything else is English). Routes then name German buttons
-(`welcome:Reise auswählen`, `graduated:Menü>Regal`). Demos (`preview/demo.ts`): `welcome`, `empty`,
+(`welcome:Reise auswählen`, `graduated:Menü>Regal`). Demos (`preview/demo.ts`): `welcome`, `empty`, `own-journey` (a journey of the user's own on the Choose page, #40),
 `journey`, `reminder` (a reminder on the task and two weekly answers
 of 5 or more, #60), `paired`, `hard-week`, `met`, `stayed`, `skipped`, `comeback`
 (the card after a long break, #82), `smaller` (after starting smaller),
@@ -231,7 +234,9 @@ plugin.js, the banner "You may not need the reminder any more" with
 **Open the task**.
 `e2e/real-app-panel.mjs` checks
 the side panel setting: no button by default, the button after turning
-it on, QuestArc in the right panel (320 px wide at 1200 px). They share
+it on, QuestArc in the right panel (320 px wide at 1200 px).
+`e2e/real-app-quick.mjs` walks the quick form (#89) from the first
+question to the first completion of the user's own journey. They share
 the app steps in `e2e/sp.mjs`. Screenshots go to
 `packages/plugin/dist/real-app/`.
 
@@ -337,7 +342,11 @@ Data screen, restarts offline and gives both back to the device.
 `e2e/walk-habit.mjs` (both sizes) leaves a task out and undoes it, opens
 the habit's page, pauses and resumes, changes the schedule and leaves
 out the next time, reading what the app stored after each step; it
-writes `backup-habit-<width>.json` for the import below. Last,
+writes `backup-habit-<width>.json` for the import below.
+`e2e/walk-quick.mjs` (both sizes) walks the quick form (#89): an empty
+answer, the five questions, the steps with the kind hint, Keep, the
+start from the user's moment, the recurring task on the chosen
+weekdays, the record `journey:own-…` and the first completion. Last,
 `e2e/pwa.mjs` checks the build as a PWA at the root, as
 Cloudflare serves it: installable, every file
 cached, offline, updated by a new build ([PWA release](pwa-release.md)).

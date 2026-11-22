@@ -1,6 +1,6 @@
 import { answerCheckin, isoWeek } from '@questarc/engine';
 
-import { t } from '../../shared/texts';
+import { inLine, t } from '../../shared/texts';
 import { h } from '../dom';
 import { habitName, targetOf } from '../habit';
 import { answersRow } from '../journey/answers-row';
@@ -11,6 +11,7 @@ import { markSeen } from '../seen';
 /**
  * Screen 6, weekly look back (design rule 9, issue #53): the last due
  * days, the runs, the answers so far week by week (#88), and the
+ * the milestone reached this week in one sentence (#87), the
  * validated single automaticity item with the habit filled in, answered
  * 1–7 or skipped. A skipped week stays empty. With `runId` it asks about
  * the habit a finished journey left (flow F).
@@ -47,6 +48,18 @@ export const checkinScreen = (ctx: Context, runId?: string): Screen => {
               current: counted.current,
               best: counted.best,
               total: counted.total,
+            }),
+          )
+        : null,
+      // A milestone reached this week, in one sentence (#87): a record of
+      // what happened, no page, no list of what is still to come.
+      followed?.milestone !== undefined
+        ? h(
+            'p',
+            {},
+            t('ui.checkin.milestone', {
+              n: followed.milestone,
+              habit: inLine(habitName(stage, run.anchor)),
             }),
           )
         : null,

@@ -1,0 +1,88 @@
+{
+  "name": "A journey record holds the journey its key names: one holding another id is reported and not read, so it cannot appear twice or under a name it does not have",
+  "rule": "data model, journeys of the user's own (#40)",
+  "kind": "evaluate",
+  "input": {
+    "day": {
+      "todayStr": "2026-11-11",
+      "startOfNextDayDiffMs": 0,
+      "timeZone": "Europe/Berlin"
+    },
+    "tasks": [],
+    "repeatCfgs": [],
+    "choices": {
+      "journey:own-a": {
+        "format": 3,
+        "id": "own-b",
+        "version": 1,
+        "title": "test-daily.title",
+        "description": "test-daily.description",
+        "stages": [
+          {
+            "id": "a",
+            "plan": {
+              "anchor": "test-daily.a.anchor",
+              "action": "test-daily.a.action"
+            },
+            "schedule": {
+              "type": "daily"
+            },
+            "condition": {
+              "type": "days",
+              "n": 5,
+              "of": 7
+            }
+          },
+          {
+            "id": "b",
+            "plan": {
+              "anchor": "test-daily.b.anchor",
+              "action": "test-daily.b.action"
+            },
+            "schedule": {
+              "type": "daily"
+            },
+            "condition": {
+              "type": "count",
+              "n": 3
+            }
+          },
+          {
+            "id": "c",
+            "plan": {
+              "anchor": "test-daily.c.anchor",
+              "action": "test-daily.c.action"
+            },
+            "schedule": {
+              "type": "daily"
+            },
+            "condition": {
+              "type": "time_spent",
+              "minutes": 30
+            }
+          }
+        ]
+      },
+      "run:r1": {
+        "journeyId": "own-b",
+        "journeyVersion": 1,
+        "startDay": "2026-11-09"
+      },
+      "stage:r1:a": {
+        "acceptedDay": "2026-11-09"
+      }
+    },
+    "journeys": ["$test-daily"]
+  },
+  "expect": {
+    "active": null,
+    "readOnly": [
+      {
+        "runId": "r1",
+        "journeyId": "own-b",
+        "reason": "journey-missing"
+      }
+    ],
+    "problems": ["record journey:own-a: unexpected value", "run r1: journey own-b not available"]
+  }
+}
