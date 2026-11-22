@@ -850,6 +850,9 @@
  * in the engine's layout units (viewBox); the names and the tap areas are
  * placed in percent of it, and the names' sizes follow the scene's width
  * (container units), so one scene reads the same at 320 and at 440 px.
+ * From 640 px the card stands beside the scene, so no strip of the page
+ * stays empty beside a 440 px scene; the scene gives way down to 320 px
+ * before the card goes below 240 px.
  */
 .qa-home {
   display: flex;
@@ -928,10 +931,10 @@
   outline-offset: calc(-1 * var(--focus-ring-width, 2px));
 }
 
-@media (min-width: 720px) {
+@media (min-width: 640px) {
   .qa-home {
     display: grid;
-    grid-template-columns: minmax(0, 440px) minmax(0, 1fr);
+    grid-template-columns: minmax(0, 440px) minmax(240px, 1fr);
     align-items: start;
     gap: var(--s3, 24px);
   }
@@ -999,10 +1002,10 @@
   font-weight: normal;
 }
 
-@media (min-width: 720px) {
+@media (min-width: 640px) {
   .qa-place {
     display: grid;
-    grid-template-columns: minmax(0, 440px) minmax(0, 1fr);
+    grid-template-columns: minmax(0, 440px) minmax(240px, 1fr);
     align-items: start;
     gap: var(--s3, 24px);
   }
