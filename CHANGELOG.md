@@ -5,6 +5,19 @@ Changes that users notice, newest first. Versions follow the plugin's
 [GitHub release](https://github.com/nexumia-de/quest-arc/releases) with the
 plugin ZIP.
 
+## 4.5.0
+
+- **Your own habit.** **Your Own Habit** on the Choose page asks five
+  short questions (what, after what, how it grows, how often, a name)
+  and makes a journey of your own from them. The first step gets a kind
+  hint when it is not tiny; nothing blocks.
+- **Journey files.** Import a journey file someone wrote, or one you
+  exported; it is checked the same way as the built-in journeys before
+  it is kept. A journey of your own can be exported as a file and
+  removed while you do not walk it.
+- **Milestones.** The weekly look back says in one sentence when you
+  reached your 10th, 25th, 50th … time this week.
+
 ## 4.4.0
 
 - **Journeys of your own, first in Day Planner.** The engine can build a

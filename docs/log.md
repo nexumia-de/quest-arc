@@ -2,6 +2,7 @@
 
 ## 2026-11-22
 
+- **Update**: version 4.5.0 with its [changelog](../CHANGELOG.md) section: your own habit (#89), journey files (#40), milestones (#87).
 - **Creation** (#114): [the Valley, one path through the day](decisions/valley-path.md), the decision record #114 asked for, with the owner's decisions in their final form from the issue's comments; the mockups are on the owner's list ([owner checks](owner-checks.md)).
 - **Decision** (#43): [no travel companion](decisions/no-companion.md): not planned, because no evidence supports it and a figure in the app works against graduation; the look back asks whether it is missed ([owner checks](owner-checks.md)).
 - **Creation** (#87): milestones as one sentence in the weekly look back, as the owner decided on 2026-11-14 ([game rules](game-rules.md) §10, [behaviour](behaviour.md) screen 6): the 10th, 25th, 50th … completion of the current stage or of a finished journey's habit, said only in the week it was reached (`milestone` on the station and the habit, `milestoneThisWeek`; vectors `milestone-this-week`, `milestone-earlier`). Totals across a journey are not counted, because finished stages keep only checkpoints and a milestone must never be lost; the other groups of keepsakes wait for the look back.
