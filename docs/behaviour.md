@@ -311,25 +311,32 @@ lantern is lit beside the doorstep (#131)._
 
 ### 2a. A journey of your own
 
-The quick form (#89): **Your Own Habit** on the Choose page opens it.
-One question per screen, nothing focused on opening, back at any time:
+The quick form (#89), in the plugin and the standalone app: **Your Own
+Habit** on the Choose page ("A journey of your own from five short
+questions.") opens it. One question per screen with "Question n of 5",
+nothing focused on opening, **Next** at the bottom, back (the header's)
+to the previous question at any time; an empty answer stays and says
+"A few words here are enough.":
 
 1. **What do you want to do?** The action in the user's words.
 2. **After what?** The moment, the same for every step (rule 2).
 3. **How should it grow?** Minutes, pages, times or "it stays the
-   same", with a first and a last step; the proposed steps can be
-   changed. A first step that is not tiny gets the kind hint, never a
-   block (rule 1).
-4. **How often?** Every day, every few days or chosen weekdays.
-5. **Name and what it builds**: the name, and the kind of thing with
-   **Change**.
+   same", with a first and a last step; the steps between are proposed
+   (`proposeSteps`) and each can be changed.
+4. **How often?** Every day, every few days (how many days apart, 2 to 7) or chosen weekdays (at least one stays ticked).
+5. **Name your journey.** What it builds is chosen on screen 3 with
+   **Change**, as for every journey, so the form does not ask twice.
 
-The last screen shows the plan sentence of every step before **Keep
-this journey**. What it writes is the engine's
-([story format](story-format.md#the-quick-journey)); the journey then
-starts like any other (screen 3). The checker's errors are shown in
-plain words with the answer they belong to; warnings are not shown for
-a quick journey. Built first in Day Planner (pensum#80). An own
+The last screen, "Your steps", shows the plan sentence of every step
+and, when the first step is not tiny, the kind hint "Could the first
+step be smaller? …", never a block (rule 1), before **Keep This
+Journey**. What it writes is the engine's, built and checked in
+plugin.js (`questarc:quick`), since the checker does not fit in the
+view ([story format](story-format.md#the-quick-journey)); the journey
+then starts like any other (screen 3), with the user's words for the
+moment filled in and back leading to Choose. The checker's errors are
+shown in plain words; warnings are not shown for a quick journey. Day
+Planner builds the same form (pensum#80). An own
 journey that no run uses can be removed from its preview, with Undo
 (screen 2).
 

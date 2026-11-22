@@ -94,6 +94,21 @@ describe('brain', () => {
     expect(state.journeys.map((journey) => journey.id)).toEqual([...builtIn, 'own-copy']);
   });
 
+  it("builds the quick form's journey with a free id and its record (#89)", async () => {
+    const { brain } = setUp([]);
+    const made = await brain.quick({
+      name: 'Reading at night',
+      action: 'read',
+      anchor: 'brushing my teeth',
+      measure: 'pages',
+      steps: [1, 5, 10],
+      schedule: { type: 'daily' },
+    });
+    expect(made.journey.id).toBe('own-reading-at-night');
+    expect(made.journey.stages).toHaveLength(3);
+    expect(Object.keys(made.changes)).toEqual(['journey:own-reading-at-night']);
+  });
+
   it('checks a journey file against the state before it is kept (#40)', async () => {
     const { brain } = setUp(['2026-10-26']);
     const walked = await brain.checkJourney(builtInJourneys.find((j) => j.id === 'gentle-morning'));

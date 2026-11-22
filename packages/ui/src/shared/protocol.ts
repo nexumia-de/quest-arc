@@ -1,5 +1,7 @@
 import type { GameView, Journey } from '@questarc/engine';
 
+import type { QuickForm } from '../adapter/brain';
+
 import type { Hue } from '../ui/art';
 import type { Ladder } from '../ui/ladder';
 
@@ -69,7 +71,9 @@ export type Request =
    */
   | { readonly type: 'questarc:save-file'; readonly name: string; readonly text: string }
   /** Checks a journey file before it is kept (#40); answers a KeptJourney. */
-  | { readonly type: 'questarc:check-journey'; readonly journey: unknown };
+  | { readonly type: 'questarc:check-journey'; readonly journey: unknown }
+  /** Builds the quick form's journey (#89); answers a QuickResult. */
+  | { readonly type: 'questarc:quick'; readonly answers: QuickForm };
 
 export const isRequest = (message: unknown): message is Request => {
   if (typeof message !== 'object' || message === null) return false;
@@ -83,6 +87,10 @@ export const isRequest = (message: unknown): message is Request => {
   if (type === 'questarc:get' || type === 'questarc:content') return true;
   if (type === 'questarc:save-file') return typeof name === 'string' && typeof text === 'string';
   if (type === 'questarc:check-journey') return 'journey' in message;
+  if (type === 'questarc:quick') {
+    const { answers } = message as { answers?: unknown };
+    return typeof answers === 'object' && answers !== null;
+  }
   if (type === 'questarc:side-panel') return typeof on === 'boolean';
   return type === 'questarc:write' && typeof records === 'object' && records !== null;
 };

@@ -92,7 +92,9 @@ does not pass `downloadFile` on, so plugin.js calls it
 ([facts](super-productivity-facts.md) §1). `questarc:check-journey` (`journey`) answers
 what `keepJourney` says about a journey file against the current state:
 the journey checker stays in plugin.js, since the view has no room for
-it (#40). It
+it (#40). `questarc:quick` (`answers`) answers the journey of the
+quick form's answers (#89) in the language of the texts, with an id no
+journey has, and the record to keep it. It
 asks again 300 ms after a hook fires in the view (so plugin.js has marked
 its data stale first), when the page becomes visible, and every 5 s as a
 fallback; it redraws only when the revision changed.

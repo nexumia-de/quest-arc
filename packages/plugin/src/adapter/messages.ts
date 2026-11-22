@@ -1,7 +1,7 @@
 import type { KeptJourney } from '@questarc/engine';
 import { isRequest, type ContentPack, type State } from '@questarc/ui/shared/protocol';
 import { language } from '@questarc/ui/shared/texts';
-import type { Brain } from '@questarc/ui/adapter/brain';
+import type { Brain, QuickResult } from '@questarc/ui/adapter/brain';
 import { contentPack } from './content-pack';
 import type { SettingsEntry } from './settings-entry';
 import type { ShowJourney } from './show-journey';
@@ -15,10 +15,11 @@ export const handleMessage = async (
   settings?: SettingsEntry,
   journey?: Pick<ShowJourney, 'take'>,
   save?: (name: string, text: string) => Promise<void>,
-): Promise<State | ContentPack | KeptJourney> => {
+): Promise<State | ContentPack | KeptJourney | QuickResult> => {
   if (!isRequest(message)) throw new Error('QuestArc: unknown request');
   if (message.type === 'questarc:content') return contentPack();
   if (message.type === 'questarc:check-journey') return brain.checkJourney(message.journey);
+  if (message.type === 'questarc:quick') return brain.quick(message.answers);
   if (message.type === 'questarc:save-file') {
     if (!save) throw new Error('QuestArc: this Super Productivity cannot save files');
     await save(message.name, message.text);

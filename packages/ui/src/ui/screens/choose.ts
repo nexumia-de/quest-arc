@@ -87,6 +87,17 @@ export const chooseScreen = (ctx: Context, anchorId?: string): Screen => {
         { class: 'qa-stack' },
         h(
           'button',
+          {
+            class: 'qa-btn qa-btn-secondary',
+            type: 'button',
+            onclick: () =>
+              ctx.go({ name: 'quick', step: 1, answers: {}, ...(anchorId ? { anchorId } : {}) }),
+          },
+          t('ui.choose.quick'),
+        ),
+        h('p', { class: 'qa-muted qa-small' }, t('ui.choose.quick.text')),
+        h(
+          'button',
           { class: 'qa-btn qa-btn-secondary', type: 'button', onclick: () => file.click() },
           t('ui.choose.import'),
         ),

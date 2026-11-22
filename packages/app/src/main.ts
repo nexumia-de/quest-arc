@@ -90,6 +90,7 @@ const start = async (root: HTMLElement): Promise<void> => {
     get: () => game.state(),
     write: (records) => game.write(records),
     checkJourney: (journey) => game.checkJourney(journey),
+    quick: (answers) => game.quick(answers),
     // texts and style are part of the app itself (app.js, app.css)
     content: async () => ({ language: language(), texts: {}, style: '', art }),
   };

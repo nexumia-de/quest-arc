@@ -234,7 +234,9 @@ plugin.js, the banner "You may not need the reminder any more" with
 **Open the task**.
 `e2e/real-app-panel.mjs` checks
 the side panel setting: no button by default, the button after turning
-it on, QuestArc in the right panel (320 px wide at 1200 px). They share
+it on, QuestArc in the right panel (320 px wide at 1200 px).
+`e2e/real-app-quick.mjs` walks the quick form (#89) from the first
+question to the first completion of the user's own journey. They share
 the app steps in `e2e/sp.mjs`. Screenshots go to
 `packages/plugin/dist/real-app/`.
 
@@ -340,7 +342,11 @@ Data screen, restarts offline and gives both back to the device.
 `e2e/walk-habit.mjs` (both sizes) leaves a task out and undoes it, opens
 the habit's page, pauses and resumes, changes the schedule and leaves
 out the next time, reading what the app stored after each step; it
-writes `backup-habit-<width>.json` for the import below. Last,
+writes `backup-habit-<width>.json` for the import below.
+`e2e/walk-quick.mjs` (both sizes) walks the quick form (#89): an empty
+answer, the five questions, the steps with the kind hint, Keep, the
+start from the user's moment, the recurring task on the chosen
+weekdays, the record `journey:own-…` and the first completion. Last,
 `e2e/pwa.mjs` checks the build as a PWA at the root, as
 Cloudflare serves it: installable, every file
 cached, offline, updated by a new build ([PWA release](pwa-release.md)).

@@ -1,5 +1,6 @@
 import type { KeptJourney } from '@questarc/engine';
 
+import type { QuickForm, QuickResult } from '../adapter/brain';
 import type { ContentPack, State } from '../shared/protocol';
 
 /**
@@ -14,6 +15,8 @@ export interface Client {
   content(): Promise<ContentPack>;
   /** Checks a journey file of the user's before it is kept (#40). */
   checkJourney(journey: unknown): Promise<KeptJourney>;
+  /** The journey of the quick form's answers, built and checked by the host (#89). */
+  quick(answers: QuickForm): Promise<QuickResult>;
   /** Only the plugin has a side panel; without it the setting is not shown. */
   sidePanel?(on: boolean): Promise<State>;
   /** Asks the host to save a file for the user (the plugin: through plugin.js, #40). */

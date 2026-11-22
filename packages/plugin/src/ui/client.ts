@@ -1,4 +1,5 @@
 import type { KeptJourney } from '@questarc/engine';
+import type { QuickForm, QuickResult } from '@questarc/ui/adapter/brain';
 import type { Client } from '@questarc/ui/ui/client';
 import type { ContentPack, Request, State } from '@questarc/ui/shared/protocol';
 
@@ -60,5 +61,6 @@ export const createClient = (
     saveFile: (name: string, text: string) => request({ type: 'questarc:save-file', name, text }),
     checkJourney: (journey: unknown) =>
       request<KeptJourney>({ type: 'questarc:check-journey', journey }),
+    quick: (answers: QuickForm) => request<QuickResult>({ type: 'questarc:quick', answers }),
   };
 };

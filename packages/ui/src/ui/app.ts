@@ -31,8 +31,9 @@ export const createApp = (root: HTMLElement, client: Client, host: ViewHost) => 
       stack = [...stack, entry(route)];
       render(true);
     },
-    back: () => {
-      if (stack.length > 1) stack = stack.slice(0, -1);
+    back: (times = 1) => {
+      const n = Number.isInteger(times) && times > 0 ? times : 1;
+      stack = stack.slice(0, Math.max(1, stack.length - n));
       render(true);
     },
     redraw: () => render(false),
@@ -50,6 +51,7 @@ export const createApp = (root: HTMLElement, client: Client, host: ViewHost) => 
       }
     },
     checkJourney: (journey) => client.checkJourney(journey),
+    quick: (answers) => client.quick(answers),
     ...(setSidePanel
       ? {
           sidePanel: async (on: boolean) => {
@@ -147,7 +149,7 @@ export const createApp = (root: HTMLElement, client: Client, host: ViewHost) => 
               type: 'button',
               title: t('ui.action.back'),
               'aria-label': t('ui.action.back'),
-              onclick: ctx.back,
+              onclick: () => ctx.back(),
             },
             icon(ICONS.back),
           )
