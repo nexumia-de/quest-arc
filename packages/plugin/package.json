@@ -18,6 +18,6 @@
     "@questarc/ui": "*"
   },
   "devDependencies": {
-    "@super-productivity/plugin-api": "20.0.0"
+    "@super-productivity/plugin-api": "20.1.0"
   }
 }
